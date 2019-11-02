@@ -27,4 +27,18 @@ merged_maxCI_table_pilot = read.csv("./raw_data/pilot_validation/merged/merged_v
 dim(merged_maxCI_table_pilot)
 # 292 11
 
-# Load 
+# Load Research merged table
+merged_maxCI_table_research = read.csv("./raw_data/research_validation/merged/merged_validation_research.tsv",
+                                       sep = "\t",
+                                       header = T,
+                                       stringsAsFactors = F)
+dim(merged_maxCI_table_research)
+# 862  11
+
+
+merged_maxCI_table = rbind(merged_maxCI_table_pilot,
+                           merged_maxCI_table_research)
+dim(merged_maxCI_table)
+# 1154  11
+
+
