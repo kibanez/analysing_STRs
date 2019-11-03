@@ -17,7 +17,7 @@ val_data = read.csv("../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez.tsv",
                     sep = "\t",
                     stringsAsFactors = F)
 dim(val_data)
-# 639 17
+# 639 18
 
 # Load Pilot merged table
 merged_maxCI_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_maxCI.tsv",
@@ -55,6 +55,8 @@ merged_all_pilot = full_join(merged_avg_table_pilot,
                          by = c("unique_id"))
 dim(merged_all_pilot)
 # 318  7
+
+colnames(merged_all_pilot) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id", "gene_max", "maxCI_repeat", "list_samples_maxCI")
 
 
 # Load Research merged table
@@ -95,6 +97,7 @@ merged_all_research = full_join(merged_avg_table_research,
 dim(merged_all_research)
 # 1377  7
 
+colnames(merged_all_research) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id", "gene_max", "maxCI_repeat", "list_samples_maxCI")
 
 merged_all = full_join(merged_all_pilot,
                        merged_all_research,
@@ -108,18 +111,60 @@ dim(merged_all)
 
 # Let's enrich the validation golden table with the max CI value for each expansion
 val_data2 = val_data
+val_data2$EH_a1_avg = rep('NA', length(val_data$EH_a1))
+val_data2$EH_a2_avg = rep('NA', length(val_data$EH_a2))
 val_data2$EH_a1_maxCI = rep('NA', length(val_data$EH_a1))
 val_data2$EH_a2_maxCI = rep('NA', length(val_data$EH_a2))
 
 # We will go through all val_data rows, independently, one by one
 # We will distinguish them by `gene` and `platekey`
 for (i in 1:length(val_data$loci)){
-  locus = val_data$loci[i]
-  platekey = val_data$LP_Number[i]
+  locus = val_data$locus_bioinfo[i]
+  platekey = trimws(val_data$LP_Number[i])
   
-  # Check whether platekey is in research, pilot or wessex
+  # avg values (to double check)
+  row_avg_research = merged_all_research %>%
+    filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+    select(avg_repeat) %>% pull() %>% as.character()
   
+  # maxCI values
+  row_maxCI_research = merged_all_research %>%
+    filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+    select(maxCI_repeat) %>% pull() %>% as.character()
   
-  
-  
+  if (length(row_avg_research) > 0){
+    if (length(row_avg_research) < 2){
+      val_data2$EH_a1_avg[i] = row_avg_research
+      val_data2$EH_a1_maxCI[i] = row_maxCI_research
+    }else{
+      val_data2$EH_a1_avg[i] = row_avg_research[1]
+      val_data2$EH_a2_avg[i] = row_avg_research[2]
+      val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
+      val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
+    }
+  }else{
+    # IT's PILOT
+    
+    # avg values (to double check)
+    row_avg_research = merged_all_pilot %>%
+      filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+      select(avg_repeat) %>% pull() %>% as.character()
+    
+    # maxCI values
+    row_maxCI_research = merged_all_pilot %>%
+      filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+      select(maxCI_repeat)  %>% pull() %>% as.character()
+    
+    if (length(row_avg_research) > 0){
+      if (length(row_avg_research) < 2){
+        val_data2$EH_a1_avg[i] = row_avg_research
+        val_data2$EH_a1_maxCI[i] = row_maxCI_research
+      }else{
+        val_data2$EH_a1_avg[i] = row_avg_research[1]
+        val_data2$EH_a2_avg[i] = row_avg_research[2]
+        val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
+        val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
+      }
+    }
+  }
 }
