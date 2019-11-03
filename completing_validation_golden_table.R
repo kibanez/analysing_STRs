@@ -92,30 +92,34 @@ merged_all_research = full_join(merged_avg_table_research,
                                 merged_maxCI_table_research,
                                 by = c("unique_id"))
 
-merged_maxCI_table = rbind(merged_maxCI_table_pilot,
-                           merged_maxCI_table_research)
-dim(merged_maxCI_table)
-# 1154  11
+dim(merged_all_research)
+# 1377  7
+
+
+merged_all = full_join(merged_all_pilot,
+                       merged_all_research,
+                       by = c("unique_id"))
+dim(merged_all)
+# 1437  13
 
 
 # Here should be WESSEX data (It's not research nor pilot)!!
-
+# TODO
 
 # Let's enrich the validation golden table with the max CI value for each expansion
-merged_maxCI_table = merged_maxCI_table %>%
-  mutate(index = 1:n())
-
 val_data2 = val_data
 val_data2$EH_a1_maxCI = rep('NA', length(val_data$EH_a1))
 val_data2$EH_a2_maxCI = rep('NA', length(val_data$EH_a2))
 
-l_platekey = unique(val_data$LP_Number)
-for (i in 1:length(l_platekey)){
-  val_data_platekey = val_data %>% filter(LP_Number %in% l_platekey[i])
-  l_loci = unique(val_data_platekey$loci)
-  for (j in 1:length(l_loci)){
-    index_table = merged_maxCI_table %>% 
-      filter(grepl(l_loci[j], gene), grepl(l_platekey[i],list_samples)) %>% 
-      select(index)
-  }
+# We will go through all val_data rows, independently, one by one
+# We will distinguish them by `gene` and `platekey`
+for (i in 1:length(val_data$loci)){
+  locus = val_data$loci[i]
+  platekey = val_data$LP_Number[i]
+  
+  # Check whether platekey is in research, pilot or wessex
+  
+  
+  
+  
 }
