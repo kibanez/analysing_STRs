@@ -168,3 +168,6 @@ for (i in 1:length(val_data$loci)){
     }
   }
 }
+
+# Write results into file
+write.table(val_data2, "../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
