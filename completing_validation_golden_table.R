@@ -145,6 +145,37 @@ val_data2$EH_a1_avg = rep('NA', length(val_data$EH_a1))
 val_data2$EH_a2_avg = rep('NA', length(val_data$EH_a2))
 val_data2$EH_a1_maxCI = rep('NA', length(val_data$EH_a1))
 val_data2$EH_a2_maxCI = rep('NA', length(val_data$EH_a2))
+val_data2$gender = rep('NA', length(val_data$EH_a2))
+
+# Research environment clinical data
+clinical_data = read.csv("/Users/kibanez/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_250919.tsv",
+                         sep = "\t",
+                         header = T,
+                         stringsAsFactors = F)
+dim(clinical_data)
+# 1056568  26
+
+# Let's retrieve only platekey and gender
+clinical_data = clinical_data %>% 
+  filter(plate_key.x %in% unique(val_data$LP_Number)) %>%
+  select(plate_key.x, participant_phenotypic_sex)
+
+dim(clinical_data)
+# 8376  2
+
+# Pilot clinical data
+pilot_clinical_data = read.csv("/Users/kibanez/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                               sep = "\t",
+                               header = T,
+                               stringsAsFactors = F)
+dim(pilot_clinical_data)
+# 4974  10
+
+pilot_clinical_data = pilot_clinical_data %>%
+  filter(plateKey %in% unique(val_data$LP_Number)) %>%
+  select(plateKey, sex)
+dim(pilot_clinical_data)
+# 69  2
 
 # We will go through all val_data rows, independently, one by one
 # We will distinguish them by `gene` and `platekey`
@@ -200,6 +231,14 @@ for (i in 1:length(val_data$loci)){
       val_data2$EH_a2_avg[i] = row_avg_research[2]
       val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
       val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
+      
+      val_data2$gender = clinical_data %>% 
+        filter(plate_key.x %in% platekey) %>% 
+        select(participant_phenotypic_sex) %>%
+        pull() %>%
+        unique() %>%
+        as.character() 
+      
     }
   }else{
     # IT's PILOT
@@ -251,6 +290,14 @@ for (i in 1:length(val_data$loci)){
         val_data2$EH_a2_avg[i] = row_avg_research[2]
         val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
         val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
+        
+        val_data2$gender = pilot_clinical_data %>% 
+          filter(plateKey %in% platekey) %>% 
+          select(sex) %>%
+          pull() %>%
+          unique() %>%
+          as.character() 
+        
       }
     }else{
       # It's WESSEX
@@ -302,6 +349,14 @@ for (i in 1:length(val_data$loci)){
           val_data2$EH_a2_avg[i] = row_avg_research[2]
           val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
           val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
+          
+          val_data2$gender = clinical_data %>% 
+            filter(plate_key.x %in% platekey) %>% 
+            select(participant_phenotypic_sex) %>%
+            pull() %>%
+            unique() %>%
+            as.character() 
+          
         }
       }
     }
