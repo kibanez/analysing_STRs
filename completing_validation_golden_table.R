@@ -100,7 +100,44 @@ dim(merged_all_research)
 colnames(merged_all_research) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id", "gene_max", "maxCI_repeat", "list_samples_maxCI")
 
 # Here should be WESSEX data (It's not research nor pilot)!!
+# Load Wessex data
+merged_maxCI_table_wessex = read.csv("./wessex_validation/merged/merged_validation_wessex_maxCI.tsv",
+                                    sep = "\t",
+                                    header = T,
+                                    stringsAsFactors = F)
+dim(merged_maxCI_table_wessex)
+# 294 11
 
+merged_avg_table_wessex = read.csv("./wessex_validation//merged/merged_validation_wessex_avg.tsv",
+                                  sep = "\t",
+                                  header = T,
+                                  stringsAsFactors = F)
+dim(merged_avg_table_wessex)
+# 293  11
+
+merged_avg_table_wessex = merged_avg_table_wessex %>%
+  select(gene, allele, list_samples)
+colnames(merged_avg_table_wessex) = c("gene", "avg_repeat", "list_samples")
+merged_avg_table_wessex = merged_avg_table_wessex %>%
+  mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
+dim(merged_avg_table_wessex)
+# 293  4
+
+merged_maxCI_table_wessex = merged_maxCI_table_wessex %>%
+  select(gene, allele, list_samples)
+colnames(merged_maxCI_table_wessex) = c("gene", "maxCI_repeat", "list_samples")
+merged_maxCI_table_wessex = merged_maxCI_table_wessex %>%
+  mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
+dim(merged_maxCI_table_wessex)
+# 294  4
+
+merged_all_wessex = full_join(merged_avg_table_wessex,
+                             merged_maxCI_table_wessex,
+                             by = c("unique_id"))
+dim(merged_all_wessex)
+# 481  7
+
+colnames(merged_all_wessex) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id", "gene_max", "maxCI_repeat", "list_samples_maxCI")
 
 # Let's enrich the validation golden table with the max CI value for each expansion
 val_data2 = val_data
