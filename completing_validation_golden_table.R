@@ -252,6 +252,57 @@ for (i in 1:length(val_data$loci)){
         val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
         val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
       }
+    }else{
+      # It's WESSEX
+      
+      # avg values (to double check)
+      row_avg_research = merged_all_wessex %>%
+        filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+        select(avg_repeat) %>% pull() %>% as.character()
+      
+      l_samples_avg = merged_all_wessex %>%
+        filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+        select(list_samples_avg) %>% pull()
+      
+      if (length(l_samples_avg) > 0){
+        if (grepl(paste(paste("EH_", platekey, sep = ""), "", sep = ".vcf_x2"), l_samples_avg)){
+          row_avg_research = c(row_avg_research, row_avg_research)
+        }
+      }
+      
+      # maxCI values
+      row_maxCI_research = merged_all_wessex %>%
+        filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+        select(maxCI_repeat)  %>% pull() %>% as.character()
+      
+      l_samples_max = merged_all_wessex %>%
+        filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+        select(list_samples_maxCI) %>% pull()
+      
+      if (length(l_samples_max) > 0){
+        if (grepl(paste(paste("EH_", platekey, sep = ""), "", sep = ".vcf_x2"), l_samples_max)){
+          row_maxCI_research = c(row_maxCI_research, row_maxCI_research)
+        }
+      }
+      
+      if (length(row_avg_research) > 0){
+        if (length(row_avg_research) < 2){
+          val_data2$EH_a1_avg[i] = row_avg_research
+          val_data2$EH_a1_maxCI[i] = row_maxCI_research
+        }else{
+          if (length(row_avg_research) %% 2 != 0){
+            row_avg_research = unique(row_avg_research)
+          }
+          
+          if (length(row_maxCI_research) %% 2 != 0){
+            row_maxCI_research = unique(row_maxCI_research)
+          }
+          
+          val_data2$EH_a1_avg[i] = row_avg_research[1]
+          val_data2$EH_a2_avg[i] = row_avg_research[2]
+          val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
+          val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
+        }
     }
   }
 }
