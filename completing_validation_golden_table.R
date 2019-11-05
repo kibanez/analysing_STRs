@@ -37,6 +37,7 @@ dim(merged_avg_table_pilot)
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   select(gene, allele, list_samples)
 colnames(merged_avg_table_pilot) = c("gene", "avg_repeat", "list_samples")
+
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_pilot)
@@ -62,7 +63,7 @@ colnames(merged_all_pilot) = c("gene_avg", "avg_repeat", "list_samples_avg", "un
 
 
 # Load Research merged table
-merged_maxCI_table_research = read.csv("../raw_data/research_validation/merged/merged_validation_research_maxCI.tsv",
+merged_maxCI_table_research = read.csv("research_validation/merged/merged_validation_research_maxCI.tsv",
                                        sep = "\t",
                                        header = T,
                                        stringsAsFactors = F)
@@ -77,7 +78,7 @@ merged_maxCI_table_research = merged_maxCI_table_research %>%
 dim(merged_maxCI_table_research)
 # 869  4
 
-merged_avg_table_research = read.csv("../raw_data/research_validation/merged/merged_validation_research_avg.tsv",
+merged_avg_table_research = read.csv("research_validation/merged/merged_validation_research_avg.tsv",
                                      sep = "\t",
                                      header = T,
                                      stringsAsFactors = F)
@@ -186,7 +187,7 @@ dim(pilot_clinical_data)
 # We will go through all val_data rows, independently, one by one
 # We will distinguish them by `gene` and `platekey`
 for (i in 1:length(val_data$loci)){
-  locus = val_data$locus_bioinfo[i]
+  locus = trimws(val_data$locus_bioinfo[i])
   platekey = trimws(val_data$LP_Number[i])
   
   # avg values (to double check)
@@ -239,14 +240,14 @@ for (i in 1:length(val_data$loci)){
       val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
       
       if (platekey %in% unique(clinical_data$plate_key.x)){
-        val_data2$gender = clinical_data %>% 
+        val_data2$gender[i] = clinical_data %>% 
           filter(plate_key.x %in% platekey) %>% 
           select(participant_phenotypic_sex) %>%
           pull() %>%
           unique() %>%
           as.character() 
       }else{
-        val_data2$gender = "NA"
+        val_data2$gender[i] = "NA"
       }
       
     }
@@ -302,14 +303,14 @@ for (i in 1:length(val_data$loci)){
         val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
         
         if (platekey %in% unique(pilot_clinical_data$plateKey)){
-          val_data2$gender = pilot_clinical_data %>% 
+          val_data2$gender[i] = pilot_clinical_data %>% 
             filter(plateKey %in% platekey) %>% 
             select(sex) %>%
             pull() %>%
             unique() %>%
             as.character() 
         }else{
-          val_data2$gender = "NA"
+          val_data2$gender[i] = "NA"
         }
         
       }
@@ -365,14 +366,14 @@ for (i in 1:length(val_data$loci)){
           val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
           
           if (platekey %in% unique(clinical_data$plate_key.x)){
-            val_data2$gender = clinical_data %>% 
+            val_data2$gender[i] = clinical_data %>% 
               filter(plate_key.x %in% platekey) %>% 
               select(participant_phenotypic_sex) %>%
               pull() %>%
               unique() %>%
               as.character() 
           }else{
-            val_data2$gender = "NA"
+            val_data2$gender[i] = "NA"
           }
           
         }
