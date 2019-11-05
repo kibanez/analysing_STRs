@@ -65,7 +65,7 @@ merged_maxCI_table_research = read.csv("../raw_data/research_validation/merged/m
                                        header = T,
                                        stringsAsFactors = F)
 dim(merged_maxCI_table_research)
-# 873  11
+# 869  11
 
 merged_maxCI_table_research = merged_maxCI_table_research %>%
   select(gene, allele, list_samples)
@@ -73,7 +73,7 @@ colnames(merged_maxCI_table_research) = c("gene", "maxCI_repeat", "list_samples"
 merged_maxCI_table_research = merged_maxCI_table_research %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_research)
-# 873  4
+# 869  4
 
 merged_avg_table_research = read.csv("../raw_data/research_validation/merged/merged_validation_research_avg.tsv",
                                      sep = "\t",
@@ -95,7 +95,7 @@ merged_all_research = full_join(merged_avg_table_research,
                                 by = c("unique_id"))
 
 dim(merged_all_research)
-# 1401  7
+# 1391  7
 
 colnames(merged_all_research) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id", "gene_max", "maxCI_repeat", "list_samples_maxCI")
 
