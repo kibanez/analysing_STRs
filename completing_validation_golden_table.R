@@ -12,12 +12,12 @@ library(dplyr)
 setwd("~/Documents/STRs/VALIDATION/raw_data/")
 
 # Load validation golden table data
-val_data = read.csv("../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez.tsv",
+val_data = read.csv("../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched.tsv",
                     header = T,
                     sep = "\t",
                     stringsAsFactors = F)
 dim(val_data)
-# 639 18
+# 639 20
 
 # Load Pilot merged table
 merged_maxCI_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_maxCI.tsv",
@@ -25,14 +25,14 @@ merged_maxCI_table_pilot = read.csv("./pilot_validation/merged/merged_validation
                               header = T,
                               stringsAsFactors = F)
 dim(merged_maxCI_table_pilot)
-# 294 11
+# 296 11
 
 merged_avg_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_avg.tsv",
                                   sep = "\t",
                                   header = T,
                                   stringsAsFactors = F)
 dim(merged_avg_table_pilot)
-# 296  11
+# 298  11
 
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   select(gene, allele, list_samples)
@@ -41,7 +41,7 @@ colnames(merged_avg_table_pilot) = c("gene", "avg_repeat", "list_samples")
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_pilot)
-# 296  4
+# 298  4
 
 merged_maxCI_table_pilot = merged_maxCI_table_pilot %>%
   select(gene, allele, list_samples)
@@ -49,13 +49,13 @@ colnames(merged_maxCI_table_pilot) = c("gene", "maxCI_repeat", "list_samples")
 merged_maxCI_table_pilot = merged_maxCI_table_pilot %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_pilot)
-# 294  4
+# 296  4
 
 merged_all_pilot = full_join(merged_avg_table_pilot,
                          merged_maxCI_table_pilot,
                          by = c("unique_id"))
 dim(merged_all_pilot)
-# 320  7
+# 323  7
 
 colnames(merged_avg_table_pilot) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_maxCI_table_pilot) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
@@ -225,15 +225,6 @@ for (i in 1:length(val_data$loci)){
       val_data2$EH_a1_avg[i] = row_avg_research
       val_data2$EH_a1_maxCI[i] = row_maxCI_research
     }else{
-      # Check whether we do have mod 2, otherwise do `unique`
-      if (length(row_avg_research) %% 2 != 0){
-        row_avg_research = unique(row_avg_research)
-      }
-
-      if (length(row_maxCI_research) %% 2 != 0){
-        row_maxCI_research = unique(row_maxCI_research)
-      }
-      
       val_data2$EH_a1_avg[i] = row_avg_research[1]
       val_data2$EH_a2_avg[i] = row_avg_research[2]
       val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
@@ -289,14 +280,6 @@ for (i in 1:length(val_data$loci)){
         val_data2$EH_a1_avg[i] = row_avg_research
         val_data2$EH_a1_maxCI[i] = row_maxCI_research
       }else{
-        if (length(row_avg_research) %% 2 != 0){
-          row_avg_research = unique(row_avg_research)
-        }
-        
-        if (length(row_maxCI_research) %% 2 != 0){
-          row_maxCI_research = unique(row_maxCI_research)
-        }
-        
         val_data2$EH_a1_avg[i] = row_avg_research[1]
         val_data2$EH_a2_avg[i] = row_avg_research[2]
         val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
@@ -352,14 +335,6 @@ for (i in 1:length(val_data$loci)){
           val_data2$EH_a1_avg[i] = row_avg_research
           val_data2$EH_a1_maxCI[i] = row_maxCI_research
         }else{
-          if (length(row_avg_research) %% 2 != 0){
-            row_avg_research = unique(row_avg_research)
-          }
-          
-          if (length(row_maxCI_research) %% 2 != 0){
-            row_maxCI_research = unique(row_maxCI_research)
-          }
-          
           val_data2$EH_a1_avg[i] = row_avg_research[1]
           val_data2$EH_a2_avg[i] = row_avg_research[2]
           val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
@@ -382,5 +357,95 @@ for (i in 1:length(val_data$loci)){
   }
 }
 
+# Select the columns we want to work with (not all, they already are in the validation golden table)
+val_data2 = val_data2 %>%
+  select(locus_bioinfo, LP_Number, gender, EH_a1, EH_a2, experimental_a1, experimental_a2, EH_a1_avg, EH_a2_avg, EH_a1_maxCI, EH_a2_maxCI, classification)
+
+# To make things easier, we want to automatise the classification of each expansion call
+table_threshold_normal = read.csv("/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt",
+                              stringsAsFactors = F,
+                              header = T,
+                              sep = "\t")
+
+dim(table_threshold_normal)
+# 33  2
+colnames(table_threshold_normal) = c("locus_bioinfo", "threshold_normal")
+
+table_threshold_pathogenic = read.csv("/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt",
+                                stringsAsFactors = F,
+                                header = T,
+                                sep = "\t")
+dim(table_threshold_pathogenic)
+# 33  2
+colnames(table_threshold_pathogenic) = c("locus_bioinfo", "threshold_pathogenic")
+
+# Let's include thresholds in the main table
+val_data2 = full_join(val_data2,
+                      table_threshold_normal,
+                      by = "locus_bioinfo")
+
+val_data2 = full_join(val_data2,
+                      table_threshold_pathogenic,
+                      by = "locus_bioinfo")
+
+# Let's transform the data now
+val_data2$EH_a1_avg = as.numeric(val_data2$EH_a1_avg)
+val_data2$EH_a2_avg = as.numeric(val_data2$EH_a2_avg)
+val_data2$EH_a1_maxCI = as.numeric(val_data2$EH_a1_maxCI)
+val_data2$EH_a2_maxCI = as.numeric(val_data2$EH_a2_maxCI)
+
+# Ignore all NA's when making OR and AND operations
+val_data2$EH_a1_avg[which(is.na(val_data2$EH_a1_avg))] = 0
+val_data2$EH_a2_avg[which(is.na(val_data2$EH_a2_avg))] = 0
+val_data2$EH_a1_maxCI[which(is.na(val_data2$EH_a1_maxCI))] = 0
+val_data2$EH_a2_maxCI[which(is.na(val_data2$EH_a2_maxCI))] = 0
+
+
+# Let's define NEW CLASSIFICATION FOR AVG VALUES
+val_data2 = val_data2 %>%
+  group_by(LP_Number, locus_bioinfo) %>%
+  mutate(new_classification_avg = case_when(((EH_a1_avg > threshold_normal | EH_a2_avg > threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "TP",
+                                            ((EH_a1_avg > threshold_normal | EH_a2_avg > threshold_normal) & (experimental_a1 != "expanded" | experimental_a2 != "expanded")) ~ "FP",
+                                            ((EH_a1_avg < threshold_normal & EH_a2_avg < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
+                                            ((EH_a1_avg < threshold_normal & EH_a2_avg < threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "FN")) %>%
+  as.data.frame()
+
+# Let's define NEW CLASSIFICATION FOR MAX_CI VALUES
+val_data2 = val_data2 %>%
+  group_by(LP_Number, locus_bioinfo) %>%
+  mutate(new_classification_maxCI = case_when(((EH_a1_maxCI > threshold_normal | EH_a2_maxCI > threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "TP",
+                                            ((EH_a1_maxCI > threshold_normal | EH_a2_maxCI > threshold_normal) & (experimental_a1 != "expanded" | experimental_a2 != "expanded")) ~ "FP",
+                                            ((EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
+                                            ((EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "FN")) %>%
+  as.data.frame()
+
+# TODO We need to make an exception for a particular samples we have not have sequence for...
+
+
+# TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
+# Let's define NEW CLASSIFICATION FOR AVG VALUES
+val_data2 = val_data2 %>%
+  group_by(LP_Number, locus_bioinfo) %>%
+  mutate(new_classification_avg = case_when(((locus_bioinfo %in% "FXN_GAA") & (EH_a1_avg > threshold_normal & EH_a2_avg > threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "TP",
+                                            ((locus_bioinfo %in% "FXN_GAA") & (EH_a1_avg > threshold_normal & EH_a2_avg > threshold_normal) & (experimental_a1 != "expanded" | experimental_a2 != "expanded")) ~ "FP",
+                                            ((locus_bioinfo %in% "FXN_GAA") & (EH_a1_avg < threshold_normal & EH_a2_avg < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
+                                            ((locus_bioinfo %in% "FXN_GAA") & (EH_a1_avg < threshold_normal | EH_a2_avg < threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "FN")) %>%
+  as.data.frame()
+
+# Let's define NEW CLASSIFICATION FOR MAX_CI VALUES
+val_data2 = val_data2 %>%
+  group_by(LP_Number, locus_bioinfo) %>%
+  mutate(new_classification_maxCI = case_when(((locus_bioinfo %in% "FXN_GAA") & (EH_a1_maxCI > threshold_normal & EH_a2_maxCI > threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "TP",
+                                              ((locus_bioinfo %in% "FXN_GAA") & (EH_a1_maxCI > threshold_normal & EH_a2_maxCI > threshold_normal) & (experimental_a1 != "expanded" | experimental_a2 != "expanded")) ~ "FP",
+                                              ((locus_bioinfo %in% "FXN_GAA") & (EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
+                                              ((locus_bioinfo %in% "FXN_GAA") & (EH_a1_maxCI < threshold_normal | EH_a2_maxCI < threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "FN")) %>%
+  as.data.frame()
+
+
 # Write results into file
-write.table(val_data2, "../../ANALYSIS/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(val_data2, "../../ANALYSIS/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI.tsv", 
+            quote = F, 
+            row.names = F, 
+            col.names = T, 
+            sep = "\t")
+
