@@ -419,32 +419,11 @@ val_data2 = val_data2 %>%
                                             ((EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "FN")) %>%
   as.data.frame()
 
-# TODO We need to make an exception for a particular samples we have not have sequence for...
-
-
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
-# Let's define NEW CLASSIFICATION FOR AVG VALUES
-l_index_FXN = which(val_data2$locus_bioinfo %in% "FXN_GAA")
-val_data2[l_index_FXN,] = val_data2[l_index_FXN,] %>%
-  transmute(new_classification_avg = case_when(((EH_a1_avg > threshold_normal & EH_a2_avg > threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "TP",
-                                            ((EH_a1_avg > threshold_normal & EH_a2_avg > threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "FP",
-                                            ((EH_a1_avg < threshold_normal & EH_a2_avg < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
-                                            ((EH_a1_avg < threshold_normal | EH_a2_avg < threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "FN")) %>%
-  as.data.frame()
-
-# Let's define NEW CLASSIFICATION FOR MAX_CI VALUES
-val_data2[l_index_FXN,] = val_data2[l_index_FXN,] %>%
-  transmute(new_classification_maxCI = case_when(((EH_a1_maxCI > threshold_normal & EH_a2_maxCI > threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "TP",
-                                              ((EH_a1_maxCI > threshold_normal & EH_a2_maxCI > threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "FP",
-                                              ((EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
-                                              ((EH_a1_maxCI < threshold_normal | EH_a2_maxCI < threshold_normal) & (experimental_a1 == "expanded" & experimental_a2 == "expanded")) ~ "FN")) %>%
-  as.data.frame()
-
-
+# I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
 # Write results into file
-write.table(val_data2, "../../ANALYSIS/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI.tsv", 
+write.table(val_data2, "../../ANALYSIS/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN.tsv", 
             quote = F, 
             row.names = F, 
             col.names = T, 
             sep = "\t")
-
