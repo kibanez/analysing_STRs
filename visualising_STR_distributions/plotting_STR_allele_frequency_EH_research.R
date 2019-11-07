@@ -11,6 +11,9 @@ library(gridExtra); packageDescription ("gridExtra", fields = "Version") #"2.3"
 library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
+# Set working environemnt
+setwd("~/git/analysing_STRs/")
+
 # Function that takes the whole df (containing all the tsv files (all STR and pathogenic STR)) and takes the gene name as well as the start position
 # Creates the STR distributions for each gene we pass to it, stratifying with the Illumina version V1 and V2 as well
 
@@ -27,8 +30,8 @@ print_table_gene <- function(df_input, gene_name, output_folder){
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
 plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly) {
   
-  threshold_normal = gene_data_normal %>% filter(locus %in% gene_name) %>% select(threshold) %>% unlist() %>% unname()
-  threshold_pathogenic = gene_data_pathogenic %>% filter(locus %in% gene_name) %>% select(threshold) %>% unlist() %>% unname()
+  threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
+  threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
 
   df_gene = df_input %>% filter(gene %in% gene_name)
 
@@ -77,10 +80,14 @@ gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header
 gene_annotation_pathogenic = './threshold_smallest_pathogenic_reported_research.txt'
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
-# Research ~80K genomes - jan 2019
-df = read.csv('/Users/kibanez/Documents/GEL_STR/research_100K/EH_output_v2.5.5/merged/merged_loci_internal_STR_frequencies_research_EH_v2.5.5_85601.tsv',sep = '\t')
+# Research ~80K genomes, EH-v3.1.2- November 2019
+setwd("~/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged/")
+df = read.csv('./merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv',
+              sep = '\t',
+              stringsAsFactors = F,
+              header = T)
 dim(df)
-# 2947 11
+# 4495 12
 
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
@@ -89,125 +96,153 @@ dim(df)
 # And also, the genomic positions for the loci are different, so we cannot combine them easily
 
 # Let's stratify the whole TSV in b37 and b38
-
 df_b37 = df %>% filter(!grepl("chr", chr))
 dim(df_b37)
-# 1168 11
+# 1868 12
 
 df_b38 = df %>% filter(grepl("chr", chr))
 dim(df_b38)
-# 1779
+# 2627 12
                 
 # Folder where we want to save the plots - PDFs
-output_folder = '/Users/kibanez/Documents/GEL_STR/research_100K/EH_output_v2.5.5/merged/plots'
-
+output_folder = 'plots'
 dir.create(output_folder)
 
 # The strategy we were following before was based on the start genomic coordinate, we now use the name of the gene.
-plot_gene(df_b37, 'DAB1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'DAB1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
 # We don't have genomic coordinates for NOTCH2NLC for GRCh37 (cannot liftover from GRCh38)
-plot_gene(df_b37, 'NOTCH2NLC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'NOTCH2NLC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'AFF2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'AFF2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'ATN1_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ATN1_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b38, 'AFF2_GEL', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'DIP2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'DIP2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'AR_GEL', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'AR_GEL', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'ATXN2_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ATXN2_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'ATXN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'ATXN2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'ATXN3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'ATXN7', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN7', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'ATXN7_GCC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN7_GCC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
 plot_gene(df_b37, 'ATXN8OS', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
 plot_gene(df_b38, 'ATXN8OS', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'ATXN8OS_CTA', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN8OS_CTA', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'PABPN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'PABPN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'ATXN10', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATXN10', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'C11ORF80', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'C11ORF80', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'ATXN3_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ATXN3_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'C9ORF72', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'C9ORF72', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'CACNA1A', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'CACNA1A', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'JPH3_CTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'JPH3_CTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'CBL', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'CBL', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'CACNA1A_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'CACNA1A_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'CNBP', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'CNBP', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'CNBP_CAGA', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'CNBP_CAGA', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'COMP', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'COMP', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'CRACR2A', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'CRACR2A', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'CSTB', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'CSTB', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'DMPK_CTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'DMPK_CTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'DIP2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'DIP2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'DMPK', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'DMPK', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'NOP56_GGCCTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'NOP56_GGCCTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'FAME1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'FAME1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+plot_gene(df_b37, 'FAME2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'FAME2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'CSTB_CCCCGCCCCGCG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'CSTB_CCCCGCCCCGCG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'FAME3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'FAME3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-
-plot_gene(df_b37, 'ATXN10_ATTCT', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ATXN10_ATTCT', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'ATXN7_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ATXN7_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'CNBP_CCTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'CNBP_CCTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'HTT_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'HTT_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'PPP2R2B_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'PPP2R2B_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'ATXN1_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ATXN1_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'TBP_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'TBP_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'SAMD12', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'SAMD12', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'C9orf72_GGGGCC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'C9orf72_GGGGCC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'FXN_GAA', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'FXN_GAA', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
-plot_gene(df_b37, 'ARX', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'ARX', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-plot_gene(df_b37, 'AR_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'AR_CAG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
 plot_gene(df_b37, 'FMR1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'FMR1_CGG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b38, 'FMR1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
-plot_gene(df_b37, 'AFF2_GCC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
-plot_gene(df_b38, 'AFF2_GCC', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+plot_gene(df_b37, 'FRA10AC1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'FRA10AC1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'FXN', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'FXN', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'GLS', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'GLS', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'HTT', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'HTT', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'HTT_CCG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'HTT_CCG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'JPH3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'JPH3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'LINGO3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'LINGO3', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'MARCH6', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'MARCH6', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'NOP56', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'NOP56', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'NOP56_CGCCTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'NOP56_CGCCTG', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'PCMTD2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'PCMTD2', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'PHOX2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'PHOX2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'PPP2R2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'PPP2R2B', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'RFC1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'RFC1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'TBP', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'TBP', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+plot_gene(df_b37, 'TCF4', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'TCF4', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+
+
+
+
 
 
 # Printing freq raw numbers
