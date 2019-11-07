@@ -3,11 +3,10 @@
 # We need to split the merge TSV file by loci
 
 # libraries
-library(Rlabkey)
-library(dplyr)
+library(dplyr); packageDescription ("dplyr", fields = "Version") # "0.8.3
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
 
-setwd("/Users/KristinaIbanez/Documents/STRs/GEL_STR/summer_2019/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged2/")
+setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged2")
 
 # Research 80K analysis - August 2019
 merged_vcf = read.table("./merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
@@ -42,7 +41,7 @@ dim(merged_b38)
 
 ################################################################################################################################
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
-clin_data = read.table("/Users/KristinaIbanez/Documents/STRs/GEL_STR/summer_2019/clinical_data/rd_genomes_all_data_250919.tsv",
+clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_250919.tsv",
                            sep = "\t",
                            stringsAsFactors = FALSE, 
                            header = TRUE)
@@ -110,6 +109,7 @@ for (i in num_loci){
       
       # sometimes we do have `_x2` for the sample, if 2 alleles are having the same repeat-size (GT = 1/1)
       number_samp[k] = gsub("`_x2", "", number_samp[k])
+      number_samp[k] = gsub("`_2x", "", number_samp[k])
       number_samp[k] = gsub("_x2", "", number_samp[k])
       to_include = clin_data %>% 
         filter(plate_key.x %in% number_samp[k]) %>% 
@@ -171,7 +171,8 @@ for (i in num_loci){
       
       # sometimes we do have `_x2` for the sample, if 2 alleles are having the same repeat-size (GT = 1/1)
       number_samp[k] = gsub("`_x2", "", number_samp[k])
-      number_samp[k] = gsub("`_x2", "", number_samp[k])
+      number_samp[k] = gsub("`_2x", "", number_samp[k])
+      number_samp[k] = gsub("_x2", "", number_samp[k])
       to_include = clin_data %>% 
         filter(plate_key.x %in% number_samp[k]) %>% 
         select(participant_id, plate_key.x, rare_diseases_family_id, specific_disease, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build) %>%
