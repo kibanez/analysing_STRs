@@ -1,38 +1,39 @@
 # Objective: Complete our validation table together with the max CI value estimated by EH for each allele
+# EHv3.1.2
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
 rm (list = ls ())
-R.version.string ## "R version 3.3.2 (2016-10-31)"
+R.version.string ## "R version 3.6.1 (2019-07-05)"
 
 # libraries
 library(dplyr)
 
 # set the working directory
-setwd("~/Documents/STRs/VALIDATION/raw_data/")
+setwd("~/Documents/STRs/VALIDATION/raw_data/EH-v3.1.2/")
 
 # Load validation golden table data
-val_data = read.csv("../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched.tsv",
+val_data = read.csv("../../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched.tsv",
                     header = T,
                     sep = "\t",
                     stringsAsFactors = F)
 dim(val_data)
-# 639 20
+# 638 20
 
 # Load Pilot merged table
-merged_maxCI_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_maxCI.tsv",
+merged_maxCI_table_pilot = read.csv("pilot_validation/merged/merged_validation_pilot_maxCI_EHv3.1.2.tsv",
                               sep = "\t",
                               header = T,
                               stringsAsFactors = F)
 dim(merged_maxCI_table_pilot)
-# 296 11
+# 581 12
 
-merged_avg_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_avg.tsv",
+merged_avg_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_avg_EHv3.1.2.tsv",
                                   sep = "\t",
                                   header = T,
                                   stringsAsFactors = F)
 dim(merged_avg_table_pilot)
-# 298  11
+# 561  12
 
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   select(gene, allele, list_samples)
@@ -41,7 +42,7 @@ colnames(merged_avg_table_pilot) = c("gene", "avg_repeat", "list_samples")
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_pilot)
-# 298  4
+# 561  4
 
 merged_maxCI_table_pilot = merged_maxCI_table_pilot %>%
   select(gene, allele, list_samples)
@@ -49,13 +50,13 @@ colnames(merged_maxCI_table_pilot) = c("gene", "maxCI_repeat", "list_samples")
 merged_maxCI_table_pilot = merged_maxCI_table_pilot %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_pilot)
-# 296  4
+# 581  4
 
 merged_all_pilot = full_join(merged_avg_table_pilot,
                          merged_maxCI_table_pilot,
                          by = c("unique_id"))
 dim(merged_all_pilot)
-# 323  7
+# 643  7
 
 colnames(merged_avg_table_pilot) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_maxCI_table_pilot) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
@@ -63,12 +64,12 @@ colnames(merged_all_pilot) = c("gene_avg", "avg_repeat", "list_samples_avg", "un
 
 
 # Load Research merged table
-merged_maxCI_table_research = read.csv("research_validation/merged/merged_validation_research_maxCI.tsv",
+merged_maxCI_table_research = read.csv("research_validation/merged/merged_validation_research_maxCI_EHv3.1.2.tsv",
                                        sep = "\t",
                                        header = T,
                                        stringsAsFactors = F)
 dim(merged_maxCI_table_research)
-# 869  11
+# 1186  12
 
 merged_maxCI_table_research = merged_maxCI_table_research %>%
   select(gene, allele, list_samples)
@@ -76,14 +77,14 @@ colnames(merged_maxCI_table_research) = c("gene", "maxCI_repeat", "list_samples"
 merged_maxCI_table_research = merged_maxCI_table_research %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_research)
-# 869  4
+# 1186  4
 
-merged_avg_table_research = read.csv("research_validation/merged/merged_validation_research_avg.tsv",
+merged_avg_table_research = read.csv("research_validation/merged/merged_validation_research_avg_EHv3.1.2.tsv",
                                      sep = "\t",
                                      header = T,
                                      stringsAsFactors = F)
 dim(merged_avg_table_research)
-# 861  11
+# 1165  12
 
 merged_avg_table_research = merged_avg_table_research %>%
   select(gene, allele, list_samples)
@@ -91,14 +92,14 @@ colnames(merged_avg_table_research) = c("gene", "avg_repeat", "list_samples")
 merged_avg_table_research = merged_avg_table_research %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_research)
-# 861  4
+# 1165  4
 
 merged_all_research = full_join(merged_avg_table_research,
                                 merged_maxCI_table_research,
                                 by = c("unique_id"))
 
 dim(merged_all_research)
-# 1391  7
+# 1872  7
 
 colnames(merged_avg_table_research) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_maxCI_table_research) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
@@ -106,19 +107,19 @@ colnames(merged_all_research) = c("gene_avg", "avg_repeat", "list_samples_avg", 
 
 # Here should be WESSEX data (It's not research nor pilot)!!
 # Load Wessex data
-merged_maxCI_table_wessex = read.csv("./wessex_validation/merged/merged_validation_wessex_maxCI.tsv",
+merged_maxCI_table_wessex = read.csv("./wessex_validation/merged/merged_validation_wessex_maxCI_EHv3.1.2.tsv",
                                     sep = "\t",
                                     header = T,
                                     stringsAsFactors = F)
 dim(merged_maxCI_table_wessex)
-# 294 11
+# 394 12
 
-merged_avg_table_wessex = read.csv("./wessex_validation//merged/merged_validation_wessex_avg.tsv",
+merged_avg_table_wessex = read.csv("./wessex_validation//merged/merged_validation_wessex_avg_EHv3.1.2.tsv",
                                   sep = "\t",
                                   header = T,
                                   stringsAsFactors = F)
 dim(merged_avg_table_wessex)
-# 293  11
+# 393  12
 
 merged_avg_table_wessex = merged_avg_table_wessex %>%
   select(gene, allele, list_samples)
@@ -126,7 +127,7 @@ colnames(merged_avg_table_wessex) = c("gene", "avg_repeat", "list_samples")
 merged_avg_table_wessex = merged_avg_table_wessex %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_wessex)
-# 293  4
+# 393  4
 
 merged_maxCI_table_wessex = merged_maxCI_table_wessex %>%
   select(gene, allele, list_samples)
@@ -134,13 +135,13 @@ colnames(merged_maxCI_table_wessex) = c("gene", "maxCI_repeat", "list_samples")
 merged_maxCI_table_wessex = merged_maxCI_table_wessex %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_wessex)
-# 294  4
+# 394  4
 
 merged_all_wessex = full_join(merged_avg_table_wessex,
                              merged_maxCI_table_wessex,
                              by = c("unique_id"))
 dim(merged_all_wessex)
-# 481  7
+# 638  7
 
 colnames(merged_avg_table_wessex) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_maxCI_table_wessex) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
@@ -422,7 +423,7 @@ val_data2 = val_data2 %>%
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
 # I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
 # Write results into file
-write.table(val_data2, "../../ANALYSIS/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN.tsv", 
+write.table(val_data2, "../../../ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_checkFXN.tsv", 
             quote = F, 
             row.names = F, 
             col.names = T, 
