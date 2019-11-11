@@ -12,3 +12,11 @@ library(dplyr)
 # set the working directory
 setwd("~/Documents/STRs/VALIDATION/raw_data/")
 
+#The calculation has two steps:
+# 1)Sort the observed outcomes by their predicted scores with the highest scores first
+# 2)Calculate cumulative True Positive Rate (TPR) and True Negative Rate (TNR) for the ordered observed outcomes
+simple_roc <- function(labels, scores){
+  labels <- labels[order(scores, decreasing=TRUE)]
+  data.frame(TPR=cumsum(labels)/sum(labels), FPR=cumsum(!labels)/sum(!labels), labels)
+}
+
