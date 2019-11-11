@@ -15,6 +15,9 @@ setwd("~/Documents/STRs/VALIDATION/raw_data/")
 #The calculation has two steps:
 # 1)Sort the observed outcomes by their predicted scores with the highest scores first
 # 2)Calculate cumulative True Positive Rate (TPR) and True Negative Rate (TNR) for the ordered observed outcomes
+
+# `labels` is a boolean vector with the actual classification of each case
+# `scores` is a vector of real-valued prediction scores assigned by some classifier.
 simple_roc <- function(labels, scores){
   labels <- labels[order(scores, decreasing=TRUE)]
   data.frame(TPR=cumsum(labels)/sum(labels), FPR=cumsum(!labels)/sum(!labels), labels)
