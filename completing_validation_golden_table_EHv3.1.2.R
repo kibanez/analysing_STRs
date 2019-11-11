@@ -188,16 +188,16 @@ dim(pilot_clinical_data)
 # We will go through all val_data rows, independently, one by one
 # We will distinguish them by `gene` and `platekey`
 for (i in 1:length(val_data$loci)){
-  locus = trimws(val_data$locus_bioinfo[i])
+  locus = trimws(val_data$loci[i])
   platekey = trimws(val_data$LP_Number[i])
   
   # avg values (to double check)
   row_avg_research = merged_avg_table_research %>%
-    filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+    filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
     select(avg_repeat) %>% pull() %>% as.character() 
   
   l_samples_avg = merged_avg_table_research %>%
-    filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+    filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
     select(list_samples_avg) %>% pull()
   
   if (length(l_samples_avg) > 0){
@@ -208,11 +208,11 @@ for (i in 1:length(val_data$loci)){
   
   # maxCI values
   row_maxCI_research = merged_maxCI_table_research %>%
-    filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+    filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
     select(maxCI_repeat) %>% pull() %>% as.character()
   
   l_samples_max = merged_maxCI_table_research %>%
-    filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+    filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
     select(list_samples_maxCI) %>% pull()
   
   if (length(l_samples_max) > 0){
@@ -248,11 +248,11 @@ for (i in 1:length(val_data$loci)){
     
     # avg values (to double check)
     row_avg_research = merged_avg_table_pilot %>%
-      filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+      filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
       select(avg_repeat) %>% pull() %>% as.character()
     
     l_samples_avg = merged_avg_table_pilot %>%
-      filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+      filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
       select(list_samples_avg) %>% pull()
     
     if (length(l_samples_avg) > 0){
@@ -263,11 +263,11 @@ for (i in 1:length(val_data$loci)){
     
     # maxCI values
     row_maxCI_research = merged_maxCI_table_pilot %>%
-      filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+      filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
       select(maxCI_repeat)  %>% pull() %>% as.character()
     
     l_samples_max = merged_maxCI_table_pilot %>%
-      filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+      filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
       select(list_samples_maxCI) %>% pull()
     
     if (length(l_samples_max) > 0){
@@ -303,11 +303,11 @@ for (i in 1:length(val_data$loci)){
       
       # avg values (to double check)
       row_avg_research = merged_avg_table_wessex %>%
-        filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+        filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
         select(avg_repeat) %>% pull() %>% as.character()
       
       l_samples_avg = merged_avg_table_wessex %>%
-        filter(gene_avg %in% locus, grepl(platekey, list_samples_avg)) %>%
+        filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
         select(list_samples_avg) %>% pull()
       
       if (length(l_samples_avg) > 0){
@@ -318,11 +318,11 @@ for (i in 1:length(val_data$loci)){
       
       # maxCI values
       row_maxCI_research = merged_maxCI_table_wessex %>%
-        filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+        filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
         select(maxCI_repeat)  %>% pull() %>% as.character()
       
       l_samples_max = merged_maxCI_table_wessex %>%
-        filter(gene_max %in% locus, grepl(platekey, list_samples_maxCI)) %>%
+        filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
         select(list_samples_maxCI) %>% pull()
       
       if (length(l_samples_max) > 0){
