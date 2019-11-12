@@ -34,7 +34,7 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 # Functions
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
-plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly) {
+plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly, ancestry) {
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   
@@ -54,6 +54,7 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
   
   gene_name = paste(gene_name, assembly, sep = '_')
   pdf_name = paste(output_folder, gene_name, sep = "/")
+  pdf_name = paste(pdf_name, ancestry, sep = "_")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
   min_value = min(df_gene_barplot$number_repeats)
@@ -236,27 +237,51 @@ write.table(l_genomes_ASI,
 # We then copy these VCF files, and merge with the python script
 # Load EH STR output data
 # Research ~80K genomes, EH-v3.1.2- November 2019 -- but the ones that are ALSO included in the population info table
-df = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/merged/merged_population_genomes_53674_avg_EHv3.1.2.tsv',
+df_asi = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/ASI/merged/merged_population_genomes_5789_avg_EHv3.1.2_ASI.tsv',
               sep = '\t',
               stringsAsFactors = F,
               header = T)
 dim(df)
 # 2494 12
 
-# Let's stratify the whole TSV in b37 and b38
-# Population enriched genomes are only GRCh38
-df_b37 = df %>% filter(!grepl("chr", chr))
-dim(df_b37)
-# 0 12
+df_eas = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/EAS/merged/merged_population_genomes_392_avg_EHv3.1.2_EAS.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_eas)
+# 806  12
 
-df_b38 = df %>% filter(grepl("chr", chr))
-dim(df_b38)
-# 2494 12
+df_afr = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/AFR/merged/merged_population_genomes_1743_avg_EHv3.1.2_AFR.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_afr)
+# 1271  12
 
+df_amr = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/AMR/merged/merged_population_genomes_788_avg_EHv3.1.2_AMR.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_amr)
+# 1141  12
+
+df_eur = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/EUR/merged/merged_population_genomes_45690_avg_EHv3.1.2_EUR.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_eur)
+# 2424  12
+
+
+# Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
 
-# ATN1 
-plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+# ATN1 - individually
+plot_gene(df_afr, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
+plot_gene(df_amr, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
+plot_gene(df_eur, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
+plot_gene(df_eas, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
+plot_gene(df_asi, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
 
 # AR
 plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
