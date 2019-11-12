@@ -128,6 +128,7 @@ ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR"
        aes(x=pc2, y=pc1, colour = population)) +
   geom_hex(bins=300) +
   xlab("PC2 across 55,419 genomes") +
-  ylab("PC1 across 55,419 genomes") 
-
+  ylab("PC1 across 55,419 genomes") +
+  guides(fill = FALSE)
 dev.off()
+
