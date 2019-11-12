@@ -114,23 +114,45 @@ ggplot(data=popu_table_enriched,
   guides(fill = FALSE)
 dev.off()
 
-# Only the super "pure" one
-png("figures/population_distribution_59356_pure_ancestries.png")
-ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) , aes(x=pc2, y=pc1, colour = population)) +
-  geom_point()
-dev.off()
-
 # Just "pure" ancestries
 popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 55419
+# 56176
 
-png("figures/population_distribution_54419_pure_ancestries.png")
+png("figures/population_distribution_56176_pure_ancestries.png")
 ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) , 
        aes(x=pc2, y=pc1, colour = population)) +
   geom_hex(bins=300) +
-  xlab("PC2 across 55,419 genomes") +
-  ylab("PC1 across 55,419 genomes") +
+  xlab("PC2 across 56,176 genomes") +
+  ylab("PC1 across 56,176 genomes") +
   guides(fill = FALSE)
+dev.off()
+
+# Let's plot the raw numbers of each ancestry sub-cohort or sub-group
+raw_numbers_popus = as.data.frame(table(popu_table_enriched$population))
+colnames(raw_numbers_popus) = c("population", "Number of genomes")
+
+raw_numbers_popus_pure = raw_numbers_popus %>% 
+  filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) 
+
+# Pure ancestries
+png("figures/barplot_pure_ancestry_groups_raw_numbers.png")
+ggplot(raw_numbers_popus_pure, 
+       aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes - EHv3.1.2 - 56,176 total genomes") + 
+  xlab("Ancestry cohorts") 
+dev.off()
+
+# All ancestries
+png("figures/barplot_all_ancestry_groups_raw_numbers.png")
+ggplot(raw_numbers_popus, 
+       aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes - EHv3.1.2 - 56,176 total genomes") + 
+  xlab("Ancestry cohorts") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 dev.off()
 
 
