@@ -10,6 +10,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.2.1"
 library(reshape); packageDescription ("reshape", fields = "Version") #"0.8.8"
+library(scatterplot3d); packageDescription("scatterplot3d", fields = "Version") # 0.3-41
 
 # Set environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
@@ -30,6 +31,14 @@ df = read.csv('~/Documents/STRs/data/research/EH_3.1.2_research_October2019/merg
               header = T)
 dim(df)
 # 4495 12
+
+# Load thresholds
+# STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
+gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
+gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header = T)
+
+gene_annotation_pathogenic = '/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
+gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
 
 # Functions
@@ -77,40 +86,48 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
   
 }
 
+# Let's first explore the data and see the population distribution across 59K
+popu_table_enriched = popu_table_enriched %>%
+  mutate(population = case_when(pred_african_ancestries >= 0.8 ~ "AFR",
+                                pred_american_ancestries >= 0.8 ~ "AMR",
+                                pred_european_ancestries >= 0.8 ~ "EUR",
+                                pred_east_asian_ancestries >= 0.8 ~ "EAS",
+                                pred_south_asian_ancestries >= 0.8 ~ "ASI",
+                                pred_african_ancestries >= 0.3 & pred_american_ancestries >= 0.3  ~ "AFR-AMR",
+                                pred_african_ancestries >= 0.3 & pred_european_ancestries >= 0.3  ~ "AFR-EUR",
+                                pred_african_ancestries >= 0.3 & pred_east_asian_ancestries >= 0.3  ~ "AFR-EAS",
+                                pred_african_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3  ~ "AFR-ASI",
+                                pred_american_ancestries >= 0.3 & pred_european_ancestries >= 0.3  ~ "AMR-EUR",
+                                pred_american_ancestries >= 0.3 & pred_east_asian_ancestries >= 0.3  ~ "AMR-EAS",
+                                pred_american_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3  ~ "AMR-ASI",
+                                pred_european_ancestries >= 0.3 & pred_american_ancestries >= 0.3  ~ "EUR-AMR",
+                                pred_european_ancestries >= 0.3 & pred_east_asian_ancestries >= 0.3  ~ "EUR-EAS",
+                                pred_european_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3  ~ "EUR-ASI",
+                                pred_east_asian_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3 ~ "EAS-ASI"))
 
-# STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
-gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
-gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header = T)
-
-gene_annotation_pathogenic = '/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
-gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
 
-
-
-ggplot(data=dat, aes(x=peddy_pc2, y=peddy_pc1)) +
+ggplot(data=popu_table_enriched , aes(x=pc2, y=pc1, colour = population)) +
   geom_hex(bins=100)
 
-ggplot(data=dat, aes(x=peddy_pc2, y=peddy_pc1, colour=peddy_ancestry_pred)) +
-  geom_hex(bins=100)
+ggplot(data=popu_table_enriched , aes(x=pc2, y=pc1, colour = population)) +
+  geom_point()
 
-ggplot(data=dat, aes(x=peddy_pc3, y=peddy_pc1, colour=peddy_ancestry_pred)) +
-  geom_hex(bins=100)
+# Only the super "pure" one
+png("figures/population_distribution_59356_pure_ancestries.png")
+ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) , aes(x=pc2, y=pc1, colour = population)) +
+  geom_point()
+dev.off()
 
-ggplot(data=dat, aes(x=peddy_pc4, y=peddy_pc1, colour=peddy_ancestry_pred)) +
-  geom_hex(bins=100)
+# Just "pure" ancestries
+popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 55419
 
-ggplot(data=dat, aes(x=peddy_pc3, y=peddy_pc2, colour=peddy_ancestry_pred)) +
-  geom_hex(bins=100)
+png("figures/population_distribution_54419_pure_ancestries.png")
+ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) , 
+       aes(x=pc2, y=pc1, colour = population)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 55,419 genomes") +
+  ylab("PC1 across 55,419 genomes") 
 
-ggplot(data=dat, aes(x=peddy_pc4, y=peddy_pc2, colour=peddy_ancestry_pred)) +
-  geom_hex(bins=100)
-
-ggplot(data=dat, aes(x=peddy_pc3, y=peddy_pc4, colour=peddy_ancestry_pred)) +
-  geom_hex(bins=100)
-
-ggplot(data=dat, aes(x=1, y=peddy_ancestry_prob)) +
-  geom_boxplot()
-
-ggplot(data=dat, aes(x=peddy_ancestry_pred, y=peddy_ancestry_prob)) +
-  geom_boxplot()
+dev.off()
