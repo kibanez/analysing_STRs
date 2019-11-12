@@ -44,10 +44,10 @@ plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_dat
     ggtitle(gene_name) 
   
   pdf(pdf_name)
-  violin_plot
+  print(violin_plot)
   dev.off()
   
   png(png_name)
-  violin_plot
+  print(violin_plot)
   dev.off()
 }
