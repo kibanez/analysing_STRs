@@ -250,34 +250,18 @@ dim(df_all)
 # Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
 
-# AR - individually
-plot_gene(df_afr, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
-plot_gene(df_amr, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
-plot_gene(df_eur, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
-plot_gene(df_eas, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
-plot_gene(df_asi, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
-
-# Jointly
-plot_gene_joint_ancestries(df_all, 'AR', gene_data_normal, gene_data_pathogenic, output_folder)
-
-# Violin plots
-plot_violin_ancestry(df_all, 'AR', gene_data_normal, gene_data_pathogenic, output_folder)
-
-
-
-# ATN1 - individually
-plot_gene(df_afr, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
-plot_gene(df_amr, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
-plot_gene(df_eur, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
-plot_gene(df_eas, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
-plot_gene(df_asi, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
-
-# Jointly
-plot_gene_joint_ancestries(df_all, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder)
-
-# Jointly
-
-# AR
-plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
-
-
+l_loci = sort(unique(df_all$gene))
+for (i in 1:length(l_loci)){
+  # Each locus - Individually
+  plot_gene(df_afr, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
+  plot_gene(df_amr, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
+  plot_gene(df_eur, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
+  plot_gene(df_eas, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
+  plot_gene(df_asi, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
+  
+  # Jointly - distribution
+  plot_gene_joint_ancestries(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  
+  # Jointly - Violing plots
+  plot_violin_ancestry(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+}
