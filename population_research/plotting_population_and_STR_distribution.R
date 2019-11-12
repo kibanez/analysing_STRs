@@ -33,6 +33,7 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 
 # Functions
+source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
 
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
 plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly, ancestry) {
@@ -335,7 +336,7 @@ plot_gene(df_asi, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "
 plot_gene_joint_ancestries(df_all, 'AR', gene_data_normal, gene_data_pathogenic, output_folder)
 
 # Violin plots
-
+plot_violin_ancestry(df_all, 'AR', gene_data_normal, gene_data_pathogenic, output_folder)
 
 
 
