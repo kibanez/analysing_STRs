@@ -23,15 +23,6 @@ popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
 dim(popu_table_enriched)
 # 59356  20
 
-# Load EH STR output data
-# Research ~80K genomes, EH-v3.1.2- November 2019 -- but the ones that are ALSO included in the population info table
-df = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/merged/merged_population_genomes_53674_avg_EHv3.1.2.tsv',
-              sep = '\t',
-              stringsAsFactors = F,
-              header = T)
-dim(df)
-# 2494 12
-
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
 gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
@@ -165,29 +156,109 @@ l_genomes = popu_table_enriched %>%
   pull()
 
 length(l_genomes)
-# 55419
+# 56176
 
 # Write into a file the list of platekeys for which we do have population info, in order to create the corresponding merge VCF files
 write.table(l_genomes,
-            file = "list_genomes_55419_pure_ancestry_info.txt",
+            file = "list_genomes_56176_pure_ancestry_info.txt",
             quote = F,
             row.names = F,
             col.names = F)
 
+# Let's stratify genomes by ancestry
+l_genomes_AFR = popu_table_enriched %>%
+  filter(population %in% 'AFR') %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_genomes_AFR)
+# 1794
+
+l_genomes_EUR = popu_table_enriched %>%
+  filter(population %in% 'EUR') %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_genomes_EUR)
+# 47208
+
+l_genomes_AMR = popu_table_enriched %>%
+  filter(population %in% 'AMR') %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_genomes_AMR)
+# 803
+
+l_genomes_EAS = popu_table_enriched %>%
+  filter(population %in% 'EAS') %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_genomes_EAS)
+# 400
+
+l_genomes_ASI = popu_table_enriched %>%
+  filter(population %in% 'ASI') %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_genomes_ASI)
+# 5971
+
+write.table(l_genomes_AFR,
+            file = "list_genomes_1794_pure_AFR.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+write.table(l_genomes_EUR,
+            file = "list_genomes_47208_pure_EUR.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+write.table(l_genomes_AMR,
+            file = "list_genomes_803_pure_AMR.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+write.table(l_genomes_EAS,
+            file = "list_genomes_400_pure_EAS.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+write.table(l_genomes_ASI,
+            file = "list_genomes_5971_pure_ASI.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+
+# We then copy these VCF files, and merge with the python script
+# Load EH STR output data
+# Research ~80K genomes, EH-v3.1.2- November 2019 -- but the ones that are ALSO included in the population info table
+df = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/merged/merged_population_genomes_53674_avg_EHv3.1.2.tsv',
+              sep = '\t',
+              stringsAsFactors = F,
+              header = T)
+dim(df)
+# 2494 12
+
 # Let's stratify the whole TSV in b37 and b38
+# Population enriched genomes are only GRCh38
 df_b37 = df %>% filter(!grepl("chr", chr))
 dim(df_b37)
-# 1868 12
+# 0 12
 
 df_b38 = df %>% filter(grepl("chr", chr))
 dim(df_b38)
-# 2627 12
+# 2494 12
 
 output_folder = "./figures/"
 
 # ATN1 
-plot_gene(df_b37, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
 plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
+# AR
+plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
 
 
