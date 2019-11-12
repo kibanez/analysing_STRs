@@ -29,3 +29,15 @@ write.table(popu_table,
             row.names = F,
             col.names = T,
             quote = F)
+
+popu_table_enriched = popu_table %>% select(participant_id, platekey, type, sample_type, participant_phenotypic_sex, pc1, pc2, pc3, pc4, pc5, pc6, pc7, pc8, pc9, pc10, pred_african_ancestries, pred_american_ancestries, pred_european_ancestries, pred_east_asian_ancestries, pred_south_asian_ancestries)
+dim(popu_table_enriched)
+# 59356  20 
+
+write.table(popu_table_enriched,
+            "~/Documents/STRs/ANALYSIS/population_research/population_info_enriched_59356_by_031019.tsv",
+            sep = "\t",
+            row.names = F,
+            col.names = T,
+            quote = F)
+
