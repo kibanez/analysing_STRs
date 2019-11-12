@@ -33,6 +33,7 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 
 # Functions
+
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
 plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly, ancestry) {
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
@@ -42,7 +43,6 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
   
   alt_number = df_gene$allele
   
-  #df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$AF)
   df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples)
   
   # order by 'number of repetition'
@@ -76,6 +76,40 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
   dev.off()
   
 }
+
+# Function that plots jointly all STR distribution across all ancestries given
+plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder) {
+  threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
+  threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
+  
+  df_gene = df_input %>% filter(gene %in% gene_name)
+  alt_number = df_gene$allele
+  population = df_gene$population
+  df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples, population = population)
+  
+  pdf_name = paste(output_folder, gene_name, sep = "/")
+  pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
+  pdf_name = paste(pdf_name, 'pdf', sep = ".")
+  
+  min_value = min(df_gene_barplot$number_repeats)
+  max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
+  
+  
+  joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = population, color = population)) + 
+    geom_line() + 
+    ylab("Allele frequency") + 
+    xlab("Repeat sizes (repeat units)") + 
+    ggtitle(gene_name) + 
+    geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
+    geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
+    coord_cartesian(xlim = c(min_value,max_value))
+  
+  pdf(pdf_name)
+  print(joint_plot)	
+  dev.off()
+  
+}
+
 
 # Let's first explore the data and see the population distribution across 59K
 popu_table_enriched = popu_table_enriched %>%
@@ -273,8 +307,37 @@ dim(df_eur)
 # 2424  12
 
 
+df_asi = df_asi %>% mutate(population = "ASI")
+df_eas = df_eas %>% mutate(population = "EAS")
+df_afr = df_afr %>% mutate(population = "AFR")
+df_amr = df_amr %>% mutate(population = "AMR")
+df_eur = df_eur %>% mutate(population = "EUR")
+
+df_all = rbind(df_afr,
+               df_amr,
+               df_eur,
+               df_eas,
+               df_asi)
+dim(df_all)
+# 7290  13
+
 # Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
+
+# AR - individually
+plot_gene(df_afr, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
+plot_gene(df_amr, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
+plot_gene(df_eur, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
+plot_gene(df_eas, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
+plot_gene(df_asi, 'AR', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
+
+# Jointly
+plot_gene_joint_ancestries(df_all, 'AR', gene_data_normal, gene_data_pathogenic, output_folder)
+
+# Violin plots
+
+
+
 
 # ATN1 - individually
 plot_gene(df_afr, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
@@ -282,6 +345,11 @@ plot_gene(df_amr, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder,
 plot_gene(df_eur, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
 plot_gene(df_eas, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
 plot_gene(df_asi, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
+
+# Jointly
+plot_gene_joint_ancestries(df_all, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder)
+
+# Jointly
 
 # AR
 plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
