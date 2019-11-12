@@ -24,13 +24,13 @@ dim(popu_table_enriched)
 # 59356  20
 
 # Load EH STR output data
-# Research ~80K genomes, EH-v3.1.2- November 2019
-df = read.csv('~/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged/merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv',
+# Research ~80K genomes, EH-v3.1.2- November 2019 -- but the ones that are ALSO included in the population info table
+df = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/merged/merged_population_genomes_53674_avg_EHv3.1.2.tsv',
               sep = '\t',
               stringsAsFactors = F,
               header = T)
 dim(df)
-# 4495 12
+# 2494 12
 
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
@@ -44,7 +44,6 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 # Functions
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
 plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly) {
-  
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   
@@ -88,30 +87,32 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
 
 # Let's first explore the data and see the population distribution across 59K
 popu_table_enriched = popu_table_enriched %>%
-  mutate(population = case_when(pred_african_ancestries >= 0.8 ~ "AFR",
-                                pred_american_ancestries >= 0.8 ~ "AMR",
-                                pred_european_ancestries >= 0.8 ~ "EUR",
-                                pred_east_asian_ancestries >= 0.8 ~ "EAS",
-                                pred_south_asian_ancestries >= 0.8 ~ "ASI",
-                                pred_african_ancestries >= 0.3 & pred_american_ancestries >= 0.3  ~ "AFR-AMR",
-                                pred_african_ancestries >= 0.3 & pred_european_ancestries >= 0.3  ~ "AFR-EUR",
-                                pred_african_ancestries >= 0.3 & pred_east_asian_ancestries >= 0.3  ~ "AFR-EAS",
-                                pred_african_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3  ~ "AFR-ASI",
-                                pred_american_ancestries >= 0.3 & pred_european_ancestries >= 0.3  ~ "AMR-EUR",
-                                pred_american_ancestries >= 0.3 & pred_east_asian_ancestries >= 0.3  ~ "AMR-EAS",
-                                pred_american_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3  ~ "AMR-ASI",
-                                pred_european_ancestries >= 0.3 & pred_american_ancestries >= 0.3  ~ "EUR-AMR",
-                                pred_european_ancestries >= 0.3 & pred_east_asian_ancestries >= 0.3  ~ "EUR-EAS",
-                                pred_european_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3  ~ "EUR-ASI",
-                                pred_east_asian_ancestries >= 0.3 & pred_south_asian_ancestries >= 0.3 ~ "EAS-ASI"))
+  mutate(population = case_when(pred_african_ancestries >= 0.7 ~ "AFR",
+                                pred_american_ancestries >= 0.7 ~ "AMR",
+                                pred_european_ancestries >= 0.7 ~ "EUR",
+                                pred_east_asian_ancestries >= 0.7 ~ "EAS",
+                                pred_south_asian_ancestries >= 0.7 ~ "ASI",
+                                pred_african_ancestries >= 0.25 & pred_american_ancestries >= 0.25  ~ "AFR-AMR",
+                                pred_african_ancestries >= 0.25 & pred_european_ancestries >= 0.25 ~ "AFR-EUR",
+                                pred_african_ancestries >= 0.25 & pred_east_asian_ancestries >= 0.25  ~ "AFR-EAS",
+                                pred_african_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25  ~ "AFR-ASI",
+                                pred_american_ancestries >= 0.25 & pred_european_ancestries >= 0.25  ~ "AMR-EUR",
+                                pred_american_ancestries >= 0.25 & pred_east_asian_ancestries >= 0.25  ~ "AMR-EAS",
+                                pred_american_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25  ~ "AMR-ASI",
+                                pred_european_ancestries >= 0.25 & pred_american_ancestries >= 0.25  ~ "EUR-AMR",
+                                pred_european_ancestries >= 0.25 & pred_east_asian_ancestries >= 0.25  ~ "EUR-EAS",
+                                pred_european_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25  ~ "EUR-ASI",
+                                pred_east_asian_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25 ~ "EAS-ASI"))
 
-
-
-ggplot(data=popu_table_enriched , aes(x=pc2, y=pc1, colour = population)) +
-  geom_hex(bins=100)
-
-ggplot(data=popu_table_enriched , aes(x=pc2, y=pc1, colour = population)) +
-  geom_point()
+# With all population coctails
+png("figures/population_distribution_59356_all_ancestries.png")
+ggplot(data=popu_table_enriched, 
+       aes(x=pc2, y=pc1, colour = population)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 55,419 genomes") +
+  ylab("PC1 across 55,419 genomes") +
+  guides(fill = FALSE)
+dev.off()
 
 # Only the super "pure" one
 png("figures/population_distribution_59356_pure_ancestries.png")
@@ -131,4 +132,40 @@ ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR"
   ylab("PC1 across 55,419 genomes") +
   guides(fill = FALSE)
 dev.off()
+
+
+# After plotting the ancestry distribution, let's see how different locus-STR-distribution change across different population cohorts
+# let's take only the genomes for which we do have popu information 
+l_genomes = popu_table_enriched %>%
+  filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+
+length(l_genomes)
+# 55419
+
+# Write into a file the list of platekeys for which we do have population info, in order to create the corresponding merge VCF files
+write.table(l_genomes,
+            file = "list_genomes_55419_pure_ancestry_info.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+# Let's stratify the whole TSV in b37 and b38
+df_b37 = df %>% filter(!grepl("chr", chr))
+dim(df_b37)
+# 1868 12
+
+df_b38 = df %>% filter(grepl("chr", chr))
+dim(df_b38)
+# 2627 12
+
+output_folder = "./figures/"
+
+# ATN1 
+plot_gene(df_b37, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37")
+plot_gene(df_b38, 'ATN1', gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38")
+
+
 
