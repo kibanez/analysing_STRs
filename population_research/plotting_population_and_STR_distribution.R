@@ -7,11 +7,18 @@ rm (list = ls ())
 R.version.string ## "R version 3.6.1 (2019-07-05)"
 
 # libraries
-library(dplyr)
-library(ggplot2)
-library(reshape)
+library(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
+library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.2.1"
+library(reshape); packageDescription ("reshape", fields = "Version") #"0.8.8"
 
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
+
+popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
+                               header = T,
+                               sep = "\t",
+                               stringsAsFactors = F)
+dim(popu_table_enriched)
+# 59356  20
 
 
 ggplot(data=dat, aes(x=peddy_pc2, y=peddy_pc1)) +
