@@ -105,12 +105,12 @@ popu_table_enriched = popu_table_enriched %>%
                                 pred_east_asian_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25 ~ "EAS-ASI"))
 
 # With all population coctails
-png("figures/population_distribution_59356_all_ancestries.png")
-ggplot(data=popu_table_enriched, 
+png("figures/population_distribution_56176_all_ancestries.png")
+ggplot(data=popu_table_enriched %>% filter(!is.na(population)), 
        aes(x=pc2, y=pc1, colour = population)) +
   geom_hex(bins=300) +
-  xlab("PC2 across 55,419 genomes") +
-  ylab("PC1 across 55,419 genomes") +
+  xlab("PC2 across 56,176 genomes") +
+  ylab("PC1 across 56,176 genomes") +
   guides(fill = FALSE)
 dev.off()
 
@@ -140,8 +140,8 @@ ggplot(raw_numbers_popus_pure,
        aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
   geom_bar(stat = "identity", aes(fill = population)) + 
   geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
-  ylab("Number of genomes - EHv3.1.2 - 56,176 total genomes") + 
-  xlab("Ancestry cohorts") 
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - EHv3.1.2 - 56,176 total genomes") 
 dev.off()
 
 # All ancestries
@@ -150,8 +150,8 @@ ggplot(raw_numbers_popus,
        aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
   geom_bar(stat = "identity", aes(fill = population)) + 
   geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
-  ylab("Number of genomes - EHv3.1.2 - 56,176 total genomes") + 
-  xlab("Ancestry cohorts") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - EHv3.1.2 - 56,176 total genomes") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 dev.off()
 
