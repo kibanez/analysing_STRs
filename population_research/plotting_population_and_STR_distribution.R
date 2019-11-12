@@ -11,14 +11,26 @@ library(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.2.1"
 library(reshape); packageDescription ("reshape", fields = "Version") #"0.8.8"
 
+# Set environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
 
+# Load population data
 popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
                                header = T,
                                sep = "\t",
                                stringsAsFactors = F)
 dim(popu_table_enriched)
 # 59356  20
+
+# Load EH STR output data
+# Research ~80K genomes, EH-v3.1.2- November 2019
+df = read.csv('~/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged/merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv',
+              sep = '\t',
+              stringsAsFactors = F,
+              header = T)
+dim(df)
+# 4495 12
+
 
 # Functions
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
@@ -72,6 +84,7 @@ gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header
 
 gene_annotation_pathogenic = '/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
+
 
 
 
