@@ -66,6 +66,15 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
 }
 
 
+# STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
+gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
+gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header = T)
+
+gene_annotation_pathogenic = '/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
+gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
+
+
+
 ggplot(data=dat, aes(x=peddy_pc2, y=peddy_pc1)) +
   geom_hex(bins=100)
 
