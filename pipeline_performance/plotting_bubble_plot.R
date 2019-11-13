@@ -56,6 +56,23 @@ dim(val_data)
 val_data = val_data %>%
   select(LP_Number, locus_bioinfo, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
 
+# Just remove all rows having `normal`, `expansion`, `full_mutation`, `premutation`
+val_data = val_data %>% filter(!STR_a1 %in% 'normal')
+val_data = val_data %>% filter(!STR_a2 %in% 'normal')
+val_data = val_data %>% filter(!STR_a1 %in% 'expansion')
+val_data = val_data %>% filter(!STR_a2 %in% 'expansion')
+val_data = val_data %>% filter(!STR_a1 %in% 'full_mutation')
+val_data = val_data %>% filter(!STR_a2 %in% 'full_mutation')
+val_data = val_data %>% filter(!STR_a1 %in% 'premutation')
+val_data = val_data %>% filter(!STR_a2 %in% 'premutation')
+
+# Remove ONLY COLUMNS (and aligning experimental and EH) in which we do not have a number or we do have `.`
+l_dot = which(val_data$STR_a2 == '.')
+val_data$EH_a2_avg[l_dot] = 0
+
+l_EXP = which(val_data$STR_a2 == 'EXP')
+val_data$EH_a2_avg[l_EXP] = 0
+
 # in case there is only 1 allele, we should have 1 allele for expValidation and EH
 # in case there are 2 alleles, then the `a1` for expValidation and EH should be the minimum (minor repeat size)
 for (i in 1:length(val_data$LP_Number)){
@@ -65,11 +82,11 @@ for (i in 1:length(val_data$LP_Number)){
   val_eh_a2 = val_data$EH_a2_avg[i]
   
   # For alleles that there is no estimation (EH only calls 1 allele) we do have a `0` -- we ignore/avoid this step in these cases
-  if (val_eh_a2 == "0"){
+  if (val_eh_a2 == 0){
     min_validation = val_validation_a1
     min_eh = val_eh_a1
-    max_validation = '.'
-    max_eh = '.'
+    max_validation = NA
+    max_eh = NA
   }else{
     min_validation = min(val_validation_a1, val_validation_a2)
     max_validation = max(val_validation_a1, val_validation_a2)
@@ -83,30 +100,19 @@ for (i in 1:length(val_data$LP_Number)){
   val_data$eh_a2[i] = max_eh
 }
 dim(val_data)
-# 521  10
+# 516  10
 
-# Exclude `validation_a2` or `eh_a2` == '.', 'expansion`, `normal` `premutation`, `EXP`, contain `(`
-val_data = val_data %>%
-  filter(!validation_a1 %in% '.')
-val_data = val_data %>%
-  filter(!validation_a2 %in% '.')
-val_data = val_data %>%
-  filter(!eh_a2 %in% '.')
-val_data = val_data %>%
-  filter(!validation_a1 %in% 'normal')
-val_data = val_data %>%
-  filter(!validation_a1 %in% 'expansion')
-val_data = val_data %>%
-  filter(!validation_a2 %in% 'EXP')
-val_data = val_data %>%
-  filter(!grepl('del', validation_a2))
-dim(val_data)
-# 496  10
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$validation_a1), as.integer(val_data$validation_a2))
 eh_alleles_v2 = c(as.integer(val_data$eh_a1), as.integer(val_data$eh_a2))
 locus_v2 = c(val_data$locus_bioinfo, val_data$locus_bioinfo)
+
+# Remove NAs
+index_NA = which(is.na(exp_alleles_v2))
+exp_alleles_v2 = exp_alleles_v2[-index_NA]
+eh_alleles_v2 = eh_alleles_v2[-index_NA]
+locus_v2 = locus_v2[-index_NA]
 
 # Create dataframe with exp, eh, freq for each locus
 df_data_with_freq_v2 = data.frame()
@@ -164,21 +170,7 @@ for(i in 1:length(l_locus)){
   pdf_output = paste(output_folder, pdf_name, sep = "")
   png_output = paste(output_folder, png_name, sep = "")
   
-  pdf(pdf_output)
-  ggplot(df_data_with_freq_v2_locus, 
-         aes(x = eh_alleles, y = exp_alleles)) + 
-    geom_point(aes(color = locus, size = number_of_alleles)) + 
-    xlim(5,max_value) + 
-    ylim(5,max_value) + 
-    labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_locus[i], sep=' '), 
-        x = "Repeat sizes for each allele \n Expansion Hunter", 
-        y = "Repeat sizes for each allele \n Experimental validation") + 
-    geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
-    coord_equal()
-  dev.off()
-  
-  png(png_output)
-  ggplot(df_data_with_freq_v2_locus, 
+  locus_bubble = ggplot(df_data_with_freq_v2_locus, 
          aes(x = eh_alleles, y = exp_alleles)) + 
     geom_point(aes(color = locus, size = number_of_alleles)) + 
     xlim(5,max_value) + 
@@ -188,7 +180,13 @@ for(i in 1:length(l_locus)){
          y = "Repeat sizes for each allele \n Experimental validation") + 
     geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
     coord_equal()
+  
+  pdf(pdf_output)
+  print(locus_bubble)
   dev.off()
   
-  
+  png(png_output)
+  print(locus_bubble)
+  dev.off()
 }
+
