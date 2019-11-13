@@ -359,7 +359,7 @@ for (i in 1:length(val_data$loci)){
 
 # Select the columns we want to work with (not all, they already are in the validation golden table)
 val_data2 = val_data2 %>%
-  select(locus_bioinfo, LP_Number, gender, EH_a1, EH_a2, experimental_a1, experimental_a2, EH_a1_avg, EH_a2_avg, EH_a1_maxCI, EH_a2_maxCI, classification)
+  select(locus_bioinfo, LP_Number, gender, EH_a1, EH_a2, STR_a1, STR_a2, experimental_a1, experimental_a2, EH_a1_avg, EH_a2_avg, EH_a1_maxCI, EH_a2_maxCI, classification, Pileup_quality)
 
 # To make things easier, we want to automatise the classification of each expansion call
 table_threshold_normal = read.csv("/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt",
@@ -368,7 +368,7 @@ table_threshold_normal = read.csv("/Users/kibanez/git/analysing_STRs/threshold_l
                               sep = "\t")
 
 dim(table_threshold_normal)
-# 33  2
+# 32  2
 colnames(table_threshold_normal) = c("locus_bioinfo", "threshold_normal")
 
 table_threshold_pathogenic = read.csv("/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt",
@@ -376,7 +376,7 @@ table_threshold_pathogenic = read.csv("/Users/kibanez/git/analysing_STRs/thresho
                                 header = T,
                                 sep = "\t")
 dim(table_threshold_pathogenic)
-# 33  2
+# 32  2
 colnames(table_threshold_pathogenic) = c("locus_bioinfo", "threshold_pathogenic")
 
 # Let's include thresholds in the main table
@@ -422,7 +422,7 @@ val_data2 = val_data2 %>%
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
 # I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
 # Write results into file
-write.table(val_data2, "../../ANALYSIS/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN.tsv", 
+write.table(val_data2, "../../ANALYSIS/pipeline_performance/EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN_withPileup_and_expValidatedData.tsv", 
             quote = F, 
             row.names = F, 
             col.names = T, 
