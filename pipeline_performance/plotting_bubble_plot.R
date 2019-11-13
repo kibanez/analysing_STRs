@@ -132,10 +132,12 @@ for(i in 1:length(l_locus)){
                       
 }
 
+output_folder = "./figures/"
+
 max_value = max(df_data_with_freq_v2$eh_alleles, 
                 df_data_with_freq_v2$exp_alleles) + 5
 
-
+png("figures/joint_bubble_plot_EHv2.png")
 ggplot(df_data_with_freq_v2, 
        aes(x = eh_alleles, y = exp_alleles)) + 
   geom_point(aes(color = locus, size = number_of_alleles)) + 
@@ -146,3 +148,4 @@ ggplot(df_data_with_freq_v2,
     #   y = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
   coord_equal()
+dev.off()
