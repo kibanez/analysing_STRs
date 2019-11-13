@@ -149,3 +149,46 @@ ggplot(df_data_with_freq_v2,
   geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
   coord_equal()
 dev.off()
+
+# let's plot each locus independently
+for(i in 1:length(l_locus)){
+  df_data_with_freq_v2_locus = df_data_with_freq_v2 %>% 
+    filter(locus %in% l_locus[i])
+  
+  max_value = max(df_data_with_freq_v2_locus$eh_alleles, 
+                  df_data_with_freq_v2_locus$exp_alleles) + 5
+  
+  file_name = paste(l_locus[i], "experimental_vs_EHv2.5.5", sep = "_")
+  pdf_name = paste(file_name, "pdf", sep = ".")
+  png_name = paste(file_name, "png", sep = ".")
+  pdf_output = paste(output_folder, pdf_name, sep = "")
+  png_output = paste(output_folder, png_name, sep = "")
+  
+  pdf(pdf_output)
+  ggplot(df_data_with_freq_v2_locus, 
+         aes(x = eh_alleles, y = exp_alleles)) + 
+    geom_point(aes(color = locus, size = number_of_alleles)) + 
+    xlim(5,max_value) + 
+    ylim(5,max_value) + 
+    labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_locus[i], sep=' '), 
+        x = "Repeat sizes for each allele \n Expansion Hunter", 
+        y = "Repeat sizes for each allele \n Experimental validation") + 
+    geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
+    coord_equal()
+  dev.off()
+  
+  png(png_output)
+  ggplot(df_data_with_freq_v2_locus, 
+         aes(x = eh_alleles, y = exp_alleles)) + 
+    geom_point(aes(color = locus, size = number_of_alleles)) + 
+    xlim(5,max_value) + 
+    ylim(5,max_value) + 
+    labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_locus[i], sep=' '), 
+         x = "Repeat sizes for each allele \n Expansion Hunter", 
+         y = "Repeat sizes for each allele \n Experimental validation") + 
+    geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
+    coord_equal()
+  dev.off()
+  
+  
+}
