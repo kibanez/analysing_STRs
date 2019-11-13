@@ -25,32 +25,32 @@ dim(val_data)
 # 660  19
 
 # Filter the good ones
-# 1 - Only keep with `Pileup_quality` == good or Good
+# 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
 val_data = val_data %>%
-  filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good")
+  filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
 dim(val_data)
-# 443  19
+# 546  19
 
 # 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 val_data = val_data %>%
   filter((!STR_a1 %in% "positive"))
 dim(val_data)
-# 436  19 
+# 538  19 
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "positive"))
 dim(val_data)
-# 436  19 
+# 538  19 
 
 val_data = val_data %>%
   filter((!STR_a1 %in% "na"))
 dim(val_data)
-# 436  19 
+# 538  19 
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "na"))
 dim(val_data)
-# 419  19 
+# 521  19 
 
 # Let's simplify the data we need from `val_data`
 val_data = val_data %>%
@@ -83,36 +83,66 @@ for (i in 1:length(val_data$LP_Number)){
   val_data$eh_a2[i] = max_eh
 }
 dim(val_data)
-# 419  10
+# 521  10
 
-# Exclude `validation_a2` or `eh_a2` == '.'
+# Exclude `validation_a2` or `eh_a2` == '.', 'expansion`, `normal` `premutation`, `EXP`, contain `(`
+val_data = val_data %>%
+  filter(!validation_a1 %in% '.')
 val_data = val_data %>%
   filter(!validation_a2 %in% '.')
 val_data = val_data %>%
   filter(!eh_a2 %in% '.')
+val_data = val_data %>%
+  filter(!validation_a1 %in% 'normal')
+val_data = val_data %>%
+  filter(!validation_a1 %in% 'expansion')
+val_data = val_data %>%
+  filter(!validation_a2 %in% 'EXP')
+val_data = val_data %>%
+  filter(!grepl('del', validation_a2))
 dim(val_data)
-# 417  10
+# 496  10
 
 # Let's take the important meat: experimentally validated data and EH estimations
-exp_alleles_v2 = c(as.integer(val_data$STR_a1), as.integer(val_data$STR_a2))
-eh_alleles_v2 = c(as.integer(val_data$EH_a1_avg), as.integer(val_data$EH_a2_avg))
+exp_alleles_v2 = c(as.integer(val_data$validation_a1), as.integer(val_data$validation_a2))
+eh_alleles_v2 = c(as.integer(val_data$eh_a1), as.integer(val_data$eh_a2))
+locus_v2 = c(val_data$locus_bioinfo, val_data$locus_bioinfo)
 
-data_with_freq_v2 = xyTable(exp_alleles_v2, eh_alleles_v2)
-df_data_with_freq_v2 = data.frame(eh_alleles = data_with_freq_v2$y, 
-                                  exp_alleles = data_with_freq_v2$x, 
-                                  number_of_alleles = data_with_freq_v2$number)
+# Create dataframe with exp, eh, freq for each locus
+df_data_with_freq_v2 = data.frame()
+l_locus = unique(locus_v2)
+for(i in 1:length(l_locus)){
+  aux_validation_a1 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(validation_a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(validation_a2) %>% pull() %>% as.integer() 
+  aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
+  
+  aux_eh_a1 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(eh_a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(eh_a2) %>% pull() %>% as.integer() 
+  aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
+  
+  data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
+  
+  df_data_aux = data.frame(eh_alleles = data_aux$y,
+                           exp_alleles = data_aux$x,
+                           number_of_alleles = data_aux$number,
+                           locus = rep(l_locus[i], length(data_aux$x)))
+  # Concat info per locus
+  df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
+                               df_data_aux)
+                      
+}
 
 max_value = max(df_data_with_freq_v2$eh_alleles, 
                 df_data_with_freq_v2$exp_alleles) + 5
 
-png(paste("Correlation_EH_experimental_merging_delivery_versions_WESSEX", paste(l_loci[i],"png", sep = '.'), sep = "_"))
+
 ggplot(df_data_with_freq_v2, 
-       aes(x = eh_alleles, y = exp_alleles, size = number_of_alleles)) + 
-  geom_point(alpha = 0.7, colour = "blue") + 
+       aes(x = eh_alleles, y = exp_alleles)) + 
+  geom_point(aes(color = locus, size = number_of_alleles)) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
-  labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_loci[i], sep=' '), x = "Repeat sizes for each allele \n Expansion Hunter", y = "Repeat sizes for each allele \n Experimental validation") + 
+  #labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_loci[i], sep=' '), 
+   #    x = "Repeat sizes for each allele \n Expansion Hunter", 
+    #   y = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
   coord_equal()
-dev.off()  
-
