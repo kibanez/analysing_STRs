@@ -29,28 +29,28 @@ dim(val_data)
 val_data = val_data %>%
   filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
 dim(val_data)
-# 546  19
+# 546  24
 
 # 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 val_data = val_data %>%
   filter((!STR_a1 %in% "positive"))
 dim(val_data)
-# 538  19 
+# 538  24
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "positive"))
 dim(val_data)
-# 538  19 
+# 538  24
 
 val_data = val_data %>%
   filter((!STR_a1 %in% "na"))
 dim(val_data)
-# 538  19 
+# 538  24
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "na"))
 dim(val_data)
-# 521  19 
+# 521  24
 
 # Let's simplify the data we need from `val_data`
 val_data = val_data %>%
@@ -142,7 +142,7 @@ for(i in 1:length(l_locus)){
                       
 }
 
-output_folder = "./figures/"
+output_folder = "./figures/EHv3.1.2/"
 
 #df_data_with_freq_v2$exp_alleles[133] = 100
 
@@ -156,17 +156,17 @@ joint_plot = ggplot(df_data_with_freq_v2,
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
-       x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+       x = "Repeat sizes for each allele \n Expansion Hunter (EH-v3.1.2)", 
        y = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
   coord_equal() +
   guides(size = FALSE)
 
-png("figures/joint_bubble_plot_EHv2.png")
+png("figures/joint_bubble_plot_EHv3.png")
 print(joint_plot)
 dev.off()
 
-pdf("figures/joint_bubble_plot_EHv2.pdf")
+pdf("figures/joint_bubble_plot_EHv3.pdf")
 print(joint_plot)
 dev.off()
 
@@ -178,7 +178,7 @@ for(i in 1:length(l_locus)){
   max_value = max(df_data_with_freq_v2_locus$eh_alleles, 
                   df_data_with_freq_v2_locus$exp_alleles) + 5
   
-  file_name = paste(l_locus[i], "experimental_vs_EHv2.5.5", sep = "_")
+  file_name = paste(l_locus[i], "experimental_vs_EHv3.1.2", sep = "_")
   pdf_name = paste(file_name, "pdf", sep = ".")
   png_name = paste(file_name, "png", sep = ".")
   pdf_output = paste(output_folder, pdf_name, sep = "")
@@ -190,7 +190,7 @@ for(i in 1:length(l_locus)){
     xlim(5,max_value) + 
     ylim(5,max_value) + 
     labs(title = l_locus[i], 
-         x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+         x = "Repeat sizes for each allele \n Expansion Hunter (EH-v3.1.2)", 
          y = "Repeat sizes for each allele \n Experimental validation") + 
     theme(plot.title = element_text(hjust = 0.5)) +
     geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
