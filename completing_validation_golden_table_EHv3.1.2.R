@@ -26,14 +26,14 @@ merged_maxCI_table_pilot = read.csv("pilot_validation/merged/merged_validation_p
                               header = T,
                               stringsAsFactors = F)
 dim(merged_maxCI_table_pilot)
-# 581 12
+# 584 12
 
-merged_avg_table_pilot = read.csv("./pilot_validation/merged/merged_validation_pilot_avg_EHv3.1.2.tsv",
+merged_avg_table_pilot = read.csv("pilot_validation/merged/merged_validation_pilot_avg_EHv3.1.2.tsv",
                                   sep = "\t",
                                   header = T,
                                   stringsAsFactors = F)
 dim(merged_avg_table_pilot)
-# 561  12
+# 564  12
 
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   select(gene, allele, list_samples)
@@ -42,7 +42,7 @@ colnames(merged_avg_table_pilot) = c("gene", "avg_repeat", "list_samples")
 merged_avg_table_pilot = merged_avg_table_pilot %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_pilot)
-# 561  4
+# 564  4
 
 merged_maxCI_table_pilot = merged_maxCI_table_pilot %>%
   select(gene, allele, list_samples)
@@ -50,13 +50,13 @@ colnames(merged_maxCI_table_pilot) = c("gene", "maxCI_repeat", "list_samples")
 merged_maxCI_table_pilot = merged_maxCI_table_pilot %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_pilot)
-# 581  4
+# 584  4
 
 merged_all_pilot = full_join(merged_avg_table_pilot,
                          merged_maxCI_table_pilot,
                          by = c("unique_id"))
 dim(merged_all_pilot)
-# 643  7
+# 645  7
 
 colnames(merged_avg_table_pilot) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_maxCI_table_pilot) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
@@ -69,7 +69,7 @@ merged_maxCI_table_research = read.csv("research_validation/merged/merged_valida
                                        header = T,
                                        stringsAsFactors = F)
 dim(merged_maxCI_table_research)
-# 1186  12
+# 1199  12
 
 merged_maxCI_table_research = merged_maxCI_table_research %>%
   select(gene, allele, list_samples)
@@ -77,14 +77,14 @@ colnames(merged_maxCI_table_research) = c("gene", "maxCI_repeat", "list_samples"
 merged_maxCI_table_research = merged_maxCI_table_research %>%
   mutate(unique_id = paste(gene, maxCI_repeat, sep = "_"))
 dim(merged_maxCI_table_research)
-# 1186  4
+# 1199  4
 
 merged_avg_table_research = read.csv("research_validation/merged/merged_validation_research_avg_EHv3.1.2.tsv",
                                      sep = "\t",
                                      header = T,
                                      stringsAsFactors = F)
 dim(merged_avg_table_research)
-# 1165  12
+# 1178  12
 
 merged_avg_table_research = merged_avg_table_research %>%
   select(gene, allele, list_samples)
@@ -92,14 +92,14 @@ colnames(merged_avg_table_research) = c("gene", "avg_repeat", "list_samples")
 merged_avg_table_research = merged_avg_table_research %>%
   mutate(unique_id = paste(gene, avg_repeat, sep = "_"))
 dim(merged_avg_table_research)
-# 1165  4
+# 1178  4
 
 merged_all_research = full_join(merged_avg_table_research,
                                 merged_maxCI_table_research,
                                 by = c("unique_id"))
 
 dim(merged_all_research)
-# 1872  7
+# 1905  7
 
 colnames(merged_avg_table_research) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_maxCI_table_research) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
@@ -369,7 +369,7 @@ table_threshold_normal = read.csv("/Users/kibanez/git/analysing_STRs/threshold_l
                               sep = "\t")
 
 dim(table_threshold_normal)
-# 33  2
+# 32  2
 colnames(table_threshold_normal) = c("locus_bioinfo", "threshold_normal")
 
 table_threshold_pathogenic = read.csv("/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt",
@@ -377,7 +377,7 @@ table_threshold_pathogenic = read.csv("/Users/kibanez/git/analysing_STRs/thresho
                                 header = T,
                                 sep = "\t")
 dim(table_threshold_pathogenic)
-# 33  2
+# 32  2
 colnames(table_threshold_pathogenic) = c("locus_bioinfo", "threshold_pathogenic")
 
 # Let's include thresholds in the main table
@@ -423,7 +423,7 @@ val_data2 = val_data2 %>%
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
 # I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
 # Write results into file
-write.table(val_data2, "../../../ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_checkFXN.tsv", 
+write.table(val_data2, "/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_checkFXN_14nov2019.tsv", 
             quote = F, 
             row.names = F, 
             col.names = T, 
