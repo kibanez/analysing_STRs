@@ -75,6 +75,10 @@ val_data$EH_a2_avg[l_EXP] = 0
 
 # in case there is only 1 allele, we should have 1 allele for expValidation and EH
 # in case there are 2 alleles, then the `a1` for expValidation and EH should be the minimum (minor repeat size)
+val_data$STR_a1 = as.integer(val_data$STR_a1)
+val_data$STR_a2 = as.integer(val_data$STR_a2)
+val_data$EH_a1_avg = as.integer(val_data$EH_a1_avg)
+val_data$EH_a2_avg = as.integer(val_data$EH_a2_avg)
 for (i in 1:length(val_data$LP_Number)){
   val_validation_a1 = val_data$STR_a1[i]
   val_validation_a2 = val_data$STR_a2[i]
@@ -143,17 +147,23 @@ output_folder = "./figures/"
 max_value = max(df_data_with_freq_v2$eh_alleles, 
                 df_data_with_freq_v2$exp_alleles) + 5
 
-png("figures/joint_bubble_plot_EHv2.png")
-ggplot(df_data_with_freq_v2, 
-       aes(x = eh_alleles, y = exp_alleles)) + 
+joint_plot = ggplot(df_data_with_freq_v2, 
+                    aes(x = eh_alleles, y = exp_alleles)) + 
   geom_point(aes(color = locus, size = number_of_alleles)) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
-  #labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_loci[i], sep=' '), 
-   #    x = "Repeat sizes for each allele \n Expansion Hunter", 
-    #   y = "Repeat sizes for each allele \n Experimental validation") + 
+  labs(title = "Correlation on repeat sizes: EHv2.5.5 vs experimental validation across all loci validated", 
+       x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+       y = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
   coord_equal()
+
+png("figures/joint_bubble_plot_EHv2.png")
+print(joint_plot)
+dev.off()
+
+pdf("figures/joint_bubble_plot_EHv2.pdf")
+print(joint_plot)
 dev.off()
 
 # let's plot each locus independently
@@ -172,12 +182,13 @@ for(i in 1:length(l_locus)){
   
   locus_bubble = ggplot(df_data_with_freq_v2_locus, 
          aes(x = eh_alleles, y = exp_alleles)) + 
-    geom_point(aes(color = locus, size = number_of_alleles)) + 
+    geom_point(aes(color = locus, size = number_of_alleles), show.legend = FALSE) + 
     xlim(5,max_value) + 
     ylim(5,max_value) + 
-    labs(title = paste("Correlation on repeat sizes: EH vs experimental validation", l_locus[i], sep=' '), 
-         x = "Repeat sizes for each allele \n Expansion Hunter", 
+    labs(title = l_locus[i], 
+         x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
          y = "Repeat sizes for each allele \n Experimental validation") + 
+    theme(plot.title = element_text(hjust = 0.5)) +
     geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
     coord_equal()
   
