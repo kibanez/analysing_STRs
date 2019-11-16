@@ -151,14 +151,14 @@ max_value = max(df_data_with_freq_v2$eh_alleles,
                 na.rm = TRUE) + 5
 
 joint_plot = ggplot(df_data_with_freq_v2, 
-                    aes(x = eh_alleles, y = exp_alleles)) + 
+                    aes(x = exp_alleles, y = eh_alleles)) + 
   geom_point(aes(color = locus, size = number_of_alleles)) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
-       x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
-       y = "Repeat sizes for each allele \n Experimental validation") + 
-  geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
+       y = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+       x = "Repeat sizes for each allele \n Experimental validation") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
   guides(size = FALSE)
 
@@ -185,15 +185,15 @@ for(i in 1:length(l_locus)){
   png_output = paste(output_folder, png_name, sep = "")
   
   locus_bubble = ggplot(df_data_with_freq_v2_locus, 
-         aes(x = eh_alleles, y = exp_alleles)) + 
+         aes(x = exp_alleles, y = eh_alleles)) + 
     geom_point(aes(color = locus, size = number_of_alleles), show.legend = FALSE) + 
     xlim(5,max_value) + 
     ylim(5,max_value) + 
     labs(title = l_locus[i], 
-         x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
-         y = "Repeat sizes for each allele \n Experimental validation") + 
+         y = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+         x = "Repeat sizes for each allele \n Experimental validation") + 
     theme(plot.title = element_text(hjust = 0.5)) +
-    geom_abline(method = "lm", formula = y ~ x, linetype = 2, colour = "gray") +  
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
     coord_equal()
   
   pdf(pdf_output)
