@@ -22,39 +22,39 @@ val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 660  19
+# 638  20
 
 # Filter the good ones
 # 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
 val_data = val_data %>%
   filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
 dim(val_data)
-# 546  19
+# 546  20
 
 # 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 val_data = val_data %>%
   filter((!STR_a1 %in% "positive"))
 dim(val_data)
-# 538  19 
+# 538  20
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "positive"))
 dim(val_data)
-# 538  19 
+# 538  20
 
 val_data = val_data %>%
   filter((!STR_a1 %in% "na"))
 dim(val_data)
-# 538  19 
+# 538  20
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "na"))
 dim(val_data)
-# 521  19 
+# 521  20
 
 # Let's simplify the data we need from `val_data`
 val_data = val_data %>%
-  select(LP_Number, locus_bioinfo, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
+  select(LP_Number, locus_bioinfo, locus, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
 
 # Just remove all rows having `normal`, `expansion`, `full_mutation`, `premutation`
 val_data = val_data %>% filter(!STR_a1 %in% 'normal')
@@ -104,13 +104,13 @@ for (i in 1:length(val_data$LP_Number)){
   val_data$eh_a2[i] = max_eh
 }
 dim(val_data)
-# 516  10
+# 516  11
 
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$validation_a1), as.integer(val_data$validation_a2))
 eh_alleles_v2 = c(as.integer(val_data$eh_a1), as.integer(val_data$eh_a2))
-locus_v2 = c(val_data$locus_bioinfo, val_data$locus_bioinfo)
+locus_v2 = c(val_data$locus, val_data$locus)
 
 # Remove NAs
 index_NA = which(is.na(exp_alleles_v2))
@@ -122,12 +122,12 @@ locus_v2 = locus_v2[-index_NA]
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
 for(i in 1:length(l_locus)){
-  aux_validation_a1 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(validation_a1) %>% pull() %>% as.integer() 
-  aux_validation_a2 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(validation_a2) %>% pull() %>% as.integer() 
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(validation_a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(validation_a2) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
-  aux_eh_a1 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(eh_a1) %>% pull() %>% as.integer() 
-  aux_eh_a2 = val_data %>% filter(locus_bioinfo %in% l_locus[i]) %>% select(eh_a2) %>% pull() %>% as.integer() 
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(eh_a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(eh_a2) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
