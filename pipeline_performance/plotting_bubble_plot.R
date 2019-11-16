@@ -162,7 +162,7 @@ joint_plot = ggplot(df_data_with_freq_v2,
   coord_equal() +
   guides(size = FALSE)
 
-png("figures/joint_bubble_plot_EHv2.png")
+png("figures/joint_bubble_plot_EHv2.png", units="in", width=5, height=5, res=300)
 print(joint_plot)
 dev.off()
 
@@ -200,7 +200,7 @@ for(i in 1:length(l_locus)){
   print(locus_bubble)
   dev.off()
   
-  png(png_output)
+  png(png_output, units="in", width=5, height=5, res=300)
   print(locus_bubble)
   dev.off()
 }
