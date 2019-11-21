@@ -33,9 +33,6 @@ plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_dat
   png_name = paste(pdf_name, "png", sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
-  min_value = min(df_gene_barplot$number_repeats)
-  max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
-  
   my_comparisons=list(c("AFR","AMR"), c("AFR","EUR"), c("AFR","EAS"), c("AFR","ASI"))
   #                    c("AMR","EUR"), c("AMR","EAS"), c("AMR","ASI"),
   #                    c("EUR", "EAS"), c("EUR", "ASI"),
@@ -45,9 +42,9 @@ plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_dat
     coord_flip() +
     xlab("Population") + 
     ylab("Repeat sizes (repeat units)") + 
-    ggtitle(gene_name) +
-    stat_compare_means(comparisons = my_comparisons,
-                       method = "wilcox.test")
+    ggtitle(gene_name) 
+    #stat_compare_means(comparisons = my_comparisons,
+#                       method = "wilcox.test")
   
   pdf(pdf_name)
   print(violin_plot)
