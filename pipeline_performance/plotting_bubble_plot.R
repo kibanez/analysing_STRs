@@ -50,7 +50,7 @@ dim(val_data)
 val_data = val_data %>%
   filter((!STR_a2 %in% "na"))
 dim(val_data)
-# 521  20
+# 520  20
 
 # Let's simplify the data we need from `val_data`
 val_data = val_data %>%
@@ -104,7 +104,7 @@ for (i in 1:length(val_data$LP_Number)){
   val_data$eh_a2[i] = max_eh
 }
 dim(val_data)
-# 516  11
+# 515  11
 
 
 # Let's take the important meat: experimentally validated data and EH estimations
