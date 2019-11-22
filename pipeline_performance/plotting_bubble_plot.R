@@ -17,7 +17,7 @@ library(tidyverse); packageDescription ("tidyverse", fields = "Version") #"1.2.1
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/")
 
 # Load golden validation table - EHv2.5.5
-val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN_withPileup_and_expValidatedData_tweaking_ATN1.tsv",
+val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN_withPileup_and_expValidatedData_tweaking_ATN1_updated_AR_from_NHNN.txt",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
