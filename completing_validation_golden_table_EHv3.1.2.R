@@ -20,7 +20,6 @@ val_data = read.csv("../../STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched.
 dim(val_data)
 # 638 20
 
-
 # Load Pilot merged table
 merged_maxCI_table_pilot = read.csv("pilot_validation/merged/merged_validation_pilot_maxCI_EHv3.1.2.tsv",
                               sep = "\t",
