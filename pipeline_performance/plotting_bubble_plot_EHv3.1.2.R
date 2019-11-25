@@ -145,7 +145,7 @@ for(i in 1:length(l_locus)){
 
 output_folder = "./figures/EHv3.1.2/"
 
-#df_data_with_freq_v2$exp_alleles[133] = 100
+#df_data_with_freq_v2$exp_alleles[142] = 100
 
 max_value = max(df_data_with_freq_v2$eh_alleles, 
                 df_data_with_freq_v2$exp_alleles,
