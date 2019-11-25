@@ -54,14 +54,8 @@ merged_maxCI_val_data = merged_maxCI_val_data %>%
 dim(merged_maxCI_val_data)
 # 1452  4
 
-merged_all_val_data = rbind(merged_avg_val_data,
-                            merged_maxCI_val_data)
-dim(merged_all_val_data)
-# 2861  4
-
-colnames(merged_all_val_data) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
 colnames(merged_avg_val_data) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
-colnames(merged_maxCI_val_data) = c("gene_avg", "avg_repeat", "list_samples_avg", "unique_id")
+colnames(merged_maxCI_val_data) = c("gene_max", "maxCI_repeat", "list_samples_maxCI", "unique_id")
 
 
 # Let's enrich the validation golden table with the max CI value for each expansion
@@ -109,11 +103,11 @@ for (i in 1:length(val_data$loci)){
   platekey = trimws(val_data$LP_Number[i])
   
   # avg values (to double check)
-  row_avg_research = merged_avg_table_research %>%
+  row_avg_research = merged_avg_val_data %>%
     filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
     select(avg_repeat) %>% pull() %>% as.character() 
   
-  l_samples_avg = merged_avg_table_research %>%
+  l_samples_avg = merged_avg_val_data %>%
     filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
     select(list_samples_avg) %>% pull()
   
@@ -124,11 +118,11 @@ for (i in 1:length(val_data$loci)){
   }
   
   # maxCI values
-  row_maxCI_research = merged_maxCI_table_research %>%
+  row_maxCI_research = merged_maxCI_val_data %>%
     filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
     select(maxCI_repeat) %>% pull() %>% as.character()
   
-  l_samples_max = merged_maxCI_table_research %>%
+  l_samples_max = merged_maxCI_val_data %>%
     filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
     select(list_samples_maxCI) %>% pull()
   
@@ -159,118 +153,6 @@ for (i in 1:length(val_data$loci)){
         val_data2$gender[i] = "NA"
       }
       
-    }
-  }else{
-    # IT's PILOT
-    
-    # avg values (to double check)
-    row_avg_research = merged_avg_table_pilot %>%
-      filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
-      select(avg_repeat) %>% pull() %>% as.character()
-    
-    l_samples_avg = merged_avg_table_pilot %>%
-      filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
-      select(list_samples_avg) %>% pull()
-    
-    if (length(l_samples_avg) > 0){
-      if (any(grepl(paste(paste("EH_", platekey, sep = ""), "", sep = ".vcf_x2"), l_samples_avg))){
-        row_avg_research = c(row_avg_research, row_avg_research)
-      }
-    }
-    
-    # maxCI values
-    row_maxCI_research = merged_maxCI_table_pilot %>%
-      filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
-      select(maxCI_repeat)  %>% pull() %>% as.character()
-    
-    l_samples_max = merged_maxCI_table_pilot %>%
-      filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
-      select(list_samples_maxCI) %>% pull()
-    
-    if (length(l_samples_max) > 0){
-      if (any(grepl(paste(paste("EH_", platekey, sep = ""), "", sep = ".vcf_x2"), l_samples_max))){
-        row_maxCI_research = c(row_maxCI_research, row_maxCI_research)
-      }
-    }
-    
-    if (length(row_avg_research) > 0){
-      if (length(row_avg_research) < 2){
-        val_data2$EH_a1_avg[i] = row_avg_research
-        val_data2$EH_a1_maxCI[i] = row_maxCI_research
-      }else{
-        val_data2$EH_a1_avg[i] = row_avg_research[1]
-        val_data2$EH_a2_avg[i] = row_avg_research[2]
-        val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
-        val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
-        
-        if (platekey %in% unique(pilot_clinical_data$plateKey)){
-          val_data2$gender[i] = pilot_clinical_data %>% 
-            filter(plateKey %in% platekey) %>% 
-            select(sex) %>%
-            pull() %>%
-            unique() %>%
-            as.character() 
-        }else{
-          val_data2$gender[i] = "NA"
-        }
-        
-      }
-    }else{
-      # It's WESSEX
-      
-      # avg values (to double check)
-      row_avg_research = merged_avg_table_wessex %>%
-        filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
-        select(avg_repeat) %>% pull() %>% as.character()
-      
-      l_samples_avg = merged_avg_table_wessex %>%
-        filter(gene_avg %in% toupper(locus), grepl(platekey, list_samples_avg)) %>%
-        select(list_samples_avg) %>% pull()
-      
-      if (length(l_samples_avg) > 0){
-        if (any(grepl(paste(paste("EH_", platekey, sep = ""), "", sep = ".vcf_x2"), l_samples_avg))){
-          row_avg_research = c(row_avg_research, row_avg_research)
-        }
-      }
-      
-      # maxCI values
-      row_maxCI_research = merged_maxCI_table_wessex %>%
-        filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
-        select(maxCI_repeat)  %>% pull() %>% as.character()
-      
-      l_samples_max = merged_maxCI_table_wessex %>%
-        filter(gene_max %in% toupper(locus), grepl(platekey, list_samples_maxCI)) %>%
-        select(list_samples_maxCI) %>% pull()
-      
-      if (length(l_samples_max) > 0){
-        if (any(grepl(paste(paste("EH_", platekey, sep = ""), "", sep = ".vcf_x2"), l_samples_max))){
-          row_maxCI_research = c(row_maxCI_research, row_maxCI_research)
-        }
-      }
-      
-      if (length(row_avg_research) > 0){
-        if (length(row_avg_research) < 2){
-          val_data2$EH_a1_avg[i] = row_avg_research
-          val_data2$EH_a1_maxCI[i] = row_maxCI_research
-        }else{
-          val_data2$EH_a1_avg[i] = row_avg_research[1]
-          val_data2$EH_a2_avg[i] = row_avg_research[2]
-          val_data2$EH_a1_maxCI[i] = row_maxCI_research[1]
-          val_data2$EH_a2_maxCI[i] = row_maxCI_research[2]
-          
-          if (platekey %in% unique(clinical_data$plate_key.x)){
-            val_data2$gender[i] = clinical_data %>% 
-              filter(plate_key.x %in% platekey) %>% 
-              select(participant_phenotypic_sex) %>%
-              pull() %>%
-              unique() %>%
-              as.character() 
-          }else{
-            val_data2$gender[i] = "NA"
-          }
-          
-        }
-      }
     }
   }
 }
@@ -340,7 +222,7 @@ val_data2 = val_data2 %>%
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
 # I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
 # Write results into file
-write.table(val_data2, "/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_checkFXN.tsv", 
+write.table(val_data2, "/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_checkFXN_251119.tsv", 
             quote = F, 
             row.names = F, 
             col.names = T, 
