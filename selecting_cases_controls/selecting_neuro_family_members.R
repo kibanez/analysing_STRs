@@ -70,6 +70,9 @@ for (i in l_main_familyIds_neuro){
   proband_disease_group = main_data_subset$disease_group[id_proband]
   proband_disease_subgroup = main_data_subset$disease_sub_group[id_proband]
   
+  if (length(id_proband) == 0){
+    next
+  }
   if (length(id_relatives) > 0){
     for(j in length(id_relatives)){
       main_data_subset$specific_disease[id_relatives[j]] = proband_specific_disease
@@ -78,6 +81,9 @@ for (i in l_main_familyIds_neuro){
     }
   }
 }
+
+dim(main_data_subset)
+#
 
 # 2 - Select from PILOT data all family members that have been assigned to have Neuro or Mito
 # First we need to translate this from translator_table, to take the list of `specific_disease` we need to filter out from the pilot dataset
