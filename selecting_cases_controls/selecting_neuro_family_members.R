@@ -43,7 +43,7 @@ dim(translator_table)
 # 1 - Select from MAIN data all family members that have been assigned to have Neuro or Mito
 main_data_subset = main_data %>% 
   filter(disease_group %in% "Neurology and neurodevelopmental disorders" | disease_sub_group %in% "Mitochondrial disorders" | disease_sub_group %in% "mitochondrial") %>%
-  select(participant_id, plate_key.x, rare_diseases_family_id, participant_type, affection_status, participant_type, participant_phenotypic_sex, specific_disease, disease_group, disease_sub_group, genetic_vs_reported_results, genome_build)
+  select(participant_id, plate_key.x, rare_diseases_family_id, participant_type, affection_status, participant_phenotypic_sex, specific_disease, disease_group, disease_sub_group, genetic_vs_reported_results, genome_build)
 dim(main_data_subset)
 # 559243  11
 
@@ -51,3 +51,30 @@ main_data_subset = unique(main_data_subset)
 dim(main_data_subset)
 # 17273  11
 
+# 2 - Select from PILOT data all family members that have been assigned to have Neuro or Mito
+# First we need to translate this from translator_table, to take the list of `specific_disease` we need to filter out from the pilot dataset
+l_specific_disease = translator_table %>%
+  filter(disease_group %in% "Neurology and neurodevelopmental disorders" | disease_subgroup %in% "Mitochondrial disorders") %>%
+  select(specific_disease) %>%
+  unique() %>%
+  pull() 
+
+length(l_specific_disease)  
+# 25
+
+# Pilot dataset is special, ONLY proband has enriched or populated the `specificDisease` info. Thus, we first need to have the list of familyIDs to take later all members
+l_familyIds_neuro = pilot_data %>%
+  filter(specificDisease %in% l_specific_disease) %>%
+  select(gelFamilyId.x) %>%
+  unique() %>%
+  pull()
+length(l_familyIds_neuro)  
+# 707
+
+pilot_data_subset = pilot_data %>%
+  filter(gelFamilyId.x %in% l_familyIds_neuro) %>%
+  select(gelID, plateKey, gelFamilyId.x, biological_relation_to_proband, disease_status, sex, specificDisease)
+dim(pilot_data_subset)
+# 1705  7
+
+pilot_data_subset$genome = rep("GRCh37", length(pilot_data_subset$gelID))
