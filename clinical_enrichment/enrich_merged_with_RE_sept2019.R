@@ -209,4 +209,3 @@ for (i in num_loci){
 
 
 
-
