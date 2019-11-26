@@ -6,16 +6,17 @@
 library(dplyr); packageDescription ("dplyr", fields = "Version") # "0.8.3
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
 
-setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged2")
+setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged_genotypeUpdated/")
 
 # Research 80K analysis - August 2019
-merged_vcf = read.table("./merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
+#merged_vcf = read.table("./merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
+merged_vcf = read.csv("merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
                         stringsAsFactors = F, 
                         header = T, 
                         sep = "\t")
 
 dim(merged_vcf)                        
-# 3980  11 
+# 3983  11 
 
 # Change colnames to make everything easier
 colnames(merged_vcf) = c("chr", "start", "end", "repeat-size", "gene", "ref", "alt", "repeat-motif", "num_samples", "AF", "list_samples")
@@ -32,11 +33,11 @@ num_loci= unique(merged_vcf$gene)
 
 merged_b37 = merged_vcf %>% filter(!grepl("chr", chr))
 dim(merged_b37)
-# 1559 11
+# 1561 11
 
 merged_b38 = merged_vcf %>% filter(grepl("chr", chr))
 dim(merged_b38)
-# 2421  11
+# 2422  11
 
 
 ################################################################################################################################
