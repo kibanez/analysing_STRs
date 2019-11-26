@@ -61,6 +61,24 @@ main_data_subset = unique(main_data_subset)
 dim(main_data_subset)
 # 35884  11
 
+# Enrich the disease info for all members within the family - for consistency
+for (i in l_main_familyIds_neuro){
+  id_proband = which(main_data_subset$rare_diseases_family_id %in% i & main_data_subset$participant_type %in% "Proband")
+  id_relatives = which(main_data_subset$rare_diseases_family_id %in% i & !main_data_subset$participant_type %in% "Proband")
+  
+  proband_specific_disease = main_data_subset$specific_disease[id_proband]
+  proband_disease_group = main_data_subset$disease_group[id_proband]
+  proband_disease_subgroup = main_data_subset$disease_sub_group[id_proband]
+  
+  if (length(id_relatives) > 0){
+    for(j in length(id_relatives)){
+      main_data_subset$specific_disease[id_relatives[j]] = proband_specific_disease
+      main_data_subset$disease_group[id_relatives[j]] = proband_disease_group
+      main_data_subset$disease_sub_group[id_relatives[j]] = proband_disease_subgroup
+    }
+  }
+}
+
 # 2 - Select from PILOT data all family members that have been assigned to have Neuro or Mito
 # First we need to translate this from translator_table, to take the list of `specific_disease` we need to filter out from the pilot dataset
 l_specific_disease = translator_table %>%
