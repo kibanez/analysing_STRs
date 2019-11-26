@@ -129,7 +129,7 @@ for (i in num_loci){
   }#j
   
   # We write for each locus the output dataframe `df_locus_new`
-  output_name = paste("research_genomes_86457_GRCh37_EHv2.5.5", i, sep = "_")
+  output_name = paste("research_genomes_86457_GRCh37_EHv3.1.2", i, sep = "_")
   output_name = paste(output_name, "tsv", sep = ".")
   
   # we filter out the column `list_samples` from the final dataframe, not to have too much data
