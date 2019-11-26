@@ -66,15 +66,15 @@ for (i in l_main_familyIds_neuro){
   id_proband = which(main_data_subset$rare_diseases_family_id %in% i & main_data_subset$participant_type %in% "Proband")
   id_relatives = which(main_data_subset$rare_diseases_family_id %in% i & !main_data_subset$participant_type %in% "Proband")
   
-  proband_specific_disease = main_data_subset$specific_disease[id_proband]
-  proband_disease_group = main_data_subset$disease_group[id_proband]
-  proband_disease_subgroup = main_data_subset$disease_sub_group[id_proband]
+  proband_specific_disease = unique(main_data_subset$specific_disease[id_proband])
+  proband_disease_group = unique(main_data_subset$disease_group[id_proband])
+  proband_disease_subgroup = unique(main_data_subset$disease_sub_group[id_proband])
   
   if (length(id_proband) == 0){
     next
   }
   if (length(id_relatives) > 0){
-    for(j in length(id_relatives)){
+    for(j in 1:length(id_relatives)){
       main_data_subset$specific_disease[id_relatives[j]] = proband_specific_disease
       main_data_subset$disease_group[id_relatives[j]] = proband_disease_group
       main_data_subset$disease_sub_group[id_relatives[j]] = proband_disease_subgroup
@@ -83,7 +83,7 @@ for (i in l_main_familyIds_neuro){
 }
 
 dim(main_data_subset)
-#
+# 35884  11
 
 # 2 - Select from PILOT data all family members that have been assigned to have Neuro or Mito
 # First we need to translate this from translator_table, to take the list of `specific_disease` we need to filter out from the pilot dataset
@@ -112,3 +112,28 @@ dim(pilot_data_subset)
 # 1705  7
 
 pilot_data_subset$genome = rep("GRCh37", length(pilot_data_subset$gelID))
+
+# Enrich the disease info for all members within the family - for consistency
+for (i in l_familyIds_neuro){
+  id_proband = which(pilot_data_subset$rare_diseases_family_id %in% i & pilot_data_subset$participant_type %in% "Proband")
+  id_relatives = which(pilot_data_subset$rare_diseases_family_id %in% i & !pilot_data_subset$participant_type %in% "Proband")
+  
+  proband_specific_disease = pilot_data_subset$specific_disease[id_proband]
+  proband_disease_group = pilot_data_subset$disease_group[id_proband]
+  proband_disease_subgroup = pilot_data_subset$disease_sub_group[id_proband]
+  
+  if (length(id_proband) == 0){
+    next
+  }
+  if (length(id_relatives) > 0){
+    for(j in 1:length(id_relatives)){
+      pilot_data_subset$specific_disease[id_relatives[j]] = proband_specific_disease
+      pilot_data_subset$disease_group[id_relatives[j]] = proband_disease_group
+      pilot_data_subset$disease_sub_group[id_relatives[j]] = proband_disease_subgroup
+    }
+  }
+}
+
+dim(pilot_data_subset)
+#
+
