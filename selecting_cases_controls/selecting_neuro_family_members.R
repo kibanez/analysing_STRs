@@ -40,3 +40,14 @@ translator_table = read.csv("~/Documents/STRs/clinical_data/clinical_research_co
 dim(translator_table)
 # 2632  3
 
+# 1 - Select from MAIN data all family members that have been assigned to have Neuro or Mito
+main_data_subset = main_data %>% 
+  filter(disease_group %in% "Neurology and neurodevelopmental disorders" | disease_sub_group %in% "Mitochondrial disorders" | disease_sub_group %in% "mitochondrial") %>%
+  select(participant_id, plate_key.x, rare_diseases_family_id, participant_type, affection_status, participant_type, participant_phenotypic_sex, specific_disease, disease_group, disease_sub_group, genetic_vs_reported_results, genome_build)
+dim(main_data_subset)
+# 559243  11
+
+main_data_subset = unique(main_data_subset)
+dim(main_data_subset)
+# 17273  11
+
