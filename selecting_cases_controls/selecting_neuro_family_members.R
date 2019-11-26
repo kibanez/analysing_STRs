@@ -135,5 +135,26 @@ for (i in l_familyIds_neuro){
 }
 
 dim(pilot_data_subset)
-#
+# 1705 8
 
+# let's merge pilot and main datasets
+colnames(pilot_data_subset) = c("participantID", "platekey", "familyID", "participant_type", "affection-status", "gender", "specific_disease", "genome")
+
+main_data_subset = main_data_subset %>%
+  select(participant_id, plate_key.x, rare_diseases_family_id, participant_type, affection_status, participant_phenotypic_sex, specific_disease, genome_build)
+colnames(main_data_subset) = c("participantID", "platekey", "familyID", "participant_type", "affection-status", "gender", "specific_disease", "genome")
+
+pilot_data_subset$programme = rep("Pilot", length(pilot_data_subset$participant_type))
+main_data_subset$programme = rep("Main", length(main_data_subset$participant_type))
+
+all_data_subset = rbind(pilot_data_subset,
+                        main_data_subset)
+dim(all_data_subset)
+# 37589  9
+
+write.table(all_data_subset,
+            "./frozen_pilot_main_REv7_together.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
