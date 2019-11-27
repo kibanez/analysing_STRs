@@ -58,6 +58,14 @@ popu_table_enriched = popu_table_enriched %>%
                                 pred_european_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25  ~ "EUR-ASI",
                                 pred_east_asian_ancestries >= 0.25 & pred_south_asian_ancestries >= 0.25 ~ "EAS-ASI"))
 
+# Let's write this info into a file, in order to have super-population and population info / genome
+write.table(popu_table_enriched,
+            "./population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
+
 # With all population coctails
 png("figures/population_distribution_56176_all_ancestries.png")
 ggplot(data=popu_table_enriched %>% filter(!is.na(population)), 
