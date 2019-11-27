@@ -40,7 +40,7 @@ raw_numbers_popus = as.data.frame(table(val_data_popi$population))
 colnames(raw_numbers_popus) = c("population", "Number of genomes")
 
 # Pure ancestries
-png("barplot_population_groups_raw_numbers.png")
+png("~/Documents/STRs/VALIDATION/population/barplot_population_groups_raw_numbers.png")
 ggplot(raw_numbers_popus, 
        aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
   geom_bar(stat = "identity", aes(fill = population)) + 
