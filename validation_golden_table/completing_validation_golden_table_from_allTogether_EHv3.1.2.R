@@ -201,23 +201,41 @@ val_data2$EH_a1_maxCI[which(is.na(val_data2$EH_a1_maxCI))] = 0
 val_data2$EH_a2_maxCI[which(is.na(val_data2$EH_a2_maxCI))] = 0
 
 
-# Let's define NEW CLASSIFICATION FOR AVG VALUES
+# Let's define NEW CLASSIFICATION FOR AVG VALUES - separate by allele
 val_data2 = val_data2 %>%
   group_by(LP_Number, locus_bioinfo) %>%
-  mutate(new_classification_avg = case_when(((EH_a1_avg > threshold_normal | EH_a2_avg > threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "TP",
-                                            ((EH_a1_avg > threshold_normal | EH_a2_avg > threshold_normal) & (experimental_a1 == "normal" & experimental_a2 == "normal")) ~ "FP",
-                                            ((EH_a1_avg < threshold_normal & EH_a2_avg < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
-                                            ((EH_a1_avg < threshold_normal & EH_a2_avg < threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "FN")) %>%
+  mutate(new_classification_avg1 = case_when(((EH_a1_avg > threshold_normal) & (experimental_a1 == "expanded")) ~ "TP",
+                                            ((EH_a1_avg > threshold_normal) & (experimental_a1 != "expanded")) ~ "FP",
+                                            ((EH_a1_avg < threshold_normal) & (experimental_a1 != "expanded")) ~ "TN",
+                                            ((EH_a1_avg < threshold_normal) & (experimental_a1 == "expanded")) ~ "FN")) %>%
   as.data.frame()
 
-# Let's define NEW CLASSIFICATION FOR MAX_CI VALUES
 val_data2 = val_data2 %>%
   group_by(LP_Number, locus_bioinfo) %>%
-  mutate(new_classification_maxCI = case_when(((EH_a1_maxCI > threshold_normal | EH_a2_maxCI > threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "TP",
-                                            ((EH_a1_maxCI > threshold_normal | EH_a2_maxCI > threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "FP",
-                                            ((EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 != "expanded" & experimental_a2 != "expanded")) ~ "TN",
-                                            ((EH_a1_maxCI < threshold_normal & EH_a2_maxCI < threshold_normal) & (experimental_a1 == "expanded" | experimental_a2 == "expanded")) ~ "FN")) %>%
+  mutate(new_classification_avg2 = case_when(((EH_a2_avg > threshold_normal) & (experimental_a2 == "expanded")) ~ "TP",
+                                             ((EH_a2_avg > threshold_normal) & (experimental_a2 != "expanded")) ~ "FP",
+                                             ((EH_a2_avg < threshold_normal) & (experimental_a2 != "expanded")) ~ "TN",
+                                             ((EH_a2_avg < threshold_normal) & (experimental_a2 == "expanded")) ~ "FN")) %>%
   as.data.frame()
+
+
+# Let's define NEW CLASSIFICATION FOR MAX_CI VALUES - by allele
+val_data2 = val_data2 %>%
+  group_by(LP_Number, locus_bioinfo) %>%
+  mutate(new_classification_maxCI1 = case_when(((EH_a1_maxCI > threshold_normal) & (experimental_a1 == "expanded")) ~ "TP",
+                                            ((EH_a1_maxCI > threshold_normal) & (experimental_a1 != "expanded")) ~ "FP",
+                                            ((EH_a1_maxCI < threshold_normal) & (experimental_a1 != "expanded")) ~ "TN",
+                                            ((EH_a1_maxCI < threshold_normal) & (experimental_a1 == "expanded")) ~ "FN")) %>%
+  as.data.frame()
+
+val_data2 = val_data2 %>%
+  group_by(LP_Number, locus_bioinfo) %>%
+  mutate(new_classification_maxCI2 = case_when(((EH_a2_maxCI > threshold_normal) & (experimental_a2 == "expanded")) ~ "TP",
+                                               ((EH_a2_maxCI > threshold_normal) & (experimental_a2 != "expanded")) ~ "FP",
+                                               ((EH_a2_maxCI < threshold_normal) & (experimental_a2 != "expanded")) ~ "TN",
+                                               ((EH_a2_maxCI < threshold_normal) & (experimental_a2 == "expanded")) ~ "FN")) %>%
+  as.data.frame()
+
 
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
 # I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
