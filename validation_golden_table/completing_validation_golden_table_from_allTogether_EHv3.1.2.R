@@ -240,7 +240,7 @@ val_data2 = val_data2 %>%
 # TODO we need to make a special thing for FXN (or future biallelic or recessive loci) 
 # I'll leave this to do post creating the excel file, manually, since there are ~10 validations that are not correctly created...
 # Write results into file
-write.table(val_data2, "/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_checkFXN_251119.tsv", 
+write.table(val_data2, "/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/EHv3_avg_VS_EHv3_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv312_avg_VS_EHv312_maxCI_ClassiByAllele.tsv", 
             quote = F, 
             row.names = F, 
             col.names = T, 
