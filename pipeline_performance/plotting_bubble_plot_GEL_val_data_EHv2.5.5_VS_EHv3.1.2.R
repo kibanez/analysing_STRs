@@ -46,31 +46,63 @@ val_data = rbind(val_data_v2,
 dim(val_data)
 # 1276  16
 
-# Filter the good ones
-# 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
-val_data_v2 = val_data %>%
-  filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
-dim(val_data)
-# 546  20
-
-# 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
+# Let's simplify the data we need from `val_data`
 val_data = val_data %>%
-  filter((!STR_a1 %in% "positive"))
-dim(val_data)
-# 538  20
+  select(LP_Number, locus_bioinfo, EH_a1_avg, EH_a2_avg, EH_version)
 
-val_data = val_data %>%
-  filter((!STR_a2 %in% "positive"))
-dim(val_data)
-# 538  20
+# Before creating plots, estimate the frequency of each allele repeat-size
+# Create dataframe with exp, eh, freq for each locus
+df_data_with_freq = data.frame()
+l_locus = unique(val_data$locus_bioinfo)
+for(i in 1:length(l_locus)){
+  aux_ehv2_a1 = val_data %>% filter(locus_bioinfo %in% l_locus[i], EH_version %in% "EH-v2.5.5") %>% select(EH_a1_avg) %>% pull() %>% as.integer() 
+  aux_ehv2_a2 = val_data %>% filter(locus_bioinfo %in% l_locus[i], EH_version %in% "EH-v2.5.5") %>% select(EH_a2_avg) %>% pull() %>% as.integer() 
+  aux_ehv2_alleles = c(aux_ehv2_a1, aux_ehv2_a2)
+  
+  aux_ehv3_a1 = val_data %>% filter(locus_bioinfo %in% l_locus[i], EH_version %in% "EH-v3.1.2") %>% select(EH_a1_avg) %>% pull() %>% as.integer() 
+  aux_ehv3_a2 = val_data %>% filter(locus_bioinfo %in% l_locus[i], EH_version %in% "EH-v3.1.2") %>% select(EH_a2_avg) %>% pull() %>% as.integer() 
+  aux_ehv3_alleles = c(aux_ehv3_a1, aux_ehv3_a2)
+  
+  data_aux = xyTable(aux_ehv2_alleles, aux_ehv3_alleles)
+  
+  df_data_aux = data.frame(ehv3_alleles = data_aux$y,
+                           ehv2_alleles = data_aux$x,
+                           number_of_alleles = data_aux$number,
+                           locus = rep(l_locus[i], length(data_aux$x)))
+  # Concat info per locus
+  df_data_with_freq = rbind(df_data_with_freq,
+                               df_data_aux)
+}
 
-val_data = val_data %>%
-  filter((!STR_a1 %in% "na"))
-dim(val_data)
-# 538  20
+output_folder = "./figures/"
 
-val_data = val_data %>%
-  filter((!STR_a2 %in% "na"))
-dim(val_data)
-# 520  20
+max_value = max(df_data_with_freq$ehv2_alleles, 
+                df_data_with_freq$ehv3_alleles,
+                na.rm = TRUE) + 5
+
+
+
+# Joint all loci together
+joint_plot = ggplot(df_data_with_freq, 
+                    aes(x = ehv3_alleles, y = ehv2_alleles)) + 
+  geom_point(aes(color = locus, size = number_of_alleles)) + 
+  xlim(5,max_value) + 
+  ylim(5,max_value) + 
+  labs(title = "", 
+       y = "Repeat sizes for each allele \n Expansion Hunter (EH-v3.1.2)", 
+       x = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  guides(size = FALSE)
+
+png("figures/joint_bubble_plot_GEL_golden_val_table_EHv2_VS_EHv3.png", units="in", width=5, height=5, res=300)
+print(joint_plot)
+dev.off()
+
+pdf("figures/joint_bubble_plot_GEL_golden_val_table_EHv2_VS_EHv3.pdf")
+print(joint_plot)
+dev.off()
+
+
+
 
