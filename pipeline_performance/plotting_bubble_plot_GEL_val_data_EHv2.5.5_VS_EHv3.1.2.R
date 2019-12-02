@@ -104,5 +104,39 @@ print(joint_plot)
 dev.off()
 
 
+# let's plot each locus independently
+for(i in 1:length(l_locus)){
+  df_data_with_freq_locus = df_data_with_freq %>% 
+    filter(locus %in% l_locus[i])
+  
+  max_value = max(df_data_with_freq_locus$ehv2_alleles, 
+                  df_data_with_freq_locus$ehv3_alleles) + 5
+  
+  file_name = paste(l_locus[i], "EHv2.5.5_vs_EHv3.1.2", sep = "_")
+  pdf_name = paste(file_name, "pdf", sep = ".")
+  png_name = paste(file_name, "png", sep = ".")
+  pdf_output = paste(output_folder, pdf_name, sep = "")
+  png_output = paste(output_folder, png_name, sep = "")
+  
+  locus_bubble = ggplot(df_data_with_freq_locus, 
+                        aes(x = ehv3_alleles, y = ehv2_alleles)) + 
+    geom_point(aes(color = locus, size = number_of_alleles), show.legend = FALSE) + 
+    xlim(5,max_value) + 
+    ylim(5,max_value) + 
+    labs(title = l_locus[i], 
+         y = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+         x = "Repeat sizes for each allele \n Expansion Hunter (EH-v3.1.2)") + 
+    theme(plot.title = element_text(hjust = 0.5)) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+    coord_equal()
+  
+  pdf(pdf_output)
+  print(locus_bubble)
+  dev.off()
+  
+  png(png_output, units="in", width=5, height=5, res=300)
+  print(locus_bubble)
+  dev.off()
+}
 
 
