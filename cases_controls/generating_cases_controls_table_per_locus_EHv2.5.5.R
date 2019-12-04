@@ -89,7 +89,8 @@ dim(clin_data)
 l_genes = unique(merged_data$gene)
 
 #for (){
- i = "HTT_CAG" 
+ #i = "HTT_CAG" 
+ i = "FRA10AC1_CGG"
  locus_data = merged_data %>% filter(gene %in% i)
  locus_data_new = data.frame()
  
