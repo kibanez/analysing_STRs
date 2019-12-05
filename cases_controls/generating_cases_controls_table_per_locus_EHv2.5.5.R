@@ -21,7 +21,8 @@ dim(merged_data)
 # 3983  11
 
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
-clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_250919.tsv",
+#clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_250919.tsv",
+clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
