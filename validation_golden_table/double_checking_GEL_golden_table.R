@@ -68,3 +68,10 @@ val_data = val_data %>%
   as.data.frame()
 
 
+write.table(val_data,
+            "EHv255_EHv312_validation_cohort_GEL_doubleChecked.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
+
