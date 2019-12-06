@@ -1,35 +1,39 @@
-output_folder="/genomes/scratch/kgarikano/GEL_STR/HipSTR/twins_analysis/HipSTR_output/"
-hipster_binary="/genomes/scratch/kgarikano/GEL_STR/HipSTR/sw/HipSTR/HipSTR"
+OUTPUT_FOLDER=/genomes/scratch/kgarikano/GEL_STR/population/HipSTR_output/
+HIPSTER_BINARY=/genomes/scratch/kgarikano/GEL_STR/HipSTR/sw/HipSTR_tweak/HipSTR/HipSTR
 
-# Corresponding fata and regions files for GRCh37
-fasta_file="/genomes/resources/genomeref/Illumina/Homo_sapiens/Ensembl/GRCh37/Sequence/WholeGenomeFasta/genome.fa"
-regions_file="/genomes/scratch/kgarikano/GEL_STR/HipSTR/twins_analysis/GRCh37.hipstr_reference_forensic.bed"
+# Corresponding fasta and forensics regions files for GRCh37
+FASTA_FILE=/genomes/resources/genomeref/Illumina/Homo_sapiens/Ensembl/GRCh37/Sequence/WholeGenomeFasta/genome.fa
+REGIONS_FILE=/genomes/scratch/kgarikano/GEL_STR/population/specs/GRCh37.hipstr_reference_forensic.bed
 
 if [ $# -lt 1 ]
-  then
-    echo "A list containing BAM files to run through HipSTR is required"
-    exit
+   then
+     echo "A list containing <LP_ID, BAM_PATH> is required to run through HipSTR"
+     exit
 fi
 
-input_list=$1
+INPUT_LIST=$1
 
-cat $input_list | while read line; do
+cat ${INPUT_LIST} | while read line; do
 
-    IFS=?~@~Y,?~@~Y read -ra NAMES <<< "$line"
-    lp_id=${NAMES[0]}
-    path_to_bam=${NAMES[1]}
+ IFS=?~@~Y,?~@~Y read -ra NAMES <<< "$line"
+ LP_ID=${NAMES[0]}
+ PATH_BAM=${NAMES[1]}
 
-    output_vcf=${output_folder}'HipSTR_'${lp_id}'.vcf.gz'
-    output_log=${output_folder}'HipSTR_'${lp_id}'.log'
-    output_viz=${output_folder}'HipSTR_'${lp_id}'.viz.gz'
+ OUTPUT_VCF=${OUTPUT_FOLDER}'HipSTR_'${LP_ID}'.vcf.gz'
+ OUTPUT_LOG=${OUTPUT_FOLDER}'HipSTR_'${LP_ID}'.log'
+ OUTPUT_VIZ=${OUTPUT_FOLDER}'HipSTR_'${LP_ID}'.viz.gz'
 
-    ${hipster_binary} \
-    --bams ${lp_id} \
-    --fasta ${fasta_file} \
-    --regions ${regions_file} \
-    --str-vcf  ${output_vcf} \
-    --log ${output_log} \
-    --viz-out ${output_viz} \
-    --lb-tag ID \
-    --min-reads 15 \
-    --def-stutter-model 
+ TAG_ID='ID'
+ MIN_READS=15
+ 
+${HIPSTER_BINARY} \
+ --bams ${PATH_BAM} \
+ --fasta ${FASTA_FILE} \
+ --regions ${REGIONS_FILE} \
+ --str-vcf ${OUTPUT_VCF} \
+ --log ${OUTPUT_LOG} \
+ --viz-out ${OUTPUT_VIZ} \
+ --lib-field ${TAG_ID} \
+ --min-reads ${MIN_READS} --def-stutter-model
+
+done
