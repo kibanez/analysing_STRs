@@ -87,18 +87,10 @@ dim(clin_data)
 # no of family participants
 # ethnic 
 
-l_genes = unique(merged_data$gene)
+l_genes = sort(unique(merged_data$gene))
 
-#for (){
- #i = "HTT_CAG" 
- #i = "FRA10AC1_CGG"
- #i = "LINGO3_CGG"
- #i = "C9orf72_GGGGCC"
- #i = "AR_CAG"
-#i = "AR_CGG"
-#i = "DIP2B"
- i = "PCMTD2_CGG"
- locus_data = merged_data %>% filter(gene %in% i)
+for (i in 1:length(l_genes)){
+ locus_data = merged_data %>% filter(gene %in% l_genes[i])
  locus_data_new = data.frame()
  
  if (dim(locus_data)[1] >0){
@@ -141,7 +133,7 @@ l_genes = unique(merged_data$gene)
  }# dim(locus_data) > 0
  
  # Write all `locus_data_new` output into a file
- output_file = paste("table_STR_repeat_size_each_row_allele_EHv2.5.5", i, sep = "_")
+ output_file = paste("table_STR_repeat_size_each_row_allele_EHv2.5.5", l_genes[i], sep = "_")
  output_file = paste(output_file, ".tsv" , sep = ".")
  write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
  
@@ -151,11 +143,10 @@ l_genes = unique(merged_data$gene)
     
  # Adapt column names (for better understanding)
  colnames(locus_data_new)[6] = "repeat_size"
- output_file = paste("table_STR_repeat_size_each_row_allele_EHv2.5.5", i, sep = "_")
+ output_file = paste("table_STR_repeat_size_each_row_allele_EHv2.5.5", l_genes[i], sep = "_")
  output_file = paste(output_file, "_simplified.tsv" , sep = "")
  write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
  
- 
-#}
+}
  
  
