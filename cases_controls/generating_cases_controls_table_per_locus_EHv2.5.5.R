@@ -93,7 +93,11 @@ l_genes = unique(merged_data$gene)
  #i = "HTT_CAG" 
  #i = "FRA10AC1_CGG"
  #i = "LINGO3_CGG"
- i = "C9orf72_GGGGCC"
+ #i = "C9orf72_GGGGCC"
+ #i = "AR_CAG"
+#i = "AR_CGG"
+#i = "DIP2B"
+ i = "PCMTD2_CGG"
  locus_data = merged_data %>% filter(gene %in% i)
  locus_data_new = data.frame()
  
