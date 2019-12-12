@@ -18,9 +18,9 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/HipSTR/output_HipSTR/HipSTR_output_58971_vcfs/")
 
 # Functions
-source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_without_thresholds.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_without_thresholds.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_without_thresholds.R")
 
 # Create a specific folder for the figures
 output_folder = "./figures_forensics/"
@@ -54,12 +54,12 @@ df_amr = read.csv('AMR/merged/merged_forensics_loci_797_AMR_HipSTRv0.6.2.tsv',
 dim(df_amr)
 # 559  9
 
-df_eur = read.csv('EUR/merged/',
+df_eur = read.csv('EUR/merged/merged_forensics_loci_46883_EUR_HipSTRv0.6.2.tsv',
                   sep = '\t',
                   stringsAsFactors = F,
                   header = T) 
 dim(df_eur)
-# 917  12
+# 1750   9
 
 
 df_asi = df_asi %>% mutate(population = "ASI")
@@ -74,21 +74,21 @@ df_all = rbind(df_afr,
                df_eas,
                df_asi)
 dim(df_all)
-# 4474  13
+# 4242  10   
 
 
 l_loci = sort(unique(df_all$gene))
 for (i in 1:length(l_loci)){
   # Each locus - Individually
-  plot_gene(df_afr, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
-  plot_gene(df_amr, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
-  plot_gene(df_eur, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
-  plot_gene(df_eas, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
-  plot_gene(df_asi, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
+  plot_gene_without_cutoff(df_afr, l_loci[i], output_folder, "GRCh38", "AFR")
+  plot_gene_without_cutoff(df_amr, l_loci[i], output_folder, "GRCh38", "AMR")
+  plot_gene_without_cutoff(df_eur, l_loci[i], output_folder, "GRCh38", "EUR")
+  plot_gene_without_cutoff(df_eas, l_loci[i], output_folder, "GRCh38", "EAS")
+  plot_gene_without_cutoff(df_asi, l_loci[i], output_folder, "GRCh38", "ASI")
   
   # Jointly - distribution
-  plot_gene_joint_ancestries(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_gene_joint_ancestries_without_cutoff(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
   
   # Jointly - Violing plots
-  plot_violin_ancestry(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_violin_ancestry_without_cutoff(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
 }
