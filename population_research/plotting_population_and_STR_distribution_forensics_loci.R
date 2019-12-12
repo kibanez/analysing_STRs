@@ -25,6 +25,58 @@ source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R
 # Create a specific folder for the figures
 output_folder = "./figures_forensics/"
 
+# Load HipSTR STR output data - merged TSV files
+df_asi = read.csv('./ASI/merged/merged_forensics_loci_5947_ASI_HipSTRv0.6.2.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T)
+dim(df_asi)
+# 864  9
+
+df_eas = read.csv('./EAS/merged/merged_forensics_loci_400_EAS_HipSTRv0.6.2.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_eas)
+# 403  9
+
+df_afr = read.csv('AFR/merged/merged_forensics_loci_1777_AFR_HipSTRv0.6.2.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_afr)
+# 666  9
+
+df_amr = read.csv('AMR/merged/merged_forensics_loci_797_AMR_HipSTRv0.6.2.tsv',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_amr)
+# 559  9
+
+df_eur = read.csv('EUR/merged/',
+                  sep = '\t',
+                  stringsAsFactors = F,
+                  header = T) 
+dim(df_eur)
+# 917  12
+
+
+df_asi = df_asi %>% mutate(population = "ASI")
+df_eas = df_eas %>% mutate(population = "EAS")
+df_afr = df_afr %>% mutate(population = "AFR")
+df_amr = df_amr %>% mutate(population = "AMR")
+df_eur = df_eur %>% mutate(population = "EUR")
+
+df_all = rbind(df_afr,
+               df_amr,
+               df_eur,
+               df_eas,
+               df_asi)
+dim(df_all)
+# 4474  13
+
+
 l_loci = sort(unique(df_all$gene))
 for (i in 1:length(l_loci)){
   # Each locus - Individually
