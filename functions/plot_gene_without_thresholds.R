@@ -1,6 +1,6 @@
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
 # Not taking into account cut-offs/thresholds
-plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, assembly, ancestry) {
+plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, ancestry) {
   df_gene = df_input %>% filter(gene %in% gene_name)
   
   alt_number = df_gene$repeat.size
