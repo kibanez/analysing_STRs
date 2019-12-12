@@ -3,7 +3,7 @@
 plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, assembly, ancestry) {
   df_gene = df_input %>% filter(gene %in% gene_name)
   
-  alt_number = df_gene$allele
+  alt_number = df_gene$repeat.size
   
   df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples)
   
