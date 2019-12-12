@@ -1,5 +1,5 @@
 # Adapt plot_violin_ancestry function not taking cut-offs
-plot_violin_ancestry <- function(df_input, gene_name, output_folder){
+plot_violin_ancestry_without_cutoff <- function(df_input, gene_name, output_folder){
   df_gene = df_input %>% 
     filter(gene %in% gene_name) %>%
     select(allele, num_samples, population)

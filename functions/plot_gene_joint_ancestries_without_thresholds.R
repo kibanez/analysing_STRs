@@ -1,6 +1,6 @@
 # Function that plots jointly all STR distribution across all ancestries given
 # Ignoring thresholds or cutoffs
-plot_gene_joint_ancestries <- function(df_input, gene_name, output_folder) {
+plot_gene_joint_ancestries_without_cutoff <- function(df_input, gene_name, output_folder) {
   df_gene = df_input %>% filter(gene %in% gene_name)
   alt_number = df_gene$allele
   population = df_gene$population
