@@ -81,7 +81,7 @@ l_loci = sort(unique(df_all$gene))
 for (i in 1:length(l_loci)){
   # Each locus - Individually
   if (grepl("/", l_loci[i])){
-    gene_name = gsub("/", "_", l_loci[i])
+    next
   }else{
     gene_name = l_loci[i]
   }
