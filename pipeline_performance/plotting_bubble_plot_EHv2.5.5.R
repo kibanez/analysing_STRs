@@ -1,4 +1,5 @@
 # Objective: plot a bubble plot with the correlation between EHv2/EHv3 estimations and the experimental validation
+# GEL and ILMN data now (uopdated on December 2019)
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
@@ -17,40 +18,40 @@ library(tidyverse); packageDescription ("tidyverse", fields = "Version") #"1.2.1
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/")
 
 # Load golden validation table - EHv2.5.5
-val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN_withPileup_and_expValidatedData_tweaking_ATN1_updated_AR_from_NHNN.txt",
+val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN_withPileup_and_expValidatedData_tweaking_ATN1_updated_AR_from_NHNN.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 638  20
+# 635  21
 
 # Filter the good ones
 # 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
 val_data = val_data %>%
   filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
 dim(val_data)
-# 546  20
+# 543  21
 
 # 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 val_data = val_data %>%
   filter((!STR_a1 %in% "positive"))
 dim(val_data)
-# 538  20
+# 539  21
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "positive"))
 dim(val_data)
-# 538  20
+# 539  21
 
 val_data = val_data %>%
   filter((!STR_a1 %in% "na"))
 dim(val_data)
-# 538  20
+# 539  21
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "na"))
 dim(val_data)
-# 520  20
+# 521  21
 
 # Let's simplify the data we need from `val_data`
 val_data = val_data %>%
@@ -86,7 +87,7 @@ for (i in 1:length(val_data$LP_Number)){
   val_eh_a2 = val_data$EH_a2_avg[i]
   
   # For alleles that there is no estimation (EH only calls 1 allele) we do have a `0` -- we ignore/avoid this step in these cases
-  if (val_eh_a2 == 0){
+  if (val_eh_a2 == 0 | is.na(val_eh_a2)){
     min_validation = val_validation_a1
     min_eh = val_eh_a1
     max_validation = NA
@@ -104,7 +105,7 @@ for (i in 1:length(val_data$LP_Number)){
   val_data$eh_a2[i] = max_eh
 }
 dim(val_data)
-# 515  11
+# 516  11
 
 
 # Let's take the important meat: experimentally validated data and EH estimations
@@ -162,11 +163,11 @@ joint_plot = ggplot(df_data_with_freq_v2,
   coord_equal() +
   guides(size = FALSE)
 
-png("figures/joint_bubble_plot_EHv2.png", units="in", width=5, height=5, res=300)
+png("figures/joint_bubble_plot_EHv2_generalView.png", units="in", width=5, height=5, res=300)
 print(joint_plot)
 dev.off()
 
-pdf("figures/joint_bubble_plot_EHv2.pdf")
+pdf("figures/joint_bubble_plot_EHv2_generalView.pdf")
 print(joint_plot)
 dev.off()
 
