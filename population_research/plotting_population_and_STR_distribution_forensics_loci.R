@@ -31,35 +31,35 @@ df_asi = read.csv('./ASI/merged/merged_forensics_loci_5947_ASI_HipSTRv0.6.2.tsv'
                   stringsAsFactors = F,
                   header = T)
 dim(df_asi)
-# 864  9
+# 420  7
 
 df_eas = read.csv('./EAS/merged/merged_forensics_loci_400_EAS_HipSTRv0.6.2.tsv',
                   sep = '\t',
                   stringsAsFactors = F,
                   header = T) 
 dim(df_eas)
-# 403  9
+# 322  7
 
 df_afr = read.csv('AFR/merged/merged_forensics_loci_1777_AFR_HipSTRv0.6.2.tsv',
                   sep = '\t',
                   stringsAsFactors = F,
                   header = T) 
 dim(df_afr)
-# 432  9
+# 432  7
 
 df_amr = read.csv('AMR/merged/merged_forensics_loci_797_AMR_HipSTRv0.6.2.tsv',
                   sep = '\t',
                   stringsAsFactors = F,
                   header = T) 
 dim(df_amr)
-# 559  9
+# 388  7
 
 df_eur = read.csv('EUR/merged/merged_forensics_loci_46883_EUR_HipSTRv0.6.2.tsv',
                   sep = '\t',
                   stringsAsFactors = F,
                   header = T) 
 dim(df_eur)
-# 1750   9
+# 661  7
 
 
 df_asi = df_asi %>% mutate(population = "ASI")
@@ -74,21 +74,21 @@ df_all = rbind(df_afr,
                df_eas,
                df_asi)
 dim(df_all)
-# 4242  10   
+# 2223  8
 
 
 l_loci = sort(unique(df_all$gene))
 for (i in 1:length(l_loci)){
   # Each locus - Individually
-  plot_gene_without_cutoff(df_afr, l_loci[i], output_folder, "AFR")
-  plot_gene_without_cutoff(df_amr, l_loci[i], output_folder, "AMR")
-  plot_gene_without_cutoff(df_eur, l_loci[i], output_folder, "EUR")
-  plot_gene_without_cutoff(df_eas, l_loci[i], output_folder, "EAS")
-  plot_gene_without_cutoff(df_asi, l_loci[i], output_folder, "ASI")
+  plot_gene_without_cutoff(df_afr, l_loci[i], output_folder, "GRCh38", "AFR")
+  plot_gene_without_cutoff(df_amr, l_loci[i], output_folder, "GRCh38", "AMR")
+  plot_gene_without_cutoff(df_eur, l_loci[i], output_folder, "GRCh38", "EUR")
+  plot_gene_without_cutoff(df_eas, l_loci[i], output_folder, "GRCh38", "EAS")
+  plot_gene_without_cutoff(df_asi, l_loci[i], output_folder, "GRCh38", "ASI")
   
   # Jointly - distribution
-  plot_gene_joint_ancestries_without_cutoff(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_gene_joint_ancestries_without_cutoff(df_all, l_loci[i], output_folder)
   
   # Jointly - Violing plots
-  plot_violin_ancestry_without_cutoff(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_violin_ancestry_without_cutoff(df_all, l_loci[i], output_folder)
 }
