@@ -45,7 +45,7 @@ df_afr = read.csv('AFR/merged/merged_forensics_loci_1777_AFR_HipSTRv0.6.2.tsv',
                   stringsAsFactors = F,
                   header = T) 
 dim(df_afr)
-# 666  9
+# 432  9
 
 df_amr = read.csv('AMR/merged/merged_forensics_loci_797_AMR_HipSTRv0.6.2.tsv',
                   sep = '\t',
@@ -80,11 +80,11 @@ dim(df_all)
 l_loci = sort(unique(df_all$gene))
 for (i in 1:length(l_loci)){
   # Each locus - Individually
-  plot_gene_without_cutoff(df_afr, l_loci[i], output_folder, "GRCh38", "AFR")
-  plot_gene_without_cutoff(df_amr, l_loci[i], output_folder, "GRCh38", "AMR")
-  plot_gene_without_cutoff(df_eur, l_loci[i], output_folder, "GRCh38", "EUR")
-  plot_gene_without_cutoff(df_eas, l_loci[i], output_folder, "GRCh38", "EAS")
-  plot_gene_without_cutoff(df_asi, l_loci[i], output_folder, "GRCh38", "ASI")
+  plot_gene_without_cutoff(df_afr, l_loci[i], output_folder, "AFR")
+  plot_gene_without_cutoff(df_amr, l_loci[i], output_folder, "AMR")
+  plot_gene_without_cutoff(df_eur, l_loci[i], output_folder, "EUR")
+  plot_gene_without_cutoff(df_eas, l_loci[i], output_folder, "EAS")
+  plot_gene_without_cutoff(df_asi, l_loci[i], output_folder, "ASI")
   
   # Jointly - distribution
   plot_gene_joint_ancestries_without_cutoff(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)

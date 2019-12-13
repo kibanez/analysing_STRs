@@ -1,10 +1,15 @@
 # Function that plots the STR repeat-size frequencies for a gene/locus across the cohort
 # Not taking into account cut-offs/thresholds
-plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, ancestry) {
+plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, assembly, ancestry) {
   df_gene = df_input %>% filter(gene %in% gene_name)
   
   # Only consider GRCh38 genomes, the ones starting with `chr`
-  df_gene = df_gene %>% filter(grepl("chr", chr))
+  if (assembly == "GRCh38"){
+    df_gene = df_gene %>% filter(grepl("chr", chr))  
+  }else{
+    df_gene = df_gene %>% filter(!grepl("chr", chr))  
+  }
+  
   
   alt_number = df_gene$repeat.size
   
