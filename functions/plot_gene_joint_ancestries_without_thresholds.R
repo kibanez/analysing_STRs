@@ -2,7 +2,7 @@
 # Ignoring thresholds or cutoffs
 plot_gene_joint_ancestries_without_cutoff <- function(df_input, gene_name, output_folder) {
   df_gene = df_input %>% filter(gene %in% gene_name)
-  alt_number = df_gene$allele
+  alt_number = df_gene$repeat.size
   population = df_gene$population
   df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples, population = population)
   
@@ -12,7 +12,7 @@ plot_gene_joint_ancestries_without_cutoff <- function(df_input, gene_name, outpu
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
   min_value = min(df_gene_barplot$number_repeats)
-  max_value = df_gene_barplot$number_repeats
+  max_value = max(df_gene_barplot$number_repeats)
   
   
   joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = population, color = population)) + 

@@ -2,14 +2,14 @@
 plot_violin_ancestry_without_cutoff <- function(df_input, gene_name, output_folder){
   df_gene = df_input %>% 
     filter(gene %in% gene_name) %>%
-    select(allele, num_samples, population)
+    select(repeat.size, num_samples, population)
   
   df_gene2 = data.frame()
   l_ancestries = unique(df_gene$population)
   for(i in 1:length(l_ancestries)){
     aux_df = df_gene %>% filter(population %in% l_ancestries[i])
-    for(j in 1:length(aux_df$allele)){
-      allele = aux_df$allele[j]
+    for(j in 1:length(aux_df$repeat.size)){
+      allele = aux_df$repeat.size[j]
       repeat_size = aux_df$num_samples[j]
       population = aux_df$population[j]
       
