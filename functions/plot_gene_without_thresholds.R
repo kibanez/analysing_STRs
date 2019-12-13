@@ -3,12 +3,16 @@
 plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, ancestry) {
   df_gene = df_input %>% filter(gene %in% gene_name)
   
+  # Only consider GRCh38 genomes, the ones starting with `chr`
+  df_gene = df_gene %>% filter(grepl("chr", chr))
+  
   alt_number = df_gene$repeat.size
   
   df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples)
   
   # order by 'number of repetition'
   df_gene_barplot = unique(df_gene_barplot[order(df_gene_barplot[,1]),])
+  df_gene_barplot$number_repeats = as.integer(df_gene_barplot$number_repeats)
   
   rownames(df_gene_barplot) = df_gene_barplot$number_repeats
   
@@ -21,7 +25,7 @@ plot_gene_without_cutoff <- function(df_input, gene_name, output_folder, ancestr
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
   min_value = min(df_gene_barplot$number_repeats)
-  max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
+  max_value = df_gene_barplot$number_repeats
   
   aux_plot = ggplot(unique(df_gene_barplot), aes(x = number_repeats, y = af)) + 
     geom_bar(stat = "identity") + 
