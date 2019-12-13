@@ -80,15 +80,21 @@ dim(df_all)
 l_loci = sort(unique(df_all$gene))
 for (i in 1:length(l_loci)){
   # Each locus - Individually
-  plot_gene_without_cutoff(df_afr, l_loci[i], output_folder, "GRCh38", "AFR")
-  plot_gene_without_cutoff(df_amr, l_loci[i], output_folder, "GRCh38", "AMR")
-  plot_gene_without_cutoff(df_eur, l_loci[i], output_folder, "GRCh38", "EUR")
-  plot_gene_without_cutoff(df_eas, l_loci[i], output_folder, "GRCh38", "EAS")
-  plot_gene_without_cutoff(df_asi, l_loci[i], output_folder, "GRCh38", "ASI")
+  if (grepl("/", l_loci[i])){
+    gene_name = gsub("/", "_", l_loci[i])
+  }else{
+    gene_name = l_loci[i]
+  }
+  
+  plot_gene_without_cutoff(df_afr, gene_name, output_folder, "GRCh38", "AFR")
+  plot_gene_without_cutoff(df_amr, gene_name, output_folder, "GRCh38", "AMR")
+  plot_gene_without_cutoff(df_eur, gene_name, output_folder, "GRCh38", "EUR")
+  plot_gene_without_cutoff(df_eas, gene_name, output_folder, "GRCh38", "EAS")
+  plot_gene_without_cutoff(df_asi, gene_name, output_folder, "GRCh38", "ASI")
   
   # Jointly - distribution
-  plot_gene_joint_ancestries_without_cutoff(df_all, l_loci[i], output_folder)
+  plot_gene_joint_ancestries_without_cutoff(df_all, gene_name, output_folder)
   
   # Jointly - Violing plots
-  plot_violin_ancestry_without_cutoff(df_all, l_loci[i], output_folder)
+  plot_violin_ancestry_without_cutoff(df_all, gene_name, output_folder)
 }
