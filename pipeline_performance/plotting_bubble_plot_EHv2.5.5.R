@@ -185,8 +185,6 @@ joint_plot = ggplot(df_data_with_freq_v2,
   guides(size = FALSE)
 
 
-
-
 png("figures/joint_bubble_plot_EHv2_generalView.png", units="in", width=5, height=5, res=300)
 print(joint_plot)
 dev.off()
@@ -196,7 +194,6 @@ print(joint_plot)
 dev.off()
 
 # Let's focus on those expansions >70 and <70
-
 # Larger than 70
 df_data_with_freq_v2_larger70 = df_data_with_freq_v2 %>% filter(eh_alleles > 70)
 max_value = max(df_data_with_freq_v2_larger70$eh_alleles, 
@@ -207,8 +204,8 @@ min_value = min(df_data_with_freq_v2_larger70$eh_alleles,
                 na.rm = TRUE) - 5
 
 joint_plot_larger70 = ggplot(df_data_with_freq_v2_larger70, 
-                    aes(x = exp_alleles, y = eh_alleles)) + 
-  geom_point(aes(color = locus, size = number_of_alleles)) + 
+                    aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
+  geom_point(aes(fill = factor(locus))) + 
   xlim(min_value - 5 ,max_value + 5) + 
   ylim(min_value - 5 ,max_value + 5) + 
   labs(title = "", 
@@ -216,6 +213,7 @@ joint_plot_larger70 = ggplot(df_data_with_freq_v2_larger70,
        x = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
+  scale_colour_manual(values=group.colors) +  
   guides(size = FALSE)
 
 png("figures/joint_bubble_plot_EHv2_larger70.png", units="in", width=5, height=5, res=300)
@@ -235,8 +233,8 @@ min_value = min(df_data_with_freq_v2_smaller70$eh_alleles,
                 na.rm = TRUE) - 5
 
 joint_plot_smaller70 = ggplot(df_data_with_freq_v2_smaller70, 
-                             aes(x = exp_alleles, y = eh_alleles)) + 
-  geom_point(aes(color = locus, size = number_of_alleles)) + 
+                             aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
+  geom_point(aes(fill = factor(locus))) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
@@ -244,6 +242,7 @@ joint_plot_smaller70 = ggplot(df_data_with_freq_v2_smaller70,
        x = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
+  scale_colour_manual(values=group.colors) +  
   guides(size = FALSE)
 
 png("figures/joint_bubble_plot_EHv2_smaller70.png", units="in", width=5, height=5, res=300)
