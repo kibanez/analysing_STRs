@@ -149,18 +149,6 @@ max_value = max(df_data_with_freq_v2$eh_alleles,
                 df_data_with_freq_v2$exp_alleles,
                 na.rm = TRUE) + 5
 
-joint_plot = ggplot(df_data_with_freq_v2, 
-                    aes(x = exp_alleles, y = eh_alleles)) + 
-  geom_point(aes(color = locus, size = number_of_alleles)) + 
-  xlim(5,max_value) + 
-  ylim(5,max_value) + 
-  labs(title = "", 
-       y = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
-       x = "Repeat sizes for each allele \n Experimental validation") + 
-  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
-  coord_equal() +
-  guides(size = FALSE)
-
 # Filling manually colours (locus)
 brewer.pal(n = 8, name = "Dark2")
 # "#1B9E77" "#D95F02" "#7570B3" "#E7298A" "#66A61E" "#E6AB02" "#A6761D" "#666666"
@@ -181,7 +169,8 @@ joint_plot = ggplot(df_data_with_freq_v2,
        x = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
-  scale_colour_manual(values=group.colors) +  
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank()) + 
   guides(size = FALSE)
 
 
@@ -213,7 +202,8 @@ joint_plot_larger70 = ggplot(df_data_with_freq_v2_larger70,
        x = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
-  scale_colour_manual(values=group.colors) +  
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank()) + 
   guides(size = FALSE)
 
 png("figures/joint_bubble_plot_EHv2_larger70.png", units="in", width=5, height=5, res=300)
@@ -242,7 +232,8 @@ joint_plot_smaller70 = ggplot(df_data_with_freq_v2_smaller70,
        x = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
-  scale_colour_manual(values=group.colors) +  
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank()) + 
   guides(size = FALSE)
 
 png("figures/joint_bubble_plot_EHv2_smaller70.png", units="in", width=5, height=5, res=300)
