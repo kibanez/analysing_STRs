@@ -13,6 +13,7 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.7.4"
 library(lattice); packageDescription ("lattice", fields = "Version") #"0.20-35"
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") #"1.2.1"
+library(RColorBrewer); packageDescription ("RColorBrewer", fields = "Version") #"1.1-2"
 
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/pipeline_performance/")
@@ -25,10 +26,18 @@ val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_
 dim(val_data)
 # 635  22
 
+# Filter the good ones
+# 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
+val_data = val_data %>%
+  filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
+dim(val_data)
+# 543  22
+
 # Let's simplify the data we need from `val_data`
 val_data = val_data %>%
   select(LP_Number, locus_bioinfo, locus, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
 
+# 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 # Let's see index for which `STR_a1` and `STR_a2` separately have not integer or numbers for allele estimation
 index_a1 = c(which(val_data$STR_a1 == "normal"), 
              which(val_data$STR_a1 == "positive"), 
@@ -64,78 +73,6 @@ index_allele2 = unique(c(index_eh_a2, index_a2))
 length(index_allele2)
 # 45
 
-# Filter the good ones
-# 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
-val_data = val_data %>%
-  filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
-dim(val_data)
-# 543  22
-
-# 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
-val_data = val_data %>%
-  filter((!STR_a1 %in% "positive"))
-dim(val_data)
-# 539  22
-
-val_data = val_data %>%
-  filter((!STR_a1 %in% "normal"))
-dim(val_data)
-# 537  22
-
-val_data = val_data %>%
-  filter(!is.na(STR_a1))
-dim(val_data)
-# 535  22
-
-val_data = val_data %>%
-  filter((!STR_a1 %in% "na"))
-dim(val_data)
-# 535  22
-
-val_data = val_data %>%
-  filter((!STR_a2 %in% "positive"))
-dim(val_data)
-# 535  22
-
-val_data = val_data %>%
-  filter((!STR_a2 %in% "na"))
-dim(val_data)
-# 517  22
-
-val_data = val_data %>%
-  filter((!STR_a2 %in% "premutation"))
-dim(val_data)
-# 517  22
-
-val_data = val_data %>%
-  filter((!STR_a2 %in% "full_mutation"))
-dim(val_data)
-# 517  22
-
-val_data = val_data %>%
-  filter((!STR_a2 %in% "EXP"))
-dim(val_data)
-# 512  22
-
-
-
-# Just remove all rows having `normal`, `expansion`, `full_mutation`, `premutation`
-val_data = val_data %>% filter(!STR_a1 %in% 'normal')
-val_data = val_data %>% filter(!STR_a2 %in% 'normal')
-val_data = val_data %>% filter(!STR_a1 %in% 'expansion')
-val_data = val_data %>% filter(!STR_a2 %in% 'expansion')
-val_data = val_data %>% filter(!STR_a1 %in% 'full_mutation')
-val_data = val_data %>% filter(!STR_a2 %in% 'full_mutation')
-val_data = val_data %>% filter(!STR_a1 %in% 'premutation')
-val_data = val_data %>% filter(!STR_a2 %in% 'premutation')
-
-# Remove ONLY COLUMNS (and aligning experimental and EH) in which we do not have a number or we do have `.`
-l_dot = which(val_data$STR_a2 == '.')
-val_data$EH_a2_avg[l_dot] = 0
-
-l_EXP = which(val_data$STR_a2 == 'EXP')
-val_data$EH_a2_avg[l_EXP] = 0
-
 # in case there is only 1 allele, we should have 1 allele for expValidation and EH
 # in case there are 2 alleles, then the `a1` for expValidation and EH should be the minimum (minor repeat size)
 val_data$STR_a1 = as.integer(val_data$STR_a1)
@@ -167,8 +104,7 @@ for (i in 1:length(val_data$LP_Number)){
   val_data$eh_a2[i] = max_eh
 }
 dim(val_data)
-# 516  11
-
+# 543  11
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$validation_a1), as.integer(val_data$validation_a2))
@@ -226,11 +162,18 @@ joint_plot = ggplot(df_data_with_freq_v2,
   guides(size = FALSE)
 
 # Filling manually colours (locus)
-group.colors <- c(AR = "#", ATN1 = "#", ATXN1 ="#", ATXN2 = "#", ATXN3 = "#", 
-                  ATXN7 = "#", CACNA1A = "#", FXN = "#", HTT ="#", TBP = "#", C9orf72 = "#", FMR1 = "#")
+brewer.pal(n = 12, name = "Paired")
+# [1] "#A6CEE3" "#1F78B4" "#B2DF8A" "#33A02C" "#FB9A99" "#E31A1C" "#FDBF6F" "#FF7F00" "#CAB2D6" "#6A3D9A" "#FFFF99" "#B15928"
+brewer.pal(n = 4, name = "PiYG")
+# [1] "#D01C8B" "#F1B6DA" "#B8E186" "#4DAC26"
+
+group.colors = c("AR" = "#A6CEE3", "ATN1" = "#1F78B4", "ATXN1" ="#B2DF8A", "ATXN2" = "#33A02C", "ATXN3" = "#FB9A99", 
+                 "ATXN7" = "#E31A1C", "CACNA1A" = "#FDBF6F", "FXN" = "#FF7F00", "HTT" ="#CAB2D6", "TBP" = "#6A3D9A", 
+                 "C9orf72" = "#FFFF99", "FMR1" = "#B15928", "PPP2R2B" = "#4DAC26")
+
 joint_plot = ggplot(df_data_with_freq_v2, 
-                    aes(x = exp_alleles, y = eh_alleles)) + 
-  geom_point(aes(fill = locus, size = number_of_alleles)) + 
+                    aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
+  geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
@@ -238,7 +181,7 @@ joint_plot = ggplot(df_data_with_freq_v2,
        x = "Repeat sizes for each allele \n Experimental validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
-  scale_fill_manual(values=group.colors) +
+  scale_colour_manual(values=group.colors) +  
   guides(size = FALSE)
 
 
