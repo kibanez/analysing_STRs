@@ -170,8 +170,9 @@ joint_plot = ggplot(df_data_with_freq_v2,
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
   scale_fill_manual(values=group.colors) +  
-  theme(legend.title = element_blank()) + 
-  guides(size = FALSE)
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
 
 
 png("figures/joint_bubble_plot_EHv2_generalView.png", units="in", width=5, height=5, res=300)
@@ -224,7 +225,7 @@ min_value = min(df_data_with_freq_v2_smaller70$eh_alleles,
 
 joint_plot_smaller70 = ggplot(df_data_with_freq_v2_smaller70, 
                              aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
-  geom_point(aes(fill = factor(locus))) + 
+  geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
