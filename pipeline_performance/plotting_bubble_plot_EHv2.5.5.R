@@ -162,14 +162,14 @@ joint_plot = ggplot(df_data_with_freq_v2,
   guides(size = FALSE)
 
 # Filling manually colours (locus)
-brewer.pal(n = 12, name = "Paired")
-# [1] "#A6CEE3" "#1F78B4" "#B2DF8A" "#33A02C" "#FB9A99" "#E31A1C" "#FDBF6F" "#FF7F00" "#CAB2D6" "#6A3D9A" "#FFFF99" "#B15928"
-brewer.pal(n = 4, name = "PiYG")
-# [1] "#D01C8B" "#F1B6DA" "#B8E186" "#4DAC26"
+brewer.pal(n = 8, name = "Dark2")
+# "#1B9E77" "#D95F02" "#7570B3" "#E7298A" "#66A61E" "#E6AB02" "#A6761D" "#666666"
+brewer.pal(n = 8, name = "Set1")
+# "#E41A1C" "#377EB8" "#4DAF4A" "#984EA3" "#FF7F00" "#FFFF33" "#A65628" "#F781BF"
 
-group.colors = c("AR" = "#A6CEE3", "ATN1" = "#1F78B4", "ATXN1" ="#B2DF8A", "ATXN2" = "#33A02C", "ATXN3" = "#FB9A99", 
-                 "ATXN7" = "#E31A1C", "CACNA1A" = "#FDBF6F", "FXN" = "#FF7F00", "HTT" ="#CAB2D6", "TBP" = "#6A3D9A", 
-                 "C9orf72" = "#FFFF99", "FMR1" = "#B15928", "PPP2R2B" = "#4DAC26")
+group.colors = c("AR" = "#1B9E77", "ATN1" = "#D95F02", "ATXN1" ="#7570B3", "ATXN2" = "#E7298A", "ATXN3" = "#66A61E", 
+                 "ATXN7" = "#E6AB02", "CACNA1A" = "#A6761D", "FXN" = "#666666", "HTT" ="#E41A1C", "TBP" = "#FF7F00", 
+                 "C9orf72" = "#FFFF33", "FMR1" = "#F781BF", "PPP2R2B" = "black")
 
 joint_plot = ggplot(df_data_with_freq_v2, 
                     aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
