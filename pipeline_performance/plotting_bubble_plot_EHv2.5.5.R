@@ -23,39 +23,68 @@ val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 635  21
+# 635  22
+
+# Let's simplify the data we need from `val_data`
+val_data = val_data %>%
+  select(LP_Number, locus_bioinfo, locus, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
+
+
 
 # Filter the good ones
 # 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
 val_data = val_data %>%
   filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
 dim(val_data)
-# 543  21
+# 543  22
 
 # 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 val_data = val_data %>%
   filter((!STR_a1 %in% "positive"))
 dim(val_data)
-# 539  21
+# 539  22
 
 val_data = val_data %>%
-  filter((!STR_a2 %in% "positive"))
+  filter((!STR_a1 %in% "normal"))
 dim(val_data)
-# 539  21
+# 537  22
+
+val_data = val_data %>%
+  filter(!is.na(STR_a1))
+dim(val_data)
+# 535  22
 
 val_data = val_data %>%
   filter((!STR_a1 %in% "na"))
 dim(val_data)
-# 539  21
+# 535  22
+
+val_data = val_data %>%
+  filter((!STR_a2 %in% "positive"))
+dim(val_data)
+# 535  22
 
 val_data = val_data %>%
   filter((!STR_a2 %in% "na"))
 dim(val_data)
-# 521  21
+# 517  22
 
-# Let's simplify the data we need from `val_data`
 val_data = val_data %>%
-  select(LP_Number, locus_bioinfo, locus, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
+  filter((!STR_a2 %in% "premutation"))
+dim(val_data)
+# 517  22
+
+val_data = val_data %>%
+  filter((!STR_a2 %in% "full_mutation"))
+dim(val_data)
+# 517  22
+
+val_data = val_data %>%
+  filter((!STR_a2 %in% "EXP"))
+dim(val_data)
+# 512  22
+
+
 
 # Just remove all rows having `normal`, `expansion`, `full_mutation`, `premutation`
 val_data = val_data %>% filter(!STR_a1 %in% 'normal')
@@ -162,6 +191,25 @@ joint_plot = ggplot(df_data_with_freq_v2,
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
   guides(size = FALSE)
+
+# Filling manually colours (locus)
+group.colors <- c(AR = "#", ATN1 = "#", ATXN1 ="#", ATXN2 = "#", ATXN3 = "#", 
+                  ATXN7 = "#", CACNA1A = "#", FXN = "#", HTT ="#", TBP = "#", C9orf72 = "#", FMR1 = "#")
+joint_plot = ggplot(df_data_with_freq_v2, 
+                    aes(x = exp_alleles, y = eh_alleles)) + 
+  geom_point(aes(fill = locus, size = number_of_alleles)) + 
+  xlim(5,max_value) + 
+  ylim(5,max_value) + 
+  labs(title = "", 
+       y = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
+       x = "Repeat sizes for each allele \n Experimental validation") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +
+  guides(size = FALSE)
+
+
+
 
 png("figures/joint_bubble_plot_EHv2_generalView.png", units="in", width=5, height=5, res=300)
 print(joint_plot)
