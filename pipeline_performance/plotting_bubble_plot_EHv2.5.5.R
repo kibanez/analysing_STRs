@@ -29,7 +29,40 @@ dim(val_data)
 val_data = val_data %>%
   select(LP_Number, locus_bioinfo, locus, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
 
+# Let's see index for which `STR_a1` and `STR_a2` separately have not integer or numbers for allele estimation
+index_a1 = c(which(val_data$STR_a1 == "normal"), 
+             which(val_data$STR_a1 == "positive"), 
+             which(is.na(val_data$STR_a1)))
+length(index_a1)
+# 8
 
+index_a2 = c(which(val_data$STR_a2 == "positive"), 
+             which(val_data$STR_a2 == "premutation"), 
+             which(val_data$STR_a2 == "na"), 
+             which(val_data$STR_a2 == "full_mutation"), 
+             which(val_data$STR_a2 == "EXP"),
+             which(val_data$STR_a2 == "."),
+             which(is.na(val_data$STR_a2)))
+length(index_a2)
+# 43
+
+# EH alleles with no integer
+index_eh_a1 = c(which(is.na(val_data$EH_a1_avg)))
+length(index_eh_a1)
+# 1
+
+index_eh_a2 = c(which(is.na(val_data$EH_a2_avg)))
+length(index_eh_a2)
+# 12
+
+# We will use `index_a1` and `index_a2` when filtering out STR_a1, and EH_a1_avg; and STR_a2 and EH_a2_avg respectively
+index_allele1 = unique(c(index_eh_a1, index_a1))
+length(index_allele1)
+# 9
+
+index_allele2 = unique(c(index_eh_a2, index_a2))
+length(index_allele2)
+# 45
 
 # Filter the good ones
 # 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
