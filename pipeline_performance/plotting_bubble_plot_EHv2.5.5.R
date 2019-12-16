@@ -171,6 +171,66 @@ pdf("figures/joint_bubble_plot_EHv2_generalView.pdf")
 print(joint_plot)
 dev.off()
 
+# Let's focus on those expansions >70 and <70
+
+# Larger than 70
+df_data_with_freq_v2_larger70 = df_data_with_freq_v2 %>% filter(eh_alleles > 70)
+max_value = max(df_data_with_freq_v2_larger70$eh_alleles, 
+                df_data_with_freq_v2_larger70$exp_alleles,
+                na.rm = TRUE) + 5
+min_value = min(df_data_with_freq_v2_larger70$eh_alleles, 
+                df_data_with_freq_v2_larger70$exp_alleles,
+                na.rm = TRUE) - 5
+
+joint_plot_larger70 = ggplot(df_data_with_freq_v2_larger70, 
+                    aes(x = exp_alleles, y = eh_alleles)) + 
+  geom_point(aes(color = locus, size = number_of_alleles)) + 
+  xlim(min_value - 5 ,max_value + 5) + 
+  ylim(min_value - 5 ,max_value + 5) + 
+  labs(title = "", 
+       y = "Repeat sizes for each allele - larger 70 repeats \n Expansion Hunter (EH-v2.5.5)", 
+       x = "Repeat sizes for each allele \n Experimental validation") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  guides(size = FALSE)
+
+png("figures/joint_bubble_plot_EHv2_larger70.png", units="in", width=5, height=5, res=300)
+print(joint_plot_larger70)
+dev.off()
+pdf("figures/joint_bubble_plot_EHv2_larger70.pdf")
+print(joint_plot_larger70)
+dev.off()
+
+# smaller than 70
+df_data_with_freq_v2_smaller70 = df_data_with_freq_v2 %>% filter(eh_alleles <= 70)
+max_value = max(df_data_with_freq_v2_smaller70$eh_alleles, 
+                df_data_with_freq_v2_smaller70$exp_alleles,
+                na.rm = TRUE) + 5
+min_value = min(df_data_with_freq_v2_smaller70$eh_alleles, 
+                df_data_with_freq_v2_smaller70$exp_alleles,
+                na.rm = TRUE) - 5
+
+joint_plot_smaller70 = ggplot(df_data_with_freq_v2_smaller70, 
+                             aes(x = exp_alleles, y = eh_alleles)) + 
+  geom_point(aes(color = locus, size = number_of_alleles)) + 
+  xlim(5,max_value) + 
+  ylim(5,max_value) + 
+  labs(title = "", 
+       y = "Repeat sizes for each allele - smaller or eq to 70 repeats \n Expansion Hunter (EH-v2.5.5)", 
+       x = "Repeat sizes for each allele \n Experimental validation") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  guides(size = FALSE)
+
+png("figures/joint_bubble_plot_EHv2_smaller70.png", units="in", width=5, height=5, res=300)
+print(joint_plot_smaller70)
+dev.off()
+pdf("figures/joint_bubble_plot_EHv2_smaller70.pdf")
+print(joint_plot_smaller70)
+dev.off()
+
+
+
 # let's plot each locus independently
 for(i in 1:length(l_locus)){
   df_data_with_freq_v2_locus = df_data_with_freq_v2 %>% 
