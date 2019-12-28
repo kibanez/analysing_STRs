@@ -62,8 +62,37 @@ dim(merged_data_dedup)
 
 # PART 2 - include the genomes recovered from the duplicated genomes
 merged_data_dedup = rbind(merged_data_dedup,
-                          merged_data %>% filter(plate_key.x %in% l_latest_dedup_platekeys))
+                          merged_data %>% filter(plate_key.x %in% l_latest_dedup_platekeys, genome_build %in% "GRCh38"))
 dim(merged_data_dedup)
-# 156590  19
+# 134684  19
 
+# so far, we have removed duplicates having more than 1 genome
 
+# QUALITY CHECK - check whether there are pids with more than 3 rows
+merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>3) %>%
+  dim()
+# 1886  19
+
+l_duplicated_genomes2 = merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>3) %>%
+  select(participant_id) %>%
+  pull() %>%
+  unique()
+length(l_duplicated_genomes2)
+# 458
+
+# Take the largets repeat-size
+df_pid_platekey_repeatsize = merged_data_dedup %>% 
+  filter(participant_id %in% l_duplicated_genomes2) %>% 
+  select(participant_id, plate_key.x, repeat_size)
+
+df_pid_platekey_repeatsize = df_pid_platekey_repeatsize %>% 
+  group_by(participant_id) %>%
+  mutate(largest_repeat = max(repeat_size)) %>%
+  ungroup() %>% 
+  as.data.frame()
+
+# remove from merged_data_dedup those genomes with smaller repeat-size
