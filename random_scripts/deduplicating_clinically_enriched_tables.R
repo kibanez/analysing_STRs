@@ -22,9 +22,54 @@ dim(merged_data)
 # 176896     19
 
 
+# What it happens now, is that `specific disease` are in `specific_disease`, `disease_group`, and `disease_subgroup`
+list_spec_disease = merged_data %>% 
+  group_by(participant_id) %>% 
+  summarise(spec_disease_list = toString(specific_disease)) %>% ungroup() %>% as.data.frame()
+dim(list_spec_disease)
+# 76148  2
+
+list_disease_group = merged_data %>% 
+  group_by(participant_id) %>% 
+  summarise(disease_group_list = toString(disease_group)) %>% ungroup() %>% as.data.frame()
+dim(list_disease_group)
+# 76148  2
+
+list_disease_subgroup = merged_data %>% 
+  group_by(participant_id) %>% 
+  summarise(disease_subgroup_list = toString(disease_sub_group)) %>% ungroup() %>% as.data.frame()
+dim(list_disease_subgroup)
+# 76148  2
+
+merged_data = left_join(merged_data,
+                      list_spec_disease,
+                      by = "participant_id")
+dim(merged_data)
+# 176896     20
+
+merged_data = left_join(merged_data,
+                        list_disease_group,
+                        by = "participant_id")
+dim(merged_data)
+# 176896     21
+
+merged_data = left_join(merged_data,
+                        list_disease_subgroup,
+                        by = "participant_id")
+dim(merged_data)
+# 176896     22
+
+# let's remove the other columns now
+merged_data = merged_data[,-c(7:9)]
+dim(merged_data)
+# 176896  19
+merged_data = unique(merged_data)
+dim(merged_data)
+# 159946     19
+
+
 # There are some participants for which there are several genomes/platekeys 
 # we will take/select the latest one
-
 merged_data %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 76148
 merged_data %>% select(plate_key.x) %>% unique() %>% pull() %>% length()
@@ -33,13 +78,13 @@ merged_data %>% select(plate_key.x) %>% unique() %>% pull() %>% length()
 # First, select duplicated genomes
 duplicated_genomes = merged_data %>% 
   group_by(participant_id) %>% 
-  filter(n()>3)
+  filter(n()>2)
 
 duplicated_genomes %>% select(participant_id) %>% unique() %>% pull() %>% length()
-# 11283 genomes that have >1 genome
+# 9167 genomes that have >1 genome
 l_duplicated_genomes = unique(duplicated_genomes$participant_id)
 length(l_duplicated_genomes)
-# 11283
+# 9167
 
 df_pid_platekey = merged_data %>% filter(participant_id %in% l_duplicated_genomes) %>% select(participant_id, plate_key.x)
 
@@ -53,27 +98,26 @@ df_pid_platekey = df_pid_platekey %>%
 # select latest genomes
 l_latest_dedup_platekeys = unique(df_pid_platekey$latest_platekey)
 length(l_latest_dedup_platekeys)
-# 11283 (== dedup participant ids)
+# 9167 (== dedup participant ids)
 
 # PART 1 - select pid not duplicated (to merge with the rest afterwards)
 merged_data_dedup = merged_data %>% filter(!participant_id %in% l_duplicated_genomes)
 dim(merged_data_dedup)
-# 129730  19
+# 122504  19
 
 # PART 2 - include the genomes recovered from the duplicated genomes
 merged_data_dedup = rbind(merged_data_dedup,
                           merged_data %>% filter(plate_key.x %in% l_latest_dedup_platekeys, genome_build %in% "GRCh38"))
 dim(merged_data_dedup)
-# 134684  19
+# 125058  19
 
 # so far, we have removed duplicates having more than 1 genome
-
 # QUALITY CHECK - check whether there are pids with more than 3 rows
 merged_data_dedup %>% 
   group_by(participant_id) %>% 
-  filter(n()>3) %>%
+  filter(n()>2) %>%
   dim()
-# 1886  19
+# 8  19
 
 l_duplicated_genomes2 = merged_data_dedup %>% 
   group_by(participant_id) %>% 
@@ -82,7 +126,7 @@ l_duplicated_genomes2 = merged_data_dedup %>%
   pull() %>%
   unique()
 length(l_duplicated_genomes2)
-# 458
+# 2
 
 # Take the largets repeat-size
 df_pid_platekey_repeatsize = merged_data_dedup %>% 
@@ -96,3 +140,50 @@ df_pid_platekey_repeatsize = df_pid_platekey_repeatsize %>%
   as.data.frame()
 
 # remove from merged_data_dedup those genomes with smaller repeat-size
+# First, remove all genomes in l_genomes_duplciated2
+merged_data_dedup = merged_data_dedup %>% filter(!participant_id %in% l_duplicated_genomes2)
+dim(merged_data_dedup)
+# 125050  19
+
+# And now, only include here the ones with largest repeat-size
+df_aux_recover = merged_data %>% filter(participant_id %in% l_duplicated_genomes2)
+df_aux_recover = df_aux_recover %>% group_by(participant_id) %>% mutate(large_repeat = max(repeat_size)) %>% ungroup() %>% as.data.frame()
+index_to_keep = which(df_aux_recover$large_repeat == df_aux_recover$repeat_size)
+df_aux_recover = df_aux_recover[index_to_keep,]
+dim(df_aux_recover)
+# 4  20
+
+# remove last column
+df_aux_recover = df_aux_recover[,-20]
+
+merged_data_dedup = rbind(merged_data_dedup,
+                          df_aux_recover)
+dim(merged_data_dedup)
+#  125054  19
+
+# QUALITY CHECK
+merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>2) %>%
+  dim()
+# 0  19
+
+# How many genomes?
+length(unique(merged_data_dedup$plate_key.x))
+# 69607
+
+# how many participant ids?
+length(unique(merged_data_dedup$participant_id))
+# 68268
+
+# how many alleles? not unique
+length(merged_data_dedup$repeat_size)
+# 125054
+
+write.table(merged_data_dedup, 
+            "./table_STR_repeat_size_each_row_allele_EHv2.5.5_HTT_CAG_simplified_dedup.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t"
+            )
