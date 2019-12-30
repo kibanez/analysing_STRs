@@ -63,9 +63,6 @@ dim(merged_data)
 merged_data = merged_data[,-c(7:9)]
 dim(merged_data)
 # 176896  19
-merged_data = unique(merged_data)
-dim(merged_data)
-# 159946     19
 
 
 # There are some participants for which there are several genomes/platekeys 
