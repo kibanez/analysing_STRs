@@ -48,3 +48,28 @@ write.table(clin_data_ehv2,
             row.names = F,
             col.names = T,
             sep = "\t")
+
+# Upload the list of genomes for EHv3.1.2
+list_ehv3 = read.table("list_82564_genomes_RFC1_EHv3.1.2.tsv", stringsAsFactors = F)
+list_ehv3 = list_ehv3$V1
+length(list_ehv3)
+# 82564
+
+list_ehv3 = gsub('.{4}$', '', list_ehv3)
+list_ehv3 = gsub('^.{3}', '', list_ehv3)
+
+clin_data_ehv3 = clin_data %>%
+  filter(platekey %in% list_ehv3)
+dim(clin_data_ehv3)
+# 86371  3
+
+clin_data_ehv3 = unique(clin_data_ehv3)
+dim(clin_data_ehv3)
+# 86371  3
+
+write.table(clin_data_ehv3,
+            "table_86371_genomes_for_82564_unique_genomes_RFC1_EHv3.1.2.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
