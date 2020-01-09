@@ -48,8 +48,8 @@ for(i in 1:length(new_paper_table$locus)){
     new_exp_PCR_a2 = new_exp_PCR_a2[1]
   }
 
-    new_paper_table$exp_PCR_a1_checked = new_exp_PCR_a1
-  new_paper_table$exp_PCR_a2_checked = new_exp_PCR_a2
+  new_paper_table$exp_PCR_a1_checked[i] = new_exp_PCR_a1
+  new_paper_table$exp_PCR_a2_checked[i] = new_exp_PCR_a2
 }
 
 write.table(new_paper_table,
