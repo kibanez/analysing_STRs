@@ -41,9 +41,8 @@ for(i in 1:length(new_paper_table$locus)){
   
   if (length(new_exp_PCR_a1) > 1){
     new_exp_PCR_a1 = new_exp_PCR_a1[1]
-  }else if (length(new_exp_PCR_a1 )){
-    next
   }
+  
   if (length(new_exp_PCR_a2) > 1){
     new_exp_PCR_a2 = new_exp_PCR_a2[1]
   }
