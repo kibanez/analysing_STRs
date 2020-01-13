@@ -5,6 +5,11 @@ val_data = read.csv("~/Documents/STRs/VALIDATION/STRVALIDATION_ALLDATA_2019-10-7
 dim(val_data)
 # 638  20
 
+# Let's take the list of platekeys within the validation list
+l_validation = unique(val_data$LP_Number)
+length(l_validation)
+# 256
+
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv", stringsAsFactors = F, header = T, sep = "\t")
 dim(popu_table)
 # 59356  21
@@ -15,8 +20,12 @@ l_platekeys[348] = "LP2000865-DNA_G07"
 
 popu_table_subset = popu_table %>% select(platekey, population, pc1, pc2)
 
-val_data_popi = left_join(val_data, popu_table_subset, by = c("LP_Number"="platekey"))
-val_data_popi = val_data_popi %>% select(LP_Number, population, pc1, pc2)
+popu_table = left_join(val_data, popu_table_subset, by = c("LP_Number"="platekey"))
+popu_table = popu_table %>% 
+  filter(LP_Number %in% l_validation) %>% 
+  select(LP_Number, population, pc1, pc2)
+dim(popu_table)
+# 638  4
 
 # there are many of them that are NA, because they are Pilot
 # Jan'2020 - we now have info for Pilot genomes
@@ -28,18 +37,36 @@ dim(popu_pilot_table)
 # 4821  44
 
 # Retrieve from here the df with platekey, bestGUESS_super_pop
-popu_pilot_table = popu_pilot_table %>% select(ID, bestGUESS_super_pop, PC_1, PC_2)
+popu_pilot_table = popu_pilot_table %>% 
+  filter(ID %in% l_validation) %>%
+  select(ID, bestGUESS_super_pop, PC_1, PC_2)
+dim(popu_pilot_table)
+# 63  4
+
 colnames(popu_pilot_table) = c("LP_Number", "population", "pc1", "pc2")
 
-val_data_popu = rbind(val_data_popi,
-                          popu_pilot_table)
+# Before going beyond, keep only not NA rows in population in val_data_popu
+index_notNA = which(!is.na(popu_table$population))
+popu_table = popu_table[index_notNA,]
+dim(popu_table)
+# 154  4
+
+val_data_popu = rbind(popu_table,
+                      popu_pilot_table)
 dim(val_data_popu)
-# 5459  4
+# 217  4
+
+val_data_popu = unique(val_data_popu)
+dim(val_data_popu)
+# 212  4
+
+length(unique(val_data_popu$LP_Number))
+# 212
 
 # Unify or normalise all super populations nomenclature
 table(val_data_popu$population)
-#AFR     African         American AMR     AMR-EUR         ASI     East Asian    EUR    European South Asian 
-#6          110           56      2           8           9         17         129          4215  423
+#AFR     African         American AMR     AMR-EUR         ASI       EUR    European    South Asian 
+#6          1           1      1          7               8          127          56        5
 
 val_data_popu = val_data_popu %>% 
   mutate(merged_popu = case_when(population == "African" ~ "AFR",
@@ -60,7 +87,7 @@ write.table(val_data_popu,
 
 val_data_popu_distinct = distinct(val_data_popu, LP_Number, merged_popu)
 dim(val_data_popu_distinct)
-# 5075  2
+# 212  2
 
 write.table(val_data_popu_distinct, 
             "~/Documents/STRs/VALIDATION/population/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_list_unique_platekeys_with_popu_130120.tsv",
@@ -68,22 +95,29 @@ write.table(val_data_popu_distinct,
 
 
 # Let's plot them (for the ones we do have information)
-# Let's take the list of platekeys within the validation list
-l_validation = unique(val_data$LP_Number)
-length(l_validation)
-# 256
+# We need to plot them separately main and pilot, since PCs have been computed with diff number of PC (pilot with 6 PCs and main with 10 PCs)
 
 val_data_popu_golden = val_data_popu %>% 
   filter(LP_Number %in% l_validation)
 
 
-png("~/Documents/STRs/VALIDATION/population/population_distribution_217_outof_256_all_ancestries.png")
-ggplot(data=val_data_popu_golden %>% filter(!is.na(merged_popu)), 
-       aes(x=pc2, y=pc1, colour = merged_popu)) +
+png("~/Documents/STRs/VALIDATION/population/population_distribution_154main_outof_217_all_ancestries.png")
+ggplot(data=popu_table %>% filter(!is.na(population)), 
+       aes(x=pc2, y=pc1, colour = population)) +
   #geom_hex(bins=100) +
   geom_point() +
-  xlab("PC2 across 217 out of 256 genomes") +
-  ylab("PC1 across 217 out of 256 genomes") +
+  xlab("PC2 across 154 (main) out of 217 genomes") +
+  ylab("PC1 across 154 (main) out of 217 genomes") +
+  guides(fill = FALSE)
+dev.off()
+
+png("~/Documents/STRs/VALIDATION/population/population_distribution_63pilot_outof_217_all_ancestries.png")
+ggplot(data=popu_pilot_table %>% filter(!is.na(population)), 
+       aes(x=pc2, y=pc1, colour = population)) +
+  #geom_hex(bins=100) +
+  geom_point() +
+  xlab("PC2 across 63 (pilot) out of 217 genomes") +
+  ylab("PC1 across 63 (pilot) out of 217 genomes") +
   guides(fill = FALSE)
 dev.off()
 
