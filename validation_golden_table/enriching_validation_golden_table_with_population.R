@@ -121,6 +121,15 @@ ggplot(data=popu_pilot_table %>% filter(!is.na(population)),
   guides(fill = FALSE)
 dev.off()
 
+# What is happening for 44 genomes within the golden validation table? Whay we don't have info? they should be main....
+l_genomes_with_popu = unique(c(popu_table$LP_Number, popu_pilot_table$LP_Number))
+length(l_genomes_with_popu)
+# 212
+
+cuales = setdiff(unique(val_data$LP_Number),
+                 l_genomes_with_popu)
+length(cuales)
+# 44
 
 # Let's plot the raw numbers of each ancestry sub-cohort or sub-group
 raw_numbers_popus = as.data.frame(table(val_data_popi$population))
