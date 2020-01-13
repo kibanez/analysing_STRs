@@ -132,7 +132,7 @@ length(cuales)
 # 44
 
 # Let's plot the raw numbers of each ancestry sub-cohort or sub-group
-raw_numbers_popus = as.data.frame(table(val_data_popi$population))
+raw_numbers_popus = as.data.frame(table(val_data_popu$merged_popu))
 colnames(raw_numbers_popus) = c("population", "Number of genomes")
 
 # Pure ancestries
@@ -142,6 +142,6 @@ ggplot(raw_numbers_popus,
   geom_bar(stat = "identity", aes(fill = population)) + 
   geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
   ylab("Number of genomes") + 
-  xlab("149 out of 256 genomes with orthogonal validation") 
+  xlab("212 out of 256 genomes with orthogonal validation") 
 dev.off()
 
