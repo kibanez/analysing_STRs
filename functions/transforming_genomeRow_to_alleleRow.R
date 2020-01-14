@@ -1,6 +1,6 @@
 # Objective: creating tables for each locus, in order to play with cases/controls and see possible existing signals
 # For EHv3.1.2
-transform_genome_to_allele_table <- function(working_directory, merged_table, output_folder){
+transform_genome_to_allele_table <- function(working_directory, merged_table){
 
 # Set working directory
 setwd(working_directory)
