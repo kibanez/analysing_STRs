@@ -92,12 +92,55 @@ for (i in 1:length(l_loci)){
                        eas_table,
                        eur_table)
   
+  # Both the Mann-Whitney and the Kolmogorov-Smirnov tests are nonparametric tests to compare two unpaired groups of data. 
+  # Both compute P values that test the null hypothesis that the two groups have the same distribution. But they work very differently:
   
+  # The MANN-WHITNEY test first ranks all the values from low to high, and then computes a P value that depends on the discrepancy
+  # between the mean ranks of the two groups.
+  
+  # The KOLMOGOROV-SMIRNOV test compares the cumulative distribution of the two data sets, and computes a P value that depends on the 
+  # largest discrepancy between distributions.
+  
+#  Here are some guidelines for choosing between the two tests:
+#  - The KS test is sensitive to any differences in the two distributions. Substantial differences in shape, spread or median will result in a small P value. 
+  # In contrast, the MW test is mostly sensitive to changes in the median.
+  
+#  - The MW test is used more often and is recognized by more people, so choose it if you have no idea which to choose.
+  
+#  - The MW test has been extended to handle tied values. The KS test does not handle ties so well. If your data are categorical, so has many ties, don't choose the KS test.
+
+#  - Some fields of science tend to prefer the KS test over the MW test. It makes sense to follow the traditions of your field.
+
+
   violin_plot = ggplot(merged_table, aes(x = population, y=repeat_size, fill = population)) +
     geom_violin() +
     xlab("Population") + 
     ylab("Repeat sizes (repeat units)") + 
     ggtitle(l_loci[i]) 
+  
+  
+  my_comparisons <- list( c("AFR", "AMR"), c("AFR", "ASI"), c("AFR", "EAS"), c("AFR", "EUR"),
+                          c("AMR", "ASI"), c("AMR", "EAS"), c("AMR", "EUR"))
+  
+  # Pairwise t-test between groups
+  stat.test <- compare_means(repeat_size ~ population, 
+                             data = merged_table,
+                             paired = FALSE,
+                             method = "wilcox.test",
+                             p.adjust.method = "bonferroni",
+                             alternative = "less") %>%
+    mutate(y.position = c(51, 53, 55, 57, 59, 61, 63, 65, 67, 69))
+  
+  
+  ggviolin(merged_table, x = "population", y = "repeat_size", fill = "population",
+           add = "boxplot", add.params = list(fill = "black"))+
+    stat_pvalue_manual(
+      data = stat.test, label = "p.adj",
+      xmin = "group1", xmax = "group2",
+      y.position = "y.position") 
+    #stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", alternative = "less") + # Add significance levels
+    #stat_compare_means(label.y = 50)                                       # Add global the p-value 
+  
   
    png(paste(paste("analysis/violin_plot_all_ancestries", l_loci[i], sep = "_"), ".png"))
    print(violin_plot)
