@@ -8,6 +8,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 # libraries
 library(dplyr)
 library(ggplot2)
+library(ggpubr)
 
 # Set working directory
 working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/"
@@ -128,7 +129,7 @@ for (i in 1:length(l_loci)){
                              paired = FALSE,
                              method = "wilcox.test",
                              p.adjust.method = "bonferroni",
-                             alternative = "less") %>%
+                             alternative = "great") %>%
     mutate(y.position = c(51, 53, 55, 57, 59, 61, 63, 65, 67, 69))
   
   
