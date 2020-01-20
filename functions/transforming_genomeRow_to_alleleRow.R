@@ -134,6 +134,7 @@ for (i in 1:length(l_genes)){
   # Write all `locus_data_new` output into a file
   output_file = paste("table_STR_repeat_size_each_row_allele", l_genes[i], sep = "_")
   output_file = paste(output_file, ".tsv" , sep = "")
+  output_file = paste("cancer_and_RD", output_file, sep = "/")
   write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
   
   # Select interested columns
@@ -144,6 +145,7 @@ for (i in 1:length(l_genes)){
   colnames(locus_data_new)[6] = "repeat_size"
   output_file = paste("table_STR_repeat_size_each_row_allele", l_genes[i], sep = "_")
   output_file = paste(output_file, "_simplified.tsv" , sep = "")
+  output_file = paste("cancer_and_RD", output_file, sep = "/")
   write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
   
  }
