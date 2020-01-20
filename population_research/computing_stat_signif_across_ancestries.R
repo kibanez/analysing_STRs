@@ -132,19 +132,29 @@ for (i in 1:length(l_loci)){
                              alternative = "great") %>%
     mutate(y.position = c(51, 53, 55, 57, 59, 61, 63, 65, 67, 69))
   
-  
-  ggviolin(merged_table, x = "population", y = "repeat_size", fill = "population",
-           add = "boxplot", add.params = list(fill = "black"))+
+  violin_plot_with_stat = ggviolin(merged_table, x = "population", y = "repeat_size", fill = "population") +
     stat_pvalue_manual(
       data = stat.test, label = "p.adj",
       xmin = "group1", xmax = "group2",
       y.position = "y.position") 
-    #stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", alternative = "less") + # Add significance levels
-    #stat_compare_means(label.y = 50)                                       # Add global the p-value 
   
+  violin_plot_with_stat_with_boxplot = ggviolin(merged_table, x = "population", y = "repeat_size", fill = "population",
+                                                add = "boxplot", add.params = list(fill = "black")) +
+    stat_pvalue_manual(
+      data = stat.test, label = "p.adj",
+      xmin = "group1", xmax = "group2",
+      y.position = "y.position") 
   
    png(paste(paste("analysis/violin_plot_all_ancestries", l_loci[i], sep = "_"), ".png"))
    print(violin_plot)
    dev.off()
 
+   png(paste(paste("analysis/violin_plot_all_ancestries_with_stats", l_loci[i], sep = "_"), ".png"))
+   print(violin_plot_with_stat)
+   dev.off()
+   
+   png(paste(paste("analysis/violin_plot_all_ancestries_with_stats_boxplot", l_loci[i], sep = "_"), ".png"))
+   print(violin_plot_with_stat_with_boxplot)
+   dev.off()
+   
 }
