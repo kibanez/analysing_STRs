@@ -21,6 +21,10 @@ main_data = read.csv("./AFR/merged/merged_population_genomes_unrelated_probands_
                      stringsAsFactors = F)
 l_loci = sort(unique(main_data$gene))
 
+# Create output folder
+dir.create("analysis/")
+
+
 # We need to do this by locus
 # Plot violing-plots as well
 
