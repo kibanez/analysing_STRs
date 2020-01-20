@@ -11,7 +11,7 @@ library(ggplot2)
 library(ggpubr)
 
 # Set working directory
-working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/"
+working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer_RANDOM_400/"
 setwd(working_dir)
 
 # Load main data table
