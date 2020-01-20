@@ -138,14 +138,16 @@ for (i in 1:length(l_loci)){
   
   violin_plot_with_stat = ggviolin(merged_table, x = "population", y = "repeat_size", fill = "population") +
     stat_pvalue_manual(
-      data = stat.test, label = "p.adj",
+      #data = stat.test, label = "p.adj",
+      data = stat.test, label = "p.signif",
       xmin = "group1", xmax = "group2",
       y.position = "y.position") 
   
   violin_plot_with_stat_with_boxplot = ggviolin(merged_table, x = "population", y = "repeat_size", fill = "population",
                                                 add = "boxplot", add.params = list(fill = "black")) +
     stat_pvalue_manual(
-      data = stat.test, label = "p.adj",
+      #data = stat.test, label = "p.adj",
+      data = stat.test, label = "p.signif",
       xmin = "group1", xmax = "group2",
       y.position = "y.position") 
   
