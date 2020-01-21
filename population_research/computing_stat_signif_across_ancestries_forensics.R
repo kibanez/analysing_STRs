@@ -7,6 +7,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 
 # libraries
 library(dplyr)
+library(tidyverse)
 library(ggplot2)
 library(ggpubr)
 
@@ -26,7 +27,7 @@ dir.create("analysis/")
 
 # We need to do this by locus
 # Plot violing-plots as well
-for (i in 1:length(l_loci)){
+for (i in 16:length(l_loci)){
   
   locus_name = l_loci[i]
 
@@ -151,15 +152,18 @@ for (i in 1:length(l_loci)){
       xmin = "group1", xmax = "group2",
       y.position = "y.position") 
   
-   png(paste(paste("analysis/violin_plot_all_ancestries", l_loci[i], sep = "_"), ".png"))
+   if ("/" %in% locus_name){
+     locus_name = str_replace(locus_name, "/", "_")
+   }
+   png(paste(paste("analysis/violin_plot_all_ancestries", locus_name, sep = "_"), ".png"))
    print(violin_plot)
    dev.off()
 
-   png(paste(paste("analysis/violin_plot_all_ancestries_with_stats", l_loci[i], sep = "_"), ".png"))
+   png(paste(paste("analysis/violin_plot_all_ancestries_with_stats", locus_name, sep = "_"), ".png"))
    print(violin_plot_with_stat)
    dev.off()
    
-   png(paste(paste("analysis/violin_plot_all_ancestries_with_stats_boxplot", l_loci[i], sep = "_"), ".png"))
+   png(paste(paste("analysis/violin_plot_all_ancestries_with_stats_boxplot", locus_name, sep = "_"), ".png"))
    print(violin_plot_with_stat_with_boxplot)
    dev.off()
    
