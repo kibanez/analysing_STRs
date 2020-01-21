@@ -152,7 +152,7 @@ for (i in 16:length(l_loci)){
       xmin = "group1", xmax = "group2",
       y.position = "y.position") 
   
-   if ("/" %in% locus_name){
+   if (grepl("/", locus_name)){
      locus_name = str_replace(locus_name, "/", "_")
    }
    png(paste(paste("analysis/violin_plot_all_ancestries", locus_name, sep = "_"), ".png"))
