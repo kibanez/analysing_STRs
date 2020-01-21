@@ -22,7 +22,7 @@ list_long = list_long$V1
 length(list_long)
 # 28
 
-# there is 1 duplicate
+# there is 1 duplicate - `115014499`
 length(unique(list_long))
 # 27
 
