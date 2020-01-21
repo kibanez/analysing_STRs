@@ -8,6 +8,9 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 # libraries
 library(dplyr)
 
+# set working directory
+setwd("~/Documents/STRs/ANALYSIS/long_read/Validation_cohort/")
+
 # load clinical data
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv", sep = "\t", header = T, stringsAsFactors = F)
 dim(clin_data)
@@ -36,3 +39,11 @@ dim(clin_data_subset)
 clin_data_subset = unique(clin_data_subset)
 dim(clin_data_subset)
 # 27  18
+
+
+write.table(clin_data_subset,
+            "GEL_clin_data_for_27_selected_genomes.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = F)
