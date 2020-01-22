@@ -27,7 +27,7 @@ dir.create("analysis/")
 
 # We need to do this by locus
 # Plot violing-plots as well
-for (i in 16:length(l_loci)){
+for (i in 26:length(l_loci)){
   
   locus_name = l_loci[i]
 
