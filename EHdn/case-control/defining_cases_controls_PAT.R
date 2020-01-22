@@ -42,15 +42,24 @@ length(unique(pilot_cases$plateKey))
 # 153
 
 
-main_cases = main_clin_data %>%
-  filter(year_of_birth < 2000,
-         participant_type %in% "Proband",
-         !grepl("Neurology", main_clin_data$disease_group),
-         genome_build %in% "GRCh37")
-dim(main_cases)
-# 16711  28
 
 length(unique(main_cases$platekey))
 # 1410
 
+# Controls
+# - ONLY probands
+# - rare disease germline genomes (exclude for now cancer genomes)
+# - `disease_group` NOT in neurology
+# - for `main` take GRCh37
+
+main_controls = main_clin_data %>%
+  filter(participant_type %in% "Proband",
+         programme %in% "Rare Diseases",
+         genome_build %in% "GRCh37",
+         !grepl("[Nn][Ee][Uu][Rr][Oo]", main_clin_data$disease_group))
+dim(main_controls)
+# 48648  28
+
+length(unique(main_controls$platekey))
+# 2371
 
