@@ -77,6 +77,16 @@ length(unique(pilot_controls$plateKey))
 # - `disease_group` NOT in neurology
 # - for `main` take GRCh37
 
+main_cases = main_clin_data %>%
+  filter(participant_type %in% "Proband",
+         year_of_birth < 2000,
+         (grepl("neuropathies", specific_disease) | grepl("ataxia", specific_disease)))
+dim(main_cases)
+# 45779  28
+
+length(unique(main_cases$platekey))
+# 1014
+
 main_controls = main_clin_data %>%
   filter(participant_type %in% "Proband",
          programme %in% "Rare Diseases",
