@@ -28,8 +28,11 @@ phenotyping_table = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data
 dim(phenotyping_table)
 # 2632  3
 
+# I've seen that the `phenotyping_table` file if not well formatted, and for each `specific_disease` there are disease_group and disease_subgroup == blank
+# we need to clean them up
+
 # enrich pilot_clin_data with associations with disease_group and disease_subgroup
-pilot_clin_data = left_join(pilot_clin_data,
+pilot_clin_data = inner_join(pilot_clin_data,
                             phenotyping_table,
                             by = c("specificDisease" = "specific_disease"))
 dim(pilot_clin_data)
@@ -49,18 +52,18 @@ dim(main_clin_data)
 # Cases
 # - ONLY probands
 # - YOB < 2000 (i.e. adults)
-# - specific disease in ataxia OR neuropathies
+# - specific disease in ataxia OR marie-charcot
 # - for `main` take GRCh37
 
 pilot_cases = pilot_clin_data %>%
   filter(yearOfBirth < 2000, 
-         (grepl("neuropathies", specificDisease) | grepl("ataxia", specificDisease)), 
+         (grepl("ataxia", specificDisease) | grepl("Charcot", specificDisease)), 
          biological_relation_to_proband %in% "Proband")
 dim(pilot_cases)
-# 154  12
+# 271  12
 
 length(unique(pilot_cases$plateKey))
-# 153
+# 194
 
 pilot_controls = pilot_clin_data %>%
   filter(biological_relation_to_proband %in% "Proband",
@@ -80,12 +83,12 @@ length(unique(pilot_controls$plateKey))
 main_cases = main_clin_data %>%
   filter(participant_type %in% "Proband",
          year_of_birth < 2000,
-         (grepl("neuropathies", specific_disease) | grepl("ataxia", specific_disease)))
+         (grepl("ataxia", specific_disease) | grepl("marie", specific_disease)))
 dim(main_cases)
-# 45779  28
+# 44870  28
 
 length(unique(main_cases$platekey))
-# 1014
+# 911
 
 main_controls = main_clin_data %>%
   filter(participant_type %in% "Proband",
@@ -101,13 +104,13 @@ length(unique(main_controls$platekey))
 
 # Writing individual files
 l_pilot_cases = unique(pilot_cases$plateKey)
-write.table(l_pilot_cases, "./PAT/input/pilot_153_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_cases, "./PAT/input/pilot_194_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_pilot_controls = unique(pilot_controls$plateKey)
 write.table(l_pilot_controls, "./PAT/input/pilot_1957_controls.txt", quote = F, row.names = F, col.names = F)
 
 l_main_cases = unique(main_cases$platekey)
-write.table(l_main_cases, "./PAT/input/main_1014_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "./PAT/input/main_911_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$platekey)
 write.table(l_main_controls, "./PAT/input/main_2371_controls.txt", quote = F, row.names = F, col.names = F)
@@ -119,8 +122,45 @@ l_cases = unique(c(l_pilot_cases,
 l_controls = unique(c(l_pilot_controls,
                       l_main_controls))
 
-write.table(l_cases, "./PAT/input/merged_pilot_main_1167_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_cases, "./PAT/input/merged_pilot_main_1105_cases.txt", quote = F, row.names = F, col.names = F)
 write.table(l_controls, "./PAT/input/merged_pilot_main_4328_controls.txt", quote = F, row.names = F, col.names = F)
+
+# Let's create now the `manifest` file
+# We need to merge all STR profiles for all case-control samples together into a multi-sample STR profile. 
+# This requires us to create the manifest file manifest.tsv describing the dataset. 
+# The manifest file contains columns for sample identifier, case-control status, and path to the associated STR profile for each sample.
+
+#sample1 case    str-profiles/sample1.str_profile.json
+#sample2 case    str-profiles/sample2.str_profile.json
+#sample3 case    str-profiles/sample3.str_profile.json
+#sample4 control str-profiles/sample4.str_profile.json
+#sample5 control str-profiles/sample5.str_profile.json
+#sample6 control str-profiles/sample6.str_profile.json
+#sample7 control str-profiles/sample7.str_profile.json
+
+cases_df = data.frame(platekey = l_cases,
+                      group = rep("case", length(l_cases)))
+
+cases_df = cases_df %>%
+  group_by(platekey) %>%
+  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/PAT/str-profiles", platekey, sep = "/"), ".str_profile.json", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+controls_df = data.frame(platekey = l_controls,
+                      group = rep("control", length(l_controls)))
+
+controls_df = controls_df %>%
+  group_by(platekey) %>%
+  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/PAT/str-profiles", platekey, sep = "/"), ".str_profile.json", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+merged_df = rbind(cases_df,
+                  controls_df)
+
+dim(merged_df)
+# 5433  3
 
 
 
