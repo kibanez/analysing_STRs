@@ -101,16 +101,16 @@ length(unique(main_controls$platekey))
 
 # Writing individual files
 l_pilot_cases = unique(pilot_cases$plateKey)
-write.table(l_pilot_cases, "./PAT/pilot_153_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_cases, "./PAT/input/pilot_153_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_pilot_controls = unique(pilot_controls$plateKey)
-write.table(l_pilot_controls, "./PAT/pilot_1957_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_controls, "./PAT/input/pilot_1957_controls.txt", quote = F, row.names = F, col.names = F)
 
 l_main_cases = unique(main_cases$platekey)
-write.table(l_main_cases, "./PAT/main_1014_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "./PAT/input/main_1014_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$platekey)
-write.table(l_main_controls, "./PAT/main_2371_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_controls, "./PAT/input/main_2371_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Merged CASE and CONTROL files
 l_cases = unique(c(l_pilot_cases,
@@ -119,8 +119,8 @@ l_cases = unique(c(l_pilot_cases,
 l_controls = unique(c(l_pilot_controls,
                       l_main_controls))
 
-write.table(l_cases, "./PAT/merged_pilot_main_1167_cases.txt", quote = F, row.names = F, col.names = F)
-write.table(l_controls, "./PAT/merged_pilot_main_4328_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_cases, "./PAT/input/merged_pilot_main_1167_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_controls, "./PAT/input/merged_pilot_main_4328_controls.txt", quote = F, row.names = F, col.names = F)
 
 
 
