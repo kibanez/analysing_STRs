@@ -30,17 +30,22 @@ dim(phenotyping_table)
 
 # I've seen that the `phenotyping_table` file if not well formatted, and for each `specific_disease` there are disease_group and disease_subgroup == blank
 # we need to clean them up
+phenotyping_table = phenotyping_table %>% 
+  filter(!disease_group %in% "")
+
+dim(phenotyping_table)
+# 2599  3
 
 # enrich pilot_clin_data with associations with disease_group and disease_subgroup
 pilot_clin_data = inner_join(pilot_clin_data,
                             phenotyping_table,
                             by = c("specificDisease" = "specific_disease"))
 dim(pilot_clin_data)
-# 150912  12
+# 146591  12
 
 pilot_clin_data = unique(pilot_clin_data)
 dim(pilot_clin_data)
-# 5587  12
+# 2105  12
 
 main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
                           sep = "\t",
