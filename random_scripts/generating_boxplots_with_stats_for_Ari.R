@@ -53,6 +53,12 @@ for (i in 1:length(l_dir)){
     
     
     
+    merged_table = rbind(cases_motor_disorders,
+                         cases_neurodegen_motor_mitoch,
+                         cases_neurodegenerative,
+                         controls_adults_rd,
+                         controls_adults_rd_cancer)
+    
     
   }
 }
