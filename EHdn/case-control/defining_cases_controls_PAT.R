@@ -17,6 +17,27 @@ pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/p
                            stringsAsFactors = F,
                            header = T)
 dim(pilot_clin_data)
+# 4974  10
+
+
+# the table with `disease_group` and `specific_disease` associations
+phenotyping_table = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/phenotyping_v140_2019-09-13_15-26-02.tsv",
+                             sep = "\t",
+                             stringsAsFactors = F,
+                             header = T)
+dim(phenotyping_table)
+# 2632  3
+
+# enrich pilot_clin_data with associations with disease_group and disease_subgroup
+pilot_clin_data = left_join(pilot_clin_data,
+                            phenotyping_table,
+                            by = c("specificDisease" = "specific_disease"))
+dim(pilot_clin_data)
+# 150912  12
+
+pilot_clin_data = unique(pilot_clin_data)
+dim(pilot_clin_data)
+# 5587  12
 
 main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
                           sep = "\t",
@@ -36,15 +57,19 @@ pilot_cases = pilot_clin_data %>%
          (grepl("neuropathies", specificDisease) | grepl("ataxia", specificDisease)), 
          biological_relation_to_proband %in% "Proband")
 dim(pilot_cases)
-# 154  10
+# 154  12
 
 length(unique(pilot_cases$plateKey))
 # 153
 
+pilot_controls = pilot_clin_data %>%
+  filter(biological_relation_to_proband %in% "Proband",
+         !grepl("[Nn][Ee][Uu][Rr][Oo]",disease_group))
+dim(pilot_controls)
+# 2274  12
 
-
-length(unique(main_cases$platekey))
-# 1410
+length(unique(pilot_controls$plateKey))
+# 1957
 
 # Controls
 # - ONLY probands
