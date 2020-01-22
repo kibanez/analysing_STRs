@@ -178,7 +178,7 @@ length(merged_df$platekey)
 # 4589
 
 write.table(merged_df,
-            "./PAT/manifest_PAT.tsv",
+            "./PAT/input/manifest_PAT.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
