@@ -1,0 +1,93 @@
+# Function that creates the age distribution across case and control datasets, given a R environment that has defined under `case-control`
+plotting_age_distribution <- function(working_directory, merged_table){
+  # libraries
+  library(dplyr)
+  library(ggplot2)
+  
+  # defining working directory
+  setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/")
+  
+  # Load PAT case-control environment
+  load("PAT_case_control_environment.Rdata")
+  
+  # Pilot and Main cases - taking platekey, sex and age
+  selected_pilot_cases = pilot_cases %>% 
+    filter(plateKey %in% l_pilot_cases) %>%
+    select(plateKey, sex, yearOfBirth)
+  dim(selected_pilot_cases)
+  # 117  3
+  
+  selected_main_cases = main_cases %>%
+    filter(platekey %in% l_main_cases) %>%
+    select(platekey, participant_phenotypic_sex, year_of_birth)
+  dim(selected_main_cases)
+  # 44866  3
+  
+  selected_main_cases = unique(selected_main_cases)
+  dim(selected_main_cases)
+  # 910  3
+  
+  colnames(selected_pilot_cases) = c("platekey", "sex", "YOB")
+  colnames(selected_main_cases) = c("platekey", "sex", "YOB")
+  
+  selected_cases = rbind(selected_pilot_cases,
+                         selected_main_cases)
+  
+  dim(selected_cases)
+  # 1027 3
+  
+  # Pilot and Main controls
+  selected_pilot_controls = pilot_controls %>%
+    filter(plateKey %in% l_pilot_controls) %>%
+    select(plateKey, sex, yearOfBirth)
+  dim(selected_pilot_controls)
+  # 892  3
+  
+  selected_pilot_controls = unique(selected_pilot_controls)
+  dim(selected_pilot_controls)
+  # 865  3
+  
+  selected_main_controls = main_controls %>%
+    filter(platekey %in% l_main_controls) %>%
+    select(platekey, participant_phenotypic_sex, year_of_birth)
+  dim(selected_main_controls)
+  # 16693  3
+  
+  selected_main_controls = unique(selected_main_controls)
+  dim(selected_main_controls)
+  # 1408  3
+  
+  colnames(selected_pilot_controls) = c("platekey", "sex", "YOB")
+  colnames(selected_main_controls) = c("platekey", "sex", "YOB")
+  
+  selected_controls = rbind(selected_pilot_controls,
+                            selected_main_controls)
+  dim(selected_controls)
+  # 2273  3
+  
+  # Define each `selected_cases` and `selected_controls` with the group name
+  selected_cases$group = rep("case", length(selected_cases$platekey))
+  selected_controls$group = rep("control", length(selected_controls$platekey))
+  
+  merged_pat = rbind(selected_cases,
+                     selected_controls)
+  
+  dim(merged_pat)
+  # 3300 4
+  
+  merged_pat = merged_pat %>%
+    group_by(platekey) %>%
+    mutate(age = 2020 - YOB) %>%
+    ungroup() %>%
+    as.data.frame()
+  
+  # Plot age distribution
+  age_distribution = ggplot(merged_pat,
+         aes(x = age, fill = group)) + geom_density(alpha=0.25)
+  
+  png("./output/age_distribution_PAT.png")
+  age_distribution
+  dev.off()
+
+
+}
