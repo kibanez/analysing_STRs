@@ -20,17 +20,17 @@ selected_pilot_cases = pilot_cases %>%
   filter(plateKey %in% l_pilot_cases) %>%
   select(plateKey, sex, yearOfBirth)
 dim(selected_pilot_cases)
-# 194  3
+# 117  3
 
 selected_main_cases = main_cases %>%
   filter(platekey %in% l_main_cases) %>%
   select(platekey, participant_phenotypic_sex, year_of_birth)
 dim(selected_main_cases)
-# 59432  3
+# 44866  3
 
 selected_main_cases = unique(selected_main_cases)
 dim(selected_main_cases)
-# 1427  3
+# 910  3
 
 colnames(selected_pilot_cases) = c("platekey", "sex", "YOB")
 colnames(selected_main_cases) = c("platekey", "sex", "YOB")
@@ -39,28 +39,28 @@ selected_cases = rbind(selected_pilot_cases,
                        selected_main_cases)
 
 dim(selected_cases)
-# 1621 3
+# 1027 3
 
 # Pilot and Main controls
 selected_pilot_controls = pilot_controls %>%
   filter(plateKey %in% l_pilot_controls) %>%
   select(plateKey, sex, yearOfBirth)
 dim(selected_pilot_controls)
-# 1145  3
+# 892  3
 
 selected_pilot_controls = unique(selected_pilot_controls)
 dim(selected_pilot_controls)
-# 1113  3
+# 865  3
 
 selected_main_controls = main_controls %>%
   filter(platekey %in% l_main_controls) %>%
   select(platekey, participant_phenotypic_sex, year_of_birth)
 dim(selected_main_controls)
-# 48648  3
+# 16693  3
 
 selected_main_controls = unique(selected_main_controls)
 dim(selected_main_controls)
-# 2371  3
+# 1408  3
 
 colnames(selected_pilot_controls) = c("platekey", "sex", "YOB")
 colnames(selected_main_controls) = c("platekey", "sex", "YOB")
@@ -68,7 +68,7 @@ colnames(selected_main_controls) = c("platekey", "sex", "YOB")
 selected_controls = rbind(selected_pilot_controls,
                           selected_main_controls)
 dim(selected_controls)
-# 3484  3
+# 2273  3
 
 # Define each `selected_cases` and `selected_controls` with the group name
 selected_cases$group = rep("case", length(selected_cases$platekey))
@@ -78,7 +78,7 @@ merged_pat = rbind(selected_cases,
                    selected_controls)
 
 dim(merged_pat)
-# 5105 4
+# 3300 4
 
 merged_pat = merged_pat %>%
   group_by(platekey) %>%
