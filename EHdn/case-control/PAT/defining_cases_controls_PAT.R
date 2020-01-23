@@ -96,7 +96,7 @@ dim(main_cases)
 # 44870  28
 
 length(unique(main_cases$platekey))
-# 911
+# 1427
 
 l_main_cases = unique(main_cases$platekey)
 
@@ -121,7 +121,7 @@ l_pilot_controls = unique(pilot_controls$plateKey)
 write.table(l_pilot_controls, "./PAT/input/pilot_1113_controls.txt", quote = F, row.names = F, col.names = F)
 
 l_main_cases = unique(main_cases$platekey)
-write.table(l_main_cases, "./PAT/input/main_911_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "./PAT/input/main_1427_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$platekey)
 write.table(l_main_controls, "./PAT/input/main_2371_controls.txt", quote = F, row.names = F, col.names = F)
