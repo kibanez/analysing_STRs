@@ -155,7 +155,7 @@ cases_df = data.frame(platekey = l_cases,
 
 cases_df = cases_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -164,7 +164,7 @@ controls_df = data.frame(platekey = l_controls,
 
 controls_df = controls_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
