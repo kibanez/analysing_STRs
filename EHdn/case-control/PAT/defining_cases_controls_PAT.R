@@ -187,3 +187,12 @@ write.table(merged_df,
 
 save.image("./PAT/PAT_case_control_environment.Rdata")
 
+# run quality control checks
+source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
+plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/PAT_case_control_environment.Rdata", 
+                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/")
+
+
+
+
+
