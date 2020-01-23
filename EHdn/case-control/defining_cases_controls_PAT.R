@@ -62,7 +62,7 @@ dim(main_clin_data)
 
 pilot_cases = pilot_clin_data %>%
   filter(yearOfBirth < 2000, 
-         (grepl("ataxia", specificDisease) | grepl("Charcot", specificDisease)), 
+         (grepl("[Aa]taxia", specificDisease) | grepl("[Cc]harcot", specificDisease)), 
          biological_relation_to_proband %in% "Proband")
 dim(pilot_cases)
 # 194  12
@@ -91,7 +91,7 @@ length(unique(pilot_controls$plateKey))
 main_cases = main_clin_data %>%
   filter(participant_type %in% "Proband",
          year_of_birth < 2000,
-         (grepl("ataxia", specific_disease) | grepl("marie", specific_disease)))
+         (grepl("[Aa]taxia", specific_disease) | grepl("[Mm]arie", specific_disease)))
 dim(main_cases)
 # 44870  28
 
