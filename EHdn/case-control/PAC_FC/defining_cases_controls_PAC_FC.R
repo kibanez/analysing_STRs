@@ -10,10 +10,10 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # defining working directory
-setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAC/")
+setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAC_FC/")
 
 # Defining the path of the json files that `manifest.tsv` will have
-analysis_id = "PAC"
+analysis_id = "PAC_FC"
 manifest_path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/", analysis_id, sep = ""), "/str-profiles", sep = "")
 
 
@@ -59,6 +59,23 @@ main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genom
                           header = T)
 dim(main_clin_data)
 # 1124633  28
+
+# From here we are missing the type of participant (Mother, Father, ...)
+re_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_113696_genomes_removingPanels_041019.tsv",
+                        sep = "\t",
+                        stringsAsFactors = F, 
+                        header = T)
+re_clin_data = re_clin_data %>% select(plate_key.x, biological_relationship_to_proband)
+colnames(re_clin_data) = c("platekey", "relationship")
+
+
+# merge re_clin_data with main_clin_data
+
+main_clin_data = inner_join(main_clin_data,
+                            re_clin_data,
+                            by = "platekey")
+dim(main_clin_data)
+# 1806411 29
 
 # Cases
 # - ONLY probands
@@ -107,18 +124,29 @@ length(unique(main_cases$platekey))
 
 l_main_cases = unique(main_cases$platekey)
 
+# In this case, we will make sure we are not taking any Father/Mother from a family in which the proband is in cases
+l_family_main_cases = main_clin_data %>%
+  filter(platekey %in% l_main_cases) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull()
+
+length(l_family_main_cases)
+# 514
+
 main_controls = main_clin_data %>%
-  filter(participant_type %in% "Proband",
+  filter(relationship %in% c("Father", "Mother"),
+         !rare_diseases_family_id %in% l_family_main_cases,
          programme %in% "Rare Diseases",
          genome_build %in% "GRCh37",
          year_of_birth < 2000,
          !platekey %in% l_main_cases,
          !grepl("[Nn][Ee][Uu][Rr][Oo]", main_clin_data$disease_group))
 dim(main_controls)
-# 16693  28
+# 25135  29
 
 length(unique(main_controls$platekey))
-# 1408
+# 5080
 
 # Writing individual files
 l_pilot_cases = unique(pilot_cases$plateKey)
@@ -131,7 +159,7 @@ l_main_cases = unique(main_cases$platekey)
 write.table(l_main_cases, "input/main_517_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$platekey)
-write.table(l_main_controls, "input/main_1408_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_controls, "input/main_5080_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Merged CASE and CONTROL files
 l_cases = unique(c(l_pilot_cases,
@@ -141,7 +169,7 @@ l_controls = unique(c(l_pilot_controls,
                       l_main_controls))
 
 write.table(l_cases, "input/merged_pilot_main_594_cases.txt", quote = F, row.names = F, col.names = F)
-write.table(l_controls, "input/merged_pilot_main_2275_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_controls, "input/merged_pilot_main_5947_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Let's create now the `manifest` file
 # We need to merge all STR profiles for all case-control samples together into a multi-sample STR profile. 
@@ -178,11 +206,11 @@ merged_df = rbind(cases_df,
                   controls_df)
 
 dim(merged_df)
-# 2869  3
+# 6541  3
 
 # QC check - there should not be duplicated platekeys
 length(merged_df$platekey)
-# 2869
+# 6541
 
 output_name = paste(paste("input/manifest", analysis_id, sep = "_"), ".tsv", sep = "")
 write.table(merged_df,
@@ -198,7 +226,7 @@ save.image(output_name)
 # run quality control checks
 source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
 plotting_age_distribution(environment_file = output_name, 
-                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAC/")
+                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAC_FC//")
 
 
 
