@@ -81,13 +81,18 @@ dim(merged_pat)
 # 5105 4
 
 merged_pat = merged_pat %>%
-  mutate()
+  group_by(platekey) %>%
+  mutate(age = 2020 - YOB) %>%
+  ungroup() %>%
+  as.data.frame()
 
 # Plot age distribution
-ggplot(merged_pat,
-       aes(x = ))
+age_distribution = ggplot(merged_pat,
+       aes(x = age, fill = group)) + geom_density(alpha=0.25)
+
+png("./output/age_distribution_PAT.png")
+age_distribution
+dev.off()
 
 
-ggplot(data,aes(x=value, fill=variable)) + geom_density(alpha=0.25)
-ggplot(data,aes(x=value, fill=variable)) + geom_histogram(alpha=0.25)
-ggplot(data,aes(x=variable, y=value, fill=variable)) + geom_boxplot()
+
