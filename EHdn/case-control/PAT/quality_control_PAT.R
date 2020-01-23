@@ -32,8 +32,8 @@ selected_main_cases = unique(selected_main_cases)
 dim(selected_main_cases)
 # 1427  3
 
-colnames(selected_pilot_cases) = c("platekey", "sex", "age")
-colnames(selected_main_cases) = c("platekey", "sex", "age")
+colnames(selected_pilot_cases) = c("platekey", "sex", "YOB")
+colnames(selected_main_cases) = c("platekey", "sex", "YOB")
 
 selected_cases = rbind(selected_pilot_cases,
                        selected_main_cases)
@@ -62,13 +62,13 @@ selected_main_controls = unique(selected_main_controls)
 dim(selected_main_controls)
 # 2371  3
 
-colnames(selected_pilot_controls) = c("platekey", "sex", "age")
-colnames(selected_main_controls) = c("platekey", "sex", "age")
+colnames(selected_pilot_controls) = c("platekey", "sex", "YOB")
+colnames(selected_main_controls) = c("platekey", "sex", "YOB")
 
 selected_controls = rbind(selected_pilot_controls,
                           selected_main_controls)
 dim(selected_controls)
-# 3483  3
+# 3484  3
 
 # Define each `selected_cases` and `selected_controls` with the group name
 selected_cases$group = rep("case", length(selected_cases$platekey))
@@ -78,11 +78,14 @@ merged_pat = rbind(selected_cases,
                    selected_controls)
 
 dim(merged_pat)
-# 109419 4
+# 5105 4
 
+merged_pat = merged_pat %>%
+  mutate()
 
 # Plot age distribution
-ggplot()
+ggplot(merged_pat,
+       aes(x = ))
 
 
 ggplot(data,aes(x=value, fill=variable)) + geom_density(alpha=0.25)
