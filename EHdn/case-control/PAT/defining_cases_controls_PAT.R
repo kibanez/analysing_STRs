@@ -184,5 +184,5 @@ write.table(merged_df,
             row.names = F,
             col.names = F)
 
-
+save.image("./PAT/PAT_case_control_environment.Rdata")
 
