@@ -1,6 +1,5 @@
 # Function that creates the age distribution across case and control datasets, given a R environment that has defined under `case-control`
 plotting_age_distribution <- function(working_directory, environment_file){
-  
   # libraries
   library(dplyr)
   library(ggplot2)
@@ -78,7 +77,7 @@ plotting_age_distribution <- function(working_directory, environment_file){
   
   plot_output_name = paste(working_directory, "age_distribution.png", sep = "output/")
   png(plot_output_name)
-  age_distribution
+  print(age_distribution)
   dev.off()
 
 
