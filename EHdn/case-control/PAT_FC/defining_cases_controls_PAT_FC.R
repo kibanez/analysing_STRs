@@ -66,7 +66,6 @@ colnames(re_clin_data) = c("platekey", "relationship")
 
 
 # merge re_clin_data with main_clin_data
-
 main_clin_data = inner_join(main_clin_data,
                             re_clin_data,
                             by = "platekey")
@@ -132,7 +131,7 @@ length(l_family_main_cases)
 
 
 main_controls = main_clin_data %>%
-  filter(participant_type %in% c("Father","Mother"),
+  filter(relationship %in% c("Father","Mother"),
          !rare_diseases_family_id %in% l_family_main_cases,
          programme %in% "Rare Diseases",
          genome_build %in% "GRCh37",
@@ -140,23 +139,23 @@ main_controls = main_clin_data %>%
          !platekey %in% l_main_cases,
          !grepl("[Nn][Ee][Uu][Rr][Oo]", main_clin_data$disease_group))
 dim(main_controls)
-# 16693  28
+# 24873  29
 
 length(unique(main_controls$platekey))
-# 1408
+# 5068
 
 # Writing individual files
 l_pilot_cases = unique(pilot_cases$plateKey)
-write.table(l_pilot_cases, "./PAT/input/pilot_117_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_cases, "input/pilot_117_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_pilot_controls = unique(pilot_controls$plateKey)
-write.table(l_pilot_controls, "./PAT/input/pilot_865_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_controls, "input/pilot_865_controls.txt", quote = F, row.names = F, col.names = F)
 
 l_main_cases = unique(main_cases$platekey)
-write.table(l_main_cases, "./PAT/input/main_910_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "input/main_910_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$platekey)
-write.table(l_main_controls, "./PAT/input/main_1408_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_controls, "input/main_5068_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Merged CASE and CONTROL files
 l_cases = unique(c(l_pilot_cases,
@@ -165,8 +164,8 @@ l_cases = unique(c(l_pilot_cases,
 l_controls = unique(c(l_pilot_controls,
                       l_main_controls))
 
-write.table(l_cases, "./PAT/input/merged_pilot_main_1027_cases.txt", quote = F, row.names = F, col.names = F)
-write.table(l_controls, "./PAT/input/merged_pilot_main_2273_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_cases, "input/merged_pilot_main_1027_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_controls, "input/merged_pilot_main_5933_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Let's create now the `manifest` file
 # We need to merge all STR profiles for all case-control samples together into a multi-sample STR profile. 
