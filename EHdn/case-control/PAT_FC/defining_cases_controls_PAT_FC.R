@@ -56,6 +56,23 @@ main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genom
 dim(main_clin_data)
 # 1124633  28
 
+# From here we are missing the type of participant (Mother, Father, ...)
+re_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_113696_genomes_removingPanels_041019.tsv",
+                        sep = "\t",
+                        stringsAsFactors = F, 
+                        header = T)
+re_clin_data = re_clin_data %>% select(plate_key.x, biological_relationship_to_proband)
+colnames(re_clin_data) = c("platekey", "relationship")
+
+
+# merge re_clin_data with main_clin_data
+
+main_clin_data = inner_join(main_clin_data,
+                            re_clin_data,
+                            by = "platekey")
+dim(main_clin_data)
+# 1806411 29
+
 # Cases
 # - ONLY probands
 # - YOB < 2000 (i.e. adults)
