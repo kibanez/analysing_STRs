@@ -1,5 +1,6 @@
 # Objective: define and track here the modus operandi when selecting samples for cases and controls for PILOT adult ataxia
-# BUT taking family samples (Mother/Father for each proband we won't take, not belonging to Neuro) as controls
+# BUT taking family samples (Mother/Father for each proband we won't take, not belonging to Neuro) as controls from the main dataset
+# We will still select probands as controls from the pilot dataset
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
@@ -10,7 +11,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # defining working directory
-setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/")
+setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT_FC/")
 
 # in this case, the first analysis we will perform is called PAT: pilot adult ataxia 
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
@@ -85,7 +86,7 @@ length(unique(pilot_controls$plateKey))
 # 865
 
 # Controls
-# - ONLY probands
+# - ONLY probands from pilot dataset // Father OR Mother from main dataset
 # - rare disease germline genomes (exclude for now cancer genomes)
 # - `disease_group` NOT in neurology
 # - for `main` take GRCh37
@@ -102,8 +103,20 @@ length(unique(main_cases$platekey))
 
 l_main_cases = unique(main_cases$platekey)
 
+# In this case, we will make sure we are not taking any Father/Mother from a family in which the proband is in cases
+l_family_main_cases = main_clin_data %>%
+  filter(platekey %in% l_main_cases) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull()
+
+length(l_family_main_cases)
+# 900
+
+
 main_controls = main_clin_data %>%
-  filter(participant_type %in% "Proband",
+  filter(participant_type %in% c("Father","Mother"),
+         !rare_diseases_family_id %in% l_family_main_cases,
          programme %in% "Rare Diseases",
          genome_build %in% "GRCh37",
          year_of_birth < 2000,
