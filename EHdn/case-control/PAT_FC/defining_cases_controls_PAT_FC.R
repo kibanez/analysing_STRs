@@ -185,7 +185,7 @@ cases_df = data.frame(platekey = l_cases,
 
 cases_df = cases_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT_FC/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -194,7 +194,7 @@ controls_df = data.frame(platekey = l_controls,
 
 controls_df = controls_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT_FC/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -202,25 +202,25 @@ merged_df = rbind(cases_df,
                   controls_df)
 
 dim(merged_df)
-# 3300  3
+# 6960  3
 
 # QC check - there should not be duplicated platekeys
 length(merged_df$platekey)
-# 3300
+# 6960
 
 write.table(merged_df,
-            "./PAT/input/manifest_PAT.tsv",
+            "input/manifest_PAT_FC.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
             col.names = F)
 
-save.image("./PAT/PAT_case_control_environment.Rdata")
+save.image("PAT_FC_case_control_environment.Rdata")
 
 # run quality control checks
 source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
-plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/PAT_case_control_environment.Rdata", 
-                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/")
+plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT_FC/PAT_FC_case_control_environment.Rdata", 
+                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT_FC/")
 
 
 
