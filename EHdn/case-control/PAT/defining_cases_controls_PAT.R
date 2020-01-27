@@ -9,7 +9,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # defining working directory
-setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/")
+setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT/")
 
 # in this case, the first analysis we will perform is called PAT: pilot adult ataxia 
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
@@ -92,12 +92,13 @@ length(unique(pilot_controls$plateKey))
 main_cases = main_clin_data %>%
   filter(participant_type %in% "Proband",
          year_of_birth < 2000,
+         genome_build %in% "GRCh37",
          grepl("[Aa]taxia", specific_disease))
 dim(main_cases)
-# 44866  28
+# 4350  28
 
 length(unique(main_cases$platekey))
-# 910
+# 99
 
 l_main_cases = unique(main_cases$platekey)
 
@@ -116,16 +117,16 @@ length(unique(main_controls$platekey))
 
 # Writing individual files
 l_pilot_cases = unique(pilot_cases$plateKey)
-write.table(l_pilot_cases, "./PAT/input/pilot_117_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_cases, "input/pilot_117_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_pilot_controls = unique(pilot_controls$plateKey)
-write.table(l_pilot_controls, "./PAT/input/pilot_865_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_controls, "input/pilot_865_controls.txt", quote = F, row.names = F, col.names = F)
 
 l_main_cases = unique(main_cases$platekey)
-write.table(l_main_cases, "./PAT/input/main_910_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "input/main_99_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$platekey)
-write.table(l_main_controls, "./PAT/input/main_1408_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_controls, "input/main_1408_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Merged CASE and CONTROL files
 l_cases = unique(c(l_pilot_cases,
@@ -134,8 +135,8 @@ l_cases = unique(c(l_pilot_cases,
 l_controls = unique(c(l_pilot_controls,
                       l_main_controls))
 
-write.table(l_cases, "./PAT/input/merged_pilot_main_1027_cases.txt", quote = F, row.names = F, col.names = F)
-write.table(l_controls, "./PAT/input/merged_pilot_main_2273_controls.txt", quote = F, row.names = F, col.names = F)
+write.table(l_cases, "input/merged_pilot_main_216_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_controls, "input/merged_pilot_main_2273_controls.txt", quote = F, row.names = F, col.names = F)
 
 # Let's create now the `manifest` file
 # We need to merge all STR profiles for all case-control samples together into a multi-sample STR profile. 
@@ -172,25 +173,25 @@ merged_df = rbind(cases_df,
                   controls_df)
 
 dim(merged_df)
-# 3300  3
+# 2489  3
 
 # QC check - there should not be duplicated platekeys
 length(merged_df$platekey)
-# 3300
+# 2489
 
 write.table(merged_df,
-            "./PAT/input/manifest_PAT.tsv",
+            "input/manifest_PAT.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
             col.names = F)
 
-save.image("./PAT/PAT_case_control_environment.Rdata")
+save.image("PAT_case_control_environment.Rdata")
 
 # run quality control checks
 source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
-plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/PAT_case_control_environment.Rdata", 
-                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/PAT/")
+plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT/PAT_case_control_environment.Rdata", 
+                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT/")
 
 
 
