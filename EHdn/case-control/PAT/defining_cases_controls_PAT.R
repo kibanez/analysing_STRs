@@ -89,6 +89,34 @@ length(unique(pilot_controls$plateKey))
 # - `disease_group` NOT in neurology
 # - for `main` take GRCh37
 
+# In the main dataset, we can have genomes sequenced in both genome assemblies: GRCh37 and GRCh38
+#l_platekey_b37 = main_clin_data %>%
+#  filter(genome_build %in% "GRCh37") %>%
+#  select(plate_key) %>%
+#  unique() %>%
+#  pull()
+#length(l_platekey_b37)
+# 9901
+
+#l_platekey_b38 = main_clin_data %>%
+#  filter(genome_build %in% "GRCh38") %>%
+#  select(plate_key) %>%
+#  unique() %>%
+#  pull()
+#length(l_platekey_b38)
+# 63551
+
+#l_platekey_both = unique(intersect(l_platekey_b37,
+#                            l_platekey_b38))
+#length(l_platekey_both)
+# 1664
+
+#write.table(l_platekey_both,
+#            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38.txt",
+#            quote = F,
+#            row.names = F,
+#            col.names = F)
+
 main_cases = main_clin_data %>%
   filter(participant_type %in% "Proband",
          year_of_birth < 2000,
