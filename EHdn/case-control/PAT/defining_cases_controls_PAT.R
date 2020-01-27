@@ -117,6 +117,17 @@ length(unique(pilot_controls$plateKey))
 #            row.names = F,
 #            col.names = F)
 
+#df_platekey_both= main_clin_data %>%
+#  filter(plate_key %in% l_platekey_both) %>%
+#  select(plate_key, file_path)
+
+#write.table(df_platekey_both,
+#            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38.csv",
+#            sep = ",",
+#            row.names = F,
+#            col.names = F,
+#            quote = F)
+
 main_cases = main_clin_data %>%
   filter(participant_type %in% "Proband",
          year_of_birth < 2000,
@@ -152,19 +163,36 @@ write.table(l_pilot_controls, "input/pilot_865_controls.txt", quote = F, row.nam
 
 l_main_cases = unique(main_cases$plate_key)
 write.table(l_main_cases, "input/main_97_cases.txt", quote = F, row.names = F, col.names = F)
+# which(l_main_cases %in% l_platekey_both)
+write.table(l_main_cases[-which(l_main_cases %in% l_platekey_both)], "input/main_79_cases.txt", quote = F, row.names = F, col.names = F)
+
 
 l_main_controls = unique(main_controls$plate_key)
 write.table(l_main_controls, "input/main_1391_controls.txt", quote = F, row.names = F, col.names = F)
+# which(l_main_controls %in% l_platekey_both)
+write.table(l_main_controls[-which(l_main_controls %in% l_platekey_both)], "input/main_1199_controls.txt", quote = F, row.names = F, col.names = F)
+
 
 # Merged CASE and CONTROL files
+#l_cases = unique(c(l_pilot_cases,
+#                   l_main_cases))
+
 l_cases = unique(c(l_pilot_cases,
-                   l_main_cases))
+                   l_main_cases[-which(l_main_cases %in% l_platekey_both)]))
+
+#l_controls = unique(c(l_pilot_controls,
+#                      l_main_controls))
 
 l_controls = unique(c(l_pilot_controls,
-                      l_main_controls))
+                      l_main_controls[-which(l_main_controls %in% l_platekey_both)]))
 
-write.table(l_cases, "input/merged_pilot_main_214_cases.txt", quote = F, row.names = F, col.names = F)
-write.table(l_controls, "input/merged_pilot_main_2256_controls.txt", quote = F, row.names = F, col.names = F)
+#write.table(l_cases, "input/merged_pilot_main_214_cases.txt", quote = F, row.names = F, col.names = F)
+#write.table(l_controls, "input/merged_pilot_main_2256_controls.txt", quote = F, row.names = F, col.names = F)
+
+# only b37
+write.table(l_cases, "input/merged_pilot_main_196_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_controls, "input/merged_pilot_main_2064_controls.txt", quote = F, row.names = F, col.names = F)
+
 
 # Let's create now the `manifest` file
 # We need to merge all STR profiles for all case-control samples together into a multi-sample STR profile. 
@@ -202,13 +230,15 @@ merged_df = rbind(cases_df,
 
 dim(merged_df)
 # 2470  3
+# 2260  3
 
 # QC check - there should not be duplicated platekeys
 length(merged_df$platekey)
 # 2470
+# 2260
 
 write.table(merged_df,
-            "input/manifest_PAT.tsv",
+            "input/manifest_PAT_only_b37.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
