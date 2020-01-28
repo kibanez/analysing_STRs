@@ -206,4 +206,24 @@ violin_bet27and35 = ggplot(merge_all %>% filter(repeat_size >= 27 | repeat_size 
   ylab("Repeat sizes (repeat units)") 
 
 
+# save the violin plots
+setwd("./analyses/HTT")
+
+png("distribution_across_datasets_beyond40.png")
+print(violin_beyond40)
+dev.off()
+
+png("distribution_across_datasets_beyond40_beyond35.png")
+print(violin_beyond40_age35)
+dev.off()
+
+png("distribution_across_datasets_bet27and35.png")
+print(violin_bet27and35)
+dev.off()
+
+png("distribution_across_datasets_bet36and39.png")
+print(violin_bet36and39)
+dev.off()
+
+
 
