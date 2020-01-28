@@ -167,7 +167,7 @@ merge_all = rbind(dataset1_stra1,
                   dataset3_stra1,
                   dataset3_stra2)
 dim(merge_all)
-# 285078  2
+# 285078  3
 
 # Let's visualise them with violin plots
 
@@ -178,3 +178,32 @@ ggplot(merge_all, aes(x = dataset_name, y=repeat_size, fill = dataset_name)) +
 
 
 # Taking repeat-size >= 40
+violin_beyond40 = ggplot(merge_all %>% filter(repeat_size >= 40),
+       aes(x = dataset_name, y=repeat_size, fill = dataset_name)) +
+  geom_violin() +
+  xlab("Defined datasets, repeat-sizes >= 40") + 
+  ylab("Repeat sizes (repeat units)") 
+
+# Taking repeat-size >= 40 AND age beyond 35
+violin_beyond40_age35 = ggplot(merge_all %>% filter(repeat_size >= 40, year_of_birth <= 1985),
+                         aes(x = dataset_name, y=repeat_size, fill = dataset_name)) +
+  geom_violin() +
+  xlab("Defined datasets, repeat-sizes >= 40 and year <= 1985") + 
+  ylab("Repeat sizes (repeat units)") 
+
+# 36<= repeat-size <=39
+violin_bet36and39 = ggplot(merge_all %>% filter(repeat_size >= 36 | repeat_size <= 39),
+       aes(x = dataset_name, y=repeat_size, fill = dataset_name)) +
+  geom_violin() +
+  xlab("Defined datasets, 36<=repeat-sizes<=39") + 
+  ylab("Repeat sizes (repeat units)") 
+
+# 27<= repeat-size <=35
+violin_bet27and35 = ggplot(merge_all %>% filter(repeat_size >= 27 | repeat_size <= 35),
+       aes(x = dataset_name, y=repeat_size, fill = dataset_name)) +
+  geom_violin() +
+  xlab("Defined datasets, 27<=repeat-sizes<=35") + 
+  ylab("Repeat sizes (repeat units)") 
+
+
+
