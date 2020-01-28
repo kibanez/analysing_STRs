@@ -9,6 +9,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 
 # libraries
 library(dplyr)
+library(ggplot2)
 
 # Set working directory
 setwd("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/")
@@ -137,27 +138,27 @@ length(unique(dedup_data_not_neuro_not_mito_not_cancer_unrelated2$rare_diseases_
 # Let's merge all them, just taking the repeat-size and the group name
 dataset1_stra1 = dedup_data_all_unrelated1 %>%
   mutate(dataset_name = "dataset1_stra1") %>%
-  select(repeat_size, dataset_name)
+  select(repeat_size, year_of_birth, dataset_name)
 
 dataset2_stra1 = dedup_data_not_neuro_not_mito_unrelated1 %>%
   mutate(dataset_name = "dataset2_stra1") %>%
-  select(repeat_size, dataset_name)
+  select(repeat_size, year_of_birth, dataset_name)
 
 dataset3_stra1 = dedup_data_not_neuro_not_mito_not_cancer_unrelated1 %>%
   mutate(dataset_name = "dataset3_stra1") %>%
-  select(repeat_size, dataset_name)
+  select(repeat_size, year_of_birth, dataset_name)
 
 dataset1_stra2 = dedup_data_all_unrelated2 %>%
   mutate(dataset_name = "dataset1_stra2") %>%
-  select(repeat_size, dataset_name)
+  select(repeat_size, year_of_birth, dataset_name)
 
 dataset2_stra2 = dedup_data_not_neuro_not_mito_unrelated2 %>%
   mutate(dataset_name = "dataset2_stra2") %>%
-  select(repeat_size, dataset_name)
+  select(repeat_size, year_of_birth, dataset_name)
 
 dataset3_stra2 = dedup_data_not_neuro_not_mito_not_cancer_unrelated2 %>%
   mutate(dataset_name = "dataset3_stra2") %>%
-  select(repeat_size, dataset_name)
+  select(repeat_size, year_of_birth, dataset_name)
 
 merge_all = rbind(dataset1_stra1,
                   dataset1_stra2,
@@ -168,3 +169,12 @@ merge_all = rbind(dataset1_stra1,
 dim(merge_all)
 # 285078  2
 
+# Let's visualise them with violin plots
+
+ggplot(merge_all, aes(x = dataset_name, y=repeat_size, fill = dataset_name)) +
+  geom_violin() +
+  xlab("Defined datasets") + 
+  ylab("Repeat sizes (repeat units)") 
+
+
+# Taking repeat-size >= 40
