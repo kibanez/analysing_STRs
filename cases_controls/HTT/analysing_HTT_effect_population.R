@@ -131,3 +131,32 @@ length(unique(dedup_data_not_neuro_not_mito_not_cancer_unrelated2$platekey))
 # 21359
 length(unique(dedup_data_not_neuro_not_mito_not_cancer_unrelated2$rare_diseases_family_id))
 # 13064
+
+
+# Once we have defined all 3 datasets to go through our analysis, let's see the differences in the distribution of str-repeats across them
+# Let's merge all them, just taking the repeat-size and the group name
+dataset1_stra1 = dedup_data_all_unrelated1 %>%
+  mutate(dataset_name = "dataset1_stra1") %>%
+  select(repeat_size, dataset_name)
+
+dataset2_stra1 = dedup_data_not_neuro_not_mito_unrelated1 %>%
+  mutate(dataset_name = "dataset2_stra1") %>%
+  select(repeat_size, dataset_name)
+
+dataset3_stra1 = dedup_data_not_neuro_not_mito_not_cancer_unrelated1 %>%
+  mutate(dataset_name = "dataset3_stra1") %>%
+  select(repeat_size, dataset_name)
+
+dataset1_stra2 = dedup_data_all_unrelated2 %>%
+  mutate(dataset_name = "dataset1_stra2") %>%
+  select(repeat_size, dataset_name)
+
+dataset2_stra2 = dedup_data_not_neuro_not_mito_unrelated2 %>%
+  mutate(dataset_name = "dataset2_stra2") %>%
+  select(repeat_size, dataset_name)
+
+dataset3_stra2 = dedup_data_not_neuro_not_mito_not_cancer_unrelated2 %>%
+  mutate(dataset_name = "dataset3_stra2") %>%
+  select(repeat_size, dataset_name)
+
+
