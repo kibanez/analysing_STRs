@@ -21,11 +21,12 @@ dedup_data = read.csv("table_STR_repeat_size_each_row_allele_EHv3.1.2_HTT_CAG_si
 dim(dedup_data)
 # 130126  19
 
-
 # Definition of different sub-datasets in `dedup_data`
 
 # dataset 1
 dedup_data_all = dedup_data
+dim(dedup_data)
+# 130126  19
 
 # dataset 2
 dedup_data_not_neuro_not_mito = dedup_data %>% 
@@ -39,5 +40,6 @@ dedup_data_not_neuro_not_mito_not_cancer = dedup_data %>%
 dim(dedup_data_not_neuro_not_mito_not_cancer)
 # 81602  19
 
+# For each dataset, we ONLY want to consider `UNRELATED`genomes
 
 
