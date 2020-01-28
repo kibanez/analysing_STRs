@@ -25,7 +25,7 @@ dim(dedup_data)
 
 # dataset 1
 dedup_data_all = dedup_data
-dim(dedup_data)
+dim(dedup_data_all)
 # 130126  19
 
 # dataset 2
@@ -41,5 +41,24 @@ dim(dedup_data_not_neuro_not_mito_not_cancer)
 # 81602  19
 
 # For each dataset, we ONLY want to consider `UNRELATED`genomes
+# STRATEGY 1 - take as UNRELATED genomes coming from `probands`
 
+# dataset 1 (cancer programme I assume they are unrelated)
+dedup_data_all_unrelated1 = dedup_data_all %>%
+  filter((biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases") | programme %in% "Cancer")
+dim(dedup_data_all_unrelated1)
+# 63526  19
+
+length(unique(dedup_data_all_unrelated1$participant_id))
+# 31763
+length(unique(dedup_data_all_unrelated1$platekey))
+# 31763
+length(unique(dedup_data_all_unrelated1$rare_diseases_family_id))
+# 29295
+length(which(is.na(dedup_data_all_unrelated1$rare_diseases_family_id)))
+# 4938
+
+
+
+# STRATEGY 2 - take as UNRELEATED genomes that are `Father` OR `Mother` (take both if they are available, we could have ~1% of relatedness....)
 
