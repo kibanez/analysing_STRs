@@ -58,7 +58,20 @@ length(unique(dedup_data_all_unrelated1$rare_diseases_family_id))
 length(which(is.na(dedup_data_all_unrelated1$rare_diseases_family_id)))
 # 4938
 
+# dataset 2 
+dedup_data_not_neuro_not_mito_unrelated1 = dedup_data_not_neuro_not_mito %>%
+  filter((biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases") | programme %in% "Cancer")
+dim(dedup_data_not_neuro_not_mito_unrelated1)
+# 36994  19
 
+length(unique(dedup_data_not_neuro_not_mito_unrelated1$participant_id))
+# 18497
+length(unique(dedup_data_not_neuro_not_mito_unrelated1$platekey))
+# 18497
+length(unique(dedup_data_not_neuro_not_mito_unrelated1$rare_diseases_family_id))
+# 16029
+length(which(is.na(dedup_data_not_neuro_not_mito_unrelated1$rare_diseases_family_id)))
+# 4938
 
 # STRATEGY 2 - take as UNRELEATED genomes that are `Father` OR `Mother` (take both if they are available, we could have ~1% of relatedness....)
 
