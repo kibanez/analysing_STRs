@@ -159,4 +159,12 @@ dataset3_stra2 = dedup_data_not_neuro_not_mito_not_cancer_unrelated2 %>%
   mutate(dataset_name = "dataset3_stra2") %>%
   select(repeat_size, dataset_name)
 
+merge_all = rbind(dataset1_stra1,
+                  dataset1_stra2,
+                  dataset2_stra1,
+                  dataset2_stra2,
+                  dataset3_stra1,
+                  dataset3_stra2)
+dim(merge_all)
+# 285078  2
 
