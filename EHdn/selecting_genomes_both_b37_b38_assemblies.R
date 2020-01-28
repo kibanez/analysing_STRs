@@ -125,7 +125,7 @@ length(df_platekey_both$file_path)
 # 1664
 
 write.table(df_platekey_both,
-            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38.csv",
+            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38_in_GRCh37.csv",
             sep = ",",
             row.names = F,
             col.names = F,
