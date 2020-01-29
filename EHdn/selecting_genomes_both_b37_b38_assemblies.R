@@ -42,6 +42,7 @@ l_platekey_both = unique(intersect(l_platekey_b37,
 length(l_platekey_both)
 # 1664
 
+# Taking BAM file in GRCh37 genome assembly
 # Let's take the path for all these genomes
 # Why? They have been analysed through EHdn with GRCh37 and GRCh38, but the last one was GRCh38...we need to be sure we are using GRCh37 genomes
 # We will create 2 files, a list with GRCh37 BAM files (path to the BAM files) and a list with GRCh38 BAM files (path to the BAM files)
