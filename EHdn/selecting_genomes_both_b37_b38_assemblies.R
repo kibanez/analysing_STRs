@@ -131,3 +131,91 @@ write.table(df_platekey_both,
             row.names = F,
             col.names = F,
             quote = F)
+
+
+#############
+# Part 2 - taking BAM files in GRCh38 genomes assembly for genomes having sequenced in both b37/b38
+df_platekey_both = main_clin_data %>%
+  filter(plate_key %in% l_platekey_both, genome_build %in% "GRCh37", grepl("HX", file_path)) %>%
+  select(plate_key, file_path)
+
+df_platekey_both = unique(df_platekey_both)
+dim(df_platekey_both)
+# 1638  2
+
+# There are some that are not captured with `HX`
+which_out = setdiff(l_platekey_both, unique(df_platekey_both$plate_key))
+df_which_out =  main_clin_data %>%
+  filter(plate_key %in% which_out, genome_build %in% "GRCh37") %>%
+  select(plate_key, file_path)
+df_which_out = unique(df_which_out)
+
+selected = c()
+for (i in 1:length(df_which_out$plate_key)){
+  l_loci = df_which_out %>% filter(plate_key %in% df_which_out$plate_key[i])
+  l_year = unlist(lapply(strsplit(l_loci$file_path, '/'), '[', 4))
+  selected = rbind(selected, l_loci[pmatch(max(l_year),l_year),])
+}
+dim(selected)
+# 110  2
+
+selected = unique(selected)
+dim(selected)
+# 54  2
+
+# Include this to df_platekey_both
+df_platekey_both = rbind(df_platekey_both,
+                         selected)
+
+# There are still some duplicated genomes with the same genome build (GRCh37)
+index_duplicated = which(duplicated(df_platekey_both$plate_key))
+
+# 1- remove them from `df_platekey_both`
+l_duplicated_genomes = df_platekey_both$plate_key[index_duplicated]
+l_duplicated_genomes = unique(l_duplicated_genomes)
+length(l_duplicated_genomes)
+# 26
+
+df_platekey_both = df_platekey_both %>%
+  filter(!plate_key %in% l_duplicated_genomes)
+
+# 2- select the most recent one
+df_platekey_both2 = main_clin_data %>%
+  filter(plate_key %in% l_duplicated_genomes) %>%
+  select(plate_key, file_path)
+df_platekey_both2 = unique(df_platekey_both2)
+dim(df_platekey_both2)
+# 86  2
+
+selected = c()
+for (i in 1:length(df_platekey_both2$plate_key)){
+  l_loci = df_platekey_both2 %>% filter(plate_key %in% df_platekey_both2$plate_key[i])
+  l_year = unlist(lapply(strsplit(l_loci$file_path, '/'), '[', 4))
+  selected = rbind(selected, l_loci[pmatch(max(l_year),l_year),])
+}
+dim(selected)
+# 86  2
+selected= unique(selected)
+dim(selected)
+# 26  2
+
+df_platekey_both = rbind(df_platekey_both,
+                         selected)
+dim(df_platekey_both)
+# 1664  2
+
+df_platekey_both = unique(df_platekey_both)
+dim(df_platekey_both)
+# 1664  2
+
+length(df_platekey_both$plate_key)
+# 1664
+length(df_platekey_both$file_path)
+# 1664
+
+write.table(df_platekey_both,
+            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38_in_GRCh37.csv",
+            sep = ",",
+            row.names = F,
+            col.names = F,
+            quote = F)
