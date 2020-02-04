@@ -12,15 +12,15 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/")
+setwd("~/Documents/STRs/ANALYSIS/cases_controls/EHv2.5.5/")
 
 # Load data
-merged_data = read.csv("table_STR_repeat_size_each_row_allele_EHv3.1.2_HTT_simplified.tsv",
+merged_data = read.csv("table_STR_repeat_size_each_row_allele_EHv2.5.5_HTT_CAG_simplified.tsv",
                        sep = '\t',
                        header = T,
                        stringsAsFactors = F)
 dim(merged_data)
-# 169402  19
+# 177316  19
 
 
 # What it happens now, is that `specific disease` are in `specific_disease`, `disease_group`, and `disease_subgroup`
