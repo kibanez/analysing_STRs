@@ -54,6 +54,63 @@ dim(dedup_only_probands)
 
 
 # Let's compute numbers not taking into account RELATEDNESS
+# All participants
+# patho (>=40)
+dedup_data_all %>% filter(repeat_size >= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 30
+dedup_data_all %>% filter(repeat_size >= 40) %>% select(participant_id) %>% pull() %>% length()
+# 30
+
+# reduced penetrance (36-39)
+dedup_data_all %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 134
+dedup_data_all %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% pull() %>% length()
+# 135
+
+# intermediate (27-35)
+dedup_data_all %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 4197
+dedup_data_all %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% pull() %>% length()
+# 4306
+
+
+# ONLY probands
+# patho (>=40)
+dedup_only_probands %>% filter(repeat_size >= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 19
+dedup_only_probands %>% filter(repeat_size >= 40) %>% select(participant_id) %>% pull() %>% length()
+# 19
+
+# reduced penetrance (36-39)
+dedup_only_probands %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 58
+dedup_only_probands %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% pull() %>% length()
+# 59
+
+# intermediate (27-35)
+dedup_only_probands %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1963
+dedup_only_probands %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% pull() %>% length()
+# 2030
+
+
+# Probands minus cancer
+# patho (>=40)
+# reduced penetrance (36-39)
+# intermediate (27-35)
+
+
+# Probands minus neuro
+# patho (>=40)
+# reduced penetrance (36-39)
+# intermediate (27-35)
+
+# Probands minus neuro and cancer
+# patho (>=40)
+# reduced penetrance (36-39)
+# intermediate (27-35)
+
+
 
 
 # For each dataset, we ONLY want to consider `UNRELATED`genomes
