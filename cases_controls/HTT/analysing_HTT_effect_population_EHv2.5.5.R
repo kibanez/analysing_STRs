@@ -62,7 +62,7 @@ dim(dedup_only_probands_minus_cancer)
 dedup_only_probands_minus_cancer_minus_neuro = dedup_data %>% 
   filter(biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases" & !grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group_list) & !grepl("[Mm][Ii][Tt][Oo]", panel_list))
 dim(dedup_only_probands_minus_cancer_minus_neuro)
-#   19
+# 33084  19
 
 
 
@@ -134,8 +134,22 @@ dedup_only_probands_minus_cancer %>% filter(repeat_size >= 27 & repeat_size <=35
 
 # Probands minus neuro and cancer
 # patho (>=40)
+dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 6
+dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 40) %>% select(participant_id) %>% pull() %>% length()
+# 6
+
 # reduced penetrance (36-39)
+dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 31
+dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% pull() %>% length()
+# 31
+
 # intermediate (27-35)
+dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1090
+dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% pull() %>% length()
+# 1118
 
 
 
