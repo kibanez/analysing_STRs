@@ -134,8 +134,22 @@ dedup_only_probands_minus_cancer %>% filter(repeat_size >= 27 & repeat_size <=35
 
 # Probands minus neuro
 # patho (>=40)
+dedup_only_probands_minus_neuro %>% filter(repeat_size >= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 7
+dedup_only_probands_minus_neuro %>% filter(repeat_size >= 40) %>% select(participant_id) %>% pull() %>% length()
+# 7
+
 # reduced penetrance (36-39)
+dedup_only_probands_minus_neuro %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 35
+dedup_only_probands_minus_neuro %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% pull() %>% length()
+# 35
+
 # intermediate (27-35)
+dedup_only_probands_minus_neuro %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1156
+dedup_only_probands_minus_neuro %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% pull() %>% length()
+# 1186
 
 # Probands minus neuro and cancer
 # patho (>=40)
@@ -155,8 +169,6 @@ dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 27 & repe
 # 1090
 dedup_only_probands_minus_cancer_minus_neuro %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% pull() %>% length()
 # 1118
-
-
 
 
 # For each dataset, we ONLY want to consider `UNRELATED`genomes
