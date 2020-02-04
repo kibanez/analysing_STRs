@@ -12,39 +12,49 @@ library(dplyr)
 library(ggplot2)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/")
+setwd("~/Documents/STRs/ANALYSIS/cases_controls/EHv2.5.5/")
 
 # Load data
-dedup_data = read.csv("table_STR_repeat_size_each_row_allele_EHv3.1.2_HTT_CAG_simplified_dedup_270120.tsv",
+dedup_data = read.csv("table_STR_repeat_size_each_row_allele_EHv2.5.5_HTT_CAG_simplified_dedup_040220.tsv",
                        sep = '\t',
                        header = T,
                        stringsAsFactors = F)
 dim(dedup_data)
-# 130126  19
+# 132102  19
 
 # Definition of different sub-datasets in `dedup_data`
 
 # dataset 1
 dedup_data_all = dedup_data
 dim(dedup_data_all)
-# 130126  19
+# 132102  19
 
 # dataset 2
 dedup_data_not_neuro_not_mito = dedup_data %>% 
   filter(!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group_list), !grepl("[Mm][Ii][Tt][Oo]", panel_list)) 
 dim(dedup_data_not_neuro_not_mito)
-# 86540  19
+# 86894  19
 
 # dataset 3
 dedup_data_not_neuro_not_mito_not_cancer = dedup_data %>% 
   filter(!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group_list), !grepl("[Mm][Ii][Tt][Oo]", panel_list), (programme %in% "Rare Diseases")) 
 dim(dedup_data_not_neuro_not_mito_not_cancer)
-# 81602  19
+# 84572  19
 
 dedup_only_cancer = dedup_data %>%
   filter(programme %in% "Cancer")
 dim(dedup_only_cancer)
-# 4938  19
+# 2322  19
+
+# dataset 4 - only probands
+dedup_only_probands = dedup_data %>% 
+  filter((biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases") | programme %in% "Cancer")
+dim(dedup_only_probands)
+# 62894  19
+
+
+# Let's compute numbers not taking into account RELATEDNESS
+
 
 # For each dataset, we ONLY want to consider `UNRELATED`genomes
 # STRATEGY 1 - take as UNRELATED genomes coming from `probands`
