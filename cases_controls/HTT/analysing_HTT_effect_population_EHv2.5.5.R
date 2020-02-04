@@ -52,6 +52,12 @@ dedup_only_probands = dedup_data %>%
 dim(dedup_only_probands)
 # 62894  19
 
+# dataset 5 - probands minus cancer
+dedup_only_probands_minus_cancer = dedup_data %>% 
+  filter(biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases")
+dim(dedup_only_probands_minus_cancer)
+# 60572  19
+
 
 # Let's compute numbers not taking into account RELATEDNESS
 # All participants
@@ -96,8 +102,22 @@ dedup_only_probands %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(
 
 # Probands minus cancer
 # patho (>=40)
+dedup_only_probands_minus_cancer %>% filter(repeat_size >= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 18
+dedup_only_probands_minus_cancer %>% filter(repeat_size >= 40) %>% select(participant_id) %>% pull() %>% length()
+# 18
+
 # reduced penetrance (36-39)
+dedup_only_probands_minus_cancer %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 54
+dedup_only_probands_minus_cancer %>% filter(repeat_size >= 36 & repeat_size <=39) %>% select(participant_id) %>% pull() %>% length()
+# 55
+
 # intermediate (27-35)
+dedup_only_probands_minus_cancer %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1897
+dedup_only_probands_minus_cancer %>% filter(repeat_size >= 27 & repeat_size <=35) %>% select(participant_id) %>% pull() %>% length()
+# 1962
 
 
 # Probands minus neuro
