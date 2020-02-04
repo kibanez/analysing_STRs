@@ -46,6 +46,31 @@ dedup_only_cancer = dedup_data %>%
 dim(dedup_only_cancer)
 # 4938  19
 
+# dataset 4 - only probands
+dedup_only_probands = dedup_data %>% 
+  filter((biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases") | programme %in% "Cancer")
+dim(dedup_only_probands)
+# 63526  19
+
+# dataset 5 - probands minus cancer
+dedup_only_probands_minus_cancer = dedup_data %>% 
+  filter(biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases")
+dim(dedup_only_probands_minus_cancer)
+# 58588  19
+
+# dataset 6 - probands minus cancer minus neurology
+dedup_only_probands_minus_cancer_minus_neuro = dedup_data %>% 
+  filter(biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases" & !grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group_list) & !grepl("[Mm][Ii][Tt][Oo]", panel_list))
+dim(dedup_only_probands_minus_cancer_minus_neuro)
+# 32056  19
+
+# dataset 7 - probands minus neuro
+dedup_only_probands_minus_neuro = dedup_data %>% 
+  filter((biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases" & !grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group_list) & !grepl("[Mm][Ii][Tt][Oo]", panel_list)) | programme %in% "Cancer")
+dim(dedup_only_probands_minus_neuro)
+# 36994  19
+
+
 # For each dataset, we ONLY want to consider `UNRELATED`genomes
 # STRATEGY 1 - take as UNRELATED genomes coming from `probands`
 
