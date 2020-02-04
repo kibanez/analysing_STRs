@@ -58,6 +58,13 @@ dedup_only_probands_minus_cancer = dedup_data %>%
 dim(dedup_only_probands_minus_cancer)
 # 60572  19
 
+# dataset 6 - probands minus cancer minus neurology
+dedup_only_probands_minus_cancer_minus_neuro = dedup_data %>% 
+  filter(biological_relationship_to_proband %in% "N/A" & programme %in% "Rare Diseases" & !grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group_list) & !grepl("[Mm][Ii][Tt][Oo]", panel_list))
+dim(dedup_only_probands_minus_cancer_minus_neuro)
+#   19
+
+
 
 # Let's compute numbers not taking into account RELATEDNESS
 # All participants
