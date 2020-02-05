@@ -272,11 +272,10 @@ l_latest_males_platekeys = unique(males_data$latest_platekey)
 length(l_latest_males_platekeys)
 # 4885 (== males dup list)
 
-
 merged_data_dedup_final_final = rbind(merged_data_dedup_final_final,
                                       merged_data_dedup_final %>% filter(platekey %in% l_latest_males_platekeys))
 dim(merged_data_dedup_final_final)
-# 115780
+# 115780  19
 
 # Last checks
 # How many genomes?
@@ -290,3 +289,30 @@ length(unique(merged_data_dedup_final_final$participant_id))
 # how many alleles? not unique
 length(merged_data_dedup_final_final$repeat_size)
 # 115780
+
+# There are 4 participants, females, with 2 platekeys rather than 1 platekey
+kiku = merged_data_dedup_final_final %>% 
+  group_by(participant_id) %>% mutate(zenbat_LP = length(unique(platekey))) %>% 
+  ungroup() %>% 
+  as.data.frame()
+
+View(kiku %>% filter(zenbat_LP > 1))
+# Let's remove them just in case
+to_remove = kiku %>% filter(zenbat_LP > 1) %>% select(participant_id) %>% unique() %>% pull()
+
+merged_data_dedup_final_final = merged_data_dedup_final_final %>%
+  filter(!participant_id %in% to_remove)
+
+dim(merged_data_dedup_final_final)
+# 115772 19
+
+# How many genomes?
+length(unique(merged_data_dedup_final_final$platekey))
+# 75035
+
+# how many participant ids?
+length(unique(merged_data_dedup_final_final$participant_id))
+# 75035
+
+
+
