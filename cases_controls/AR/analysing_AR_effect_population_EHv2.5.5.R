@@ -53,7 +53,52 @@ dedup_data_pietro = dedup_data %>%
 dim(dedup_data_pietro)
 # 56951  19
 
+# dataset1
+# Check how many participants present an allele >=37
+dedup_data_all %>% filter(repeat_size >= 37) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 90
 
+dedup_data_all %>% filter(repeat_size >= 37) %>% select(participant_id) %>% pull() %>% length()
+# 93
+
+# Check how many participants present an allele >=38
+dedup_data_all %>% filter(repeat_size >= 38) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 70
+
+dedup_data_all %>% filter(repeat_size >= 38) %>% select(participant_id) %>% pull() %>% length()
+# 72
+
+# dataset2
+# Check how many participants present an allele >=37
+dedup_data_not_neuro_not_mito %>% filter(repeat_size >= 37) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 53
+
+dedup_data_not_neuro_not_mito %>% filter(repeat_size >= 37) %>% select(participant_id) %>% pull() %>% length()
+# 54
+
+# Check how many participants present an allele >=38
+dedup_data_not_neuro_not_mito %>% filter(repeat_size >= 38) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 39
+
+dedup_data_not_neuro_not_mito %>% filter(repeat_size >= 38) %>% select(participant_id) %>% pull() %>% length()
+# 40
+
+# dataset3
+# Check how many participants present an allele >=37
+dedup_data_not_neuro_not_mito_not_cancer %>% filter(repeat_size >= 37) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 43
+
+dedup_data_not_neuro_not_mito_not_cancer %>% filter(repeat_size >= 37) %>% select(participant_id) %>% pull() %>% length()
+# 44
+
+# Check how many participants present an allele >=38
+dedup_data_not_neuro_not_mito_not_cancer %>% filter(repeat_size >= 38) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 33
+
+dedup_data_not_neuro_not_mito_not_cancer %>% filter(repeat_size >= 38) %>% select(participant_id) %>% pull() %>% length()
+# 34
+
+# dataset4
 # Check how many participants present an allele >=37
 dedup_data_pietro %>% filter(repeat_size >= 37) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 44
