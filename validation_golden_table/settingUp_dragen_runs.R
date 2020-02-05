@@ -123,19 +123,47 @@ l_familyIDs_extra_to_run_dragen_merged = c(l_familyIDs_extra_to_run_dragen_main,
 length(l_familyIDs_extra_to_run_dragen_merged)
 # 158
 
-clin_data %>% filter(rare_diseases_family_id %in% l_familyIDs_extra_to_run_dragen_merged) %>%
+l_all_platekeys_extra_from_main = clin_data %>% filter(rare_diseases_family_id %in% l_familyIDs_extra_to_run_dragen_merged) %>%
   select(plate_key) %>%
   unique() %>%
-  pull() %>%
-  length()
+  pull() 
+length(l_all_platekeys_extra_from_main)
 # 225
 
-pilot_clin_data %>% filter(gelFamilyId.x %in% l_familyIDs_extra_to_run_dragen_merged) %>%
+l_all_platekeys_extra_from_pilot = pilot_clin_data %>% filter(gelFamilyId.x %in% l_familyIDs_extra_to_run_dragen_merged) %>%
   select(plateKey) %>%
   unique() %>%
-  pull() %>%
-  length()
- 
+  pull() 
+length(l_all_platekeys_extra_from_pilot)
+# 22 
 
 
+# not all, total of 247 rather than 255
+setdiff(l_genomes_extra_to_run_dragen,
+        c(l_all_platekeys_extra_from_main, l_all_platekeys_extra_from_pilot))
+# [1] "LP2000865-DNA_G07"  "LP3000148-DNA_G11 " "LP3001269-DNA_A02" 
+
+# "LP3000148-DNA_G11" contains an exta space...
+clin_data %>% filter(plate_key %in% "LP3000148-DNA_G11") %>% select(rare_diseases_family_id) %>% unique() %>% pull()
+# "111001410"
+
+l_familyIDs_extra_to_run_dragen_merged = c(l_familyIDs_extra_to_run_dragen_merged,
+                                           "111001410")
+
+# grep LP3001269-DNA_A02 clinical_data_research_cohort_113696_genomes_removingPanels_041019.tsv 
+# LP3001269-DNA_A02	115016638	Rare Diseases	GRCh38	Consenting	115016638	Proband	NA	Male	1974	Early onset dementia	Neurodegenerative disorders	Neurology and neurodevelopmental disorders	Trio with other Biological Relatives
+
+l_familyIDs_extra_to_run_dragen_merged = c(l_familyIDs_extra_to_run_dragen_merged,
+                                           "115016638")
+
+# "LP2000865-DNA_G07" is missing from all Pilot tables -- cannot retrieve the family
+
+length(l_familyIDs_extra_to_run_dragen_merged)
+# 159
+
+write.table(l_familyIDs_extra_to_run_dragen_merged,
+            "./list_extra_familyIDs_to_run_dragen_v3.2.tsv",
+            quote = F,
+            row.names = F,
+            col.names = F)
 
