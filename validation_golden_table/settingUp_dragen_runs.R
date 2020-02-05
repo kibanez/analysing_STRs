@@ -97,12 +97,45 @@ length(intersect(list_unique_platekeys_golden_table, unique(val_data$platekey)))
 # Which are the ones not included there
 l_genomes_extra_to_run_dragen = setdiff(list_unique_platekeys_golden_table,
                                         unique(val_data$platekey))
+length(l_genomes_extra_to_run_dragen)
+# 162
 
+# Dorota needs the FamilyID for them
+l_familyIDs_extra_to_run_dragen_main = clin_data %>%
+  filter(plate_key %in% l_genomes_extra_to_run_dragen) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull()
+length(l_familyIDs_extra_to_run_dragen_main)
+# 149
 
+l_familyIDs_extra_to_run_dragen_pilot = pilot_clin_data %>%
+  filter(plateKey %in% l_genomes_extra_to_run_dragen) %>%
+  select(gelFamilyId.x) %>%
+  unique() %>%
+  pull()
+length(l_familyIDs_extra_to_run_dragen_pilot)
+# 9
 
-  
-  
+# Double check we are covering all platekeys we want
+l_familyIDs_extra_to_run_dragen_merged = c(l_familyIDs_extra_to_run_dragen_main,
+                                           l_familyIDs_extra_to_run_dragen_pilot)
+length(l_familyIDs_extra_to_run_dragen_merged)
+# 158
 
+clin_data %>% filter(rare_diseases_family_id %in% l_familyIDs_extra_to_run_dragen_merged) %>%
+  select(plate_key) %>%
+  unique() %>%
+  pull() %>%
+  length()
+# 225
+
+pilot_clin_data %>% filter(gelFamilyId.x %in% l_familyIDs_extra_to_run_dragen_merged) %>%
+  select(plateKey) %>%
+  unique() %>%
+  pull() %>%
+  length()
+ 
 
 
 
