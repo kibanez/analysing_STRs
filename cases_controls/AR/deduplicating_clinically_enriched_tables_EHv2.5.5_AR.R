@@ -314,5 +314,12 @@ length(unique(merged_data_dedup_final_final$platekey))
 length(unique(merged_data_dedup_final_final$participant_id))
 # 75035
 
+write.table(merged_data_dedup_final_final, 
+            "./table_STR_repeat_size_each_row_allele_EHv2.5.5_AR_CAG_simplified_dedup_050220.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t"
+)
 
 
