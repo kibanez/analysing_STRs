@@ -278,3 +278,15 @@ merged_data_dedup_final_final = rbind(merged_data_dedup_final_final,
 dim(merged_data_dedup_final_final)
 # 115780
 
+# Last checks
+# How many genomes?
+length(unique(merged_data_dedup_final_final$platekey))
+# 75043
+
+# how many participant ids?
+length(unique(merged_data_dedup_final_final$participant_id))
+# 75039
+
+# how many alleles? not unique
+length(merged_data_dedup_final_final$repeat_size)
+# 115780
