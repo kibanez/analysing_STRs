@@ -76,7 +76,7 @@ duplicated_genomes = merged_data %>%
   filter(n()>2)
 
 duplicated_genomes %>% select(participant_id) %>% unique() %>% pull() %>% length()
-# 6483 genomes that have >1 genome
+# 6483 genomes that have >=2 genome
 l_duplicated_genomes = unique(duplicated_genomes$participant_id)
 length(l_duplicated_genomes)
 # 6483
@@ -104,9 +104,9 @@ dim(merged_data_dedup)
 
 # PART 2 - include the genomes recovered from the duplicated genomes
 merged_data_dedup = rbind(merged_data_dedup,
-                          merged_data %>% filter(platekey %in% l_latest_dedup_platekeys, genome_build %in% "GRCh38"))
+                          merged_data %>% filter(platekey %in% l_latest_dedup_platekeys, (genome_build %in% "GRCh38" | is.na(genome_build))))
 dim(merged_data_dedup)
-# 109825  19
+# 120085  19
 
 # so far, we have removed duplicates having more than 1 genome
 # QUALITY CHECK - check whether there are pids with more than 3 rows
@@ -144,7 +144,7 @@ df_aux_recover = merged_data_dedup %>% filter(participant_id %in% l_duplicated_g
 # First, remove all genomes in l_genomes_duplciated2
 merged_data_dedup = merged_data_dedup %>% filter(!participant_id %in% l_duplicated_genomes2)
 dim(merged_data_dedup)
-# 108921  19
+# 119181  19
 
 df_aux_recover = df_aux_recover %>% group_by(participant_id) %>% mutate(large_repeat = max(repeat_size)) %>% ungroup() %>% as.data.frame()
 index_to_keep = which(df_aux_recover$large_repeat == df_aux_recover$repeat_size)
@@ -180,7 +180,7 @@ dim(df_aux_recover)
 merged_data_dedup = rbind(merged_data_dedup,
                           df_aux_recover)
 dim(merged_data_dedup)
-# 109442  19
+# 119702  19
 
 # QUALITY CHECK
 merged_data_dedup %>% 
@@ -198,7 +198,6 @@ length(unique(aver$participant_id))
 # 58
 
 # there are 58 participant-genome rows with too many rows...let's simplify them
-
 l_parti_too_many_rows = unique(aver$participant_id)
 merged_data_dedup_final = merged_data_dedup %>% 
   filter(!participant_id %in% l_parti_too_many_rows)
@@ -216,17 +215,66 @@ merged_data_dedup_final = rbind(merged_data_dedup_final,
                                 aver)
 
 dim(merged_data_dedup_final)
-# 109345  19
-
+# 119605  19
 
 # How many genomes?
 length(unique(merged_data_dedup_final$platekey))
-# 73663
+# 78868
 
 # how many participant ids?
 length(unique(merged_data_dedup_final$participant_id))
-# 69834
+# 75039
 
 # how many alleles? not unique
 length(merged_data_dedup_final$repeat_size)
-# 109345
+# 119605
+
+# How many families?
+length(unique(merged_data_dedup_final$rare_diseases_family_id))
+# 30938 
+
+# We are still having more genomes (78868) than participants (75039)
+# This is because AR is a locus in chrX, and we might have males with 2 Platekeys for 1 participant, summing 2 alleles, rather than 1
+merged_data_dedup_final %>% 
+  group_by(participant_id) %>% 
+  filter(n()>1, participant_phenotypic_sex %in% "Male") %>%
+  dim()
+# 9770  19
+
+l_males_more_than_one_allele = merged_data_dedup_final %>% 
+  group_by(participant_id) %>% 
+  filter(n()>1, participant_phenotypic_sex %in% "Male") %>%
+  ungroup() %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+
+length(l_males_more_than_one_allele)
+# 4885
+
+merged_data_dedup_final_final = merged_data_dedup_final %>%
+  filter(!participant_id %in% l_males_more_than_one_allele)
+dim(merged_data_dedup_final_final)
+# 109835  19
+
+males_data = merged_data_dedup_final %>%
+  filter(participant_id %in% l_males_more_than_one_allele)
+
+# Take the latest platekey
+males_data = males_data %>% 
+  group_by(participant_id) %>%
+  mutate(latest_platekey = max(platekey)) %>%
+  ungroup() %>% 
+  as.data.frame()
+
+# select latest genomes
+l_latest_males_platekeys = unique(males_data$latest_platekey)
+length(l_latest_males_platekeys)
+# 4885 (== males dup list)
+
+
+merged_data_dedup_final_final = rbind(merged_data_dedup_final_final,
+                                      merged_data_dedup_final %>% filter(platekey %in% l_latest_males_platekeys))
+dim(merged_data_dedup_final_final)
+# 115780
+
