@@ -96,3 +96,137 @@ df_pid_platekey = df_pid_platekey %>%
 l_latest_dedup_platekeys = unique(df_pid_platekey$latest_platekey)
 length(l_latest_dedup_platekeys)
 # 6483 (== dedup participant ids)
+
+# PART 1 - select pid not duplicated (to merge with the rest afterwards)
+merged_data_dedup = merged_data %>% filter(!participant_id %in% l_duplicated_genomes)
+dim(merged_data_dedup)
+# 106932  19
+
+# PART 2 - include the genomes recovered from the duplicated genomes
+merged_data_dedup = rbind(merged_data_dedup,
+                          merged_data %>% filter(platekey %in% l_latest_dedup_platekeys, genome_build %in% "GRCh38"))
+dim(merged_data_dedup)
+# 109825  19
+
+# so far, we have removed duplicates having more than 1 genome
+# QUALITY CHECK - check whether there are pids with more than 3 rows
+merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>2) %>%
+  dim()
+# 934  19
+
+l_duplicated_genomes2 = merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>3) %>%
+  select(participant_id) %>%
+  pull() %>%
+  unique()
+length(l_duplicated_genomes2)
+# 217
+
+# Take the largets repeat-size
+df_pid_platekey_repeatsize = merged_data_dedup %>% 
+  filter(participant_id %in% l_duplicated_genomes2) %>% 
+  select(participant_id, platekey, repeat_size)
+
+df_pid_platekey_repeatsize = df_pid_platekey_repeatsize %>% 
+  group_by(participant_id) %>%
+  mutate(largest_repeat = max(repeat_size)) %>%
+  ungroup() %>% 
+  as.data.frame()
+
+# remove from merged_data_dedup those genomes with smaller repeat-size
+
+# And now, only include here the ones with largest repeat-size
+df_aux_recover = merged_data_dedup %>% filter(participant_id %in% l_duplicated_genomes2)
+
+# First, remove all genomes in l_genomes_duplciated2
+merged_data_dedup = merged_data_dedup %>% filter(!participant_id %in% l_duplicated_genomes2)
+dim(merged_data_dedup)
+# 108921  19
+
+df_aux_recover = df_aux_recover %>% group_by(participant_id) %>% mutate(large_repeat = max(repeat_size)) %>% ungroup() %>% as.data.frame()
+index_to_keep = which(df_aux_recover$large_repeat == df_aux_recover$repeat_size)
+df_aux_recover = df_aux_recover[index_to_keep,]
+dim(df_aux_recover)
+# 521  20
+
+# remove last column
+df_aux_recover = df_aux_recover[,-20]
+dim(df_aux_recover)
+# 521  19
+
+# There are some genomes in GRCh37 and GRCh38, let's take GRCh38 info
+l_genomes_both_builds = df_aux_recover %>%
+  group_by(participant_id) %>%
+  filter(n()>2) %>%
+  ungroup() %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+
+length(l_genomes_both_builds)
+# 48
+
+df_aux_recover = rbind(df_aux_recover %>% 
+                         filter(!participant_id %in% l_genomes_both_builds),
+                       df_aux_recover %>%
+                         filter(participant_id %in% l_genomes_both_builds, genome_build %in% "GRCh38"))
+
+dim(df_aux_recover)
+# 521  19
+
+merged_data_dedup = rbind(merged_data_dedup,
+                          df_aux_recover)
+dim(merged_data_dedup)
+# 109442  19
+
+# QUALITY CHECK
+merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>2) %>%
+  dim()
+# 213  19
+
+aver = merged_data_dedup %>% 
+  group_by(participant_id) %>% 
+  filter(n()>2) %>%
+  ungroup() %>%
+  as.data.frame()
+length(unique(aver$participant_id))
+# 58
+
+# there are 58 participant-genome rows with too many rows...let's simplify them
+
+l_parti_too_many_rows = unique(aver$participant_id)
+merged_data_dedup_final = merged_data_dedup %>% 
+  filter(!participant_id %in% l_parti_too_many_rows)
+
+aver = unique(aver)
+dim(aver)
+# 58  19
+
+# repeat x2 each row
+aver = aver[rep(seq_len(nrow(aver)), each = 2), ]
+dim(aver)
+# 116  19
+
+merged_data_dedup_final = rbind(merged_data_dedup_final,
+                                aver)
+
+dim(merged_data_dedup_final)
+# 109345  19
+
+
+# How many genomes?
+length(unique(merged_data_dedup_final$platekey))
+# 73663
+
+# how many participant ids?
+length(unique(merged_data_dedup_final$participant_id))
+# 69834
+
+# how many alleles? not unique
+length(merged_data_dedup_final$repeat_size)
+# 109345
