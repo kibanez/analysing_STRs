@@ -84,3 +84,25 @@ write.table(val_data %>% select(platekey, path, participant_phenotypic_sex),
             quote = F,
             row.names = F,
             col.names = F)
+
+# Check how many genomes withint the golden validation set are included in this run Dorota did with dragen v3.2
+list_unique_platekeys_golden_table = read.table("~/Documents/STRs/VALIDATION/list_platekeys_unique.tsv",
+                                                stringsAsFactors = F)
+list_unique_platekeys_golden_table = list_unique_platekeys_golden_table$V1
+
+# Intersection
+length(intersect(list_unique_platekeys_golden_table, unique(val_data$platekey)))
+# 93
+
+# Which are the ones not included there
+l_genomes_extra_to_run_dragen = setdiff(list_unique_platekeys_golden_table,
+                                        unique(val_data$platekey))
+
+
+
+  
+  
+
+
+
+
