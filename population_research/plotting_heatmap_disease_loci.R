@@ -16,6 +16,13 @@ library(reshape2)
 working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/"
 setwd(working_dir)
 
+# Functions
+# Get upper triangle of the correlation matrix
+get_upper_tri <- function(cormat){
+  cormat[lower.tri(cormat)]<- NA
+  return(cormat)
+}
+
 # Load main validation data table
 main_data = read.csv("~/Documents/STRs/VALIDATION/EHv255_EHv312_validation_cohort_GEL_and_ILMN.tsv",
                      sep = "\t",
@@ -101,5 +108,23 @@ for (i in 1:length(l_loci)){
                        asi_table,
                        eas_table,
                        eur_table)
+  
+  # Pairwise t-test between groups
+  stat.test <- compare_means(repeat_size ~ population, 
+                             data = merged_table,
+                             paired = FALSE,
+                             method = "wilcox.test",
+                             p.adjust.method = "bonferroni",
+                             alternative = "great") %>%
+    mutate(y.position = c(51, 53, 55, 57, 59, 61, 63, 65, 67, 69))
+  
+  # dataframe with padjusted values
+  df_padj_locus = stat.test %>% select(group1, group2, p.adj) %>% as.data.frame()
+  df_padj_locus$group1 = as.factor(df_padj_locus$group1)
+  df_padj_locus$group2 = as.factor(df_padj_locus$group2)
+  
+  ggplot(data = df_padj_locus, 
+         aes(x=group1, y=group2, fill=p.adj)) + 
+    geom_tile()
   
 }
