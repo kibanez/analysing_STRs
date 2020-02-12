@@ -10,6 +10,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
+library(reshape2)
 
 # Set working directory
 working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/"
@@ -29,6 +30,8 @@ l_loci = l_loci[-13]
 dir.create("heatmap")
 
 # We need to do this by locus
+# We want to produce an upper-triangle heatmap where, for each locus, the colour is associated with the corrected pvalue on
+# how significant the repeat-size distribution in the locus is across different super-populations
 for (i in 1:length(l_loci)){
   
   
