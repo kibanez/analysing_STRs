@@ -11,6 +11,7 @@ library(dplyr)
 library(ggplot2)
 library(ggpubr)
 library(reshape2)
+library("RColorBrewer")
 
 # Set working directory
 working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/"
@@ -123,8 +124,24 @@ for (i in 1:length(l_loci)){
   df_padj_locus$group1 = as.factor(df_padj_locus$group1)
   df_padj_locus$group2 = as.factor(df_padj_locus$group2)
   
-  ggplot(data = df_padj_locus, 
-         aes(x=group1, y=group2, fill=p.adj)) + 
-    geom_tile()
+  matrix_padj_locus = acast(df_padj_locus, group1 ~ group2, value.var = "p.adj")
+
+  heatmap.2(t(matrix_padj_locus),
+            key = F,
+            trace = "none",
+            dendrogram='none',
+            main = locus_name)
+    
+  
+  
+  #ggplot(data = matrix_padj_locus, 
+  #       aes(x=group1, y=group2, fill=p.adj)) + 
+  #  geom_tile(color = "white") +
+  #  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
+  #                       midpoint = 0.5, limit = c(-1,1),  
+  #                       name="Corrected\nWilcoxon test") +
+  #  xlab("") + 
+  #  ylab("") 
+    
   
 }
