@@ -126,13 +126,14 @@ for (i in 1:length(l_loci)){
   
   matrix_padj_locus = acast(df_padj_locus, group1 ~ group2, value.var = "p.adj")
 
+  png(paste("heatmap", paste(locus_name, ".png", sep = ""), sep = "/"))
   heatmap.2(t(matrix_padj_locus),
             key = F,
+            Rowv = F,
             trace = "none",
             dendrogram='none',
             main = locus_name)
-    
-  
+  dev.off()
   
   #ggplot(data = matrix_padj_locus, 
   #       aes(x=group1, y=group2, fill=p.adj)) + 
