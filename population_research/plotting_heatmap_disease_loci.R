@@ -134,15 +134,5 @@ for (i in 1:length(l_loci)){
             dendrogram='none',
             main = locus_name)
   dev.off()
-  
-  #ggplot(data = matrix_padj_locus, 
-  #       aes(x=group1, y=group2, fill=p.adj)) + 
-  #  geom_tile(color = "white") +
-  #  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-  #                       midpoint = 0.5, limit = c(-1,1),  
-  #                       name="Corrected\nWilcoxon test") +
-  #  xlab("") + 
-  #  ylab("") 
-    
-  
+
 }
