@@ -126,12 +126,17 @@ for (i in 1:length(l_loci)){
   
   matrix_padj_locus = acast(df_padj_locus, group1 ~ group2, value.var = "p.adj")
 
+  my_palette <- colorRampPalette(c("red", "black", "green"))(n = 1000)
+  
   png(paste("heatmap", paste(locus_name, ".png", sep = ""), sep = "/"))
   heatmap.2(t(matrix_padj_locus),
             key = F,
+            scale = "none",
             Rowv = F,
             trace = "none",
             dendrogram='none',
+            col=my_palette,
+            na.rm = T,
             main = locus_name)
   dev.off()
 
