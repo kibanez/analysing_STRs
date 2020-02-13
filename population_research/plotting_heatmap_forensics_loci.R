@@ -16,17 +16,12 @@ library("RColorBrewer")
 working_dir="~/Documents/STRs/ANALYSIS/population_research/HipSTR/output_HipSTR/HipSTR_output_58971_vcfs/"
 setwd(working_dir)
 
-# 
-
 # Load main validation data table
-main_data = read.csv("~/Documents/STRs/VALIDATION/EHv255_EHv312_validation_cohort_GEL_and_ILMN.tsv",
+main_data = read.csv("./EUR/merged/merged_forensics_loci_46883_EUR_HipSTRv0.6.2.tsv",
                      sep = "\t",
                      header = T,
                      stringsAsFactors = F)
-l_loci = sort(unique(main_data$locus))
-
-# remove PPP2R2B from there
-l_loci = l_loci[-13]
+l_loci = sort(unique(main_data$gene))
 
 # Create output folder
 dir.create("heatmap_forensics")
@@ -38,28 +33,34 @@ for (i in 1:length(l_loci)){
   locus_name = l_loci[i]
   
   # AFR table
-  afr_file = paste("AFR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
-  afr_file = paste(afr_file, "_simplified_cancer_and_RD.tsv", sep = "")
-  
-  afr_table = read.csv(afr_file,
+  afr_table = read.csv("./AFR/merged/merged_forensics_loci_1777_AFR_HipSTRv0.6.2.tsv",
                        sep = "\t",
                        stringsAsFactors = F,
                        header = T)
   
   afr_table = afr_table %>%
-    select(population, repeat_size)
+    filter(gene %in% l_loci[i]) %>%
+    select(repeat.size) %>%
+    pull() %>%
+    as.data.frame()
+  colnames(afr_table) = "repeat.size"
+  
+  afr_table$population = rep("AFR", length(afr_table$repeat.size))
   
   # AMR table
-  amr_file = paste("AMR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
-  amr_file = paste(amr_file, "_simplified_cancer_and_RD.tsv", sep = "")
-  
-  amr_table = read.csv(amr_file,
+  amr_table = read.csv("./AMR/merged/merged_forensics_loci_797_AMR_HipSTRv0.6.2.tsv",
                        sep = "\t",
                        stringsAsFactors = F,
                        header = T)
   
   amr_table = amr_table %>%
-    select(population, repeat_size)
+    filter(gene %in% l_loci[i]) %>%
+    select(repeat.size) %>%
+    pull() %>%
+    as.data.frame()
+  colnames(amr_table) = "repeat.size"
+  
+  amr_table$population = rep("AMR", length(amr_table$repeat.size))
   
   # ASI table
   asi_file = paste("ASI/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
