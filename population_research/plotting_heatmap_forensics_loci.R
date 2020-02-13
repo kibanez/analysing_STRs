@@ -94,16 +94,19 @@ for (i in 1:length(l_loci)){
   
   
   # EUR table
-  eur_file = paste("EUR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
-  eur_file = paste(eur_file, "_simplified_cancer_and_RD.tsv", sep = "")
-  
-  eur_table = read.csv(eur_file,
+  eur_table = read.csv("./EUR/merged/merged_forensics_loci_46883_EUR_HipSTRv0.6.2.tsv",
                        sep = "\t",
                        stringsAsFactors = F,
                        header = T)
   
   eur_table = eur_table %>%
-    select(population, repeat_size)
+    filter(gene %in% l_loci[i]) %>%
+    select(repeat.size) %>%
+    pull() %>%
+    as.data.frame()
+  colnames(eur_table) = "repeat.size"
+  
+  eur_table$population = rep("EUR", length(eur_table$repeat.size))
   
   # Merged table
   merged_table = rbind(afr_table,
