@@ -13,8 +13,10 @@ library(reshape2)
 library("RColorBrewer")
 
 # Set working directory
-working_dir="~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/"
+working_dir="~/Documents/STRs/ANALYSIS/population_research/HipSTR/output_HipSTR/HipSTR_output_58971_vcfs/"
 setwd(working_dir)
+
+# 
 
 # Load main validation data table
 main_data = read.csv("~/Documents/STRs/VALIDATION/EHv255_EHv312_validation_cohort_GEL_and_ILMN.tsv",
@@ -27,7 +29,7 @@ l_loci = sort(unique(main_data$locus))
 l_loci = l_loci[-13]
 
 # Create output folder
-dir.create("heatmap")
+dir.create("heatmap_forensics")
 
 # We need to do this by locus
 # We want to produce an upper-triangle heatmap where, for each locus, the colour is associated with the corrected pvalue on
