@@ -78,16 +78,20 @@ for (i in 1:length(l_loci)){
   asi_table$population = rep("ASI", length(asi_table$repeat.size))
   
   # EAS table
-  eas_file = paste("EAS/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
-  eas_file = paste(eas_file, "_simplified_cancer_and_RD.tsv", sep = "")
-  
-  eas_table = read.csv(eas_file,
+  eas_table = read.csv("./EAS/merged/merged_forensics_loci_400_EAS_HipSTRv0.6.2.tsv",
                        sep = "\t",
                        stringsAsFactors = F,
                        header = T)
   
   eas_table = eas_table %>%
-    select(population, repeat_size)
+    filter(gene %in% l_loci[i]) %>%
+    select(repeat.size) %>%
+    pull() %>%
+    as.data.frame()
+  colnames(eas_table) = "repeat.size"
+  
+  eas_table$population = rep("EAS", length(eas_table$repeat.size))
+  
   
   # EUR table
   eur_file = paste("EUR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
