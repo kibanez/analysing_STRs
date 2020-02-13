@@ -116,7 +116,7 @@ for (i in 1:length(l_loci)){
                        eur_table)
   
   # Pairwise t-test between groups
-  stat.test <- compare_means(repeat_size ~ population, 
+  stat.test <- compare_means(repeat.size ~ population, 
                              data = merged_table,
                              paired = FALSE,
                              method = "wilcox.test",
@@ -131,7 +131,7 @@ for (i in 1:length(l_loci)){
   
   matrix_padj_locus = acast(df_padj_locus, group1 ~ group2, value.var = "p.adj")
 
-  png(paste("heatmap", paste(locus_name, ".png", sep = ""), sep = "/"))
+  png(paste("heatmap_forensics", paste(locus_name, ".png", sep = ""), sep = "/"))
   heatmap.2(t(matrix_padj_locus),
             key = F,
             Rowv = F,
@@ -139,15 +139,4 @@ for (i in 1:length(l_loci)){
             dendrogram='none',
             main = locus_name)
   dev.off()
-  
-  #ggplot(data = matrix_padj_locus, 
-  #       aes(x=group1, y=group2, fill=p.adj)) + 
-  #  geom_tile(color = "white") +
-  #  scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-  #                       midpoint = 0.5, limit = c(-1,1),  
-  #                       name="Corrected\nWilcoxon test") +
-  #  xlab("") + 
-  #  ylab("") 
-    
-  
 }
