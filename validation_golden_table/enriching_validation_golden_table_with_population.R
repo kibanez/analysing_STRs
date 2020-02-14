@@ -80,6 +80,14 @@ val_data_popu = val_data_popu %>%
                                  population == "ASI" ~ "ASI",
                                  population == "AMR-EUR" ~ "AMR-EUR"))
 
+# Let's enrich the raw validation golden table with the super-population
+val_data_enriched = left_join(val_data,
+                              val_data_popu,
+                              by = "LP_Number")
+write.table(val_data_enriched,
+            "~/Documents/STRs/VALIDATION/population/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched_with_popu_140220.tsv",
+            sep = "\t", quote = F, row.names = F, col.names = T)
+
 write.table(val_data_popu, 
             "~/Documents/STRs/VALIDATION/population/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_enriched_with_popu_130120.tsv",
             sep = "\t", quote = F, row.names = F, col.names = T)
