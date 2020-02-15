@@ -11,7 +11,7 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.2.1"
 
 
 # Set environment
-setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
+setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/")
 
 # Load population data
 popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
@@ -21,53 +21,87 @@ popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
 dim(popu_table_enriched)
 # 59356  20
 
+# Take the list of all loci
+# Load main validation data table
+main_data = read.csv("~/Documents/STRs/VALIDATION/EHv255_EHv312_validation_cohort_GEL_and_ILMN.tsv",
+                     sep = "\t",
+                     header = T,
+                     stringsAsFactors = F)
+l_loci = sort(unique(main_data$locus))
+
+# remove PPP2R2B from there
+l_loci = l_loci[-13]
+
 # Load merged repeat-sizes for each population
-df_asi = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/ASI/merged/merged_population_genomes_unrelated_probands_and_cancer_2678_avg_EHv3.1.2_ASI.tsv',
-                  sep = '\t',
-                  stringsAsFactors = F,
-                  header = T)
-dim(df_asi)
-# 1430  12
+for(i in 1:length(l_loci)){
+  locus_name = l_loci[i]
+  
+  # AFR table
+  afr_file = paste("AFR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
+  afr_file = paste(afr_file, "_simplified_cancer_and_RD.tsv", sep = "")
+  
+  afr_table = read.csv(afr_file,
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+  
+  afr_table = afr_table %>%
+    select(platekey, population, repeat_size)
+  
+  # AMR table
+  amr_file = paste("AMR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
+  amr_file = paste(amr_file, "_simplified_cancer_and_RD.tsv", sep = "")
+  
+  amr_table = read.csv(amr_file,
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+  
+  amr_table = amr_table %>%
+    select(platekey, population, repeat_size)
+  
+  # ASI table
+  asi_file = paste("ASI/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
+  asi_file = paste(asi_file, "_simplified_cancer_and_RD.tsv", sep = "")
+  
+  asi_table = read.csv(asi_file,
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+  
+  asi_table = asi_table %>%
+    select(platekey, population, repeat_size)
+  
+  # EAS table
+  eas_file = paste("EAS/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
+  eas_file = paste(eas_file, "_simplified_cancer_and_RD.tsv", sep = "")
+  
+  eas_table = read.csv(eas_file,
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+  
+  eas_table = eas_table %>%
+    select(platekey, population, repeat_size)
+  
+  # EUR table
+  eur_file = paste("EUR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
+  eur_file = paste(eur_file, "_simplified_cancer_and_RD.tsv", sep = "")
+  
+  eur_table = read.csv(eur_file,
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+  
+  eur_table = eur_table %>%
+    select(platekey, population, repeat_size)
 
-df_eas = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/EAS/merged/merged_population_genomes_unrelated_probands_and_cancer_227_avg_EHv3.1.2_EAS',
-                  sep = '\t',
-                  stringsAsFactors = F,
-                  header = T) 
-dim(df_eas)
-# 723  12
-
-df_afr = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/AFR/merged/merged_population_genomes_unrelated_probands_and_cancer_1136_avg_EHv3.1.2_AFR.tsv',
-                  sep = '\t',
-                  stringsAsFactors = F,
-                  header = T) 
-dim(df_afr)
-# 1170  12
-
-df_amr = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/AMR/merged/merged_population_genomes_unrelated_probands_and_cancer_384_avg_EHv3.1.2_AMR.tsv',
-                  sep = '\t',
-                  stringsAsFactors = F,
-                  header = T) 
-dim(df_amr)
-# 965  12
-
-df_eur = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/unrelated_probands_and_cancer/EUR/merged/merged_population_genomes_unrelated_probands_and_cancer_26033_avg_EHv3.1.2_EUR.tsv',
-                  sep = '\t',
-                  stringsAsFactors = F,
-                  header = T) 
-dim(df_eur)
-# 2282  12
-
-
-df_asi = df_asi %>% mutate(population = "ASI")
-df_eas = df_eas %>% mutate(population = "EAS")
-df_afr = df_afr %>% mutate(population = "AFR")
-df_amr = df_amr %>% mutate(population = "AMR")
-df_eur = df_eur %>% mutate(population = "EUR")
-
-df_all = rbind(df_afr,
-               df_amr,
-               df_eur,
-               df_eas,
-               df_asi)
-dim(df_all)
-# 6570  13
+  # Merged table
+  merged_table = rbind(afr_table,
+                       amr_table,
+                       asi_table,
+                       eas_table,
+                       eur_table)
+  
+  
+}
