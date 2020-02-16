@@ -19,12 +19,12 @@ working_dir="~/Documents/STRs/PAPERS/NIID/"
 setwd(working_dir)
 
 # Load data
-df_zhongbo = read.csv("data/repeat_sizes_NIID_and_inclusions_for_Kristina.csv",
-                      sep = ",",
+df_zhongbo = read.csv("data/zhonbo_data_kris_fixed.tsv",
+                      sep = "\t",
                       header = T,
                       stringsAsFactors = F)
 dim(df_zhongbo)
-# 30  6
+# 60  2
 
 # Load data corresponding to 56K genomes (to align with other figures) we do have for populations
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv",
@@ -55,6 +55,42 @@ notch2_table_not_neuro = notch2_table %>%
   filter(!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group))
 dim(notch2_table_not_neuro)
 # 127768  19
+
+
+# Let's create percentage of alleles
+notch2_table_neuro = notch2_table_neuro %>%
+  group_by(repeat_size) %>%
+  mutate(percent_allele = n()/length(notch2_table_neuro$platekey)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+notch2_table_not_neuro = notch2_table_not_neuro %>%
+  group_by(repeat_size) %>%
+  mutate(percent_allele = n()/length(notch2_table_not_neuro$platekey)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+
+# Adapt zhongbo table in order to have both alleles in the same column
+df_zhongbo_NIDD = df_zhongbo %>%
+  filter(group %in% "NIID")
+
+
+df_zhongbo_inclusion = df_zhongbo %>%
+  filter(!group %in% "NIID")
+
+
+df_zhongbo_NIDD = df_zhongbo_NIDD %>%
+  group_by(repeat_size) %>%
+  mutate(percent_allele = n()/length(df_zhongbo_NIDD$group)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+df_zhongbo_inclusion = df_zhongbo_inclusion %>%
+  group_by(repeat_size) %>%
+  mutate(percent_allele = n()/length(df_zhongbo_inclusion$group)) %>%
+  ungroup() %>%
+  as.data.frame()
 
 joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = population, color = population)) + 
   geom_line() + 
