@@ -38,7 +38,23 @@ l_genomes = unique(popu_table$platekey)
 length(l_genomes)
 # 59356
 
+# Retrieve directly from EHv3 merged table the percentages for NOTCH2 gene
+notch2_table = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/table_STR_repeat_size_each_row_allele_EHv3.1.2_NOTCH2NL_simplified.tsv",
+                      sep = "\t",
+                      stringsAsFactors = F,
+                      header = T)
+dim(notch2_table)
+# 152594  19
 
+notch2_table_neuro = notch2_table %>%
+  filter(grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) 
+dim(notch2_table_neuro)
+# 24826  19
+
+notch2_table_not_neuro = notch2_table %>%
+  filter(!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group))
+dim(notch2_table_not_neuro)
+# 127768  19
 
 joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = population, color = population)) + 
   geom_line() + 
