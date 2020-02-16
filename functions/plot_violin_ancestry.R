@@ -42,7 +42,8 @@ plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_dat
     coord_flip() +
     xlab("Population") + 
     ylab("Repeat sizes (repeat units)") + 
-    ggtitle(gene_name) 
+    ggtitle(gene_name) +
+    geom_boxplot(width=0.1)
     #stat_compare_means(comparisons = my_comparisons,
 #                       method = "wilcox.test")
   
