@@ -211,8 +211,8 @@ df_asi = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_resear
               sep = '\t',
               stringsAsFactors = F,
               header = T)
-dim(df)
-# 2494 12
+dim(df_asi)
+# 1648 12
 
 df_eas = read.csv('~/Documents/STRs/ANALYSIS/population_research/EH_3.1.2_research_October2019_55419_genomes/EAS/merged/merged_population_genomes_392_avg_EHv3.1.2_EAS.tsv',
                   sep = '\t',
@@ -272,6 +272,6 @@ for (i in 1:length(l_loci)){
   # Jointly - distribution
   plot_gene_joint_ancestries(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
   
-  # Jointly - Violing plots
+  # Jointly - Violin plots
   plot_violin_ancestry(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
 }
