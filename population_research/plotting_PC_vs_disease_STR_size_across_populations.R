@@ -9,6 +9,7 @@ R.version.string ## "R version 3.6.2 (2019-12-12)"
 library(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.2.1"
 library("ggbeeswarm"); packageDescription ("ggbeeswarm", fields = "Version") #"0.6.0"
+library("plot3D"); packageDescription ("plot3D", fields = "Version") #"1.3"
 
 
 
@@ -172,5 +173,13 @@ for(i in 1:length(l_loci)){
     ylab("Repeat-size") +
     guides(fill = FALSE)
   dev.off()
+  
+ # 3D
+  scatter3D(merged_table$pc1, 
+            merged_table$pc2, 
+            merged_table$repeat_size, 
+            colvar = merged_table$population,
+            phi = 0, bty ="g")
+  
   
 }
