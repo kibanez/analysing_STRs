@@ -109,12 +109,12 @@ merged_all = rbind(df_zhongbo_inclusion,
 
 joint_plot = ggplot(merged_all, aes(x = repeat_size, y = percent_allele, group = group, color = group)) + 
   #geom_line() + 
-  geom_bar(stat = "identity") +
+  geom_bar(stat = "identity", position = "dodge") +
   theme_classic() +
   ylab("Allele frequency") + 
   xlab("Number of CGG repeat expansions") 
 
-png("./figures/Figure1A_zhongbo.png",units="in", width=5, height=5, res=300)
+png("./figures/Figure1A_zhongbo_dodged.png",units="in", width=5, height=5, res=300)
 print(joint_plot)
 dev.off()
 
