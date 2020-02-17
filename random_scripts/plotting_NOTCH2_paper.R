@@ -26,6 +26,8 @@ df_zhongbo = read.csv("data/zhonbo_data_kris_fixed.tsv",
 dim(df_zhongbo)
 # 60  2
 
+df_zhongbo$repeat_size = as.integer(df_zhongbo$repeat_size)
+
 # Load data corresponding to 56K genomes (to align with other figures) we do have for populations
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv",
                                header = T,
@@ -92,11 +94,26 @@ df_zhongbo_inclusion = df_zhongbo_inclusion %>%
   ungroup() %>%
   as.data.frame()
 
-joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = population, color = population)) + 
+notch2_table_neuro = notch2_table_neuro %>%
+  select(repeat_size, percent_allele)
+notch2_table_neuro$group = rep("Neuro", length(notch2_table_neuro$repeat_size))
+
+notch2_table_not_neuro = notch2_table_not_neuro %>%
+  select(repeat_size, percent_allele)
+notch2_table_not_neuro$group = rep("Not neuro", length(notch2_table_not_neuro$repeat_size))
+
+merged_all = rbind(df_zhongbo_inclusion,
+                   df_zhongbo_NIDD,
+                   notch2_table_neuro,
+                   notch2_table_not_neuro)
+
+joint_plot = ggplot(merged_all, aes(x = repeat_size, y = percent_allele, group = group, color = group)) + 
   geom_line() + 
   ylab("Allele frequency") + 
-  xlab("Repeat sizes (repeat units)") + 
-  ggtitle(gene_name) + 
-  geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
-  geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
-  coord_cartesian(xlim = c(min_value,max_value))
+  xlab("Number of CGG repeat expansions") 
+
+png("./figures/Figure1A.png",units="in", width=5, height=5, res=300)
+print(joint_plot)
+dev.off()
+
+
