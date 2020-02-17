@@ -62,11 +62,12 @@ df_which_out =  main_clin_data %>%
   select(plate_key, file_path)
 df_which_out = unique(df_which_out)
 
+# ACHTUNG!!! in this case we want to select the MIN year, because they are for sure GRCh37!!
 selected = c()
 for (i in 1:length(df_which_out$plate_key)){
   l_loci = df_which_out %>% filter(plate_key %in% df_which_out$plate_key[i])
   l_year = unlist(lapply(strsplit(l_loci$file_path, '/'), '[', 4))
-  selected = rbind(selected, l_loci[pmatch(max(l_year),l_year),])
+  selected = rbind(selected, l_loci[pmatch(min(l_year),l_year),])
 }
 dim(selected)
 # 110  2
@@ -99,11 +100,12 @@ df_platekey_both2 = unique(df_platekey_both2)
 dim(df_platekey_both2)
 # 86  2
 
+# The same here, we want to select GRCh37, so the MIN year
 selected = c()
 for (i in 1:length(df_platekey_both2$plate_key)){
   l_loci = df_platekey_both2 %>% filter(plate_key %in% df_platekey_both2$plate_key[i])
   l_year = unlist(lapply(strsplit(l_loci$file_path, '/'), '[', 4))
-  selected = rbind(selected, l_loci[pmatch(max(l_year),l_year),])
+  selected = rbind(selected, l_loci[pmatch(min(l_year),l_year),])
 }
 dim(selected)
 # 86  2
@@ -126,7 +128,7 @@ length(df_platekey_both$file_path)
 # 1664
 
 write.table(df_platekey_both,
-            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38_in_GRCh37.csv",
+            "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/input/list_1664_genomes_both_b37_and_b38_in_GRCh37_doublechecked.csv",
             sep = ",",
             row.names = F,
             col.names = F,
