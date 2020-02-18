@@ -39,6 +39,8 @@ l_loci = l_loci[-13]
 for(i in 1:length(l_loci)){
   locus_name = l_loci[i]
   
+  print(locus_name)
+  
   # AFR table
   afr_file = paste("AFR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
   afr_file = paste(afr_file, "_simplified_cancer_and_RD.tsv", sep = "")
@@ -111,75 +113,88 @@ for(i in 1:length(l_loci)){
                            popu_table_enriched %>% select(platekey, pc1, pc2, pc3, pc4, pc5, pc6, pc7, pc8, pc9, pc10),
                            by = "platekey")
   
+  pcs_vs_size_eur_afr = ggplot(data=merged_table %>% filter(population %in% c("EUR", "AFR")), 
+         aes(x=pc2, y=repeat_size, colour = population)) +
+    #geom_boxplot() +
+    geom_violin() +
+    geom_boxplot(width = 0.1) +
+    #geom_boxplot(bins=300) +
+    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
+    xlab("PC2") +
+    ylab("Repeat-size") +
+    guides(fill = FALSE)
+  
+  
   png(paste(paste("pc_vs_size/PCs_vs_size_EUR_vs_AFR_", locus_name, sep = ""), ".png", sep = ""))
-  ggplot(data=merged_table %>% filter(population %in% c("EUR", "AFR")), 
-         aes(x=pc2, y=repeat_size, colour = population)) +
+  print(pcs_vs_size_eur_afr)
+  dev.off()
+
+  pcs_vs_size_eur_amr = ggplot(data=merged_table %>% filter(population %in% c("EUR", "AMR")), 
+         aes(x=pc1, y=repeat_size, colour = population)) +
+    #geom_boxplot() +
+    geom_violin() +
+    geom_boxplot(width = 0.1) +
+    #geom_boxplot(bins=300) +
+    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
+    xlab("PC1") +
+    ylab("Repeat-size") +
+    guides(fill = FALSE)
+  
+  png(paste(paste("pc_vs_size/PCs_vs_size_EUR_vs_AMR_", locus_name, sep = ""), ".png", sep = ""))
+  print(pcs_vs_size_eur_amr)
+  dev.off()
+
+  pcs_vs_size_eur_eas = ggplot(data=merged_table %>% filter(population %in% c("EUR", "EAS")), 
+         aes(x=pc1, y=repeat_size, colour = population)) +
+    #geom_boxplot() +
+    geom_violin() +
+    geom_boxplot(width = 0.1) +
+    #geom_boxplot(bins=300) +
+    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
+    xlab("PC1") +
+    ylab("Repeat-size") +
+    guides(fill = FALSE)
+  
+  png(paste(paste("pc_vs_size/PCs_vs_size_EUR_vs_EAS_", locus_name, sep = ""), ".png", sep = ""))
+  print(pcs_vs_size_eur_eas)
+  dev.off()
+
+  pcs_vs_size_eur_asi = ggplot(data=merged_table %>% filter(population %in% c("EUR", "ASI")), 
+         aes(x=pc1, y=repeat_size, colour = population)) +
+    #geom_boxplot() +
+    geom_violin() +
+    geom_boxplot(width = 0.1) +
+    #geom_boxplot(bins=300) +
+    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
+    xlab("PC2") +
+    ylab("Repeat-size") +
+    guides(fill = FALSE)
+  
+  png(paste(paste("pc_vs_size/PCs_vs_size_EUR_vs_ASI_", locus_name, sep = ""), ".png", sep = ""))
+  print(pcs_vs_size_eur_asi)
+  dev.off()
+
+  pcs_vs_size_all = ggplot(data=merged_table, 
+         aes(x=pc1, y=repeat_size, colour = population)) +
     #geom_boxplot() +
     geom_violin() +
     geom_boxplot(width = 0.2) +
     #geom_boxplot(bins=300) +
     #geom_beeswarm(aes(color = population), grouponX=FALSE) +
-    xlab("PC2") +
+    xlab("PC1") +
     ylab("Repeat-size") +
     guides(fill = FALSE)
-  dev.off()
-
-  png(paste("pc_vs_size/PCs_vs_size_EUR_vs_AMR_", locus_name, sep = ""))
-  ggplot(data=merged_table %>% filter(population %in% c("EUR", "AMR")), 
-         aes(x=pc2, y=repeat_size, colour = population)) +
-    #geom_boxplot() +
-    geom_violin() +
-    geom_boxplot(width = 0.2) +
-    #geom_boxplot(bins=300) +
-    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
-    xlab("PC2") +
-    ylab("Repeat-size") +
-    guides(fill = FALSE)
-  dev.off()
-
-  png(paste("pc_vs_size/PCs_vs_size_EUR_vs_EAS_", locus_name, sep = ""))
-  ggplot(data=merged_table %>% filter(population %in% c("EUR", "EAS")), 
-         aes(x=pc2, y=repeat_size, colour = population)) +
-    #geom_boxplot() +
-    geom_violin() +
-    #geom_boxplot(bins=300) +
-    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
-    xlab("PC2") +
-    ylab("Repeat-size") +
-    guides(fill = FALSE)
-  dev.off()
-
-  png(paste("pc_vs_size/PCs_vs_size_EUR_vs_ASI_", locus_name, sep = ""))
-  ggplot(data=merged_table %>% filter(population %in% c("EUR", "ASI")), 
-         aes(x=pc2, y=repeat_size, colour = population)) +
-    #geom_boxplot() +
-    geom_violin() +
-    #geom_boxplot(bins=300) +
-    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
-    xlab("PC2") +
-    ylab("Repeat-size") +
-    guides(fill = FALSE)
-  dev.off()
-
+  
   png(paste(paste("pc_vs_size/PCs_vs_size_all_popus_", locus_name, sep = ""), ".png", sep = ""))
-  ggplot(data=merged_table, 
-         aes(x=pc2, y=repeat_size, colour = population)) +
-    #geom_boxplot() +
-    geom_violin() +
-    geom_boxplot(width = 0.2) +
-    #geom_boxplot(bins=300) +
-    #geom_beeswarm(aes(color = population), grouponX=FALSE) +
-    xlab("PC2") +
-    ylab("Repeat-size") +
-    guides(fill = FALSE)
+  print(pcs_vs_size_all)
   dev.off()
   
  # 3D
-  scatter3D(merged_table$pc1, 
-            merged_table$pc2, 
-            merged_table$repeat_size, 
-            colvar = merged_table$population,
-            phi = 0, bty ="g")
+  #scatter3D(merged_table$pc1, 
+  #          merged_table$pc2, 
+  #          merged_table$repeat_size, 
+  #          colvar = merged_table$population,
+  #          phi = 0, bty ="g")
   
   
 }
