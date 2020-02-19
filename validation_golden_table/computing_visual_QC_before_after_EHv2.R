@@ -19,7 +19,7 @@ dim(all_table)
 only_checked = all_table %>% 
   filter(LP_number %in% l_66_ehv2)
 dim(only_checked)
-# 116  14
+# 120  14
 
 length(unique(only_checked$LP_number))
 # 66
@@ -35,7 +35,7 @@ l_genomes_TP_before1 = only_checked %>% filter(before1 %in% "TP") %>% select(LP_
 l_genomes_TP_before2 = only_checked %>% filter(before2 %in% "TP") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_TP_before = unique(c(l_genomes_TP_before1, l_genomes_TP_before2))
 length(l_genomes_TP_before)
-# 55
+# 56
 
 # FP
 l_genomes_FP_before1 = only_checked %>% filter(before1 %in% "FP") %>% select(LP_number) %>% unique() %>% pull()
@@ -62,8 +62,6 @@ all_genomes = unique(c(l_genomes_TP_before,
                        l_genomes_FP_before,
                        l_genomes_FN_before))
 length(all_genomes)
-# 65
+# 66
 
-# Which one is missing?
-setdiff(l_66_ehv2, all_genomes)
-# LP2000865-DNA_G07
+## Now after
