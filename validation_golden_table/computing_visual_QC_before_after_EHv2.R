@@ -1,13 +1,14 @@
 # Objective: check how many genomes are being improved after QC visualisation
 library(dplyr)
 
-setwd("~/Documents/STRs/VALIDATION/QC_visual_inspection/")
+setwd("~/Documents/STRs/VALIDATION/QC_visual_inspection/raw_data_for_computing/")
 
-l_66_ehv2 = read.table("~/Downloads/list_66_EHv2.txt", stringsAsFactors = F)
+l_66_ehv2 = read.table("list_66_EHv2.txt", stringsAsFactors = F)
 l_66_ehv2 = l_66_ehv2$V1
 length(unique(l_66_ehv2))
 # 66
 
+# Fix `LP2000865-DNA_G07` since it contains ` `
 all_table = read.csv("~/Downloads/ehv2_before_after.tsv",
                      sep = "\t", 
                      stringsAsFactors = F, 
@@ -57,4 +58,12 @@ l_genomes_FN_before = unique(c(l_genomes_FN_before1, l_genomes_FN_before2))
 length(l_genomes_FN_before)
 # 1
 
+all_genomes = unique(c(l_genomes_TP_before,
+                       l_genomes_FP_before,
+                       l_genomes_FN_before))
+length(all_genomes)
+# 65
 
+# Which one is missing?
+setdiff(l_66_ehv2, all_genomes)
+# LP2000865-DNA_G07
