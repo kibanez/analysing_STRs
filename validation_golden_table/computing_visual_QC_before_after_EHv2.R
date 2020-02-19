@@ -65,3 +65,37 @@ length(all_genomes)
 # 66
 
 ## Now after
+# TP
+l_genomes_TP_after1 = only_checked %>% filter(after1 %in% "TP") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_TP_after2 = only_checked %>% filter(after2 %in% "TP") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_TP_after = unique(c(l_genomes_TP_after1, l_genomes_TP_after2))
+length(l_genomes_TP_after)
+# 54
+
+# FP
+l_genomes_FP_after1 = only_checked %>% filter(after1 %in% "FP") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_FP_after2 = only_checked %>% filter(after2 %in% "FP") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_FP_after = unique(c(l_genomes_FP_after1, l_genomes_FP_after2))
+length(l_genomes_FP_after)
+# 1
+
+#TN
+l_genomes_TN_after1 = only_checked %>% filter(after1 %in% "TN") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_TN_after2 = only_checked %>% filter(after2 %in% "TN") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_TN_after = unique(c(l_genomes_TN_after1, l_genomes_TN_after2))
+length(l_genomes_TN_after)
+# 55
+
+
+# FN
+l_genomes_FN_after1 = only_checked %>% filter(after1 %in% "FN") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_FN_after2 = only_checked %>% filter(after2 %in% "FN") %>% select(LP_number) %>% unique() %>% pull()
+l_genomes_FN_after = unique(c(l_genomes_FN_after1, l_genomes_FN_after2))
+length(l_genomes_FN_after)
+# 1
+
+all_genomes = unique(c(l_genomes_TP_after,
+                       l_genomes_FP_after,
+                       l_genomes_FN_after))
+length(all_genomes)
+# 66
