@@ -116,15 +116,15 @@ notch2_table_neuro_superpopu %>% filter(population %in% "EUR") %>% select(repeat
 
 # EAS
 notch2_table_neuro_superpopu %>% filter(population %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 110
+# 113
 notch2_table_neuro_superpopu %>% filter(population %in% "EAS") %>% select(repeat_size) %>% summary()
 #repeat_size   
-#Min.   :10.00  
+#Min.   : 1.00  
 #1st Qu.:15.00  
 #Median :20.00  
-#Mean   :20.67  
+#Mean   :20.56  
 #3rd Qu.:24.00  
-#Max.   :55.00
+#Max.   :52.00  
 
 
 # AMR
