@@ -48,16 +48,33 @@ notch2_table = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/table
 dim(notch2_table)
 # 152594  19
 
+# For Supp Figure2, we want to focus on NEURO patients: families that have been recruited under `NEURO` as `disease_group`
+l_family_neuro = notch2_table %>%
+  filter(grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull() 
+length(l_family_neuro)
+# 10920
+
+# Retrieve all genomes within this list
 notch2_table_neuro = notch2_table %>%
-  filter(grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) 
+  filter(rare_diseases_family_id %in% l_family_neuro)
 dim(notch2_table_neuro)
-# 24826  19
+# 49876  19
 
-notch2_table_not_neuro = notch2_table %>%
-  filter(!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group))
-dim(notch2_table_not_neuro)
-# 127768  19
 
+joint_plot = ggplot(merged_all, aes(x = repeat_size, y = percent_allele, group = group, color = group)) + 
+  #geom_line() + 
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_classic() +
+  ylab("Allele frequency") + 
+  xlab("Number of CGG repeat expansions") 
+
+
+
+
+# Figure 1 (not anymore)
 
 # Let's create percentage of alleles
 notch2_table_neuro = notch2_table_neuro %>%
@@ -66,11 +83,6 @@ notch2_table_neuro = notch2_table_neuro %>%
   ungroup() %>%
   as.data.frame()
 
-notch2_table_not_neuro = notch2_table_not_neuro %>%
-  group_by(repeat_size) %>%
-  mutate(percent_allele = n()/length(notch2_table_not_neuro$platekey)) %>%
-  ungroup() %>%
-  as.data.frame()
 
 
 # Adapt zhongbo table in order to have both alleles in the same column
