@@ -63,19 +63,38 @@ notch2_table_neuro = notch2_table %>%
 dim(notch2_table_neuro)
 # 49876  19
 
+# Now, we only can plot those genomes for which we do have ancestry info
+l_participant_notch2_neuro = unique(notch2_table_neuro$participant_id)
+length(l_participant_notch2_neuro)
+# 24206
 
-joint_plot = ggplot(merged_all, aes(x = repeat_size, y = percent_allele, group = group, color = group)) + 
-  #geom_line() + 
-  geom_bar(stat = "identity", position = "dodge") +
+length(unique(notch2_table_neuro$platekey))
+# 24313
+
+# how many genomes/platekeys for only super ancestries??
+notch2_table_neuro %>% 
+  filter(population %in% c("AFR", "AMR", "ASI", "EAS", "EUR")) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull() %>%
+  length()
+# 19699
+
+
+# There is no need to use `popu_table` since I already did this for case-control tables !! :)
+violin_popu_plot = ggplot(notch2_table_neuro %>% filter(population %in% c("AFR", "AMR", "ASI", "EAS", "EUR")), 
+                          aes(x = population, y = repeat_size, fill = population)) + 
+  geom_violin() +
+  geom_boxplot(width=0.1, fill="white") +
   theme_classic() +
-  ylab("Allele frequency") + 
-  xlab("Number of CGG repeat expansions") 
+  ylab("number of repeats") + 
+  xlab("ethnicity") 
 
-
-
+png("./figures/SuppFigure2.png",units="in", width=5, height=5, res=600)
+print(violin_popu_plot)
+dev.off()
 
 # Figure 1 (not anymore)
-
 # Let's create percentage of alleles
 notch2_table_neuro = notch2_table_neuro %>%
   group_by(repeat_size) %>%
@@ -126,7 +145,7 @@ joint_plot = ggplot(merged_all, aes(x = repeat_size, y = percent_allele, group =
   ylab("Allele frequency") + 
   xlab("Number of CGG repeat expansions") 
 
-png("./figures/Figure1A_zhongbo_dodged.png",units="in", width=5, height=5, res=300)
+png("./figures/Figure1A_zhongbo_dodged.png", units="in", width=5, height=5, res=300)
 print(joint_plot)
 dev.off()
 
