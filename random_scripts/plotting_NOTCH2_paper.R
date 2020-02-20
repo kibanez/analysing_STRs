@@ -150,6 +150,18 @@ notch2_table_neuro_superpopu %>% filter(population %in% "ASI") %>% select(repeat
 #3rd Qu.:22.00  
 #Max.   :59.00 
 
+# AFR
+notch2_table_neuro_superpopu %>% filter(population %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 547
+notch2_table_neuro_superpopu %>% filter(population %in% "AFR") %>% select(repeat_size) %>% summary()
+#repeat_size   
+#Min.   : 1.00  
+#1st Qu.:17.00  
+#Median :19.00  
+#Mean   :19.56  
+#3rd Qu.:21.00  
+#Max.   :57.00
+
 
 # Figure 1 (not anymore)
 # Let's create percentage of alleles
