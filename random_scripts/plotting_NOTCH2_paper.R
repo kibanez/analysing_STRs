@@ -126,6 +126,19 @@ notch2_table_neuro_superpopu %>% filter(population %in% "EAS") %>% select(repeat
 #Max.   :55.00
 
 
+# AMR
+notch2_table_neuro_superpopu %>% filter(population %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 315
+notch2_table_neuro_superpopu %>% filter(population %in% "AMR") %>% select(repeat_size) %>% summary()
+#repeat_size   
+#Min.   : 7.00  
+#1st Qu.:16.75  
+#Median :20.00  
+#Mean   :19.55  
+#3rd Qu.:22.00  
+#Max.   :56.00 
+
+
 # Figure 1 (not anymore)
 # Let's create percentage of alleles
 notch2_table_neuro = notch2_table_neuro %>%
