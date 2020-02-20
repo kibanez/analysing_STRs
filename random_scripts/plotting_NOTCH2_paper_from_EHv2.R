@@ -153,15 +153,15 @@ notch2_table_neuro_superpopu %>% filter(population %in% "ASI") %>% select(repeat
 
 # AFR
 notch2_table_neuro_superpopu %>% filter(population %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 547
+# 581
 notch2_table_neuro_superpopu %>% filter(population %in% "AFR") %>% select(repeat_size) %>% summary()
 #repeat_size   
-#Min.   : 1.00  
-#1st Qu.:17.00  
+#Min.   : 2.00  
+#1st Qu.:18.00  
 #Median :19.00  
-#Mean   :19.56  
+#Mean   :19.38  
 #3rd Qu.:21.00  
-#Max.   :57.00
+#Max.   :36.00 
 
 
 # Figure 1 (not anymore)
