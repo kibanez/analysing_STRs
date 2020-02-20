@@ -94,6 +94,25 @@ png("./figures/SuppFigure2.png",units="in", width=5, height=5, res=600)
 print(violin_popu_plot)
 dev.off()
 
+
+# Table with IQR
+# Focusing on those having super-population info (the ones in the violin plot)
+notch2_table_neuro_superpopu = notch2_table_neuro %>% 
+  filter(population %in% c("AFR", "AMR", "ASI", "EAS", "EUR")) 
+
+# Compute how many platekeys for each super population and IQR for repeat-sizes
+# EUR
+notch2_table_neuro_superpopu %>% filter(population %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 16443
+notch2_table_neuro_superpopu %>% filter(population %in% "EUR") %>% select(repeat_size) %>% summary()
+#repeat_size  
+#Min.   : 5.0  
+#1st Qu.:15.0  
+#Median :20.0  
+#Mean   :19.2  
+#3rd Qu.:22.0  
+#Max.   :60.0  
+
 # Figure 1 (not anymore)
 # Let's create percentage of alleles
 notch2_table_neuro = notch2_table_neuro %>%
