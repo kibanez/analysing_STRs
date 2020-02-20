@@ -42,12 +42,12 @@ length(l_genomes)
 # 59356
 
 # Retrieve directly from EHv3 merged table the percentages for NOTCH2 gene
-notch2_table = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/table_STR_repeat_size_each_row_allele_EHv3.1.2_NOTCH2NL_simplified.tsv",
+notch2_table = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/EHv2.5.5/table_STR_repeat_size_each_row_allele_EHv2.5.5_NOTCH2NLC_simplified.tsv",
                       sep = "\t",
                       stringsAsFactors = F,
                       header = T)
 dim(notch2_table)
-# 152594  19
+# 159186  19
 
 # For Supp Figure2, we want to focus on NEURO patients: families that have been recruited under `NEURO` as `disease_group`
 l_family_neuro = notch2_table %>%
@@ -56,21 +56,21 @@ l_family_neuro = notch2_table %>%
   unique() %>%
   pull() 
 length(l_family_neuro)
-# 10920
+# 11239
 
 # Retrieve all genomes within this list
 notch2_table_neuro = notch2_table %>%
   filter(rare_diseases_family_id %in% l_family_neuro)
 dim(notch2_table_neuro)
-# 49876  19
+# 51876  19
 
 # Now, we only can plot those genomes for which we do have ancestry info
 l_participant_notch2_neuro = unique(notch2_table_neuro$participant_id)
 length(l_participant_notch2_neuro)
-# 24206
+# 25191
 
 length(unique(notch2_table_neuro$platekey))
-# 24313
+# 25300
 
 # how many genomes/platekeys for only super ancestries??
 notch2_table_neuro %>% 
@@ -79,7 +79,7 @@ notch2_table_neuro %>%
   unique() %>%
   pull() %>%
   length()
-# 19699
+# 20536
 
 
 # There is no need to use `popu_table` since I already did this for case-control tables !! :)
@@ -91,7 +91,7 @@ violin_popu_plot = ggplot(notch2_table_neuro %>% filter(population %in% c("AFR",
   ylab("number of repeats") + 
   xlab("ethnicity") 
 
-png("./figures/SuppFigure2.png",units="in", width=5, height=5, res=600)
+png("./figures/SuppFigure2_EHv2.5.5.png",units="in", width=5, height=5, res=600)
 print(violin_popu_plot)
 dev.off()
 
@@ -104,15 +104,15 @@ notch2_table_neuro_superpopu = notch2_table_neuro %>%
 # Compute how many platekeys for each super population and IQR for repeat-sizes
 # EUR
 notch2_table_neuro_superpopu %>% filter(population %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 16443
+# 17126
 notch2_table_neuro_superpopu %>% filter(population %in% "EUR") %>% select(repeat_size) %>% summary()
-#repeat_size  
-#Min.   : 5.0  
-#1st Qu.:15.0  
-#Median :20.0  
-#Mean   :19.2  
-#3rd Qu.:22.0  
-#Max.   :60.0  
+#repeat_size   
+#Min.   : 1.00  
+#1st Qu.:16.00  
+#Median :20.00  
+#Mean   :19.01  
+#3rd Qu.:22.00  
+#Max.   :52.00 
 
 # EAS
 notch2_table_neuro_superpopu %>% filter(population %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
