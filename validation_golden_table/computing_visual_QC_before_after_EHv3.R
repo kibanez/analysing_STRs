@@ -3,13 +3,14 @@ library(dplyr)
 
 setwd("~/Documents/STRs/VALIDATION/QC_visual_inspection/raw_data_for_computing/")
 
-l_66_ehv2 = read.table("list_66_EHv2.txt", stringsAsFactors = F)
-l_66_ehv2 = l_66_ehv2$V1
-length(unique(l_66_ehv2))
-# 66
+l_68_ehv3 = read.table("./l_68_EHv3.txt", stringsAsFactors = F)
+l_68_ehv3 = l_68_ehv3$V1
+length(unique(l_68_ehv3))
+# 65
 
 # Fix `LP2000865-DNA_G07` since it contains ` `
-all_table = read.csv("~/Downloads/ehv2_before_after.tsv",
+# the same for # "LP3000543-DNA_C11" "LP3001453-DNA_B03" "LP3000449-DNA_C10"
+all_table = read.csv("ehv3_before_after.tsv",
                      sep = "\t", 
                      stringsAsFactors = F, 
                      header = T)
@@ -17,17 +18,12 @@ dim(all_table)
 # 634  14
 
 only_checked = all_table %>% 
-  filter(LP_number %in% l_66_ehv2)
+  filter(LP_number %in% l_68_ehv3)
 dim(only_checked)
-# 120  14
+# 105  14
 
 length(unique(only_checked$LP_number))
-# 66
-
-# Which 3 genomes are missing here??
-setdiff(l_66_ehv2,unique(only_checked$LP_number))
-# "LP3000543-DNA_C11" "LP3001453-DNA_B03" "LP3000449-DNA_C10"
-
+# 65
 
 # How many genomes are before and after?
 # TP
@@ -35,7 +31,7 @@ l_genomes_TP_before1 = only_checked %>% filter(before1 %in% "TP") %>% select(LP_
 l_genomes_TP_before2 = only_checked %>% filter(before2 %in% "TP") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_TP_before = unique(c(l_genomes_TP_before1, l_genomes_TP_before2))
 length(l_genomes_TP_before)
-# 56
+# 55
 
 # FP
 l_genomes_FP_before1 = only_checked %>% filter(before1 %in% "FP") %>% select(LP_number) %>% unique() %>% pull()
@@ -49,20 +45,20 @@ l_genomes_TN_before1 = only_checked %>% filter(before1 %in% "TN") %>% select(LP_
 l_genomes_TN_before2 = only_checked %>% filter(before2 %in% "TN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_TN_before = unique(c(l_genomes_TN_before1, l_genomes_TN_before2))
 length(l_genomes_TN_before)
-# 55
+# 54
 
 # FN
 l_genomes_FN_before1 = only_checked %>% filter(before1 %in% "FN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_FN_before2 = only_checked %>% filter(before2 %in% "FN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_FN_before = unique(c(l_genomes_FN_before1, l_genomes_FN_before2))
 length(l_genomes_FN_before)
-# 1
+# 4
 
 all_genomes = unique(c(l_genomes_TP_before,
                        l_genomes_FP_before,
                        l_genomes_FN_before))
 length(all_genomes)
-# 66
+# 65
 
 ## Now after
 # TP
@@ -70,32 +66,35 @@ l_genomes_TP_after1 = only_checked %>% filter(after1 %in% "TP") %>% select(LP_nu
 l_genomes_TP_after2 = only_checked %>% filter(after2 %in% "TP") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_TP_after = unique(c(l_genomes_TP_after1, l_genomes_TP_after2))
 length(l_genomes_TP_after)
-# 54
+# 56
 
 # FP
 l_genomes_FP_after1 = only_checked %>% filter(after1 %in% "FP") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_FP_after2 = only_checked %>% filter(after2 %in% "FP") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_FP_after = unique(c(l_genomes_FP_after1, l_genomes_FP_after2))
 length(l_genomes_FP_after)
-# 1
+# 2
 
 #TN
 l_genomes_TN_after1 = only_checked %>% filter(after1 %in% "TN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_TN_after2 = only_checked %>% filter(after2 %in% "TN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_TN_after = unique(c(l_genomes_TN_after1, l_genomes_TN_after2))
 length(l_genomes_TN_after)
-# 55
-
+# 54
 
 # FN
 l_genomes_FN_after1 = only_checked %>% filter(after1 %in% "FN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_FN_after2 = only_checked %>% filter(after2 %in% "FN") %>% select(LP_number) %>% unique() %>% pull()
 l_genomes_FN_after = unique(c(l_genomes_FN_after1, l_genomes_FN_after2))
 length(l_genomes_FN_after)
-# 1
+# 0
 
 all_genomes = unique(c(l_genomes_TP_after,
                        l_genomes_FP_after,
                        l_genomes_FN_after))
 length(all_genomes)
-# 66
+# 57
+
+# which 8 are missing?
+setdiff(l_68_ehv3, all_genomes)
+# "LP2000712-DNA_F10" "LP3000646-DNA_H06" "LP2000913-DNA_E03" "LP3000002-DNA_G02" "LP3000090-DNA_G06" "LP3000179-DNA_B02" "LP3000327-DNA_D01" "LP3000209-DNA_G02"
