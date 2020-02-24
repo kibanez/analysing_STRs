@@ -80,6 +80,16 @@ notch2_table_neuro %>%
   length()
 # 19699
 
+# Retrieve the list of PIDs
+l_pid = notch2_table_neuro %>% 
+  filter(population %in% c("AFR", "AMR", "ASI", "EAS", "EUR")) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+length(l_pid)
+# 19652
+
+write.table(l_pid, "./list_19652_PID_for_EHv3.1.2.tsv")
 
 # There is no need to use `popu_table` since I already did this for case-control tables !! :)
 violin_popu_plot = ggplot(notch2_table_neuro %>% filter(population %in% c("AFR", "AMR", "ASI", "EAS", "EUR")), 
