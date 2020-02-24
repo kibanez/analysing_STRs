@@ -18,3 +18,17 @@ all_data = read.csv("1000G_2504_high_coverage.sequence.index.tsv",
                     stringsAsFactors = F)
 dim(all_data)
 # 2504  22
+
+table(all_data$POPULATION)
+#ACB ASW BEB CDX CEU CHB CHS CLM ESN FIN GBR GIH GWD IBS ITU JPT KHV LWK MSL MXL PEL PJL PUR STU TSI YRI 
+#96  61  86  93  99 103 105  94  99  99  91 103 113 107 102 104  99  99  85  64  85  96 104 102 107 108 
+
+l_all_popus = all_data$POPULATION
+
+for(i in 1:length(l_all_popus)){
+  dataset = all_data %>%
+    filter(POPULATION %in% l_all_popus[i]) 
+  number_samples = length(unique(dataset$SAMPLE_NAME))
+  output_name = paste(paste(l_all_popus[i], as.character(number_samples), sep = "_1Kg_"), ".csv", sep = "samples")
+  write.table(dataset, paste("./each_population/", output_name, sep = ""), quote = F, row.names = F, col.names = T, sep = ",")
+}
