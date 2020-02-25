@@ -29,6 +29,12 @@ for(i in 1:length(all_genomes)){
 }
 
 df_all_genomes = as.data.frame(df_all_genomes)
+write.table(df_all_genomes,
+            "~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
+            quote = F,
+            col.names = F,
+            row.names = F,
+            sep = "\t")
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
