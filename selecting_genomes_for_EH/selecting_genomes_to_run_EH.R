@@ -11,4 +11,10 @@ library(dplyr)
 # Working directory
 setwd("~/Documents/STRs/data/research/input")
 
-
+# Loading last RE clinical data batch (already enriched)
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 1124633  28
