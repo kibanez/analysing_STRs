@@ -36,3 +36,12 @@ dim(all_germlines)
 table(all_germlines$type)
 #cancer germline        cancer somatic experimental germline  experimental somatic rare disease germline 
 #73813                 52249                   268                   159                373954 
+
+
+l_germline_pid = all_germlines %>%
+  filter(type %in% c("cancer germline", "rare disease germline")) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+length(l_germline_pid)
+# 87168
