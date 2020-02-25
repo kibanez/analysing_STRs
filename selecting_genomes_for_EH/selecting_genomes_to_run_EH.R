@@ -13,28 +13,33 @@ library(dplyr)
 setwd("~/Documents/STRs/data/research/input")
 
 # Loading all genomes sequenced by GEL so far (25th Feb 2020)
-all_genomes = read.table("~/Documents/STRs/data/research/input/list_all_genomes_25022020.tsv", stringsAsFactors = F)
-all_genomes = all_genomes$V1
-length(all_genomes)
+#all_genomes = read.table("~/Documents/STRs/data/research/input/list_all_genomes_25022020.tsv", stringsAsFactors = F)
+#all_genomes = all_genomes$V1
+#length(all_genomes)
 # 121506
 
 # we do this once, and after this, we will load the whole table with genomes and path to the genomes
-df_all_genomes = c()
-for(i in 1:length(all_genomes)){
-  path_to_genome = all_genomes[i]
-  bam_name = strsplit(path_to_genome, "/")[[1]][length(strsplit(path_to_genome, "/")[[1]])-2]
-  df_all_genomes = rbind(df_all_genomes,
-                         cbind(bam_name, path_to_genome))
-  
-}
+#df_all_genomes = c()
+#for(i in 1:length(all_genomes)){
+#  path_to_genome = all_genomes[i]
+#  bam_name = strsplit(path_to_genome, "/")[[1]][length(strsplit(path_to_genome, "/")[[1]])-2]
+#  df_all_genomes = rbind(df_all_genomes,
+#                         cbind(bam_name, path_to_genome))
+#}
 
-df_all_genomes = as.data.frame(df_all_genomes)
+#df_all_genomes = as.data.frame(df_all_genomes)
 write.table(df_all_genomes,
             "~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
             quote = F,
             col.names = F,
             row.names = F,
             sep = "\t")
+
+# Load table with all genomes together with their paths
+df_all_genomes = read.csv("~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = T)
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
