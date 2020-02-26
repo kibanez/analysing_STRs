@@ -28,18 +28,20 @@ setwd("~/Documents/STRs/data/research/input")
 #}
 
 #df_all_genomes = as.data.frame(df_all_genomes)
-write.table(df_all_genomes,
-            "~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
-            quote = F,
-            col.names = F,
-            row.names = F,
-            sep = "\t")
+#write.table(df_all_genomes,
+#            "~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
+#            quote = F,
+#            col.names = F,
+#            row.names = F,
+#            sep = "\t")
 
 # Load table with all genomes together with their paths
 df_all_genomes = read.csv("~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
                           header = T)
+dim(df_all_genomes)
+# 121505  2
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
