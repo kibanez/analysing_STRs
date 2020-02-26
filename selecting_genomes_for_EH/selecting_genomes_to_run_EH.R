@@ -1,5 +1,13 @@
 # Objective: select genomes (better deduplicated) in order to run afterwards EH through all them
 # The idea is to merge or join all data available to us: RE batch + population aggregated gVCF (in case we have more genomes to fish) + earlier EH batches
+# RE batch (V8 last batch from November)
+# Population aggregated gVCF file
+# EHv2 batch from summer 2019
+# EHv3 batch from summer 2019
+
+# Workflow: I'll select unique PIDs from last RE batch (V8) and select the most recent platekey for them
+# and then, include this table with the extra genomes we might have in earlier batches and population agg gVCF file
+
 date()
 Sys.info()[c("nodename", "user")]
 commandArgs()
