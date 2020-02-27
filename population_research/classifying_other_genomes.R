@@ -25,6 +25,19 @@ table(all_data$POPULATION)
 
 l_all_popus = all_data$POPULATION
 
+# Let's enrich them with gender information
+igsr_gender = read.csv("igsr_samples.tsv",
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+dim(igsr_gender)
+# 2504  9
+
+all_data = left_join(all_data,
+                     igsr_gender %>% select(Sample.name, Sex),
+                     by = c("SAMPLE_NAME" = "Sample.name"))
+
+
 for(i in 1:length(l_all_popus)){
   dataset = all_data %>%
     filter(POPULATION %in% l_all_popus[i]) 
@@ -32,3 +45,4 @@ for(i in 1:length(l_all_popus)){
   output_name = paste(paste(l_all_popus[i], as.character(number_samples), sep = "_1Kg_"), ".csv", sep = "samples")
   write.table(dataset, paste("./each_population/", output_name, sep = ""), quote = F, row.names = F, col.names = T, sep = ",")
 }
+
