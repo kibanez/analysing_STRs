@@ -40,7 +40,9 @@ all_data = left_join(all_data,
 
 for(i in 1:length(l_all_popus)){
   dataset = all_data %>%
-    filter(POPULATION %in% l_all_popus[i]) 
+    filter(POPULATION %in% l_all_popus[i])  %>%
+    select(ENA_FILE_PATH, SAMPLE_NAME, POPULATION, Sex)
+  
   number_samples = length(unique(dataset$SAMPLE_NAME))
   output_name = paste(paste(l_all_popus[i], as.character(number_samples), sep = "_1Kg_"), ".csv", sep = "samples")
   write.table(dataset, paste("./each_population/", output_name, sep = ""), quote = F, row.names = F, col.names = T, sep = ",")
