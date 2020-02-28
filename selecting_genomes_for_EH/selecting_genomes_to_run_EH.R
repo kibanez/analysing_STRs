@@ -5,9 +5,9 @@
 # EHv2 batch from summer 2019
 # EHv3 batch from summer 2019
 
-# Workflow: I'll select unique PIDs from last RE batch (V8) and select the most recent platekey for them
-# and then, include this table with the extra genomes we might have in earlier batches and population agg gVCF file
-
+# Workflow: we will use Population aggregated gVCF file, as well as earlier EHv2 and EHv3 batches to complete the data
+# But we will start from all genomes/platekeys sequenced so far at GEL, that have participantId info in Catalog
+# Catalog studies: RD b38, RD b37, and Cancer
 date()
 Sys.info()[c("nodename", "user")]
 commandArgs()
@@ -47,9 +47,9 @@ setwd("~/Documents/STRs/data/research/input")
 df_all_genomes = read.csv("~/Documents/STRs/data/research/input/list_all_genomes_path_together_25022020.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
-                          header = T)
+                          header = F)
 dim(df_all_genomes)
-# 121505  2
+# 121506  2
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
