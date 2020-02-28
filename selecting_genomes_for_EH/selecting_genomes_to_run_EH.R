@@ -7,7 +7,7 @@
 
 # Workflow: we will use Population aggregated gVCF file, as well as earlier EHv2 and EHv3 batches to complete the data
 # But we will start from all genomes/platekeys sequenced so far at GEL, that have participantId info in Catalog
-# Catalog studies: RD b38, RD b37, and Cancer
+# Catalog studies: RD b38, RD b37, and Cancer (they have been selected by taking the info from the latest cohort)
 date()
 Sys.info()[c("nodename", "user")]
 commandArgs()
@@ -52,6 +52,7 @@ dim(df_all_genomes)
 # 121506  2
 
 # Platekey, PID info retrieved from Catalog
+# RD b38
 catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb38_280220.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
@@ -59,12 +60,89 @@ catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalo
 dim(catalog_rd_b38)
 # 76950  8
 
+# RDb37
 catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb37_280220.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
                           header = F)
 dim(catalog_rd_b37)
 # 99 9
+
+# define column names
+colnames(catalog_rd_b37) = c("cohort_id", "platekey", "participant_id", "isProband", "karyo", "sex", "affection_status", "build", "programme")
+colnames(catalog_rd_b38) = c("cohort_id", "platekey", "participant_id", "isProband","sex", "affection_status", "build", "programme")
+
+# remove those cohorts having REVOKED ord DEPRECATED
+catalog_rd_b38 = catalog_rd_b38 %>% filter(!grepl("REVOKED", cohort_id))
+catalog_rd_b38 = catalog_rd_b38 %>% filter(!grepl("DEPRECATED", cohort_id))
+
+# Since we selected from Catalog info from THE LATEST COHORT DEFINED, we can ignore the cohort Id
+catalog_rd_b37 = catalog_rd_b37 %>% 
+  select(platekey, participant_id, build, programme)
+catalog_rd_b37 = unique(catalog_rd_b37)
+dim(catalog_rd_b37)
+# 99  4
+
+catalog_rd_b38 = catalog_rd_b38 %>%
+  select(platekey, participant_id, build, programme)
+catalog_rd_b38 = unique(catalog_rd_b38)
+dim(catalog_rd_b38)
+# 76881  4
+
+# Cancer
+
+
+# Check duplicated info. Take deduplicated participantIDs together with their platekeys
+unique_pid_b37 = unique(catalog_rd_b37$participant_id)
+unique_lp_b37 = unique(catalog_rd_b37$platekey)
+
+# catalog b37 is OK, deduplicated, platekey VS participantID
+length(unique_pid_b37)
+# 99
+length(unique_lp_b37)
+# 99
+
+# catalog b38
+unique_pid_b38 = unique(catalog_rd_b38$participant_id)
+unique_lp_b38 = unique(catalog_rd_b38$platekey)
+
+length(unique_pid_b38)
+# 76874
+length(unique_lp_b38)
+# 76881
+
+which_pid_dup_b38 = catalog_rd_b38$participant_id[which(duplicated(catalog_rd_b38$participant_id))]
+length(which_pid_dup_b38)
+# 7
+
+# select the latest (max) platekey -- associated to the most recent cohort and genome sequenced
+dedup_catalog_rd_b38 = catalog_rd_b38 %>%
+  filter(!participant_id %in% which_pid_dup_b38)
+
+dup_pid_b38 = catalog_rd_b38 %>% 
+  filter(participant_id %in% which_pid_dup_b38) %>%
+  group_by(participant_id) %>%
+  mutate(latest_lp = max(platekey)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+dup_pid_b38 = dup_pid_b38 %>% select(latest_lp, participant_id, build, programme)
+colnames(dup_pid_b38) = c("platekey", "participant_id", "build", "programme")
+dup_pid_b38 = unique(dup_pid_b38)
+dim(dup_pid_b38)
+# 6  4
+
+dedup_catalog_rd_b38 = rbind(dedup_catalog_rd_b38,
+                             dup_pid_b38)
+dim(dedup_catalog_rd_b38)
+# 76874  4
+
+# check again numbers
+length(unique(dedup_catalog_rd_b38$participant_id))
+# 76874
+length(unique(dedup_catalog_rd_b38$platekey))
+# 76874
+
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
