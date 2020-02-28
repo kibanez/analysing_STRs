@@ -51,6 +51,21 @@ df_all_genomes = read.csv("~/Documents/STRs/data/research/input/list_all_genomes
 dim(df_all_genomes)
 # 121506  2
 
+# Platekey, PID info retrieved from Catalog
+catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb38_280220.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = F)
+dim(catalog_rd_b38)
+# 76950  8
+
+catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb37_280220.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = F)
+dim(catalog_rd_b37)
+# 99 9
+
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
                      sep = "\t",
