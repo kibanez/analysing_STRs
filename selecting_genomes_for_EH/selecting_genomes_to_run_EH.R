@@ -154,14 +154,15 @@ length(unique(rd_catalog$participant_id))
 # 76972
 
 # There is one duplicated pid (`50003190`) -- this is in b37 and b38 --> we keep the b38 genome then
-rd_catalog = rd_catalog %>% filter(!participant_id %in% "50003190" & !build %in% "GRCh37")
+to_remove = which(rd_catalog$participant_id %in% "50003190" & rd_catalog$build %in% "GRCh37")
+rd_catalog = rd_catalog[-to_remove,]
 dim(rd_catalog)
-# 76873 4
+# 76872 4
 
 length(unique(rd_catalog$platekey))
-# 76973
+# 76972
 length(unique(rd_catalog$participant_id))
-# 76973
+# 76972
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
