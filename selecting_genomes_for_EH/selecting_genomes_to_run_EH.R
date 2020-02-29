@@ -89,8 +89,7 @@ catalog_rd_b38 = unique(catalog_rd_b38)
 dim(catalog_rd_b38)
 # 76881  4
 
-# Cancer
-
+# Cancer -> we will take this from the research environemnt
 
 # Check duplicated info. Take deduplicated participantIDs together with their platekeys
 unique_pid_b37 = unique(catalog_rd_b37$participant_id)
@@ -143,6 +142,16 @@ length(unique(dedup_catalog_rd_b38$participant_id))
 length(unique(dedup_catalog_rd_b38$platekey))
 # 76874
 
+# Merge catalog_b38 and catalog_b37
+rd_catalog = rbind(dedup_catalog_rd_b38,
+                   catalog_rd_b37)
+dim(rd_catalog)
+# 76973  4
+
+length(rd_catalog$platekey)
+# 76973
+length(rd_catalog$participant_id)
+# 76973
 
 # Loading last RE clinical data batch (already enriched)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
@@ -151,6 +160,8 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
                      header = T)
 dim(clin_data)
 # 1124633  28
+
+# Recover from clin_data genomes not in dedup_cata
 
 # There are duplicates here, more genomes than participantIDs
 length(unique(clin_data$platekey))
