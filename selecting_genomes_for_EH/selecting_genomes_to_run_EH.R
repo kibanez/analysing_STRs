@@ -303,10 +303,36 @@ popu_table = read.csv("~/Documents/STRs/clinical_data/clinical_data/aggregate_gv
 dim(popu_table)
 # 59356  51
 
-popu_platekeys = unique(popu_table$platekey)
-length(popu_platekeys)
-# 59356
-length(intersect(popu_platekeys, all_germlines$platekey))
-# 58441
+# Is in the population table genomes/participant ids that are missing from our merged Catalog/RE-V8 table?
+l_pid_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE$participant_id)
+length(l_pid_rd_catalog_and_RE)
+# 92468
 
-setdiff(popu_platekeys, all_germlines$platekey)
+length(setdiff(popu_table$participant_id, l_pid_rd_catalog_and_RE))
+# 279
+
+# There are 279 PIDs that have been considered when generating population estimations !!  Who are they?
+l_pid_popu_not_merged = setdiff(popu_table$participant_id, l_pid_rd_catalog_and_RE)
+popu_table_not_merged = popu_table %>%
+  filter(participant_id %in% l_pid_popu_not_merged) %>%
+  select(platekey, participant_id)
+popu_table_not_merged$build = rep("GRCh38", length(popu_table_not_merged$platekey))
+popu_table_not_merged$programme = rep("Rare Diseases", length(popu_table_not_merged$platekey))
+
+length(unique(popu_table_not_merged$participant_id))
+# 279
+length(unique(popu_table_not_merged$platekey))
+# 279
+
+dedup_rd_catalog_and_RE = rbind(dedup_rd_catalog_and_RE,
+                                popu_table_not_merged)
+dim(dedup_rd_catalog_and_RE)
+# 92747  4
+
+# Checking again for duplicates...
+length(unique(dedup_rd_catalog_and_RE$platekey))
+# 92747
+length(unique(dedup_rd_catalog_and_RE$participant_id))
+# 92747
+
+
