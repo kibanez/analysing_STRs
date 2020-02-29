@@ -335,4 +335,62 @@ length(unique(dedup_rd_catalog_and_RE$platekey))
 length(unique(dedup_rd_catalog_and_RE$participant_id))
 # 92747
 
+# EHv2 - summer 2019 batch
+l_ehv2_summer = read.table("./batch_august2019_EHv2.5.5/LP_IDs_research_EH_2.5.5.txt", stringsAsFactors = F)
+l_ehv2_summer = l_ehv2_summer$V1
+length(l_ehv2_summer)
+# 86457
+
+# Are all these genomes included in our final dedup merged table?
+length(intersect(l_ehv2_summer, dedup_rd_catalog_and_RE$platekey))
+# 75730
+
+# which ones are new? and check whether pid is already (in case the are duplicates, with contamination issues etc.)
+l_platekeys_in_ehv2_not_merged = setdiff(l_ehv2_summer, dedup_rd_catalog_and_RE$platekey)
+length(l_platekeys_in_ehv2_not_merged)
+# 10727
+
+# See to which pids they correspond
+l_pids_in_ehv2_not_merged = all_germlines %>% 
+  filter(platekey %in% l_platekeys_in_ehv2_not_merged) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+length(l_pids_in_ehv2_not_merged)
+# 753
+
+new_pids = setdiff(l_pids_in_ehv2_not_merged, dedup_rd_catalog_and_RE$participant_id)
+#  111004941 113003384 115011329
+
+# There are only 3 pids that are not included...who are they?
+fishing_from_ehv2 = all_germlines %>% 
+  filter(participant_id %in% new_pids) %>%
+  select(participant_id, platekey, type, genome_build) %>%
+  group_by(participant_id) %>%
+  mutate(latest_platekey = max(platekey)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+fishing_from_ehv2 = fishing_from_ehv2 %>%
+  select(latest_platekey, participant_id, genome_build)
+fishing_from_ehv2 = unique(fishing_from_ehv2)
+
+fishing_from_ehv2$programme = rep("Rare Diseases", length(fishing_from_ehv2$latest_platekey))
+colnames(fishing_from_ehv2) = colnames(dedup_rd_catalog_and_RE)
+
+
+# We recover 3 genomes
+dedup_rd_catalog_and_RE = rbind(dedup_rd_catalog_and_RE,
+                                fishing_from_ehv2)
+dim(dedup_rd_catalog_and_RE)
+# 72750  4
+
+# Again checking for duplicates
+length(unique(dedup_rd_catalog_and_RE$platekey))
+# 92750
+length(unique(dedup_rd_catalog_and_RE$participant_id))
+# 92750
+
+
+
 
