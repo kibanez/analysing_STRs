@@ -172,6 +172,13 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
 dim(clin_data)
 # 1124633  28
 
+# Let's only focus on germline in `clin_data`
+
+clin_data = clin_data %>% 
+  filter(type %in% c("cancer germline", "experimental germline", "rare disease germline"))
+dim(clin_data)
+# 1107262  28
+
 # Recover from clin_data genomes not in dedup_cata
 l_pid_rd_catalog = unique(rd_catalog$participant_id)
 
@@ -186,13 +193,13 @@ length(l_in_RE_not_catalog)
 # There are 15,724 more participants in RD under V8 RE not in catalog, let's take them
 rd_clin_data_not_catalog = clin_data %>%
   filter(participant_id %in% l_in_RE_not_catalog) %>%
-  select(plate_key, participant_id, genome_build, programme)
+  select(platekey, participant_id, genome_build, programme)
 dim(rd_clin_data_not_catalog)
 # 33622  4
 
 rd_clin_data_not_catalog = unique(rd_clin_data_not_catalog)
 dim(rd_clin_data_not_catalog)
-# 15724  4
+# 32536  4
 
 # Before merging, change `rd_catalog$programme` to plural and Uppercase
 rd_catalog$programme = rep("Rare Diseases", length(rd_catalog$platekey))
@@ -203,20 +210,26 @@ rd_catalog_and_RE = rbind(rd_catalog,
                           rd_clin_data_not_catalog)
 
 dim(rd_catalog_and_RE)
-# 92696  4
+# 109508  4
 
 rd_catalog_and_RE = unique(rd_catalog_and_RE)
 dim(rd_catalog_and_RE)
-# 92696  4
+# 109508  4
 
 # Are deduplicated?? Double checking again...
+length(unique(rd_catalog_and_RE$participant_id))
+# 92696
+length(unique(rd_catalog_and_RE$platekey))
+# 109508
 
-# There are duplicates here, more genomes than participantIDs
-length(unique(clin_data$platekey))
-# 104843
+# which duplicated pids??
+l_pid_dup = which(duplicated(rd_catalog_and_RE$participant_id))
+length(unique(l_pid_dup))
+# 16812
 
-length(unique(clin_data$participant_id))
-# 87395
+# These extra bits
+
+
 
 all_germlines = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/RE_clinical_data_V8/genome_file_paths_and_types_2019-12-04_15-13-29.tsv",
                          sep = "\t",
