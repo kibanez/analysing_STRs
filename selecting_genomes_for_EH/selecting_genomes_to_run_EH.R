@@ -420,6 +420,16 @@ new_pids = setdiff(l_pids_in_ehv3_not_merged, dedup_rd_catalog_and_RE$participan
 #  0
 # we already have everything!!
 
+# Some stats before writing final table/genomes into a file
+length(unique(dedup_rd_catalog_and_RE$platekey))
+# 92750
+length(unique(dedup_rd_catalog_and_RE$participant_id))
+# 92750
 
-
+table(dedup_rd_catalog_and_RE$build)
+#GRCh37 GRCh38 
+#110  77218
+table(dedup_rd_catalog_and_RE$programme)
+#Cancer Rare Diseases 
+#15422         77328 
 
