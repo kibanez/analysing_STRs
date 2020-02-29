@@ -293,7 +293,8 @@ length(unique(dedup_rd_catalog_and_RE$platekey))
 length(unique(dedup_rd_catalog_and_RE$participant_id))
 # 92468
 
-
+#------------------------------------------------------------------------------------------------------------------------------
+# Let's see if we can "fish" more genomes from earlier batches (EHv2 and EHv3) and population table RE bioinfo group did
 # Load popu table
 popu_table = read.csv("~/Documents/STRs/clinical_data/clinical_data/aggregate_gvcf_sample_stats_2019-10-03_22-07-31.tsv",
                       sep = "\t",
