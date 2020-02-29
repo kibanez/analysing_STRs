@@ -601,5 +601,35 @@ table(dedup_rd_catalog_and_RE$gender)
 # female   male 
 # 49001  43749
 
+# Let's annotate finally with the BAM path (for the latest platekey)
 
+all_paths_until_feb20 = read.csv("./list_all_genomes_path_together_25022020.tsv",
+                                 sep = "\t",
+                                 stringsAsFactors = F,
+                                 header = F)
+dim(all_paths_until_feb20)
+# 121506  2
+
+colnames(all_paths_until_feb20) = c("platekey", "path_bam")
+
+dedup_rd_catalog_and_RE = left_join(dedup_rd_catalog_and_RE,
+                                    all_paths_until_feb20,
+                                    by = "platekey")
+dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE)
+
+dim(dedup_rd_catalog_and_RE)
+# 95965  6
+
+# Take the latest bam_path
+dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE %>%
+  group_by(platekey) %>%
+  mutate(latest_path = max(path_bam)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+dedup_rd_catalog_and_RE_full = dedup_rd_catalog_and_RE %>%
+  select(platekey, latest_path, gender)
+dedup_rd_catalog_and_RE_full = unique(dedup_rd_catalog_and_RE_full)
+dim(dedup_rd_catalog_and_RE_full)
+# 92750  3
 
