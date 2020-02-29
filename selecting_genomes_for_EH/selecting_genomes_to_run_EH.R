@@ -433,3 +433,173 @@ table(dedup_rd_catalog_and_RE$programme)
 #Cancer Rare Diseases 
 #15422         77328 
 
+
+# Write into a file
+# In order to run ExpansionHunter we need the following info for the input file:
+# <PLATEKEY>, <PATH TO BAM>, <GENDER>
+
+catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb38_280220.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = F)
+dim(catalog_rd_b38)
+# 76950  8
+
+# RDb37
+catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb37_280220.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = F)
+dim(catalog_rd_b37)
+# 99 9
+
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 1124633  28
+
+l_dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE$platekey)
+
+# let's retrieve the gender from catalog and clin_data
+df_gender = catalog_rd_b38 %>%
+  filter(V2 %in% l_dedup_rd_catalog_and_RE) %>%
+  select(V2, V5)
+colnames(df_gender) = c("platekey", "gender")
+df_gender$gender = tolower(df_gender$gender)
+
+df_genderb37 = catalog_rd_b37 %>%
+  filter(V2 %in% l_dedup_rd_catalog_and_RE) %>%
+  select(V2, V6)
+colnames(df_genderb37) = c("platekey", "gender")
+df_genderb37$gender = tolower(df_genderb37$gender)
+
+df_gender = rbind(df_gender,
+                  df_genderb37)
+
+df_gender_RE = clin_data %>%
+  filter(platekey %in% l_dedup_rd_catalog_and_RE) %>%
+  select(platekey, participant_phenotypic_sex)
+colnames(df_gender_RE) = c("platekey", "gender")
+
+df_gender_RE$gender = gsub("Female", "female", df_gender_RE$gender)
+df_gender_RE$gender = gsub("Male", "male", df_gender_RE$gender)
+
+
+df_gender = rbind(df_gender,
+                  df_gender_RE)
+df_gender = unique(df_gender)
+dim(df_gender)
+# 92489
+
+df_gender_popu = popu_table %>%
+  filter(platekey %in% l_dedup_rd_catalog_and_RE) %>%
+  select(platekey, participant_phenotypic_sex)
+colnames(df_gender_popu) = c("platekey", "gender")
+
+df_gender_popu$gender = gsub("Female", "female", df_gender_popu$gender)
+df_gender_popu$gender = gsub("Male", "male", df_gender_popu$gender)
+
+
+df_gender = rbind(df_gender,
+                  df_gender_popu)
+df_gender = unique(df_gender)
+dim(df_gender)
+# 92887  2
+
+dedup_rd_catalog_and_RE = left_join(dedup_rd_catalog_and_RE,
+                                    df_gender,
+                                    by = "platekey")
+
+dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE)
+dim(dedup_rd_catalog_and_RE)
+# 92887  5
+
+table(dedup_rd_catalog_and_RE$gender)
+#female Indeterminate          male       unknown 
+#1         49066            19         43800             1
+
+which(is.na(dedup_rd_catalog_and_RE$gender))
+# 0
+dedup_rd_catalog_and_RE$platekey[which(dedup_rd_catalog_and_RE$gender == "unknown")]
+# "LP3001086-DNA_D10"
+dedup_rd_catalog_and_RE$platekey[which(dedup_rd_catalog_and_RE$gender == "")]
+# LP3000606-DNA_D12 -- female
+dedup_rd_catalog_and_RE$gender[which(dedup_rd_catalog_and_RE$gender == "")] = "female"
+
+l_platekeys_indeterminate = dedup_rd_catalog_and_RE$platekey[which(dedup_rd_catalog_and_RE$gender == "Indeterminate")]
+# [1] "LP3001123-DNA_E08" "LP3001008-DNA_H03" "LP3001220-DNA_H07" "LP3001106-DNA_C10" "LP3001163-DNA_F10" "LP3001085-DNA_G04"
+#[7] "LP3000840-DNA_D08" "LP3001042-DNA_H12" "LP3001245-DNA_B07" "LP3000828-DNA_E08" "LP3001069-DNA_B08" "LP3001086-DNA_D10"
+#[13] "LP3000760-DNA_F09" "LP3001161-DNA_D12" "LP3001248-DNA_E10" "LP3001177-DNA_G01" "LP3001177-DNA_F01" "LP3001152-DNA_F04"
+#[19] "LP3001217-DNA_B03"
+
+# these are in catalog b38 and we do have the same info for them, remove all `Indeterminate`
+dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE %>%
+  filter(!gender %in% "Indeterminate")
+dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE)
+dim(dedup_rd_catalog_and_RE)
+# 92867  5
+
+table(dedup_rd_catalog_and_RE$gender)
+#female    male unknown 
+#49066   43800       1 
+
+# There are 117 genomes/pids with both female and male gender estimations...we need to choose the correct one --> popu_table is taking phenotypic info
+# while catalog info is the sex. Let's take the catalog one
+
+l_index_both_gender = which(duplicated(dedup_rd_catalog_and_RE$platekey))
+l_platekey_both_gender = dedup_rd_catalog_and_RE$platekey[l_index_both_gender]
+
+df_gender_from_catalog = catalog_rd_b38 %>%
+  filter(V2 %in% l_platekey_both_gender) %>%
+  select(V2,V5)
+dim(df_gender_from_catalog)
+# 113  2
+
+# There are 4 missing from there (but existing on the EHv2 summer batch). I do this manually
+which(!l_platekey_both_gender %in% df_gender_from_catalog$V2)
+# 114 115 116 117
+# "LP3000759-DNA_B01" - cancer male"
+# LP3000915-DNA_F01" - cancer female
+# "LP3000663-DNA_F03" - female 
+# "LP3001152-DNA_F09" - male
+# Filter out from dedup merged those that are the opposite gender
+
+index_to_remove = which(dedup_rd_catalog_and_RE$platekey %in% "LP3000759-DNA_B01" & dedup_rd_catalog_and_RE$gender == "female")
+dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE[-index_to_remove,]
+index_to_remove = which(dedup_rd_catalog_and_RE$platekey %in% "LP3000915-DNA_F01" & dedup_rd_catalog_and_RE$gender == "male")
+dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE[-index_to_remove,]
+index_to_remove = which(dedup_rd_catalog_and_RE$platekey %in% "LP3000663-DNA_F03" & dedup_rd_catalog_and_RE$gender == "male")
+dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE[-index_to_remove,]
+index_to_remove = which(dedup_rd_catalog_and_RE$platekey %in% "LP3001152-DNA_F09" & dedup_rd_catalog_and_RE$gender == "female")
+dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE[-index_to_remove,]
+
+# change for each of those platekeys
+df_gender_from_catalog$V5 = tolower(df_gender_from_catalog$V5)
+for (i in 1:length(df_gender_from_catalog$V2)){
+  index_to_remove = which(dedup_rd_catalog_and_RE$platekey %in% df_gender_from_catalog$V2[i] & 
+                            dedup_rd_catalog_and_RE$gender != df_gender_from_catalog$V5[i])
+  dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE[-index_to_remove,]
+  
+}
+
+dim(dedup_rd_catalog_and_RE)
+# 92750  5
+
+# No duplicates
+table(dedup_rd_catalog_and_RE$gender)
+# female    male unknown 
+# 49000   43749       1 
+
+
+# I'll define the `unknown` as female..
+which(dedup_rd_catalog_and_RE$gender == "unknown")
+# 73225
+dedup_rd_catalog_and_RE$gender[73225] = "female"
+table(dedup_rd_catalog_and_RE$gender)
+# female   male 
+# 49001  43749
+
+
+
