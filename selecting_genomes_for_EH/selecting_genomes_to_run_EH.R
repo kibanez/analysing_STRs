@@ -392,5 +392,34 @@ length(unique(dedup_rd_catalog_and_RE$participant_id))
 # 92750
 
 
+# EHv3 batch summer / october
+l_ehv3_summer = read.table("./batch_october2019_EHv3.1.2/list_platekeys_113911_12oct2019.tsv", stringsAsFactors = F)
+l_ehv3_summer = l_ehv3_summer$V1
+length(l_ehv3_summer)
+#  113911
+
+# Are all these genomes included in our final dedup merged table?
+length(intersect(l_ehv3_summer, dedup_rd_catalog_and_RE$platekey))
+# 88335
+
+# which ones are new? and check whether pid is already (in case the are duplicates, with contamination issues etc.)
+l_platekeys_in_ehv3_not_merged = setdiff(l_ehv3_summer, dedup_rd_catalog_and_RE$platekey)
+length(l_platekeys_in_ehv3_not_merged)
+# 25576
+
+# See to which pids they correspond
+l_pids_in_ehv3_not_merged = all_germlines %>% 
+  filter(platekey %in% l_platekeys_in_ehv3_not_merged) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+length(l_pids_in_ehv3_not_merged)
+# 860
+
+new_pids = setdiff(l_pids_in_ehv3_not_merged, dedup_rd_catalog_and_RE$participant_id)
+#  0
+# we already have everything!!
+
+
 
 
