@@ -173,7 +173,43 @@ dim(clin_data)
 # 1124633  28
 
 # Recover from clin_data genomes not in dedup_cata
-l_rd_catalog = 
+l_pid_rd_catalog = unique(rd_catalog$participant_id)
+
+# Just curious, how many do intersect?
+length(intersect(clin_data$participant_id, l_pid_rd_catalog))
+# 71671
+
+l_in_RE_not_catalog = setdiff(clin_data$participant_id, l_pid_rd_catalog)
+length(l_in_RE_not_catalog)
+# 15724
+
+# There are 15,724 more participants in RD under V8 RE not in catalog, let's take them
+rd_clin_data_not_catalog = clin_data %>%
+  filter(participant_id %in% l_in_RE_not_catalog) %>%
+  select(plate_key, participant_id, genome_build, programme)
+dim(rd_clin_data_not_catalog)
+# 33622  4
+
+rd_clin_data_not_catalog = unique(rd_clin_data_not_catalog)
+dim(rd_clin_data_not_catalog)
+# 15724  4
+
+# Before merging, change `rd_catalog$programme` to plural and Uppercase
+rd_catalog$programme = rep("Rare Diseases", length(rd_catalog$platekey))
+# And change colnames
+colnames(rd_clin_data_not_catalog) = colnames(rd_catalog)
+
+rd_catalog_and_RE = rbind(rd_catalog,
+                          rd_clin_data_not_catalog)
+
+dim(rd_catalog_and_RE)
+# 92696  4
+
+rd_catalog_and_RE = unique(rd_catalog_and_RE)
+dim(rd_catalog_and_RE)
+# 92696  4
+
+# Are deduplicated?? Double checking again...
 
 # There are duplicates here, more genomes than participantIDs
 length(unique(clin_data$platekey))
