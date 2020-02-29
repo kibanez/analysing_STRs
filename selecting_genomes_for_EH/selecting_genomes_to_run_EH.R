@@ -188,18 +188,18 @@ length(intersect(clin_data$participant_id, l_pid_rd_catalog))
 
 l_in_RE_not_catalog = setdiff(clin_data$participant_id, l_pid_rd_catalog)
 length(l_in_RE_not_catalog)
-# 15724
+# 15499
 
-# There are 15,724 more participants in RD under V8 RE not in catalog, let's take them
+# There are 15,499 more participants in RD under V8 RE not in catalog, let's take them
 rd_clin_data_not_catalog = clin_data %>%
   filter(participant_id %in% l_in_RE_not_catalog) %>%
   select(platekey, participant_id, genome_build, programme)
 dim(rd_clin_data_not_catalog)
-# 33622  4
+# 16251  4
 
 rd_clin_data_not_catalog = unique(rd_clin_data_not_catalog)
 dim(rd_clin_data_not_catalog)
-# 32536  4
+# 15779  4
 
 # Before merging, change `rd_catalog$programme` to plural and Uppercase
 rd_catalog$programme = rep("Rare Diseases", length(rd_catalog$platekey))
@@ -210,27 +210,35 @@ rd_catalog_and_RE = rbind(rd_catalog,
                           rd_clin_data_not_catalog)
 
 dim(rd_catalog_and_RE)
-# 109508  4
+# 92751  4
 
 rd_catalog_and_RE = unique(rd_catalog_and_RE)
 dim(rd_catalog_and_RE)
-# 109508  4
+# 92751  4
 
 # Are deduplicated?? Double checking again...
 length(unique(rd_catalog_and_RE$participant_id))
-# 92696
+# 92471
 length(unique(rd_catalog_and_RE$platekey))
-# 109508
+# 92751
 
 # which duplicated pids??
-l_pid_dup = which(duplicated(rd_catalog_and_RE$participant_id))
+l_pid_dup = rd_catalog_and_RE[which(duplicated(rd_catalog_and_RE$participant_id)),]$participant_id
 length(unique(l_pid_dup))
-# 16812
+# 245
 
-# These extra bits
+# let's filter them out this from rd_catalog_and_RE
+dedup_rd_catalog_and_RE = rd_catalog_and_RE %>%
+  filter(!participant_id %in% l_pid_dup)
+dim(dedup_rd_catalog_and_RE)
+# 92226  4
 
+length(unique(dedup_rd_catalog_and_RE$participant_id))
+# 92226
+length(unique(dedup_rd_catalog_and_RE$platekey))
+# 92226
 
-
+# I've seen that RE V8 is not well enriched with the `type` of the genome
 all_germlines = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/RE_clinical_data_V8/genome_file_paths_and_types_2019-12-04_15-13-29.tsv",
                          sep = "\t",
                          stringsAsFactors = F,
@@ -238,18 +246,53 @@ all_germlines = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/RE_cl
 dim(all_germlines)
 # 500443  11
 
-table(all_germlines$type)
-#cancer germline        cancer somatic experimental germline  experimental somatic rare disease germline 
-#73813                 52249                   268                   159                373954 
+# Let's focus only germline genomes
+all_germlines = all_germlines %>%
+  filter(type %in% c("cancer germline", "experimental germline", "rare disease germline"))
+
+df_pid_dup = clin_data %>% 
+  filter(participant_id %in% l_pid_dup) %>%
+  select(participant_id, platekey, genome_build, programme)
+
+df_pid_dup = left_join(df_pid_dup,
+                       all_germlines %>% 
+                         filter(participant_id %in% l_pid_dup) %>% 
+                         select(participant_id, platekey, type, genome_build) %>%
+                         group_by(participant_id) %>%
+                         mutate(latest_platekey = max(platekey)) %>%
+                         ungroup() %>%
+                         as.data.frame(),
+                       by = "participant_id")
+
+# Select only the `cancer germline`, and select the latest ones (there is a mess with b37 and b38...)
+df_pid_dup = df_pid_dup %>%
+  filter(type %in% "cancer germline") %>%
+  select(latest_platekey, participant_id, genome_build.x, programme)
+
+colnames(df_pid_dup) = colnames(dedup_rd_catalog_and_RE)
+df_pid_dup = unique(df_pid_dup)
+dim(df_pid_dup)
+# 242  4
+
+length(unique(df_pid_dup$platekey))
+# 242
+length(unique(df_pid_dup$participant_id))
+# 242
 
 
-l_germline_pid = all_germlines %>%
-  filter(type %in% c("cancer germline", "rare disease germline")) %>%
-  select(participant_id) %>%
-  unique() %>%
-  pull()
-length(l_germline_pid)
-# 87168
+# Include these 242 dedup germline cancer samples to dedup merged table
+dedup_rd_catalog_and_RE = rbind(dedup_rd_catalog_and_RE,
+                                df_pid_dup)
+
+dim(dedup_rd_catalog_and_RE)
+# 92468  4
+
+# Checking again for duplicates...
+length(unique(dedup_rd_catalog_and_RE$platekey))
+# 92468
+length(unique(dedup_rd_catalog_and_RE$participant_id))
+# 92468
+
 
 # Load popu table
 popu_table = read.csv("~/Documents/STRs/clinical_data/clinical_data/aggregate_gvcf_sample_stats_2019-10-03_22-07-31.tsv",
