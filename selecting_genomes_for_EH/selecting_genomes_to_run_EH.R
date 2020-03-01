@@ -602,7 +602,6 @@ table(dedup_rd_catalog_and_RE$gender)
 # 49001  43749
 
 # Let's annotate finally with the BAM path (for the latest platekey)
-
 all_paths_until_feb20 = read.csv("./list_all_genomes_path_together_29022020.tsv",
                                  sep = "\t",
                                  stringsAsFactors = F,
@@ -634,7 +633,7 @@ dedup_rd_catalog_and_RE = left_join(dedup_rd_catalog_and_RE,
 dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE)
 
 dim(dedup_rd_catalog_and_RE)
-# 102684  6
+# 95929  6
 
 # Take the latest bam_path
 dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE %>%
@@ -644,14 +643,69 @@ dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE %>%
   as.data.frame()
 
 dedup_rd_catalog_and_RE_full = dedup_rd_catalog_and_RE %>%
-  select(platekey, latest_path, gender)
+  select(platekey, latest_path, gender, build)
 dedup_rd_catalog_and_RE_full = unique(dedup_rd_catalog_and_RE_full)
 dim(dedup_rd_catalog_and_RE_full)
-# 92750  3
+# 92750  4
 
 # We are missing 1K paths to genomes that do not start with LP (majority from Scotland)
 length(which(is.na(dedup_rd_catalog_and_RE_full$latest_path)))
 # 81
 
+# write into the file, without the NAs
+to_write = dedup_rd_catalog_and_RE_full %>% filter(!is.na(latest_path)) 
+dim(to_write)
+# 92669  4
+
+# just checking last time
+length(to_write$platekey)
+# 92669
+length(unique(to_write$platekey))
+# 92669
+
+# There are many genomes having NAs as build. They must be GRCh38
+which_na_build = to_write %>%
+  filter(is.na(build)) %>% 
+  select(latest_path) %>%
+  pull()
+#write.table(which_na_build, "genomes_build_NA.txt", quote = F, col.names = F, row.names = F)
+# all are GRCh38
+
+to_write = to_write %>%
+  mutate(build=replace(build, is.na(build), "GRCh38")) %>%
+  as.data.frame()
+  
+table(to_write$build)
+# GRCh37 GRCh38 
+# 110  92559 
+# GRCh37
+
+to_write_b37 = to_write %>% 
+  filter(build %in% "GRCh37") %>% 
+  select(platekey, latest_path, gender)
+dim(to_write_b37)
+# 110  3
+
+# GRCh38
+to_write_b38 = to_write %>% 
+  filter(build %in% "GRCh38") %>% 
+  select(platekey, latest_path, gender)
+dim(to_write_b38)
+# 92559  3
 
 
+# Write b37 paths
+write.table(to_write_b37, 
+            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_110_ouf_of_92669_genomes_GRCh37.csv", 
+            sep = ",",
+            quote = F, 
+            row.names = F,
+            col.names = F)
+
+# Write b38 paths
+write.table(to_write_b38, 
+            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_92559_ouf_of_92669_genomes_GRCh38.csv", 
+            sep = ",",
+            quote = F, 
+            row.names = F,
+            col.names = F)
