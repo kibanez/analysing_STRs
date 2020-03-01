@@ -609,6 +609,12 @@ all_paths_until_feb20 = read.csv("./list_all_genomes_path_together_29022020.tsv"
                                  header = F)
 dim(all_paths_until_feb20)
 # 122586  2
+
+# remove any `plots` or `stats`
+all_paths_until_feb20 = all_paths_until_feb20 %>% filter(!grepl("stats", path_bam))
+all_paths_until_feb20 = all_paths_until_feb20 %>% filter(!grepl("plots", path_bam))
+all_paths_until_feb20 = all_paths_until_feb20 %>% filter(!grepl("time", path_bam))
+
 colnames(all_paths_until_feb20) = c("platekey", "path_bam")
 
 paths_scotland = read.csv("./list_all_genomes_path_together_scotland.tsv",
@@ -628,7 +634,7 @@ dedup_rd_catalog_and_RE = left_join(dedup_rd_catalog_and_RE,
 dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE)
 
 dim(dedup_rd_catalog_and_RE)
-# 95929  6
+# 102684  6
 
 # Take the latest bam_path
 dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE %>%
