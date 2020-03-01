@@ -603,22 +603,32 @@ table(dedup_rd_catalog_and_RE$gender)
 
 # Let's annotate finally with the BAM path (for the latest platekey)
 
-all_paths_until_feb20 = read.csv("./list_all_genomes_path_together_25022020.tsv",
+all_paths_until_feb20 = read.csv("./list_all_genomes_path_together_29022020.tsv",
                                  sep = "\t",
                                  stringsAsFactors = F,
                                  header = F)
 dim(all_paths_until_feb20)
-# 121506  2
-
+# 122586  2
 colnames(all_paths_until_feb20) = c("platekey", "path_bam")
 
+paths_scotland = read.csv("./list_all_genomes_path_together_scotland.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = F)
+dim(paths_scotland)
+# 5068  2
+colnames(paths_scotland) = c("platekey", "path_bam")
+
+all_paths = rbind(all_paths_until_feb20,
+                  paths_scotland)
+
 dedup_rd_catalog_and_RE = left_join(dedup_rd_catalog_and_RE,
-                                    all_paths_until_feb20,
+                                    all_paths,
                                     by = "platekey")
 dedup_rd_catalog_and_RE = unique(dedup_rd_catalog_and_RE)
 
 dim(dedup_rd_catalog_and_RE)
-# 95965  6
+# 95929  6
 
 # Take the latest bam_path
 dedup_rd_catalog_and_RE = dedup_rd_catalog_and_RE %>%
@@ -632,4 +642,10 @@ dedup_rd_catalog_and_RE_full = dedup_rd_catalog_and_RE %>%
 dedup_rd_catalog_and_RE_full = unique(dedup_rd_catalog_and_RE_full)
 dim(dedup_rd_catalog_and_RE_full)
 # 92750  3
+
+# We are missing 1K paths to genomes that do not start with LP (majority from Scotland)
+length(which(is.na(dedup_rd_catalog_and_RE_full$latest_path)))
+# 81
+
+
 
