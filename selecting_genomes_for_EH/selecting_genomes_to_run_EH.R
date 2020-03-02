@@ -680,6 +680,10 @@ table(to_write$build)
 # 110  92559 
 # GRCh37
 
+#
+df_new_platekeys$build = rep("GRCh37", length(df_new_platekeys$V1))
+colnames(df_new_platekeys) = colnames(to_write)
+
 to_write_b37 = to_write %>% 
   filter(build %in% "GRCh37") %>% 
   select(platekey, latest_path, gender)
