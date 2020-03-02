@@ -674,37 +674,31 @@ dim(upload_report)
 # 120648  10
 
 # V1/V2 versions are GRCh37, the rest GRCh38 (as we do have already). Let's focus on GRCh37
-
-
-which_na_build = to_write %>%
-  filter(is.na(build)) %>% 
-  select(latest_path) %>%
-  pull()
-#write.table(which_na_build, "genomes_build_NA.txt", quote = F, col.names = F, row.names = F)
-# all are GRCh38
-
-to_write = to_write %>%
-  mutate(build=replace(build, is.na(build), "GRCh38")) %>%
-  as.data.frame()
+to_write = left_join(to_write,
+                     upload_report %>% filter(Platekey %in% to_write$platekey) %>% select(Platekey, Delivery.Version),
+                     by = c("platekey" = "Platekey"))
   
-table(to_write$build)
+# Recode those `Delivery.version` == V1 or V2 to build=GRCh37
+to_write$Delivery.Version = recode(to_write$Delivery.Version, V1 = "GRCh37", V2 = "GRCh37", V4 = "GRCh38")
+table(to_write$Delivery.Version)
+# what about the `unknown`?
+to_write %>% filter(Delivery.Version %in% "unknown") %>% select(build) %>% table()
+#GRCh38 
+# 2818
+to_write$Delivery.Version = recode(to_write$Delivery.Version, unknown = "GRCh38")
+table(to_write$Delivery.Version)
 # GRCh37 GRCh38 
-# 110  92559 
-# GRCh37
-
-#
-df_new_platekeys$build = rep("GRCh37", length(df_new_platekeys$V1))
-colnames(df_new_platekeys) = colnames(to_write)
+# 14440  65260
 
 to_write_b37 = to_write %>% 
-  filter(build %in% "GRCh37") %>% 
+  filter(Delivery.Version %in% "GRCh37") %>% 
   select(platekey, latest_path, gender)
 dim(to_write_b37)
 # 110  3
 
 # GRCh38
 to_write_b38 = to_write %>% 
-  filter(build %in% "GRCh38") %>% 
+  filter(Delivery.Version %in% "GRCh38") %>% 
   select(platekey, latest_path, gender)
 dim(to_write_b38)
 # 92559  3
