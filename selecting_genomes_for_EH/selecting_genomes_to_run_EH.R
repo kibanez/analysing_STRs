@@ -673,32 +673,49 @@ upload_report = read.csv("./upload_report.020320.txt",
 dim(upload_report)
 # 120648  10
 
+# ACHTUNG!! this table contains everything!! there are duplicated platekeys that have been realigned to GRCh38 a posteriori --> let's take the latest one!!
+upload_report = upload_report %>%
+  group_by(Platekey) %>%
+  mutate(latest_delivery_version = max(Delivery.Version)) %>%
+  ungroup() %>%
+  select(Platekey, latest_delivery_version) %>%
+  as.data.frame()
+
+upload_report = unique(upload_report)
+dim(upload_report)
+# 115014  2
+
+colnames(upload_report) = c("platekey", "Delivery.Version")
+
 # V1/V2 versions are GRCh37, the rest GRCh38 (as we do have already). Let's focus on GRCh37
 to_write = left_join(to_write,
-                     upload_report %>% filter(Platekey %in% to_write$platekey) %>% select(Platekey, Delivery.Version),
-                     by = c("platekey" = "Platekey"))
+                     upload_report %>% filter(platekey %in% to_write$platekey),
+                     by = "platekey")
   
 # Recode those `Delivery.version` == V1 or V2 to build=GRCh37
 to_write$Delivery.Version = recode(to_write$Delivery.Version, V1 = "GRCh37", V2 = "GRCh37", V4 = "GRCh38")
 table(to_write$Delivery.Version)
+#  GRCh37  GRCh38 unknown 
+# 13024   61835    2276
+
 # what about the `unknown`?
 to_write %>% filter(Delivery.Version %in% "unknown") %>% select(build) %>% table()
 #GRCh38 
-# 2818
+# 1846
 to_write$Delivery.Version = recode(to_write$Delivery.Version, unknown = "GRCh38")
 
 # There are still NAs --> GRCh38
 to_write$Delivery.Version = to_write$Delivery.Version %>% replace_na("GRCh38")
 table(to_write$Delivery.Version)
 # GRCh37 GRCh38 
-# 14440  80794 
+# 13024  79645
 
 to_write_b37 = to_write %>% 
   filter(Delivery.Version %in% "GRCh37") %>% 
   select(platekey, latest_path, gender)
 to_write_b37 = unique(to_write_b37)
 dim(to_write_b37)
-# 14292  3
+# 13024  3
 
 # GRCh38
 to_write_b38 = to_write %>% 
@@ -706,7 +723,7 @@ to_write_b38 = to_write %>%
   select(platekey, latest_path, gender)
 to_write_b38 = unique(to_write_b38)
 dim(to_write_b38)
-# 80555  3
+# 79645  3
 
 # Write b37 paths
 write.table(to_write_b37, 
