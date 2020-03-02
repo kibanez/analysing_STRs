@@ -686,23 +686,27 @@ to_write %>% filter(Delivery.Version %in% "unknown") %>% select(build) %>% table
 #GRCh38 
 # 2818
 to_write$Delivery.Version = recode(to_write$Delivery.Version, unknown = "GRCh38")
+
+# There are still NAs --> GRCh38
+to_write$Delivery.Version = to_write$Delivery.Version %>% replace_na("GRCh38")
 table(to_write$Delivery.Version)
 # GRCh37 GRCh38 
-# 14440  65260
+# 14440  80794 
 
 to_write_b37 = to_write %>% 
   filter(Delivery.Version %in% "GRCh37") %>% 
   select(platekey, latest_path, gender)
+to_write_b37 = unique(to_write_b37)
 dim(to_write_b37)
-# 110  3
+# 14292  3
 
 # GRCh38
 to_write_b38 = to_write %>% 
   filter(Delivery.Version %in% "GRCh38") %>% 
   select(platekey, latest_path, gender)
+to_write_b38 = unique(to_write_b38)
 dim(to_write_b38)
-# 92559  3
-
+# 80555  3
 
 # Write b37 paths
 write.table(to_write_b37, 
