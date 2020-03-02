@@ -53,7 +53,7 @@ dim(df_all_genomes)
 
 # Platekey, PID info retrieved from Catalog
 # RD b38
-catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb38_280220.tsv",
+catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb38_280220.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
                           header = F)
@@ -61,7 +61,7 @@ dim(catalog_rd_b38)
 # 76950  8
 
 # RDb37
-catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb37_280220.tsv",
+catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb37_280220.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
                           header = F)
@@ -438,7 +438,7 @@ table(dedup_rd_catalog_and_RE$programme)
 # In order to run ExpansionHunter we need the following info for the input file:
 # <PLATEKEY>, <PATH TO BAM>, <GENDER>
 
-catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb38_280220.tsv",
+catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb38_280220.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
                           header = F)
@@ -446,7 +446,7 @@ dim(catalog_rd_b38)
 # 76950  8
 
 # RDb37
-catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.1.2/output_catalog_RDb37_280220.tsv",
+catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb37_280220.tsv",
                           sep = "\t",
                           stringsAsFactors = F,
                           header = F)
@@ -727,16 +727,31 @@ dim(to_write_b38)
 
 # Write b37 paths
 write.table(to_write_b37, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_13024_ouf_of_92669_genomes_GRCh37.csv", 
+            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_13024_ouf_of_92669_genomes_GRCh37.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
             col.names = F)
 
+write.table(to_write_b37, 
+            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_13024_ouf_of_92669_genomes_GRCh37.tsv", 
+            sep = "\t",
+            quote = F, 
+            row.names = F,
+            col.names = F)
+
+
 # Write b38 paths
 write.table(to_write_b38, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_79645_ouf_of_92669_genomes_GRCh38.csv", 
+            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_79645_ouf_of_92669_genomes_GRCh38.csv", 
             sep = ",",
+            quote = F, 
+            row.names = F,
+            col.names = F)
+
+write.table(to_write_b38, 
+            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_79645_ouf_of_92669_genomes_GRCh38.tsv", 
+            sep = "\t",
             quote = F, 
             row.names = F,
             col.names = F)
