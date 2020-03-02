@@ -664,6 +664,18 @@ length(unique(to_write$platekey))
 # 92669
 
 # There are many genomes having NAs as build. They must be GRCh38
+# AND I assumed WRONGLY that retrieving genomes/data from Catalog RD b38 are GRCh38 build genomes, but no!! they can be also GRCh37!! Augusto asked time ago to merge RD b37 and b38 catalog datasets
+# I've got an idea: use the `latest_report` to fix the GRCh38 false ones and change them to GRCh37
+upload_report = read.csv("./upload_report.020320.txt",
+                         sep = "\t",
+                         stringsAsFactors = F,
+                         header = T)
+dim(upload_report)
+# 120648  10
+
+# V1/V2 versions are GRCh37, the rest GRCh38 (as we do have already). Let's focus on GRCh37
+
+
 which_na_build = to_write %>%
   filter(is.na(build)) %>% 
   select(latest_path) %>%
