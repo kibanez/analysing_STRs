@@ -727,7 +727,7 @@ dim(to_write_b38)
 
 # Write b37 paths
 write.table(to_write_b37, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_110_ouf_of_92669_genomes_GRCh37.csv", 
+            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_13024_ouf_of_92669_genomes_GRCh37.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
@@ -735,7 +735,7 @@ write.table(to_write_b37,
 
 # Write b38 paths
 write.table(to_write_b38, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_92559_ouf_of_92669_genomes_GRCh38.csv", 
+            "./batch_march2020_EHv2.5.5_and_EHv3.1.2/list_79645_ouf_of_92669_genomes_GRCh38.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
