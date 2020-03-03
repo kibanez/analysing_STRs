@@ -30,7 +30,7 @@ length(l_val_data)
 
 #write.table(l_val_data, "./list_all_unique_255_genomes_GEL.txt", quote = F, row.names = F, col.names = F)
 
-df_coverage = c()
+df_all_coverage = c()
 for (i in 1:length(l_val_data)){
   platekey = paste(l_val_data[i], ".bam", sep = "")
   
@@ -40,7 +40,7 @@ for (i in 1:length(l_val_data)){
   if (!is.null(test)){
     df_coverage = test$stats$WHOLE_GENOME_COVERAGE$coverageSummary[[1]]
     autosome_cov = df_coverage %>% filter(scope %in% "autosomes") %>% select(avg) %>% pull()
-    df_coverage = rbind(df_coverage,
+    df_coverage = rbind(df_all_coverage,
                         cbind(platekey, autosome_cov))
     
   }
