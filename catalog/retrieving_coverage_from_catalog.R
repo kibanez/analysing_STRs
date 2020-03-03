@@ -45,3 +45,8 @@ for (i in 1:length(l_val_data)){
     
   }
 }
+
+
+summary(as.numeric(df_all_coverage[,2]))
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#27.57   30.68   32.80   34.73   37.06   57.84 
