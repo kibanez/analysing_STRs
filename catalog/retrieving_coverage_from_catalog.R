@@ -40,7 +40,7 @@ for (i in 1:length(l_val_data)){
   if (!is.null(test)){
     df_coverage = test$stats$WHOLE_GENOME_COVERAGE$coverageSummary[[1]]
     autosome_cov = df_coverage %>% filter(scope %in% "autosomes") %>% select(avg) %>% pull()
-    df_coverage = rbind(df_all_coverage,
+    df_all_coverage = rbind(df_all_coverage,
                         cbind(platekey, autosome_cov))
     
   }
