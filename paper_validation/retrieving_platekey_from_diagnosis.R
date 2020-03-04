@@ -11,6 +11,7 @@ library(dplyr)
 # setup working directory
 setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/raw/")
 
+# load version and genomes data
 upload_report = read.csv("~/Documents/STRs/data/research/input/upload_report.020320.txt",
                          sep = "\t",
                          stringsAsFactors = F,
@@ -29,3 +30,19 @@ upload_report = upload_report %>%
 upload_report = unique(upload_report)
 dim(upload_report)
 # 115014  2
+
+
+# load RD catalog data
+catalog_b38 = read.csv("~/Documents/STRs/data/research/input/batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb38_280220.tsv",
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = F)
+dim(catalog_b38)
+# 76949  8
+
+colnames(catalog_b38) = c("cohort_id", "platekey", "participant_id", "isProband","sex", "affection_status", "build", "programme")
+
+# remove those cohorts having REVOKED ord DEPRECATED
+catalog_b38 = catalog_b38 %>% filter(!grepl("REVOKED", cohort_id))
+catalog_b38 = catalog_b38 %>% filter(!grepl("DEPRECATED", cohort_id))
+
