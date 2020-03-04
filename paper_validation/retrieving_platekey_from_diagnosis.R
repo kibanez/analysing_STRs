@@ -59,5 +59,14 @@ df_platekeys_pid = catalog_b38 %>%
 dim(df_platekeys_pid)
 # 71  2
 
+# Enrich them with the delivery version
+df_platekeys_pid = left_join(df_platekeys_pid,
+                             upload_report,
+                             by = c("platekey" = "Platekey"))
 
-
+write.table(df_platekeys_pid,
+            "./table_pid_platekey_deliveryVersion.tsv",
+            quote = F,
+            sep = "\t",
+            row.names = F,
+            col.names = T)
