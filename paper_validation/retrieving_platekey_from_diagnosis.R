@@ -46,3 +46,18 @@ colnames(catalog_b38) = c("cohort_id", "platekey", "participant_id", "isProband"
 catalog_b38 = catalog_b38 %>% filter(!grepl("REVOKED", cohort_id))
 catalog_b38 = catalog_b38 %>% filter(!grepl("DEPRECATED", cohort_id))
 
+# Input list of pids in the diagnosis table
+list_pids = read.table("./list_pid_diagnosis.txt", stringsAsFactors = F)
+list_pids = list_pids$V1
+length(list_pids)
+# 71
+
+df_platekeys_pid = catalog_b38 %>% 
+  filter(participant_id %in% list_pids) %>%
+  select(participant_id, platekey) 
+  
+dim(df_platekeys_pid)
+# 71  2
+
+
+
