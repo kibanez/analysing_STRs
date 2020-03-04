@@ -70,3 +70,15 @@ write.table(df_platekeys_pid,
             sep = "\t",
             row.names = F,
             col.names = T)
+
+# How many are V1 (GRCh37 and 125bp)
+df_platekeys_pid %>% filter(latest_delivery_version %in% "V1") %>% dim()
+# 1  3
+
+# V2
+df_platekeys_pid %>% filter(latest_delivery_version %in% "V2") %>% dim()
+# 5  3
+
+# V4
+df_platekeys_pid %>% filter(latest_delivery_version %in% "V4") %>% dim()
+# 65  3
