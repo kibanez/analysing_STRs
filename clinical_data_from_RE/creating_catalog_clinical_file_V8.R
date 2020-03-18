@@ -16,6 +16,7 @@ rd_analysis = read.csv("./rare_disease_analysis_2019-12-04_15-03-51.tsv",
                        stringsAsFactors = F)
 
 dim(rd_analysis)
+#74981 16 (V7)
 #74310    16 (V8, now)
 
 rd_family = read.csv("./rare_diseases_family_2019-12-04_15-06-47.tsv",
@@ -23,6 +24,7 @@ rd_family = read.csv("./rare_diseases_family_2019-12-04_15-06-47.tsv",
                      header = TRUE,
                      stringsAsFactors = F)
 dim(rd_family)
+#49396  11 (v7)
 # 52274  11 (V8)
 
 rd_participant = read.csv("./rare_diseases_participant_phen_2019-12-04_15-07-16.tsv",
@@ -30,13 +32,16 @@ rd_participant = read.csv("./rare_diseases_participant_phen_2019-12-04_15-07-16.
                           header = TRUE,
                           stringsAsFactors = F)
 dim(rd_participant)
+#1288624 12 (V7)
 #1276264      12  (V8)
+
 
 participant_info = read.csv("./participant_2019-12-04_15-09-42.tsv",
                             sep = "\t",
                             header = TRUE,
                             stringsAsFactors = F)
 dim(participant_info)
+#90643 59 (V7)
 #89335  59 (V8) 
 
 disease_info = read.csv("./rare_diseases_participant_dise_2019-12-04_15-08-50.tsv",
@@ -44,6 +49,7 @@ disease_info = read.csv("./rare_diseases_participant_dise_2019-12-04_15-08-50.ts
                         header = TRUE,
                         stringsAsFactors = F)
 dim(disease_info)
+#40611 10 (V7)
 # 40088 11 (V8)
 
 panels_info = read.csv("./panels_applied_2019-12-04_15-10-15.tsv",
