@@ -42,6 +42,20 @@ png("HTT_distribution_gender_age_66051_participants.png")
 print(age_distribution)
 dev.off()
 
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/matthias_work_main/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      sep = ",",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_table)
+# 59464  36
+
+popu_subset = popu_table %>%
+  filter(ID %in% unique(dedup_data$platekey))
+dim(popu_subset)
+# 50626  36
+
+
+
 # Definition of different sub-datasets in `dedup_data`
 
 # dataset 1
