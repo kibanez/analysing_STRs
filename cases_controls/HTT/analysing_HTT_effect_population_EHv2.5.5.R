@@ -56,6 +56,17 @@ dim(popu_subset)
 
 
 
+png("./population_distribution_66051_pure_ancestries.png")
+ggplot(data=popu_subset %>% filter(self_reported %in% c("African", "European", "East Asian", "other", "South Asian")) , 
+       aes(x=PC2, y=PC1, colour = self_reported)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 66,051 genomes") +
+  ylab("PC1 across 66,051 genomes") +
+  guides(fill = FALSE)
+dev.off()
+
+
+
 # Definition of different sub-datasets in `dedup_data`
 
 # dataset 1
