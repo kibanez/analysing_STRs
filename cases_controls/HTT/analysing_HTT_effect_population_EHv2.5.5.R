@@ -22,6 +22,26 @@ dedup_data = read.csv("table_STR_repeat_size_each_row_allele_EHv2.5.5_HTT_CAG_si
 dim(dedup_data)
 # 132102  19
 
+
+# New thing I want to retrieve from here in terms of population for this 60K unique participants
+# And also plot the distribution of gender and age within this subset
+dedup_data = dedup_data %>%
+  group_by(participant_id) %>%
+  mutate(age = 2020 - year_of_birth) %>%
+  ungroup() %>%
+  as.data.frame()
+  
+age_distribution = ggplot(dedup_data,
+                          aes(x = age, fill = participant_phenotypic_sex)) + 
+  geom_density(alpha=0.25) +
+  xlab("age of participant") +
+  ylab("density") +
+  scale_fill_discrete(name = 'gender')
+
+png("HTT_distribution_gender_age_66051_participants.png")
+print(age_distribution)
+dev.off()
+
 # Definition of different sub-datasets in `dedup_data`
 
 # dataset 1
