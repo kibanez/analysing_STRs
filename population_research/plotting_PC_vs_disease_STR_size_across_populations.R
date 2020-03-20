@@ -41,7 +41,7 @@ for(i in 1:length(l_loci)){
   
   print(locus_name)
   
-  # AFR table
+  #AFR table
   afr_file = paste("AFR/cancer_and_RD/table_STR_repeat_size_each_row_allele_", locus_name, sep = "")
   afr_file = paste(afr_file, "_simplified_cancer_and_RD.tsv", sep = "")
   
