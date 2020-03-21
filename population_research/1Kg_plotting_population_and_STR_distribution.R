@@ -17,17 +17,40 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/1Kg/")
 
 # Load 1Kg population index data
-popu_info = read.csv("./")
-
+popu_info = read.csv("./integrated_call_samples_v2.20130502.ALL.ped",
+                     sep = "\t",
+                     header = T,
+                     stringsAsFactors = F)
+dim(popu_info)
+# 3691  17
 
 # Functions
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
 
-
-
 # Load EHv3.2.2 STR merged data for each sub-population
+df_merged = data.frame()
+l_popus = unique(popu_info$Population)
+for (i in 1:length(l_popus)){
+  popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/1Kg/data/", l_popus[i] ,sep = "")
+  file_aux = paste(paste("merged_", l_popus[i], sep = ""), "_1Kg_samples.tsv", sep = "")
+  
+  
+  df_aux = read.csv(paste(popu_aux, file_aux, sep = "/"),
+                    sep  = "\t",
+                    stringsAsFactors = F,
+                    header = T)
+  
+  df_aux = df_aux %>% 
+    mutate(population = l_popus[i])
+  
+  df_merged = rbind(df_merged,
+                    df_aux)
+  
+}
+
+
 df_acb = read.csv('~/Documents/STRs/ANALYSIS/population_research/1Kg/data/ACB/merged_ACB_1Kg_samples.tsv',
               sep = '\t',
               stringsAsFactors = F,
