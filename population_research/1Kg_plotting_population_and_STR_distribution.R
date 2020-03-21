@@ -70,13 +70,14 @@ dim(df_merged)
 output_folder = "./figures/"
 
 l_loci = sort(unique(df_merged$gene))
+# Let's focus first on the important 4 loci
+l_loci = c("AR", "ATN1", "HTT", "FXN")
 for (i in 1:length(l_loci)){
-  # Each locus - Individually
-  plot_gene(df_afr, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AFR")
-  plot_gene(df_amr, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "AMR")
-  plot_gene(df_eur, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EUR")
-  plot_gene(df_eas, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "EAS")
-  plot_gene(df_asi, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "ASI")
+  
+  for (j in 1:length(l_popus)){
+    # Each locus - Individually
+    plot_gene(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
+  }
   
   # Jointly - distribution
   plot_gene_joint_ancestries(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
