@@ -32,6 +32,10 @@ source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R
 # Load EHv3.2.2 STR merged data for each sub-population
 df_merged = data.frame()
 l_popus = unique(popu_info$Population)
+
+# Remove CHD from `l_popus`
+l_popus = l_popus[-19]
+
 for (i in 1:length(l_popus)){
   popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/1Kg/data/", l_popus[i] ,sep = "")
   file_aux = paste(paste("merged_", l_popus[i], sep = ""), "_1Kg_samples.tsv", sep = "")
