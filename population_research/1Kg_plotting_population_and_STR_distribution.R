@@ -45,6 +45,22 @@ l_popus = unique(popu_info$Population)
 # Remove CHD from `l_popus`
 l_popus = l_popus[-19]
 
+# Define sub-population and super-population
+superpopulations = c("AFR","AFR","AFR","AFR","AFR","AFR","AFR", 
+                     "AMR", "AMR","AMR","AMR",
+                     "EUR","EUR","EUR","EUR","EUR", 
+                     "EAS","EAS","EAS","EAS","EAS",
+                     "SAS","SAS","SAS","SAS","SAS")
+sub_populations = c("ESN", "YRI", "GWD", "LWK", "MSL", "ACB", "ASW", 
+                    "MXL", "PUR", "PEL", "CLM",
+                    "IBS", "TSI", "GBR", "CEU", "FIN",
+                    "JPT", "CHS", "CHB", "CDX", "KHV",
+                    "PJL", "STU", "BEB", "ITU", "GIH")
+
+popu_1kg = data.frame(cbind(superpopulations, sub_populations))
+popu_1kg$superpopulations = as.character(popu_1kg$superpopulations)
+popu_1kg$sub_populations = as.character(popu_1kg$sub_populations)
+
 for (i in 1:length(l_popus)){
   popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/1Kg/data/", l_popus[i] ,sep = "")
   file_aux = paste(paste("merged_", l_popus[i], sep = ""), "_1Kg_samples.tsv", sep = "")
@@ -55,8 +71,12 @@ for (i in 1:length(l_popus)){
                     stringsAsFactors = F,
                     header = T)
   
+  index_subpopu = match(l_popus[i], popu_1kg$sub_populations)
+  superpopu = popu_1kg$superpopulations[index_subpopu]
+  
   df_aux = df_aux %>% 
-    mutate(population = l_popus[i])
+    mutate(population = l_popus[i],
+           superpopulation = superpopu)
   
   df_merged = rbind(df_merged,
                     df_aux)
@@ -64,7 +84,7 @@ for (i in 1:length(l_popus)){
 }
 
 dim(df_merged)
-# 23148  13
+# 13675  14
 
 # Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
