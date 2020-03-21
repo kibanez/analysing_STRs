@@ -76,7 +76,7 @@ for (i in 1:length(l_loci)){
   
   for (j in 1:length(l_popus)){
     # Each locus - Individually
-    plot_gene(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
+    plot_gene(df_merged %>% filter(population %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
   }
   
   # Jointly - distribution
