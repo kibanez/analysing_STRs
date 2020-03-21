@@ -35,7 +35,7 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 # Functions
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_1Kg.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
 
 # Load EHv3.2.2 STR merged data for each sub-population
@@ -44,6 +44,9 @@ l_popus = unique(popu_info$Population)
 
 # Remove CHD from `l_popus`
 l_popus = l_popus[-19]
+
+# Define super-populations
+l_superpopu = c("AFR", "AMR", "EAS", "EUR", "SAS")
 
 # Define sub-population and super-population
 superpopulations = c("AFR","AFR","AFR","AFR","AFR","AFR","AFR", 
@@ -93,11 +96,13 @@ l_loci = sort(unique(df_merged$gene))
 # Let's focus first on the important 4 loci
 l_loci = c("AR", "ATN1", "HTT", "FXN")
 for (i in 1:length(l_loci)){
-  
+
+  # Specifying sub-population  
   for (j in 1:length(l_popus)){
     # Each locus - Individually
-    plot_gene(df_merged %>% filter(population %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
+    plot_gene_1Kg(df_merged %>% filter(population %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
   }
+  
   
   # Jointly - distribution
   plot_gene_joint_ancestries(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
