@@ -33,18 +33,20 @@ plot_violin_ancestry_1Kg <- function(df_input, gene_name, gene_data_normal, gene
   png_name = paste(pdf_name, "png", sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
-  # Sort df_gene2 by super-population
-  df_gene2 <-order(df_gene2$superpopulation)
-  
-  
   violin_plot = ggplot(df_gene2, aes(x = subpopulation, y=repeat_size, fill = superpopulation)) +
     geom_violin() +
     coord_flip() +
     xlab("Sub-population") + 
     ylab("Repeat sizes (repeat units)") + 
     ggtitle(gene_name) +
-    geom_boxplot(width=0.1)
-
+    geom_boxplot(width=0.1) +
+    guides(fill=guide_legend(reverse=TRUE)) +
+    scale_x_discrete(limits=c("ACB", "AWS","ESN", "GWD", "LWK", "MSL", "YRI",
+                              "CLM", "MXL", "PEL","PUR",
+                              "CDX", "CHB", "CHS", "JPT", "KHV",
+                              "CEU", "GBR", "FIN", "IBS", "TSI", 
+                              "BEB", "GIH", "ITU", "PJL", "STU"))
+  
   pdf(pdf_name)
   print(violin_plot)
   dev.off()
