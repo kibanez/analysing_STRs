@@ -1,5 +1,11 @@
 # Function that plots jointly all STR distribution across all ancestries given
-plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder) {
+plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, superpopu) {
+  # `superpopu` variable is for 1Kg cohort, when plotting per each super-population distribution of sub-populations
+  if(missing(superpopu)) {
+    superpopu = ""
+  } 
+  
+  
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   
@@ -8,7 +14,7 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
   population = df_gene$population
   df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples, population = population)
   
-  pdf_name = paste(output_folder, gene_name, sep = "/")
+  pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")
   pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
   png_name = paste(pdf_name, 'png', sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
