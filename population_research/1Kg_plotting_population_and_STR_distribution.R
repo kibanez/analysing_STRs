@@ -11,6 +11,7 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.2.1"
 library(reshape); packageDescription ("reshape", fields = "Version") #"0.8.8"
 library(scatterplot3d); packageDescription("scatterplot3d", fields = "Version") # 0.3-41
 library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
+library(tidyverse)
 
 
 # Set environment
@@ -34,9 +35,9 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 
 # Functions
-source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_1Kg.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_1Kg.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_1Kg.R")
 
 # Load EHv3.2.2 STR merged data for each sub-population
 df_merged = data.frame()
@@ -100,13 +101,12 @@ for (i in 1:length(l_loci)){
   # Specifying sub-population  
   for (j in 1:length(l_popus)){
     # Each locus - Individually
-    plot_gene_1Kg(df_merged %>% filter(population %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
+    plot_gene(df_merged %>% filter(population %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
   }
   
-  
   # Jointly - distribution
-  plot_gene_joint_ancestries(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_gene_joint_ancestries_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
   
   # Jointly - Violin plots
-  plot_violin_ancestry(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_violin_ancestry_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
 }
