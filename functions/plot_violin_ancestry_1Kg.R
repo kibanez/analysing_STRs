@@ -41,7 +41,7 @@ plot_violin_ancestry_1Kg <- function(df_input, gene_name, gene_data_normal, gene
     ggtitle(gene_name) +
     geom_boxplot(width=0.1) +
     guides(fill=guide_legend(reverse=TRUE)) +
-    scale_x_discrete(limits=c("ACB", "AWS","ESN", "GWD", "LWK", "MSL", "YRI",
+    scale_x_discrete(limits=c("ACB", "ASW","ESN", "GWD", "LWK", "MSL", "YRI",
                               "CLM", "MXL", "PEL","PUR",
                               "CDX", "CHB", "CHS", "JPT", "KHV",
                               "CEU", "GBR", "FIN", "IBS", "TSI", 
