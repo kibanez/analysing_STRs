@@ -36,8 +36,10 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 # Functions
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_1Kg.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_1Kg.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
 
 # Load EHv3.2.2 STR merged data for each sub-population
 df_merged = data.frame()
@@ -110,3 +112,18 @@ for (i in 1:length(l_loci)){
   # Jointly - Violin plots
   plot_violin_ancestry_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
 }
+
+
+# Plotting here joint ancestries per super-population (repeat-sizes across sub-populations)
+
+for (i in 1:length(l_loci)){
+  # Jointly - distribution
+  plot_gene_joint_ancestries_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  
+  # Jointly - Violin plots
+  plot_violin_ancestry_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+}
+
+
+
+
