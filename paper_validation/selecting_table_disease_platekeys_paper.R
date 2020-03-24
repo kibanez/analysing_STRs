@@ -71,4 +71,42 @@ dim(table_diseases_enriched)
 
 write.table(table_diseases_enriched, file = "~/Documents/STR identif/clinical data lp numbers/table_diseases_enriched.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
+# Read from file
+table_diseases_enriched = read.csv("./table_diseases_enriched.tsv",
+                                   sep = "\t",
+                                   stringsAsFactors = F,
+                                   header = T)
+dim(table_diseases_enriched)
+# 11731  16
 
+# Enrich this table with popu  - to take best_guess-predicted_ancestry
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/matthias_work_main/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      sep = ",",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_table)
+# 59464  36
+
+
+table_diseases_enriched_popu = left_join(table_diseases_enriched,
+                                    popu_table %>% select(ID,best_guess_predicted_ancstry),
+                                    by = c("plate_key.x" = "ID"))
+
+
+# take reported ancestry
+rd_genomes_re = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_230320.tsv",
+                       sep = "\t",
+                       stringsAsFactors = FALSE, 
+                       header = TRUE)
+dim(rd_genomes_re)  
+# 1124633  30
+
+table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
+                                         rd_genomes_re %>% select(platekey, participant_ethnic_category),
+                                         by = c("plate_key.x" = "platekey"))
+
+table_diseases_enriched_popu = unique(table_diseases_enriched_popu)
+dim(table_diseases_enriched_popu)
+# 11731 18
+
+write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
