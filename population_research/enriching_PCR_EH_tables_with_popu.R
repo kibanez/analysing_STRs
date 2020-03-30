@@ -31,3 +31,12 @@ dim(main_popu)
 # 59464  36
 
 
+# 1. GEL validation golden table
+# I've copied the table as it is now (without super popu and subpopu info) from drive
+# https://docs.google.com/spreadsheets/d/1cuh2rsDkQP3YEHjX6ogLWlgxO3sd0Jfs4zCVdizBQEc/edit#gid=0
+gel_table = read.csv("./GEL_data_from_drive.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(gel_table)
+# 635  11 
