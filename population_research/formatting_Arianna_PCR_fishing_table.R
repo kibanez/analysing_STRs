@@ -29,4 +29,12 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 
+# 1124633  28
+
+# merge ari_table with LP_number
+ari_table = left_join(ari_table,
+                      clin_data %>% select(participant_id, platekey),
+                      by = c("PID" = "participant_id"))
+ari_table = unique(ari_table)
+dim(ari_table)
+# 298  11 
