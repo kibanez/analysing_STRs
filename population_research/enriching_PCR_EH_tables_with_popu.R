@@ -22,3 +22,12 @@ pilot_popu = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCES
 dim(pilot_popu)
 # 4821  44
 
+# Load Main programme with population info
+main_popu = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                     sep = ",",
+                     stringsAsFactors = F,
+                     header = T)
+dim(main_popu)
+# 59464  36
+
+
