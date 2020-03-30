@@ -49,3 +49,9 @@ dim(gel_table)
 # 635  13
 
 # now with the main popu table
+gel_table = left_join(gel_table,
+                      main_popu %>% select(ID, best_guess_predicted_ancstry, self_reported),
+                      by = c("LP_number" = "ID"))
+dim(gel_table)
+# 635  15
+
