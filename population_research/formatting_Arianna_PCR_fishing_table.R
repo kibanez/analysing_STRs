@@ -98,6 +98,9 @@ merged_final_table = left_join(final_table_ari,
 dim(merged_final_table)
 # 144  10
 
+# Select columns following google drive order
+merged_final_table = merged_final_table %>% select(locus, platekey, POPULATION, PCR_a1, PCR_a2, EHv255_a1, EHv255_a2, EHv312_a1, EHv312_a2)
+
 # Write into a file
 write.table(merged_final_table,
             "./NHNN_fishing_Arianna.tsv",
@@ -105,3 +108,17 @@ write.table(merged_final_table,
             row.names = F,
             col.names = T,
             quote = F)
+
+
+# Let's enrich with super and subpopulation and gender
+main_popu = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                     sep = ",",
+                     stringsAsFactors = F, 
+                     header = T)
+dim(main_popu)
+# 59464  36
+
+
+merged_final_table_popu = left_join(merged_final_table,
+                                    main_popu %>% select(ID, best_guess_predicted_ancstry, self_reported),
+                                    by = c("platekey" = "ID"))
