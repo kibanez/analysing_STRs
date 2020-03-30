@@ -1,20 +1,16 @@
 # Function that plots jointly all STR distribution across all ancestries given
-plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, superpopu) {
-  # `superpopu` variable is for 1Kg cohort, when plotting per each super-population distribution of sub-populations
-  if(missing(superpopu)) {
-    superpopu = ""
-  } 
-  
-  
+plot_gene_joint_ancestries_1Kg <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder) {
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   
   df_gene = df_input %>% filter(gene %in% gene_name)
   alt_number = df_gene$allele
-  population = df_gene$population
-  df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples, population = population)
+  subpopulation = df_gene$population
+  superpopulation = df_gene$superpopulation
+  df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples, 
+                               subpopulation = subpopulation, superpopulation = superpopulation)
   
-  pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")
+  pdf_name = paste(output_folder, gene_name, sep = "/")
   pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
   png_name = paste(pdf_name, 'png', sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
@@ -23,7 +19,7 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
   max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
   
   
-  joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = population, color = population)) + 
+  joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = subpopulation, color = superpopulation)) + 
     geom_line() + 
     ylab("Allele frequency") + 
     xlab("Repeat sizes (repeat units)") + 

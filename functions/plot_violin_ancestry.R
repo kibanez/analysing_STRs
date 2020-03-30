@@ -1,4 +1,9 @@
-plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder){
+plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, superpopu){
+  # `superpopu` variable is for 1Kg cohort, when plotting per each super-population distribution of sub-populations
+  if(missing(superpopu)) {
+    superpopu = ""
+  } 
+  
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
 
@@ -28,7 +33,7 @@ plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_dat
   df_gene2$repeat_size = as.integer(as.character(df_gene2$repeat_size))
   df_gene2$population = as.character(df_gene2$population)
   
-  pdf_name = paste(output_folder, gene_name, sep = "/")
+  pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")
   pdf_name = paste(pdf_name, "joint_ancestries_violin_plot", sep = "_")
   png_name = paste(pdf_name, "png", sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")

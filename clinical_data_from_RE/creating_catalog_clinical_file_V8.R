@@ -100,7 +100,7 @@ dim(all_data)
 # 107623  4
 
 all_data = left_join(all_data,
-                     rd_analysis %>% select(participant_id, rare_diseases_family_id, plate_key, biological_relationship_to_proband, participant_type, normalised_specific_disease, genome_build, genetic_vs_reported_results),
+                     rd_analysis %>% select(participant_id, rare_diseases_family_id, plate_key, biological_relationship_to_proband, participant_type, normalised_specific_disease, genome_build, genetic_vs_reported_results, participant_ethnic_category),
                      by = "participant_id")
 dim(all_data)
 #115988  9 (V7)
@@ -150,4 +150,20 @@ dim(all_data)
 # 1056568 26 (V7)
 # 1124633  28 (V8)
 
-write.table(all_data, "../../rd_genomes_all_data_041219.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+# population data
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/matthias_work_main/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      sep = ",",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_table)
+# 59464  36
+
+all_data = left_join(all_data,
+                      popu_table %>% select(ID, best_guess_predicted_ancstry),
+                      by = c("platekey"="ID"))
+dim(all_data)
+# 1124633  29
+
+
+
+write.table(all_data, "../../rd_genomes_all_data_230320.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
