@@ -53,5 +53,18 @@ table(ari_table$TFC)
 #ATN1 ATN2 FTD1 FTD2 HTT1 HTT2 SC1A SC1B SC2A SC2B SC3A SC3B SC6A SC6B SC7A SC7B      
 #1    1    7    7    1    1   28   28   28   28   28   28   28   28   28   28 
 
+# First, recode above original locus in the ones we want
+# For that we need to have it as factor
+ari_table$TFC = as.factor(ari_table$TFC)
+ari_table$TFC = recode(ari_table$TFC, 
+                       "SC1A" = "ATXN1", "SC1B" = "ATXN1",
+                       "SC2A" = "ATXN2", "SC2B" = "ATXN2",
+                       "SC3A" = "ATXN3", "SC3B" = "ATXN3",
+                       "SC6A" = "CACNA1A", "SC6B" = "CACNA1A",
+                       "SC7A" = "ATXN7", "SC7B" = "ATXN7",
+                       "ATN1" = "ATN1", "ATN2" = "ATN1",
+                       "HTT1" = "HTT", "HTT2" = "HTT",
+                       "FTD1" = "C9orf72", "FTD2" = "C9orf72")
+                       
 
 
