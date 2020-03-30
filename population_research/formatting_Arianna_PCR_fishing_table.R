@@ -38,3 +38,20 @@ ari_table = left_join(ari_table,
 ari_table = unique(ari_table)
 dim(ari_table)
 # 298  11 
+
+# Locus format is a bit diff here
+# ATXN1 -- SCA1, SC1B for allele 1 and 2 respectively
+# ATXN2 -- SC2A SC2B
+# ATXN3 -- SC3A SC3B
+# CACNA1A -- SC6A SC6B
+# ATXN7 -- SC7A SC7B 
+# ATN1 -- ATN1 ATN2
+# HTT -- HTT1 HHT2
+# C9orf72 -- FTD1 FTD2
+
+table(ari_table$TFC)
+#ATN1 ATN2 FTD1 FTD2 HTT1 HTT2 SC1A SC1B SC2A SC2B SC3A SC3B SC6A SC6B SC7A SC7B      
+#1    1    7    7    1    1   28   28   28   28   28   28   28   28   28   28 
+
+
+
