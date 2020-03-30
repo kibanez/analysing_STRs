@@ -23,3 +23,10 @@ ari_table = read.csv("~/Documents/STRs/VALIDATION/Arianna_Fishing/STR Repeats in
 dim(ari_table)
 # 298  10
 
+# load clinical data (in order to match PID with LP_number)
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 
