@@ -66,5 +66,42 @@ ari_table$TFC = recode(ari_table$TFC,
                        "HTT1" = "HTT", "HTT2" = "HTT",
                        "FTD1" = "C9orf72", "FTD2" = "C9orf72")
                        
+# Retrieve list of platekeys together with the locus, in order to take EHv2.5.5 and EHv3.1.2 estimations
+df_platekeys_locus= ari_table %>% select(TFC, platekey)
+df_platekeys_locus = unique(df_platekeys_locus)
+dim(df_platekeys_locus)
+# 144 2
+write.table(df_platekeys_locus, "../Arianna_Fishing/list_platekeys_locus.tsv", quote = F, row.names = F, col.names = F, sep = "\t")
 
+# Load table Arianna's recoded with PCR_a1 and PCR_a2
+final_table_ari = read.csv("../Arianna_Fishing/arianna_table_recoded.tsv",
+                           sep = "\t",
+                           stringsAsFactors = F,
+                           header = T)
+dim(final_table_ari)
+# 144  6
 
+# Load EHv2 and EHv3 estimations from Arianna's table
+eh_final_table = read.csv("../Arianna_Fishing/list_platekeys_locus_EHv2_EHv3.tsv",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = T)
+dim(eh_final_table)
+# 144  8
+
+# remove PCR_a1 and PCR_a2
+eh_final_table = eh_final_table[,-c(3:4)]
+
+merged_final_table = left_join(final_table_ari,
+                               eh_final_table,
+                               by = c("platekey" = "platekey", "locus" = "locus"))
+dim(merged_final_table)
+# 144  10
+
+# Write into a file
+write.table(merged_final_table,
+            "./NHNN_fishing_Arianna.tsv",
+            sep = "\t",
+            row.names = F,
+            col.names = T,
+            quote = F)
