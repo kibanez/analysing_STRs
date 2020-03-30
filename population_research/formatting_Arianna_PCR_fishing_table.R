@@ -14,3 +14,12 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.7.4"
 
 # Set working directory
 setwd("~/Documents/STRs/VALIDATION/PCR_EH_estimations/")
+
+# Load Ari's NHNN PCR table
+ari_table = read.csv("~/Documents/STRs/VALIDATION/Arianna_Fishing/STR Repeats in WinPath 06.03.20_per_KRI.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(ari_table)
+# 298  10
+
