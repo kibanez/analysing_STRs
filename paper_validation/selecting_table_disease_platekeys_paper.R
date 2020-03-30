@@ -89,7 +89,7 @@ dim(popu_table)
 
 
 table_diseases_enriched_popu = left_join(table_diseases_enriched,
-                                    popu_table %>% select(ID,best_guess_predicted_ancstry),
+                                    popu_table %>% select(ID,best_guess_predicted_ancstry, self_reported),
                                     by = c("plate_key.x" = "ID"))
 
 # Enrich with pilot popu table
@@ -107,12 +107,12 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
 #There is not much change, all are main
 
 # take reported ancestry
-rd_genomes_re = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+rd_genomes_re = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(rd_genomes_re)  
-# 1124633  28
+# 1124633  31
 
 table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
                                          rd_genomes_re %>% select(platekey, participant_ethnic_category),
@@ -120,6 +120,58 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
 
 table_diseases_enriched_popu = unique(table_diseases_enriched_popu)
 dim(table_diseases_enriched_popu)
-# 11731 18
+# 11731 20
 
-write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_improved.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+
+# Distinguish participants/genomes having Intellectual disability as panel
+# Group 1: those having ONLY Intellectual disability in `panel_list`
+# Group 2: those having Intellectual disability AND either of the following ones: `epilepsy`
+
+# let's make life simple: split into rows panel info
+table_panels_row = table_diseases_enriched_popu %>% 
+  select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame
+
+dim(table_panels_row)
+# 850687  7
+
+table_panels_row$participant_id = as.character(table_panels_row$participant_id)
+
+# Group 1
+l_pid_only_one_panel = table_panels_row %>% 
+  group_by(participant_id) %>% 
+  filter(n()==1) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull() %>%
+  as.character()
+length(l_pid_only_one_panel)  
+# 297
+
+# From 297 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
+l_pid_ID_group1 = table_panels_row %>%
+  filter(grepl("Intellectual disability", panel_list) & participant_id %in% l_pid_only_one_panel) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull() %>%
+  as.character()
+length(l_pid_ID_group1)
+# 121
+
+write.table(l_pid_ID_group1, "list_121_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
+
+
+# Group 2
+l_ID_group1 = table_panels_row %>%
+  filter("Intellectual disability" %in% panels)
+
+
+
+
+
+
+
+
