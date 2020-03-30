@@ -104,21 +104,21 @@ all_data = left_join(all_data,
                      by = "participant_id")
 dim(all_data)
 #115988  9 (V7)
-# 111804  11 (V8)
+# 111804  12 (V8)
 
 all_data = left_join(all_data,
                      disease_info %>% select(participant_id, disease_group, disease_sub_group, specific_disease),
                      by = "participant_id")
 dim(all_data)
 # 117542 12 (V7)
-# 113403  14 (V8)
+# 113403  15 (V8)
 
 all_data = left_join(all_data, 
                      participant_info %>% select(participant_id, participant_medical_review_qc_state_code, year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender, programme_consent_status, programme),
                      by = "participant_id")
 dim(all_data)                 
 # 117542 19 (V7)
-# 113403  21 (V8)
+# 113403  22 (V8)
 
 
 all_data = left_join(all_data,
@@ -126,7 +126,7 @@ all_data = left_join(all_data,
                      by = "rare_diseases_family_id")
 dim(all_data)
 # 117542 21 (V7)
-# 113403  23 (V8)
+# 113403  24 (V8)
 
 
 all_data = left_join(all_data,
@@ -134,24 +134,24 @@ all_data = left_join(all_data,
                      by = "participant_id")
 dim(all_data)
 # 253170 23 (v7)
-# 263319  25 (V8)
+# 263319  26 (V8)
 
 all_data = left_join(all_data,
                      rd_participant %>% filter(hpo_present %in% "Yes") %>% select(participant_id, hpo_term, hpo_id),
                      by = "participant_id")
 dim(all_data)
 # 1055635 25 (V7)
-# 112318  27 (V8)
+# 112318  28 (V8)
 
 all_data = left_join(all_data,
                      year_birth %>% select(participant_id, affection_status),
                      by = "participant_id")
 dim(all_data)
 # 1056568 26 (V7)
-# 1124633  28 (V8)
+# 1124633  29 (V8)
 
 # population data
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/matthias_work_main/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
                       sep = ",",
                       stringsAsFactors = F,
                       header = T)
