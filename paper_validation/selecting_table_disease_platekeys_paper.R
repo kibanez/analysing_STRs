@@ -126,7 +126,8 @@ write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_improved
 
 # Distinguish participants/genomes having Intellectual disability as panel
 # Group 1: those having ONLY Intellectual disability in `panel_list`
-# Group 2: those having Intellectual disability AND either of the following ones: `epilepsy`
+# Group 2: those having Intellectual disability AND either of the following ones: `Intellectual disability`, `Epileptic encephalopathy`, 
+# `Genetic epilepsy syndromes`
 
 # let's make life simple: split into rows panel info
 table_panels_row = table_diseases_enriched_popu %>% 
@@ -165,11 +166,37 @@ write.table(l_pid_ID_group1, "list_121_PIDs_only_ID_as_panel_assigned.txt", quot
 
 
 # Group 2
-l_ID_group1 = table_panels_row %>%
-  filter("Intellectual disability" %in% panels)
+# Define here the list of panels we want to have within
+list_panels = c("Genetic epilepsy syndromes", " Genetic epilepsy syndromes",
+                "Congenital muscular dystrophy", " Congenital muscular dystrophy",
+                "Hereditary ataxia"," Hereditary ataxia",
+                " Hereditary spastic paraplegia","Hereditary spastic paraplegia",
+                " Mitochondrial disorders","Mitochondrial disorders",
+                " Inherited white matter disorders","Inherited white matter disorders",
+                "Optic neuropathy", " Optic neuropathy")
+
+# Function that checks if any of the items in list of characters 1 does exist in list of characters 2
+any_exist <- function(list1, list2) {
+  for (i in list1){
+    if (i %in% list2){
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
 
 
+l_ID_group2 = table_panels_row %>%
+  group_by(participant_id) %>%
+  filter(grepl("Intellectual disability", panel_list) & any_exist(list_panels,panels)) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull() %>%
+  as.character()
+length(l_ID_group2)
+# 2430
 
+write.table(l_ID_group2, "./list_2430_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
 
 
 
