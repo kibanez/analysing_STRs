@@ -39,4 +39,13 @@ gel_table = read.csv("./GEL_data_from_drive.tsv",
                      stringsAsFactors = F,
                      header = T)
 dim(gel_table)
-# 635  11 
+# 635  11
+
+# Objective: enrich `Super.population` and `Sub,population` fields/columns (mix of Pilot and Main genomes)
+gel_table = left_join(gel_table,
+                      pilot_popu %>% select(ID, bestGUESS_sub_pop, bestGUESS_super_pop),
+                      by = c("LP_number" = "ID"))
+dim(gel_table)
+# 635  13
+
+# now with the main popu table
