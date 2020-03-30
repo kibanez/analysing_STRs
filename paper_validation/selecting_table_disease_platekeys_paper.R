@@ -134,12 +134,23 @@ table_panels_row = table_diseases_enriched_popu %>%
   select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list) %>%
   mutate(panels = strsplit(as.character(panel_list), ",")) %>%
   unnest(panels) %>%
-  as.data.frame
-
+  as.data.frame()
+table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 850687  7
+# 49878  7
 
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
+
+# I have seen that Intellectual disability in panels appears in two ways:
+#`Intellectual disability` and ` Intellectual disability`
+# Let's recode
+table_panels_row$panels = recode(table_panels_row$panels,
+                                 " Intellectual disability" = "Intellectual disability")
+
+table_panels_row = unique(table_panels_row)
+dim(table_panels_row)
+# 46919  7
+
 
 # Group 1
 l_pid_only_one_panel = table_panels_row %>% 
@@ -150,7 +161,7 @@ l_pid_only_one_panel = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_only_one_panel)  
-# 297
+# 2313
 
 # From 297 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
 l_pid_ID_group1 = table_panels_row %>%
@@ -160,9 +171,9 @@ l_pid_ID_group1 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_ID_group1)
-# 121
+# 2137
 
-write.table(l_pid_ID_group1, "list_121_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pid_ID_group1, "list_2137_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
 
 
 # Group 2
