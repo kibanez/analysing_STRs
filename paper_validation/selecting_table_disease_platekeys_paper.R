@@ -3,7 +3,7 @@
 library(dplyr)
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
 
-setwd("~/Documents/STRs/PAPER/VALIDATION/")
+setwd("~/Documents/STRs/VALIDATION/")
 
 # `clinical_data_research_cohort_86457_genomes_withPanels_250919` is a table I generated
 
@@ -80,7 +80,7 @@ dim(table_diseases_enriched)
 # 11731  16
 
 # Enrich this table with popu  - to take best_guess-predicted_ancestry
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/matthias_work_main/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
                       sep = ",",
                       stringsAsFactors = F,
                       header = T)
@@ -92,14 +92,27 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched,
                                     popu_table %>% select(ID,best_guess_predicted_ancstry),
                                     by = c("plate_key.x" = "ID"))
 
+# Enrich with pilot popu table
+popu_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
+                      sep = ",",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_pilot)
+# 4821  44
+
+table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
+                                         popu_pilot %>% select(ID, bestGUESS_super_pop),
+                                         by = c("plate_key.x" = "ID"))
+
+#There is not much change, all are main
 
 # take reported ancestry
-rd_genomes_re = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_230320.tsv",
+rd_genomes_re = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(rd_genomes_re)  
-# 1124633  30
+# 1124633  28
 
 table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
                                          rd_genomes_re %>% select(platekey, participant_ethnic_category),
