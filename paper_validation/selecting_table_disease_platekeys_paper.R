@@ -173,7 +173,11 @@ list_panels = c("Genetic epilepsy syndromes", " Genetic epilepsy syndromes",
                 " Hereditary spastic paraplegia","Hereditary spastic paraplegia",
                 " Mitochondrial disorders","Mitochondrial disorders",
                 " Inherited white matter disorders","Inherited white matter disorders",
-                "Optic neuropathy", " Optic neuropathy")
+                "Optic neuropathy", " Optic neuropathy",
+                " Brain channelopathy","Brain channelopathy")
+
+
+
 
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
 any_exist <- function(list1, list2) {
@@ -194,9 +198,9 @@ l_ID_group2 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_ID_group2)
-# 2430
+# 2449
 
-write.table(l_ID_group2, "./list_2430_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
+write.table(l_ID_group2, "./list_2449_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
 
 
 
