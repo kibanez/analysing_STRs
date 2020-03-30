@@ -110,7 +110,7 @@ write.table(merged_final_table,
             quote = F)
 
 
-# Let's enrich with super and subpopulation and gender
+# Let's enrich with super and subpopulation 
 main_popu = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
                      sep = ",",
                      stringsAsFactors = F, 
@@ -122,3 +122,43 @@ dim(main_popu)
 merged_final_table_popu = left_join(merged_final_table,
                                     main_popu %>% select(ID, best_guess_predicted_ancstry, self_reported),
                                     by = c("platekey" = "ID"))
+
+# Enrich with gender
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 1124633  31
+
+merged_final_table_popu = left_join(merged_final_table_popu,
+                                    clin_data %>% select(platekey, participant_phenotypic_sex),
+                                    by = "platekey")
+dim(merged_final_table_popu)
+# 8962  12
+
+merged_final_table_popu = unique(merged_final_table_popu)
+dim(merged_final_table_popu)
+# 144 12
+
+# Define min PCR, max PCR // min EHv2 , max EHv2 // min EHv3, max EHv3
+merged_final_table_popu = merged_final_table_popu %>%
+  group_by(platekey, locus) %>%
+  mutate(min_PCR_a1 = min(PCR_a1, PCR_a2),
+         max_PCR_a2 = max(PCR_a1, PCR_a2),
+         min_EHv2_a1 = min(EHv255_a1, EHv255_a2),
+         max_EHv2_a2 = max(EHv255_a1, EHv255_a2),
+         min_EHv3_a1 = min(EHv312_a1, EHv312_a2),
+         max_EHv3_a1 = max(EHv312_a1, EHv312_a2)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+merged_final_table_popu = merged_final_table_popu %>%
+  select(locus, platekey, participant_phenotypic_sex, self_reported, best_guess_predicted_ancstry, min_PCR_a1, max_PCR_a2, min_EHv2_a1, max_EHv2_a2, min_EHv3_a1, max_EHv3_a1)
+
+write.table(merged_final_table_popu,
+            "./NHNN_fishing_Arianna_enriched_with_popu_and_gender.tsv",
+            sep= "\t",
+            row.names = F,
+            col.names = T,
+            quote = F)
