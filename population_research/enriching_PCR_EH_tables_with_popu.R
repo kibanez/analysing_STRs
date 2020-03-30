@@ -55,3 +55,23 @@ gel_table = left_join(gel_table,
 dim(gel_table)
 # 635  15
 
+# Merge PILOT and MAIN columns into one
+gel_table = gel_table %>%
+  mutate(Super.population = coalesce(bestGUESS_super_pop, self_reported),
+         Sub.population = coalesce(bestGUESS_sub_pop, best_guess_predicted_ancstry)) 
+
+# Remove the extra final 4 columns
+gel_table = gel_table[,-c(12:15)]
+dim(gel_table)
+# 635  11
+
+
+# write into a file the final table
+write.table(gel_table, 
+            "./GEL_data_enriched_with_popu_to_put_in_drive.tsv",
+            quote = F, 
+            sep = "\t",
+            row.names = F,
+            col.names = T)
+
+
