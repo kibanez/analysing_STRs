@@ -53,6 +53,18 @@ intersect(gel_table$LP_number, ari_table$LP_number)
 intersect(gel_table$LP_number, james_table$LP_number)
 # "LP3000595-DNA_E05" "LP3000469-DNA_C05" "LP3000474-DNA_E01"
 
+
+# remove all NA's, na's or '.'s
+merge_all = merge_all %>%
+  filter(!is.na(min.PCR.a1))
+dim(merge_all)
+# 810  11
+
+merge_all = merge_all %>%
+  filter(min.PCR.a1 != '.')
+dim(merge_all)
+# 792  11
+
 # QC check -- they all have the same PCR< EHv2 and EHv3, estimations
 write.table(merge_all, "googleDrive_all_merged_dedup_table.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
 
