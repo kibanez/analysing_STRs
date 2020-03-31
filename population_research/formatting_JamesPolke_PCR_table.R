@@ -73,4 +73,29 @@ james_all = left_join(james_all,
 dim(james_all)
 # 48  11
 
+# Let's enrich with gender
+james_all = left_join(james_all,
+                      clin_data %>% select(plate_key, participant_phenotypic_sex),
+                      by = "plate_key")
+james_all = unique(james_all)
+dim(james_all)
+# 48  12 
+
+james_all = james_all %>%
+  group_by(plate_key, locus) %>%
+  mutate(min_PCR_a1 = min(PCR_a1, PCR_a2),
+         max_PCR_a2 = max(PCR_a1, PCR_a2),
+         min_EHv2_a1 = min(EHv255_a1, EHv255_a2),
+         max_EHv2_a2 = max(EHv255_a1, EHv255_a2),
+         min_EHv3_a1 = min(EHv312_a1, EHv312_a2),
+         max_EHv3_a1 = max(EHv312_a1, EHv312_a2)) %>%
+  ungroup() %>%
+  as.data.frame()
+  
+# select columns in the same order we have done for GEL validation table and Arianna-NHNN tables
+to_write = james_all %>% select(locus, plate_key, participant_phenotypic_sex, self_reported, best_guess_predicted_ancstry,
+                                min_PCR_a1, max_PCR_a2, min_EHv2_a1, max_EHv2_a2, min_EHv3_a1, max_EHv3_a1)
+write.table(to_write, "./JamesPolke_table_recoded_enriched.csv", sep = ",", quote = F, row.names = F, col.names = T)
+
+
 
