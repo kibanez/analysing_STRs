@@ -37,5 +37,25 @@ james_table = read.csv("./googleDrive_James_NHNN_validation.tsv",
 dim(james_table)
 # 48  11
 
+merge_all = rbind(gel_table,
+                  ari_table,
+                  james_table)
+dim(merge_all)
+# 827  11
+
+merge_all = unique(merge_all)
+dim(merge_all)
+# 820  11
+
+# which are duplicates?
+intersect(gel_table$LP_number, ari_table$LP_number)
+# "LP3000999-DNA_C06" "LP3001031-DNA_H09" "LP3000329-DNA_E12" "LP3001101-DNA_H06" "LP3000118-DNA_E03" "LP3000124-DNA_D08"
+intersect(gel_table$LP_number, james_table$LP_number)
+# "LP3000595-DNA_E05" "LP3000469-DNA_C05" "LP3000474-DNA_E01"
+
+# QC check -- they all have the same PCR< EHv2 and EHv3, estimations
+write.table(merge_all, "googleDrive_all_merged_dedup_table.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
+
+
 
 
