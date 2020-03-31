@@ -29,7 +29,15 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 
+# 1124633  31
+
+# population table
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      sep = ",",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_table)
+# 59464  36
 
 
 
