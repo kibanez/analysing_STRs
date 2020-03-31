@@ -14,3 +14,22 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.7.4"
 
 # Set working directory
 setwd("~/Documents/STRs/VALIDATION/PCR_EH_estimations/")
+
+# Load James Polke TSV file (worked from the original xls file)
+james_table = read.csv("../JamesPolke/jamesPolke_non_NA_results.tsv",
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+dim(james_table)
+# 48  4
+
+# First take the latest platekey corresponding to the PID
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 
+
+
+
