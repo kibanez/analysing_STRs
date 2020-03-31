@@ -68,6 +68,19 @@ dim(merge_all)
 # QC check -- they all have the same PCR< EHv2 and EHv3, estimations
 write.table(merge_all, "googleDrive_all_merged_dedup_table.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
 
+# Analysis of the PCR-EH dataset
+raw_numbers_popus = as.data.frame(table(merge_all$Super.population))
+colnames(raw_numbers_popus) = c("population", "Number of genomes")
 
+
+png("figures/barplot_ancestry_PCR_cohort.png")
+ggplot(raw_numbers_popus, 
+       aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Available PCR cohort - 792 genomes") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+dev.off()
 
 
