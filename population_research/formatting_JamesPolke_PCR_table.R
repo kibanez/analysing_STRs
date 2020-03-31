@@ -66,6 +66,11 @@ dim(james_all)
 # 48  9
 
 
-
+# Let's enrich with population
+james_all = left_join(james_all,
+                      popu_table %>% select(ID, best_guess_predicted_ancstry, self_reported),
+                      by = c("plate_key" = "ID"))
+dim(james_all)
+# 48  11
 
 
