@@ -15,3 +15,27 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.7.4"
 # Set working directory
 setwd("~/Documents/STRs/VALIDATION/PCR_EH_estimations/")
 
+# Load 3 tables
+gel_table = read.csv("./googleDrive_GEL_validation.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F, 
+                     header = T)
+dim(gel_table)
+# 635 11
+
+ari_table = read.csv("./googleDrive_Arianna_NHNN_validation.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F, 
+                     header = T)
+dim(ari_table)
+# 144 11 
+
+james_table = read.csv("./googleDrive_James_NHNN_validation.tsv",
+                      sep = "\t",
+                      stringsAsFactors = F, 
+                      header = T)
+dim(james_table)
+# 48  11
+
+
+
