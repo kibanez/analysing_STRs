@@ -83,4 +83,16 @@ ggplot(raw_numbers_popus,
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 dev.off()
 
+# Number of genomes per locus
+raw_numbers_locus = as.data.frame(table(merge_all$locus))
+colnames(raw_numbers_locus) = c("locus", "Number of genomes")
 
+png("figures/barplot_loci_distribution_PCR_cohort.png")
+ggplot(raw_numbers_locus, 
+       aes(x = reorder(locus, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = locus)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Available PCR cohort - 792 genomes") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+dev.off()
