@@ -39,5 +39,33 @@ popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCEST
 dim(popu_table)
 # 59464  36
 
+# Corresponding platekey <-> PID
+james_table = left_join(james_table,
+                        clin_data %>% select(participant_id, plate_key),
+                        by = c("PID" = "participant_id"))
+james_table = unique(james_table)
+dim(james_table)
+# 48 5
+
+# Write into a file platekey, locus, in order to retrieve EHv2/EHv3 estimations for them
+to_retrieve = james_table %>% select(plate_key, locus)
+write.table(to_retrieve, "../JamesPolke/platekey_locus_JamesPolke.csv", sep = ",", quote = F, row.names = F, col.names = F)
+
+# Once retrieved EHv2/EHv3 info, let's take this
+james_ehv2_ehv3 = read.csv("../JamesPolke/platekey_locus_JamesPolke_EHv2_EHv3.tsv",
+                           sep = "\t",
+                           stringsAsFactors = F, 
+                           header = T)
+dim(james_ehv2_ehv3)
+# 48  6
+
+james_all = left_join(james_table,
+                      james_ehv2_ehv3,
+                      by = c("plate_key" = "platekey", "locus" = "locus"))
+dim(james_all)
+# 48  9
+
+
+
 
 
