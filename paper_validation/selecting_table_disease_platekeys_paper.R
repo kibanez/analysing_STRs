@@ -44,6 +44,30 @@ dim(table_diseases)
 
 write.table(table_diseases[ ,2], row.names = FALSE, col.names = FALSE, quote = FALSE, "./list_PIDs_table_diseases.txt")
 
+# Here we need to deduplicate genomes and take the unique PIDs
+table_diseases_dedup = table_diseases %>%
+  select(participant_id, plate_key.x, genome_build)
+
+table_diseases_dedup = unique(table_diseases_dedup)
+dim(table_diseases_dedup)
+# 11052  3
+
+# Create new variable named latest_platekey
+table_diseases_dedup =  table_diseases_dedup %>%
+  group_by(participant_id) %>%
+  mutate(latest_platekey = max(plate_key.x)) %>%
+  ungroup() %>%
+  as.data.frame()
+table_diseases_dedup = table_diseases_dedup %>%
+  select(participant_id, latest_platekey, genome_build)
+table_diseases_dedup = unique(table_diseases_dedup)
+dim(table_diseases_dedup)
+# 10993  3
+
+list_duplicated_pid = table_diseases_dedup$participant_id[which(duplicated(table_diseases_dedup$participant_id))]
+
+
+
 pid_platekey_genomeBuild_table_diseases_dedup <- read.csv("pid_platekey_genomeBuild_table_diseases_dedup.csv",
                                                           stringsAsFactors=FALSE)
 
