@@ -141,9 +141,9 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
 
 table_diseases_enriched_popu = unique(table_diseases_enriched_popu)
 dim(table_diseases_enriched_popu)
-# 11731 20
+# 11842 20
 
-write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_improved.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
 # Distinguish participants/genomes having Intellectual disability as panel
 # Group 1: those having ONLY Intellectual disability in `panel_list`
