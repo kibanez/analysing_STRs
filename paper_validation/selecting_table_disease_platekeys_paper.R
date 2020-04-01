@@ -65,6 +65,22 @@ dim(table_diseases_dedup)
 # 10993  3
 
 list_duplicated_pid = table_diseases_dedup$participant_id[which(duplicated(table_diseases_dedup$participant_id))]
+length(list_duplicated_pid)
+# 187
+
+# Take GRCh38 platekey for duplicate PIDs
+table_diseases_duplicates = table_diseases_dedup %>%
+  filter(participant_id %in% list_duplicated_pid)
+
+table_diseases_duplicates = table_diseases_duplicates %>%
+  filter(genome_build %in% "GRCh38")
+dim(table_diseases_duplicates)
+# 187  3
+
+table_diseases_dedup = table_diseases_dedup %>%
+  filter(!participant_id %in% list_duplicated_pid)
+dim(table_diseases_dedup)
+# 10619  3
 
 
 
