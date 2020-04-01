@@ -3,12 +3,18 @@
 library(dplyr)
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
 
-setwd("~/Documents/STRs/VALIDATION/")
+setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
 # `clinical_data_research_cohort_86457_genomes_withPanels_250919` is a table I generated
+clinical_data_research_cohort_86457_genomes_withPanels_250919 = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_86457_genomes_withPanels_041019.tsv",
+                                                                         sep = "\t",
+                                                                         stringsAsFactors = F,
+                                                                         header = T)
+dim(clinical_data_research_cohort_86457_genomes_withPanels_250919)
+# 89305  16
 
-table_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 %>%
-clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% count(normalised_specific_disease)
+table_diseases <-  clinical_data_research_cohort_86457_genomes_withPanels_250919 %>%
+  count(normalised_specific_disease)
 
 count_of_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% count(normalised_specific_disease)
 
@@ -18,58 +24,76 @@ table_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 
                                             "Charcot-Marie-Tooth disease", "Congenital muscular dystrophy",
                                             "Congenital myopathy", "Early onset dementia", "Early onset dystonia", 
                                             "Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
-                                            "Hereditary spastic paraplegia", 
+                                            "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
                                             "'Early onset and familial Parkinson''s Disease'"))
 dim(table_diseases)
+# 11249  16
+
 table(table_diseases$normalised_specific_disease)
 
 parkinson_to_enrich = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
   filter(grepl("Complex Parkin", normalised_specific_disease))
 dim(parkinson_to_enrich)
+# 141  16
+
 table(parkinson_to_enrich$normalised_specific_disease)
 
 table_diseases = rbind(table_diseases, parkinson_to_enrich)
 dim(table_diseases)
+# 11390  16
 
-write.table(table_diseases[ ,2], row.names = FALSE, col.names = FALSE, quote = FALSE, "~/Documents/STR identif/clinical data lp numbers/list_PIDs_table_diseases.txt")
+write.table(table_diseases[ ,2], row.names = FALSE, col.names = FALSE, quote = FALSE, "./list_PIDs_table_diseases.txt")
 
+pid_platekey_genomeBuild_table_diseases_dedup <- read.csv("pid_platekey_genomeBuild_table_diseases_dedup.csv",
+                                                          stringsAsFactors=FALSE)
 
-pid_platekey_genomeBuild_table_diseases_dedup <- read.csv("~/Documents/STR identif/clinical data lp numbers/pid_platekey_genomeBuild_table_diseases_dedup.csv", stringsAsFactors=FALSE)
-
-list_197_PIDs_from_table_diseases <- read.table("~/Documents/STR identif/clinical data lp numbers/list_197_PIDs_from_table_diseases.txt", quote="\"", comment.char="", stringsAsFactors=FALSE)
-
+list_197_PIDs_from_table_diseases <- read.table("list_197_PIDs_from_table_diseases.txt", quote="\"",
+                                                comment.char="",
+                                                stringsAsFactors=FALSE)
 
 list_197_PIDs_from_table_diseases = list_197_PIDs_from_table_diseases$V1
 
 list_platekeys = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
-  filter(participant_id %in% list_197_PIDs_from_table_diseases) %>% select(participant_id, plate_key.x, genome_build)
+  filter(participant_id %in% list_197_PIDs_from_table_diseases) %>% 
+  select(participant_id, plate_key.x, genome_build)
 dim(list_platekeys)
+# 212  3
 
-list_platekeys = list_platekeys %>% group_by(participant_id) %>% mutate(latest = max(plate_key.x)) %>% ungroup() %>% as.data.frame()
+list_platekeys = list_platekeys %>% 
+  group_by(participant_id) %>% 
+  mutate(latest = max(plate_key.x)) %>% 
+  ungroup() %>% 
+  as.data.frame()
 
 list_platekeys = list_platekeys %>% select(participant_id, latest, genome_build)
 list_platekeys = unique(list_platekeys)
 dim(list_platekeys)
+# 203  3
 
 l_platekey_dedup = list_platekeys$participant_id[which(duplicated(list_platekeys$participant_id))]
 length(l_platekey_dedup)
+# 6
 
 list_platekeys = list_platekeys %>% filter(!(participant_id %in% l_platekey_dedup & genome_build %in% "GRCh37"))
 dim(list_platekeys)
+# 197  3
 
 colnames(list_platekeys) = colnames(pid_platekey_genomeBuild_table_diseases_dedup)
 
 pid_platekey_genomeBuild_table_diseases_dedup = rbind(pid_platekey_genomeBuild_table_diseases_dedup, list_platekeys)
 dim(pid_platekey_genomeBuild_table_diseases_dedup)
+# 10731  3
 
 table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
   filter(plate_key.x %in% pid_platekey_genomeBuild_table_diseases_dedup$platekey)
 dim(table_diseases_enriched)
+# 11731  16
 
 table_diseases_enriched = unique(table_diseases_enriched)
 dim(table_diseases_enriched)
+# 11731  16
 
-write.table(table_diseases_enriched, file = "~/Documents/STR identif/clinical data lp numbers/table_diseases_enriched.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 # Read from file
 table_diseases_enriched = read.csv("./table_diseases_enriched.tsv",
