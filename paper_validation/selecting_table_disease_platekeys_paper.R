@@ -82,47 +82,15 @@ table_diseases_dedup = table_diseases_dedup %>%
 dim(table_diseases_dedup)
 # 10619  3
 
+# merge
+table_diseases_dedup = rbind(table_diseases_dedup,
+                             table_diseases_duplicates)
 
+dim(table_diseases_dedup)
+# 10806  3
 
-pid_platekey_genomeBuild_table_diseases_dedup <- read.csv("pid_platekey_genomeBuild_table_diseases_dedup.csv",
-                                                          stringsAsFactors=FALSE)
-
-list_197_PIDs_from_table_diseases <- read.table("list_197_PIDs_from_table_diseases.txt", quote="\"",
-                                                comment.char="",
-                                                stringsAsFactors=FALSE)
-
-list_197_PIDs_from_table_diseases = list_197_PIDs_from_table_diseases$V1
-
-list_platekeys = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
-  filter(participant_id %in% list_197_PIDs_from_table_diseases) %>% 
-  select(participant_id, plate_key.x, genome_build)
-dim(list_platekeys)
-# 212  3
-
-list_platekeys = list_platekeys %>% 
-  group_by(participant_id) %>% 
-  mutate(latest = max(plate_key.x)) %>% 
-  ungroup() %>% 
-  as.data.frame()
-
-list_platekeys = list_platekeys %>% select(participant_id, latest, genome_build)
-list_platekeys = unique(list_platekeys)
-dim(list_platekeys)
-# 203  3
-
-l_platekey_dedup = list_platekeys$participant_id[which(duplicated(list_platekeys$participant_id))]
-length(l_platekey_dedup)
-# 6
-
-list_platekeys = list_platekeys %>% filter(!(participant_id %in% l_platekey_dedup & genome_build %in% "GRCh37"))
-dim(list_platekeys)
-# 197  3
-
-colnames(list_platekeys) = colnames(pid_platekey_genomeBuild_table_diseases_dedup)
-
-pid_platekey_genomeBuild_table_diseases_dedup = rbind(pid_platekey_genomeBuild_table_diseases_dedup, list_platekeys)
-dim(pid_platekey_genomeBuild_table_diseases_dedup)
-# 10731  3
+l_pid_diseases = table_diseases_dedup$participant_id
+# 10806
 
 table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
   filter(plate_key.x %in% pid_platekey_genomeBuild_table_diseases_dedup$platekey)
