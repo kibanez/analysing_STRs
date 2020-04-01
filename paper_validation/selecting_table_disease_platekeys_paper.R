@@ -89,27 +89,16 @@ table_diseases_dedup = rbind(table_diseases_dedup,
 dim(table_diseases_dedup)
 # 10806  3
 
-l_pid_diseases = table_diseases_dedup$participant_id
+l_platekeys = table_diseases_dedup$latest_platekey
 # 10806
 
 table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
-  filter(plate_key.x %in% pid_platekey_genomeBuild_table_diseases_dedup$platekey)
+  filter(plate_key.x %in% l_platekeys)
 dim(table_diseases_enriched)
-# 11731  16
-
-table_diseases_enriched = unique(table_diseases_enriched)
-dim(table_diseases_enriched)
-# 11731  16
+# 11842  16
 
 write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
-# Read from file
-table_diseases_enriched = read.csv("./table_diseases_enriched.tsv",
-                                   sep = "\t",
-                                   stringsAsFactors = F,
-                                   header = T)
-dim(table_diseases_enriched)
-# 11731  16
 
 # Enrich this table with popu  - to take best_guess-predicted_ancestry
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
