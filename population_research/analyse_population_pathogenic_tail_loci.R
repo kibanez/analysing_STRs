@@ -79,4 +79,8 @@ list_vcf_patho_htt = gsub('.vcf', '', list_vcf_patho_htt)
 list_vcf_patho_htt = gsub('^EH_', '', list_vcf_patho_htt)
 
 # Enrich platekeys now with ancestry info
-
+patho_popu = popu_table %>%
+  filter(ID %in% list_vcf_patho_htt) %>%
+  select(ID, best_guess_predicted_ancstry, self_reported)
+dim(patho_popu)
+# 5  3
