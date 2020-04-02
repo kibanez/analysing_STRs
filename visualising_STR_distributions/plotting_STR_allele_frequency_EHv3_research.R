@@ -69,7 +69,17 @@ df$chr = recode(df$chr,
                 "21" = "chr21",
                 "22" = "chr22",
                 "X" = "chrX")
-            
+df = df %>%
+  group_by(chr, gene, allele) %>%
+  mutate(total_num_samples = sum(num_samples)) %>%
+  ungroup() %>%
+  as.data.frame() 
+
+df_simpl = df %>% 
+  select(chr, gene, allele, total_num_samples)
+df_simpl = unique(df_simpl)
+dim(df_simpl)
+# 5018  4
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
 # GRCh37 VCF files have 1,2,3,4...X,Y,MT chromosome nomenclature
