@@ -192,4 +192,40 @@ write.table(patho_merged,
             col.names = T)
 
 
+# JPH3
+merged_table_jph3 = merged_table %>%
+  filter(gene %in% "JPH3", allele >= 39)
+list_vcf_patho_jph3 = c()
+for (i in 1:length(merged_table_jph3$list_samples)){
+  list_vcf_patho_jph3 = c(list_vcf_patho_jph3,
+                            strsplit(merged_table_jph3$list_samples[i], ';')[[1]][1])
+  
+}
+
+list_vcf_patho_jph3 = gsub('.vcf', '', list_vcf_patho_jph3)
+list_vcf_patho_jph3 = gsub('^EH_', '', list_vcf_patho_jph3)
+length(list_vcf_patho_jph3)
+# 1
+
+# Enrich platekeys now with ancestry info
+patho_popu = popu_table %>%
+  filter(ID %in% list_vcf_patho_jph3) %>%
+  select(ID, best_guess_predicted_ancstry, self_reported)
+dim(patho_popu)
+# 0 3
+
+patho_popu2 = clin_data %>%
+  filter(plate_key %in% list_vcf_patho_jph3) %>%
+  select(plate_key, participant_ethnic_category) 
+patho_popu2 = unique(patho_popu2)
+dim(patho_popu2)
+# 1 2
+
+write.table(patho_popu2, 
+            "./population_pathogenic_tail/JPH3_pathogenic_tail.tsv", 
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
 
