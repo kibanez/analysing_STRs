@@ -11,7 +11,7 @@ library(gridExtra); packageDescription ("gridExtra", fields = "Version") #"2.3"
 library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
-source("~/git/analysing_STRs/functions/plot_gene.R")
+source("~/git/analysing_STRs/functions/plot_gene_mergingAssemblies.R")
 
 # Function that prints into a file the raw data/numbers corresponding to the STR repeat-size frequencies plots
 print_table_gene <- function(df_input, gene_name, output_folder){
@@ -40,6 +40,36 @@ df = read.csv('./merged_92663_genomes_EHv3.2.2.tsv',
 dim(df)
 # 8560  12
 
+# 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
+# GRCh37 are chr1, chr2, chr3 while GRCh38 are 1,2,3
+table_panels_row$panels = recode(table_panels_row$panels,
+                                 " Intellectual disability" = "Intellectual disability")
+
+df$chr = recode(df$chr,
+                "1" = "chr1",
+                "2" = "chr2",
+                "3" = "chr3",
+                "4" = "chr4",
+                "5" = "chr5",
+                "6" = "chr6",
+                "7" = "chr7",
+                "8" = "chr8",
+                "9" = "chr9",
+                "10" = "chr10",
+                "11" = "chr11",
+                "12" = "chr12",
+                "13" = "chr13",
+                "14" = "chr14",
+                "15" = "chr15",
+                "16" = "chr16",
+                "17" = "chr17",
+                "18" = "chr18",
+                "19" = "chr19",
+                "20" = "chr20",
+                "21" = "chr21",
+                "22" = "chr22",
+                "X" = "chrX")
+            
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
 # GRCh37 VCF files have 1,2,3,4...X,Y,MT chromosome nomenclature
