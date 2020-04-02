@@ -33,6 +33,15 @@ popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCEST
 dim(popu_table)
 # 59464  36
 
+# Load clin data, `participant_ethnic_category`
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 1124633  31
+
+
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
                 "1" = "chr1",
@@ -84,3 +93,5 @@ patho_popu = popu_table %>%
   select(ID, best_guess_predicted_ancstry, self_reported)
 dim(patho_popu)
 # 5  3
+
+
