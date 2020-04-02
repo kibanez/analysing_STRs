@@ -87,46 +87,8 @@ dir.create(output_folder)
 
 # The strategy we were following before was based on the start genomic coordinate, we now use the name of the gene.
 # We don't have genomic coordinates for NOTCH2NLC for GRCh37 (cannot liftover from GRCh38)
-l_loci = sort(unique(df$gene))
+l_loci = sort(unique(df_simpl$gene))
 for(i in 1:length(l_loci)){
-  plot_gene(df_b38, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "")
-  plot_gene(df_b37, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh37", "")
+  plot_gene(df_simpl, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "")
 }
-
-# Printing freq raw numbers
-#raw_numbers_output_folder = '/Users/kibanez/Documents/GEL_STR/Pilot/split_by_delivery_version_new_strategy_Feb2018/V1/tables'
-#raw_numbers_output_folder = '/Users/kibanez/Documents/GEL_STR/Pilot/split_by_delivery_version_new_strategy_Feb2018/V1andV2/tables'
-#raw_numbers_output_folder = '/Users/kibanez/Documents/GEL_STR/Pilot/split_by_delivery_version_new_strategy_Feb2018/V2/tables'
-#raw_numbers_output_folder = '/Users/kibanez/Documents/GEL_STR/STR_internal_allele_frequencies/EH-offtarget-v2.5.5-duplicatesRemoved/merged/tables'
-#raw_numbers_output_folder = '/Users/kibanez/Documents/GEL_STR/STR_internal_allele_frequencies/august2018/EH-offtarget-v2.5.5-duplicatesRemoved/merged/tables'
-raw_numbers_output_folder = '/Users/kibanez/Documents/GEL_STR/STR_internal_allele_frequencies/january2019/EH-offtarget-v2.5.5-duplicatesRemoved/merged/tables'
-
-dir.create(raw_numbers_output_folder)
-
-print_table_gene(df, 'C9orf72_GGGGCC', raw_numbers_output_folder)
-print_table_gene(df, 'FMR1_CGG', raw_numbers_output_folder)
-print_table_gene(df, 'ATXN2_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'ATXN3_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'ATN1_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'ATXN7_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'HTT_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'CACNA1A_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'PPP2R2B_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'ATXN1_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'ATXN10_ATTCT', raw_numbers_output_folder)
-print_table_gene(df, 'TBP_CAG', raw_numbers_output_folder)
-print_table_gene(df, 'TBP2', raw_numbers_output_folder)
-print_table_gene(df, 'DMPK', raw_numbers_output_folder)
-print_table_gene(df, 'CSTB', raw_numbers_output_folder)
-print_table_gene(df, 'AR', raw_numbers_output_folder)
-print_table_gene(df, 'ARX', raw_numbers_output_folder)
-print_table_gene(df, 'CNBP', raw_numbers_output_folder)
-print_table_gene(df, 'FXN1', raw_numbers_output_folder)
-print_table_gene(df, 'DIP2B', raw_numbers_output_folder)
-print_table_gene(df, 'NOP56', raw_numbers_output_folder)
-print_table_gene(df, 'PABPN1', raw_numbers_output_folder)
-print_table_gene(df, 'PHOX2B', raw_numbers_output_folder)
-print_table_gene(df, 'ATXN8OS', raw_numbers_output_folder)
-print_table_gene(df, 'DAB1', raw_numbers_output_folder)
-print_table_gene(df, 'JPH3', raw_numbers_output_folder)
 
