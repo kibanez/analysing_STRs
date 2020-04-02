@@ -89,6 +89,6 @@ dir.create(output_folder)
 # We don't have genomic coordinates for NOTCH2NLC for GRCh37 (cannot liftover from GRCh38)
 l_loci = sort(unique(df_simpl$gene))
 for(i in 1:length(l_loci)){
-  plot_gene(df_simpl, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", "")
+  plot_gene_mergingAssemblies(df_simpl, l_loci[i], output_folder)
 }
 
