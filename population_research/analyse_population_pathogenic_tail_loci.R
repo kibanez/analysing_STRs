@@ -16,3 +16,20 @@ setwd("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/")
 
 # Output directory for plots
 output_folder = "./population_pathogenic_tail/"
+
+# load data
+merged_table = read.csv("./merged_92663_genomes_EHv3.2.2.tsv",
+                        sep = "\t",
+                        stringsAsFactors = F, 
+                        header = T)
+dim(merged_table)
+# 8560  12
+
+# Load popu table we have so far
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      stringsAsFactors = F, 
+                      sep = ",",
+                      header = T)
+dim(popu_table)
+# 59464  36
+
