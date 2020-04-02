@@ -152,6 +152,44 @@ write.table(patho_merged,
             row.names = F,
             col.names = T)
 
+# ATXN10
+merged_table_atxn10 = merged_table %>%
+  filter(gene %in% "ATXN10", allele >= 32)
+list_vcf_patho_atxn10 = c()
+for (i in 1:length(merged_table_atxn10$list_samples)){
+  list_vcf_patho_atxn10 = c(list_vcf_patho_atxn10,
+                          strsplit(merged_table_atxn10$list_samples[i], ';')[[1]][1])
+  
+}
+
+list_vcf_patho_atxn10 = gsub('.vcf', '', list_vcf_patho_atxn10)
+list_vcf_patho_atxn10 = gsub('^EH_', '', list_vcf_patho_atxn10)
+length(list_vcf_patho_atxn10)
+# 10
+
+# Enrich platekeys now with ancestry info
+patho_popu = popu_table %>%
+  filter(ID %in% list_vcf_patho_atxn10) %>%
+  select(ID, best_guess_predicted_ancstry, self_reported)
+dim(patho_popu)
+# 6  3
+
+patho_popu2 = clin_data %>%
+  filter(plate_key %in% list_vcf_patho_atxn10) %>%
+  select(plate_key, participant_ethnic_category) 
+patho_popu2 = unique(patho_popu2)
+dim(patho_popu2)
+# 8 2
+
+patho_merged = left_join(patho_popu2,
+                         patho_popu,
+                         by = c("plate_key" = "ID"))
+write.table(patho_merged, 
+            "./population_pathogenic_tail/ATXN10_pathogenic_tail.tsv", 
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
 
 
 
