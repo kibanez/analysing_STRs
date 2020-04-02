@@ -42,9 +42,6 @@ dim(df)
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh37 are chr1, chr2, chr3 while GRCh38 are 1,2,3
-table_panels_row$panels = recode(table_panels_row$panels,
-                                 " Intellectual disability" = "Intellectual disability")
-
 df$chr = recode(df$chr,
                 "1" = "chr1",
                 "2" = "chr2",
