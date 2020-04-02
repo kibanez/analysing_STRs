@@ -1,13 +1,9 @@
-# Function that first merges GRCh37 and GRCh38 tables and then plots the STR repeat-sizes distribution for a gene
-plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder, assembly, ancestry) {
-  threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
-  threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
-  
+# Function that takes already merged GRCh37 and GRCh38 tables and then plots the STR repeat-sizes distribution for a gene
+plot_gene_mergingAssemblies <- function(df_input, gene_name, output_folder) {
   df_gene = df_input %>% filter(gene %in% gene_name)
-  
   alt_number = df_gene$allele
   
-  df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples)
+  df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$total_num_samples)
   
   # order by 'number of repetition'
   df_gene_barplot = unique(df_gene_barplot[order(df_gene_barplot[,1]),])
@@ -16,14 +12,13 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
   
   df_gene_barplot$number_repeats = as.numeric(df_gene_barplot$number_repeats)
   
-  gene_name = paste(gene_name, assembly, sep = '_')
+  gene_name = paste(gene_name, "merged_GRCh37_GRCh38", sep = '_')
   pdf_name = paste(output_folder, gene_name, sep = "/")
-  pdf_name = paste(pdf_name, ancestry, sep = "_")
   png_name = paste(pdf_name, 'png', sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
   min_value = min(df_gene_barplot$number_repeats)
-  max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
+  max_value = max(df_gene_barplot$number_repeats)
   
   aux_plot = ggplot(unique(df_gene_barplot), aes(x = number_repeats, y = af)) + 
     geom_bar(stat = "identity") + 
@@ -31,15 +26,11 @@ plot_gene <- function(df_input, gene_name, gene_data_normal, gene_data_pathogeni
     ylab("Allele frequency") + 
     xlab("Repeat sizes (repeat units)") + 
     ggtitle(gene_name) + 
-    geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
-    geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
+    #geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
+    #geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
     coord_cartesian(xlim = c(min_value,max_value))
   
-  pdf(pdf_name)
-  print(aux_plot)	
-  dev.off()
-  
-  png(png_name)
+  png(png_name, width=5, height=5, res=300)
   print(aux_plot)
   dev.off()
 }
