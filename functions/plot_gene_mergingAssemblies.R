@@ -13,7 +13,8 @@ plot_gene_mergingAssemblies <- function(df_input, gene_name, output_folder) {
   df_gene_barplot$number_repeats = as.numeric(df_gene_barplot$number_repeats)
   
   gene_name = paste(gene_name, "merged_GRCh37_GRCh38", sep = '_')
-  png_name = paste(pdf_name, 'png', sep = ".")
+  png_name = paste(gene_name, 'png', sep = ".")
+  png_name = paste(output_folder, png_name, sep = "/")
   
   min_value = min(df_gene_barplot$number_repeats)
   max_value = max(df_gene_barplot$number_repeats)
@@ -28,7 +29,7 @@ plot_gene_mergingAssemblies <- function(df_input, gene_name, output_folder) {
     #geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
     coord_cartesian(xlim = c(min_value,max_value))
   
-  png(png_name, width=5, height=5, res=300)
+  png(png_name)
   print(aux_plot)
   dev.off()
 }
