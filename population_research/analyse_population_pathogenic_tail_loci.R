@@ -113,6 +113,44 @@ write.table(patho_merged,
             row.names = F,
             col.names = T)
 
+# ATN1
+merged_table_atn1 = merged_table %>%
+  filter(gene %in% "ATN1", allele >= 48)
+list_vcf_patho_atn1 = c()
+for (i in 1:length(merged_table_atn1$list_samples)){
+  list_vcf_patho_atn1 = c(list_vcf_patho_atn1,
+                         strsplit(merged_table_atn1$list_samples[i], ';')[[1]][1])
+  
+}
+
+list_vcf_patho_atn1 = gsub('.vcf', '', list_vcf_patho_atn1)
+list_vcf_patho_atn1 = gsub('^EH_', '', list_vcf_patho_atn1)
+length(list_vcf_patho_atn1)
+# 7
+
+# Enrich platekeys now with ancestry info
+patho_popu = popu_table %>%
+  filter(ID %in% list_vcf_patho_atn1) %>%
+  select(ID, best_guess_predicted_ancstry, self_reported)
+dim(patho_popu)
+# 5  3
+
+patho_popu2 = clin_data %>%
+  filter(plate_key %in% list_vcf_patho_atn1) %>%
+  select(plate_key, participant_ethnic_category) 
+patho_popu2 = unique(patho_popu2)
+dim(patho_popu2)
+# 4 2
+
+patho_merged = left_join(patho_popu,
+                         patho_popu2,
+                         by = c("ID" = "plate_key"))
+write.table(patho_merged, 
+            "./population_pathogenic_tail/ATN1_pathogenic_tail.tsv", 
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
 
 
 
