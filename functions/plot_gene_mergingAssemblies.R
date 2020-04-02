@@ -30,6 +30,6 @@ plot_gene_mergingAssemblies <- function(df_input, gene_name, output_folder) {
     coord_cartesian(xlim = c(min_value,max_value))
   
   png(png_name)
-  print(aux_plot)
+  print(aux_plot, res=300)
   dev.off()
 }
