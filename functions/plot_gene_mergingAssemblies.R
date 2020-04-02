@@ -13,9 +13,7 @@ plot_gene_mergingAssemblies <- function(df_input, gene_name, output_folder) {
   df_gene_barplot$number_repeats = as.numeric(df_gene_barplot$number_repeats)
   
   gene_name = paste(gene_name, "merged_GRCh37_GRCh38", sep = '_')
-  pdf_name = paste(output_folder, gene_name, sep = "/")
   png_name = paste(pdf_name, 'png', sep = ".")
-  pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
   min_value = min(df_gene_barplot$number_repeats)
   max_value = max(df_gene_barplot$number_repeats)
