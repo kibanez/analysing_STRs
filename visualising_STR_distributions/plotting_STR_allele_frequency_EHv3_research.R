@@ -25,20 +25,20 @@ print_table_gene <- function(df_input, gene_name, output_folder){
 # Represent in a plot, the allele frequency in Y-coor and the repeat-size in X-coor
 
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
-gene_annotation_normal = './threshold_largest_normal_reported_research.txt'
+gene_annotation_normal = '~/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
 gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header = T)
 
-gene_annotation_pathogenic = './threshold_smallest_pathogenic_reported_research.txt'
+gene_annotation_pathogenic = '~/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
-# Research ~80K genomes, EH-v3.1.2- November 2019
-setwd("~/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged_genotypeUpdated//")
-df = read.csv('./merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv',
+# Research dedup ~92K genomes, EHv322, march 2020
+setwd("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/")
+df = read.csv('./merged_92663_genomes_EHv3.2.2.tsv',
               sep = '\t',
               stringsAsFactors = F,
               header = T)
 dim(df)
-# 4495 12
+# 8560  12
 
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
@@ -49,11 +49,11 @@ dim(df)
 # Let's stratify the whole TSV in b37 and b38
 df_b37 = df %>% filter(!grepl("chr", chr))
 dim(df_b37)
-# 1868 12
+# 3718  12
 
 df_b38 = df %>% filter(grepl("chr", chr))
 dim(df_b38)
-# 2627 12
+# 4842  12
                 
 # Folder where we want to save the plots - PDFs
 output_folder = 'plots'
