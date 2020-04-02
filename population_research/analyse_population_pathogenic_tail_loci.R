@@ -228,4 +228,43 @@ write.table(patho_popu2,
             row.names = F,
             col.names = T)
 
+# NOP56
+merged_table_nop56 = merged_table %>%
+  filter(gene %in% "NOP56", allele >= 15)
+list_vcf_patho_nop56 = c()
+for (i in 1:length(merged_table_nop56$list_samples)){
+  list_vcf_patho_nop56 = c(list_vcf_patho_nop56,
+                          strsplit(merged_table_nop56$list_samples[i], ';')[[1]][1])
+  
+}
+
+list_vcf_patho_nop56 = gsub('.vcf', '', list_vcf_patho_nop56)
+list_vcf_patho_nop56 = gsub('^EH_', '', list_vcf_patho_nop56)
+length(list_vcf_patho_nop56)
+# 10
+
+# Enrich platekeys now with ancestry info
+patho_popu = popu_table %>%
+  filter(ID %in% list_vcf_patho_nop56) %>%
+  select(ID, best_guess_predicted_ancstry, self_reported)
+dim(patho_popu)
+# 7 3
+
+patho_popu2 = clin_data %>%
+  filter(plate_key %in% list_vcf_patho_nop56) %>%
+  select(plate_key, participant_ethnic_category) 
+patho_popu2 = unique(patho_popu2)
+dim(patho_popu2)
+# 10 2
+
+patho_merged = left_join(patho_popu2,
+                         patho_popu,
+                         by = c("plate_key" = "ID"))
+
+write.table(patho_merged, 
+            "./population_pathogenic_tail/NOP56_pathogenic_tail.tsv", 
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
 
