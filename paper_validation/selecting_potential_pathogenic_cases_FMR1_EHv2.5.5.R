@@ -48,10 +48,4 @@ dim(merged_table)
 merged_table$chr = recode(merged_table$chr,
                           "X" = "chrX")
 
-# Define `total_num_samples` merging b37 and b38 total calls
-merged_table = merged_table %>%
-  group_by(chr, gene, allele) %>%
-  mutate(total_num_samples = sum(num_samples)) %>%
-  ungroup() %>%
-  as.data.frame() 
 
