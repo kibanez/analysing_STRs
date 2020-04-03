@@ -22,37 +22,30 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/FMR1_GRCh37_GRCh38_encrypted/")
 
 # Load clinically enriched data for FMR1
-merged_table = read.csv("",
+table_b37 = read.csv("./research_genomes_86457_GRCh37_EHv2.5.5_FMR1.tsv",
                         sep = "\t",
                         stringsAsFactors = F,
                         header = T)
-dim(merged_table)
-# 3983  11
+dim(table_b37)
+# 11913  26
 
-# Recode b37 and b38 chr names
+table_b38 = read.csv("./research_genomes_86457_GRCh38_EHv2.5.5_FMR1_CGG.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(table_b38)
+# 108939  26
+
+# merge b37 and b38 tables
+merged_table = rbind(table_b37,
+                     table_b38)
+
+merged_table = unique(merged_table)
+dim(merged_table)
+# 120852  26
+
+# Recode b37 and b38 chrX name
 merged_table$chr = recode(merged_table$chr,
-                          "1" = "chr1",
-                          "2" = "chr2",
-                          "3" = "chr3",
-                          "4" = "chr4",
-                          "5" = "chr5",
-                          "6" = "chr6",
-                          "7" = "chr7",
-                          "8" = "chr8",
-                          "9" = "chr9",
-                          "10" = "chr10",
-                          "11" = "chr11",
-                          "12" = "chr12",
-                          "13" = "chr13",
-                          "14" = "chr14",
-                          "15" = "chr15",
-                          "16" = "chr16",
-                          "17" = "chr17",
-                          "18" = "chr18",
-                          "19" = "chr19",
-                          "20" = "chr20",
-                          "21" = "chr21",
-                          "22" = "chr22",
                           "X" = "chrX")
 
 # Define `total_num_samples` merging b37 and b38 total calls
