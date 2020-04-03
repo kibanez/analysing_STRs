@@ -48,4 +48,14 @@ dim(merged_table)
 merged_table$chr = recode(merged_table$chr,
                           "X" = "chrX")
 
+# 1- take only probands
+fmr1_filtering = merged_table %>%
+  filter(is.na(biological_relationship_to_proband))
+length(unique(fmr1_filtering$participant_id))
+# 8799
 
+# 2 - `specific disease` == ID
+fmr1_filtering = fmr1_filtering %>%
+  filter(grepl("Intellectual disability",specific_disease))
+length(unique(fmr1_filtering$participant_id))
+# 
