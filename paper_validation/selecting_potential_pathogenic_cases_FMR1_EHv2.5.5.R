@@ -48,14 +48,46 @@ dim(merged_table)
 merged_table$chr = recode(merged_table$chr,
                           "X" = "chrX")
 
-# 1- take only probands
+# 1- take only probands (== "N/A) [is.na() are genomes from Cancer programme]
 fmr1_filtering = merged_table %>%
-  filter(is.na(biological_relationship_to_proband))
+  filter(biological_relationship_to_proband %in% "N/A")
 length(unique(fmr1_filtering$participant_id))
-# 8799
+# 26530
 
 # 2 - `specific disease` == ID
 fmr1_filtering = fmr1_filtering %>%
-  filter(grepl("Intellectual disability",specific_disease))
+  filter(grepl("[Ii]ntellectual disability",specific_disease))
 length(unique(fmr1_filtering$participant_id))
-# 
+# 5037
+
+# 3 - repeat.size > 55
+fmr1_filtering = fmr1_filtering %>%
+  filter(repeat.size > 55)
+length(unique(fmr1_filtering$participant_id))
+# 130
+
+# Arianna's work is ending with 131 probands. 
+# Let's see which 2 are different
+ari_fmr1 = read.table("~/Documents/STRs/VALIDATION/for_ILM_pileup/list_131_FMR1_probands_Arianna.txt", stringsAsFactors = F)
+ari_fmr1 = ari_fmr1$V1
+length(ari_fmr1)
+# 131
+
+l_130_my_analysis = unique(fmr1_filtering$plate_key.x)
+length(l_130_my_analysis)
+# 130
+
+# differences?
+setdiff(ari_fmr1, l_130_my_analysis)
+# "LP3000046-DNA_E01" 
+
+# let's see what they are
+
+merged_table %>%
+  filter(plate_key.x %in% "LP3000046-DNA_E01") %>%
+  View()
+
+  
+
+
+
