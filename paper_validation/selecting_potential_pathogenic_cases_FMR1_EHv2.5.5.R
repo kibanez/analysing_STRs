@@ -3,7 +3,7 @@
 # proband only
 # specific disease == intellectual disability
 # Arianna's numbers are the following:
-# 5783 probands recruited under ID
+# 5783 probands recruited under ID and also kabuki (!!)
 # repeat size > 55
 # 131 probands
 date ()
@@ -54,17 +54,18 @@ fmr1_filtering = merged_table %>%
 length(unique(fmr1_filtering$participant_id))
 # 26530
 
-# 2 - `specific disease` == ID
+# 2 - `specific disease` == ID OR kabuki
 fmr1_filtering = fmr1_filtering %>%
-  filter(grepl("[Ii]ntellectual disability",specific_disease))
+  filter(grepl("[Ii]ntellectual disability",specific_disease) | grepl("[Kk]abuki",specific_disease))
 length(unique(fmr1_filtering$participant_id))
-# 5037
+# 5059
+
 
 # 3 - repeat.size > 55
 fmr1_filtering = fmr1_filtering %>%
   filter(repeat.size > 55)
 length(unique(fmr1_filtering$participant_id))
-# 130
+# 131
 
 # Arianna's work is ending with 131 probands. 
 # Let's see which 2 are different
