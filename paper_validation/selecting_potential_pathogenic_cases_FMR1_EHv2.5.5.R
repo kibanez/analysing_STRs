@@ -19,10 +19,10 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
-setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged_genotypeUpdated/")
+setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/FMR1_GRCh37_GRCh38_encrypted/")
 
-# Load data
-merged_table = read.csv("merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
+# Load clinically enriched data for FMR1
+merged_table = read.csv("",
                         sep = "\t",
                         stringsAsFactors = F,
                         header = T)
@@ -56,7 +56,6 @@ merged_table$chr = recode(merged_table$chr,
                           "X" = "chrX")
 
 # Define `total_num_samples` merging b37 and b38 total calls
-
 merged_table = merged_table %>%
   group_by(chr, gene, allele) %>%
   mutate(total_num_samples = sum(num_samples)) %>%
