@@ -89,3 +89,11 @@ fin_merged = fin_merged %>%
 fin_merged$subpopu= rep("FIN", length(fin_merged$gene))
 dim(fin_merged)
 # 12  4
+
+eur_merged = rbind(ibs_merged,
+                   tsi_merged,
+                   gbr_merged,
+                   ceu_merged,
+                   fin_merged)
+dim(eur_merged)
+# 77 4
