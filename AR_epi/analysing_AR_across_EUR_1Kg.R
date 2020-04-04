@@ -12,7 +12,7 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
-setwd("~/Documents/STRs/ANALYSIS/AR_kennedy/")
+setwd("~/Documents/STRs/ANALYSIS/AR_kennedy/1Kg/")
 
 # Load data
 # IBS - 102 genomes
@@ -131,6 +131,19 @@ eur_merged = rbind(ibs_merged,
                    ceu_merged,
                    fin_merged)
 dim(eur_merged)
-# 77 4
+# 77 5
 
 # Plot percentage of each allele within each subpopulation
+violin_plot = ggplot(eur_merged, aes(x = subpopu, y=allele, fill = subpopu)) +
+  geom_violin() +
+  coord_flip() +
+  xlab("Sub-population across EUR in 1Kg dataset") + 
+  ylab("Repeat sizes (repeat units)") + 
+  ggtitle("AR across EUR sub-populations within 1Kg") +
+  geom_boxplot(width=0.1) +
+  guides(fill=guide_legend(reverse=TRUE)) 
+
+violin_output_png = "./plots/violin_plots_across_EUR_subpopus.png"
+png(violin_output_png,units="in", width=5, height=5, res=300)
+print(violin_plot)
+dev.off()
