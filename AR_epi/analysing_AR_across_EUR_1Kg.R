@@ -115,8 +115,15 @@ fin_merged = fin_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
 fin_merged$subpopu= rep("FIN", length(fin_merged$gene))
+
+sum_total = sum(ceu_merged$num_samples)
+fin_merged = fin_merged %>%
+  group_by(allele) %>%
+  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
+  ungroup() %>%
+  as.data.frame()
 dim(fin_merged)
-# 12  4
+# 12  5
 
 eur_merged = rbind(ibs_merged,
                    tsi_merged,
