@@ -59,3 +59,18 @@ gbr_merged = gbr_merged %>%
 gbr_merged$subpopu= rep("GBR", length(gbr_merged$gene))
 dim(gbr_merged)
 # 17  4
+
+# CEU - 97 genomes
+ceu_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/CEU/merged/merged_CEU_97_genomes_1Kg_EHv3.2.2.tsv",
+                      stringsAsFactors = F,
+                      header = T,
+                      sep = "\t")
+dim(ceu_merged)
+# 577  12
+
+ceu_merged = ceu_merged %>%
+  filter(gene %in% "AR") %>%
+  select(gene, allele, num_samples)
+ceu_merged$subpopu= rep("CEU", length(ceu_merged$gene))
+dim(ceu_merged)
+# 17  4
