@@ -144,6 +144,22 @@ violin_plot = ggplot(eur_merged, aes(x = subpopu, y=allele, fill = subpopu)) +
   guides(fill=guide_legend(reverse=TRUE)) 
 
 violin_output_png = "./plots/violin_plots_across_EUR_subpopus.png"
-png(violin_output_png,units="in", width=5, height=5, res=300)
+png(violin_output_png, units="in", width=5, height=5, res=300)
 print(violin_plot)
+dev.off()
+
+# Plot joint ancestry repeat-size distributions
+min_value = min(eur_merged$allele, 34)
+max_value = max(eur_merged$allele, 38)
+joint_plot = ggplot(eur_merged, aes(x = allele, y = percent_subpopu, group = subpopu, color = subpopu)) + 
+  geom_line() + 
+  ylab("Allele frequency") + 
+  xlab("Repeat sizes (repeat units)") + 
+  geom_vline(xintercept = 34, colour = 'blue', lty = 2) + 
+  geom_vline(xintercept = 38, colour = 'red', lty = 2) + 
+  coord_cartesian(xlim = c(min_value,max_value))
+
+joint_ancestries = "./plots/joint_subpopus_in_AR_1Kg.png"
+png(joint_ancestries, units="in", width=5, height=5, res=300)
+print(joint_plot)
 dev.off()
