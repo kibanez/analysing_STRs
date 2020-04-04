@@ -71,8 +71,15 @@ gbr_merged = gbr_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
 gbr_merged$subpopu= rep("GBR", length(gbr_merged$gene))
+
+sum_total = sum(gbr_merged$num_samples)
+gbr_merged = gbr_merged %>%
+  group_by(allele) %>%
+  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
+  ungroup() %>%
+  as.data.frame()
 dim(gbr_merged)
-# 17  4
+# 17  5
 
 # CEU - 97 genomes
 ceu_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/CEU/merged/merged_CEU_97_genomes_1Kg_EHv3.2.2.tsv",
