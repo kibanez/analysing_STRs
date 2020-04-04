@@ -45,3 +45,17 @@ tsi_merged$subpopu= rep("TSI", length(tsi_merged$gene))
 dim(tsi_merged)
 # 17  4
 
+# GBR - 91 genomes
+gbr_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/GBR/merged/merged_GBR_91_genomes_1Kg_EHv3.2.2.tsv",
+                      stringsAsFactors = F,
+                      header = T,
+                      sep = "\t")
+dim(gbr_merged)
+# 567  12
+
+gbr_merged = gbr_merged %>%
+  filter(gene %in% "AR") %>%
+  select(gene, allele, num_samples)
+gbr_merged$subpopu= rep("GBR", length(gbr_merged$gene))
+dim(gbr_merged)
+# 17  4
