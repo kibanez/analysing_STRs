@@ -15,6 +15,7 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 setwd("~/Documents/STRs/ANALYSIS/AR_kennedy/")
 
 # Load data
+# IBS - 102 genomes
 ibs_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/IBS/merged/merged_IBS_102_genomes_1Kg_EHv3.2.2.tsv",
                       stringsAsFactors = F,
                       header = T,
@@ -28,3 +29,19 @@ ibs_merged = ibs_merged %>%
 ibs_merged$subpopu= rep("IBS", length(ibs_merged$gene))
 dim(ibs_merged)
 # 14  4
+
+# TSI - 104 genomes
+tsi_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/TSI/merged/merged_TSI_104_genomes_1Kg_EHv3.2.2.tsv",
+                      stringsAsFactors = F,
+                      header = T,
+                      sep = "\t")
+dim(tsi_merged)
+# 648  12
+
+tsi_merged = tsi_merged %>%
+  filter(gene %in% "AR") %>%
+  select(gene, allele, num_samples)
+tsi_merged$subpopu= rep("TSI", length(tsi_merged$gene))
+dim(tsi_merged)
+# 17  4
+
