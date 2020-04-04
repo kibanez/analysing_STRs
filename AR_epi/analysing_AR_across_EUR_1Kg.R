@@ -93,8 +93,15 @@ ceu_merged = ceu_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
 ceu_merged$subpopu= rep("CEU", length(ceu_merged$gene))
+
+sum_total = sum(ceu_merged$num_samples)
+ceu_merged = ceu_merged %>%
+  group_by(allele) %>%
+  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
+  ungroup() %>%
+  as.data.frame()
 dim(ceu_merged)
-# 17  4
+# 17  5
 
 # FIN - 86 genomes
 fin_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/FIN/merged/merged_FIN_86_genomes_1Kg_EHv3.2.2.tsv",
