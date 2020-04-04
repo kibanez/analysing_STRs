@@ -27,8 +27,15 @@ ibs_merged = ibs_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
 ibs_merged$subpopu= rep("IBS", length(ibs_merged$gene))
+
+sum_total = sum(ibs_merged$num_samples)
+ibs_merged = ibs_merged %>%
+  group_by(allele) %>%
+  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
+  ungroup() %>%
+  as.data.frame()
 dim(ibs_merged)
-# 14  4
+# 14  5
 
 # TSI - 104 genomes
 tsi_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/TSI/merged/merged_TSI_104_genomes_1Kg_EHv3.2.2.tsv",
@@ -97,3 +104,5 @@ eur_merged = rbind(ibs_merged,
                    fin_merged)
 dim(eur_merged)
 # 77 4
+
+# Plot percentage of each allele within each subpopulation
