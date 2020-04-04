@@ -49,8 +49,15 @@ tsi_merged = tsi_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
 tsi_merged$subpopu= rep("TSI", length(tsi_merged$gene))
+
+sum_total = sum(tsi_merged$num_samples)
+tsi_merged = tsi_merged %>%
+  group_by(allele) %>%
+  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
+  ungroup() %>%
+  as.data.frame()
 dim(tsi_merged)
-# 17  4
+# 17  5
 
 # GBR - 91 genomes
 gbr_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/GBR/merged/merged_GBR_91_genomes_1Kg_EHv3.2.2.tsv",
