@@ -21,116 +21,24 @@ all_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/al
                       sep = "\t")
 dim(all_merged)
 # 1342  12
-  
-ibs_merged = ibs_merged %>%
+
+# Let's select `AR` locus
+ar_merged = all_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
-ibs_merged$subpopu= rep("IBS", length(ibs_merged$gene))
+ar_merged = unique(ar_merged)
+dim(ar_merged)
+# 30  3
 
-sum_total = sum(ibs_merged$num_samples)
-ibs_merged = ibs_merged %>%
-  group_by(allele) %>%
-  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
-  ungroup() %>%
-  as.data.frame()
-dim(ibs_merged)
-# 14  5
+# Interesting thing: there are 4 genomes with an expanded AR expansion
+ar_merged %>% filter(allele > 35)
+#gene allele num_samples
+#1   AR     36           1
+#2   AR     39           1
+#3   AR     38           1
+#4   AR     37           1
+ 
 
-# TSI - 104 genomes
-tsi_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/TSI/merged/merged_TSI_104_genomes_1Kg_EHv3.2.2.tsv",
-                      stringsAsFactors = F,
-                      header = T,
-                      sep = "\t")
-dim(tsi_merged)
-# 648  12
-
-tsi_merged = tsi_merged %>%
-  filter(gene %in% "AR") %>%
-  select(gene, allele, num_samples)
-tsi_merged$subpopu= rep("TSI", length(tsi_merged$gene))
-
-sum_total = sum(tsi_merged$num_samples)
-tsi_merged = tsi_merged %>%
-  group_by(allele) %>%
-  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
-  ungroup() %>%
-  as.data.frame()
-dim(tsi_merged)
-# 17  5
-
-# GBR - 91 genomes
-gbr_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/GBR/merged/merged_GBR_91_genomes_1Kg_EHv3.2.2.tsv",
-                      stringsAsFactors = F,
-                      header = T,
-                      sep = "\t")
-dim(gbr_merged)
-# 567  12
-
-gbr_merged = gbr_merged %>%
-  filter(gene %in% "AR") %>%
-  select(gene, allele, num_samples)
-gbr_merged$subpopu= rep("GBR", length(gbr_merged$gene))
-
-sum_total = sum(gbr_merged$num_samples)
-gbr_merged = gbr_merged %>%
-  group_by(allele) %>%
-  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
-  ungroup() %>%
-  as.data.frame()
-dim(gbr_merged)
-# 17  5
-
-# CEU - 97 genomes
-ceu_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/CEU/merged/merged_CEU_97_genomes_1Kg_EHv3.2.2.tsv",
-                      stringsAsFactors = F,
-                      header = T,
-                      sep = "\t")
-dim(ceu_merged)
-# 577  12
-
-ceu_merged = ceu_merged %>%
-  filter(gene %in% "AR") %>%
-  select(gene, allele, num_samples)
-ceu_merged$subpopu= rep("CEU", length(ceu_merged$gene))
-
-sum_total = sum(ceu_merged$num_samples)
-ceu_merged = ceu_merged %>%
-  group_by(allele) %>%
-  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
-  ungroup() %>%
-  as.data.frame()
-dim(ceu_merged)
-# 17  5
-
-# FIN - 86 genomes
-fin_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/FIN/merged/merged_FIN_86_genomes_1Kg_EHv3.2.2.tsv",
-                      stringsAsFactors = F,
-                      header = T,
-                      sep = "\t")
-dim(fin_merged)
-# 472  12
-
-fin_merged = fin_merged %>%
-  filter(gene %in% "AR") %>%
-  select(gene, allele, num_samples)
-fin_merged$subpopu= rep("FIN", length(fin_merged$gene))
-
-sum_total = sum(ceu_merged$num_samples)
-fin_merged = fin_merged %>%
-  group_by(allele) %>%
-  mutate(percent_subpopu = 100*(num_samples/sum_total)) %>%
-  ungroup() %>%
-  as.data.frame()
-dim(fin_merged)
-# 12  5
-
-eur_merged = rbind(ibs_merged,
-                   tsi_merged,
-                   gbr_merged,
-                   ceu_merged,
-                   fin_merged)
-dim(eur_merged)
-# 77 5
 
 # Plot percentage of each allele within each subpopulation
 violin_plot = ggplot(eur_merged, aes(x = subpopu, y=allele, fill = subpopu)) +
