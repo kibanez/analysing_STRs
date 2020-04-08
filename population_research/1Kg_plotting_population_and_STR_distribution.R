@@ -69,10 +69,10 @@ popu_1kg$sub_populations = as.character(popu_1kg$sub_populations)
 
 for (i in 1:length(l_popus)){
   popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/1Kg/data/", l_popus[i] ,sep = "")
-  file_aux = paste(paste("merged_", l_popus[i], sep = ""), "_1Kg_samples.tsv", sep = "")
+  file_aux = list.files(paste(popu_aux, "merged", sep = "/"))
+  file_aux = paste(paste(popu_aux, "merged", sep = "/"), file_aux, sep = "/")
   
-  
-  df_aux = read.csv(paste(popu_aux, file_aux, sep = "/"),
+  df_aux = read.csv(file_aux,
                     sep  = "\t",
                     stringsAsFactors = F,
                     header = T)
