@@ -15,14 +15,13 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 setwd("~/Documents/STRs/ANALYSIS/AR_kennedy/1Kg/")
 
 # Load data
-# IBS - 102 genomes
-ibs_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/IBS/merged/merged_IBS_102_genomes_1Kg_EHv3.2.2.tsv",
+all_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/all_data/merged/merged_all_2504_genomes_1Kg_EHv3.2.2.tsv",
                       stringsAsFactors = F,
                       header = T,
                       sep = "\t")
-dim(ibs_merged)
-# 610  12
-
+dim(all_merged)
+# 1342  12
+  
 ibs_merged = ibs_merged %>%
   filter(gene %in% "AR") %>%
   select(gene, allele, num_samples)
