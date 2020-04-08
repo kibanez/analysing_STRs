@@ -90,7 +90,7 @@ for (i in 1:length(l_popus)){
 }
 
 dim(df_merged)
-# 13675  14
+# 14107  14
 
 # Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
