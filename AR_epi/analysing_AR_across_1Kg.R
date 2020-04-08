@@ -14,21 +14,71 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/AR_kennedy/1Kg/")
 
-# Load data
-all_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/all_data/merged/merged_all_2504_genomes_1Kg_EHv3.2.2.tsv",
-                      stringsAsFactors = F,
-                      header = T,
-                      sep = "\t")
-dim(all_merged)
-# 1342  12
+# Load 1Kg population index data
+popu_info = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/integrated_call_samples_v2.20130502.ALL.ped",
+                     sep = "\t",
+                     header = T,
+                     stringsAsFactors = F)
+dim(popu_info)
+# 3691  17
+
+# Load EHv3.2.2 STR merged data for each sub-population
+df_merged = data.frame()
+l_popus = unique(popu_info$Population)
+
+# Remove CHD from `l_popus`
+l_popus = l_popus[-19]
+
+# Define super-populations
+l_superpopu = c("AFR", "AMR", "EAS", "EUR", "SAS")
+
+# Define sub-population and super-population
+superpopulations = c("AFR","AFR","AFR","AFR","AFR","AFR","AFR", 
+                     "AMR", "AMR","AMR","AMR",
+                     "EUR","EUR","EUR","EUR","EUR", 
+                     "EAS","EAS","EAS","EAS","EAS",
+                     "SAS","SAS","SAS","SAS","SAS")
+sub_populations = c("ESN", "YRI", "GWD", "LWK", "MSL", "ACB", "ASW", 
+                    "MXL", "PUR", "PEL", "CLM",
+                    "IBS", "TSI", "GBR", "CEU", "FIN",
+                    "JPT", "CHS", "CHB", "CDX", "KHV",
+                    "PJL", "STU", "BEB", "ITU", "GIH")
+
+popu_1kg = data.frame(cbind(superpopulations, sub_populations))
+popu_1kg$superpopulations = as.character(popu_1kg$superpopulations)
+popu_1kg$sub_populations = as.character(popu_1kg$sub_populations)
+
+for (i in 1:length(l_popus)){
+  popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/1Kg/data/", l_popus[i] ,sep = "")
+  file_aux = list.files(paste(popu_aux, "merged", sep = "/"))
+  file_aux = paste(paste(popu_aux, "merged", sep = "/"), file_aux, sep = "/")
+  
+  df_aux = read.csv(file_aux,
+                    sep  = "\t",
+                    stringsAsFactors = F,
+                    header = T)
+  
+  index_subpopu = match(l_popus[i], popu_1kg$sub_populations)
+  superpopu = popu_1kg$superpopulations[index_subpopu]
+  
+  df_aux = df_aux %>% 
+    mutate(population = l_popus[i],
+           superpopulation = superpopu)
+  
+  df_merged = rbind(df_merged,
+                    df_aux)
+  
+}
+
+dim(df_merged)
+# 14107  14
 
 # Let's select `AR` locus
-ar_merged = all_merged %>%
-  filter(gene %in% "AR") %>%
-  select(gene, allele, num_samples)
+ar_merged = df_merged %>%
+  filter(gene %in% "AR") 
 ar_merged = unique(ar_merged)
 dim(ar_merged)
-# 30  3
+# 413  14
 
 # Interesting thing: there are 4 genomes with an expanded AR expansion
 ar_merged %>% filter(allele > 35)
