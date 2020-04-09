@@ -41,6 +41,40 @@ df = read.csv('merged_loci_92665_research_genomes_EHv2.5.5_batch_march2020.tsv',
 dim(df)
 # 7857  11
 
+# 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
+# GRCh37 are chr1, chr2, chr3 while GRCh38 are 1,2,3
+df$chr = recode(df$chr,
+                "1" = "chr1",
+                "2" = "chr2",
+                "3" = "chr3",
+                "4" = "chr4",
+                "5" = "chr5",
+                "6" = "chr6",
+                "7" = "chr7",
+                "8" = "chr8",
+                "9" = "chr9",
+                "10" = "chr10",
+                "11" = "chr11",
+                "12" = "chr12",
+                "13" = "chr13",
+                "14" = "chr14",
+                "15" = "chr15",
+                "16" = "chr16",
+                "17" = "chr17",
+                "18" = "chr18",
+                "19" = "chr19",
+                "20" = "chr20",
+                "21" = "chr21",
+                "22" = "chr22",
+                "X" = "chrX")
+df = df %>%
+  group_by(chr, gene, allele) %>%
+  mutate(total_num_samples = sum(num_samples)) %>%
+  ungroup() %>%
+  as.data.frame() 
+
+dim(df)
+# 7857  12
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
 # GRCh37 VCF files have 1,2,3,4...X,Y,MT chromosome nomenclature
