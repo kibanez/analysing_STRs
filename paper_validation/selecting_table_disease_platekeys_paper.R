@@ -98,6 +98,14 @@ table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels
 dim(table_diseases_enriched)
 # 11842  16
 
+# Include or merge `table_diseases_enriched` with PILOT data following the same strategy
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_withPanels_280919.tsv",
+                           header = T,
+                           sep = "\t",
+                           stringsAsFactors = F)
+dim(pilot_clin_data)
+# 4974  11
+
 write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 
