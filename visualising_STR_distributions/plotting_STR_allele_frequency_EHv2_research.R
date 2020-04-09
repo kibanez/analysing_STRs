@@ -12,7 +12,7 @@ library(gridExtra); packageDescription ("gridExtra", fields = "Version") #"2.3"
 library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
-source("~/git/analysing_STRs/functions/plot_gene.R")
+source("~/git/analysing_STRs/functions/plot_gene_mergingAssemblies.R")
 
 # Function that prints into a file the raw data/numbers corresponding to the STR repeat-size frequencies plots
 print_table_gene <- function(df_input, gene_name, output_folder){
@@ -33,13 +33,13 @@ gene_annotation_pathogenic = '~/git/analysing_STRs/threshold_smallest_pathogenic
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
 # Research ~80K genomes, EH-v3.1.2- November 2019
-setwd("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged_genotypeUpdated/")
-df = read.csv('./merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv',
+setwd("~/Documents/STRs/data/research/batch_march2020/output_EHv2.5.5_vcfs/merged/")
+df = read.csv('merged_loci_92665_research_genomes_EHv2.5.5_batch_march2020.tsv',
               sep = '\t',
               stringsAsFactors = F,
               header = T)
 dim(df)
-# 3983 11
+# 7857  11
 
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
