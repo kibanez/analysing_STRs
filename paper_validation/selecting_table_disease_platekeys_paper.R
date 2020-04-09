@@ -163,21 +163,8 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched,
                                     by = c("plate_key.x" = "ID"))
 
 table_diseases_pilot_popu = left_join(table_diseases_pilot,
-                                      )
-
-# Enrich with pilot popu table
-popu_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
-                      sep = ",",
-                      stringsAsFactors = F,
-                      header = T)
-dim(popu_pilot)
-# 4821  44
-
-table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
-                                         popu_pilot %>% select(ID, bestGUESS_super_pop),
-                                         by = c("plate_key.x" = "ID"))
-
-#There is not much change, all are main
+                                      popu_table_pilot %>% select(ID, bestGUESS_sub_pop, bestGUESS_super_pop),
+                                      by = c("plateKey" = "ID"))
 
 # take reported ancestry
 rd_genomes_re = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
