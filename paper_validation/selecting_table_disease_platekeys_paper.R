@@ -140,17 +140,9 @@ length(unique(table_diseases_pilot$plateKey))
 # 644
 
 # There are 644 unique genomes that have been recruited under any of these 13 diseases, some of them (15) have 1 or more above specificDisease
-# Let's merge now MAIN and PILOT datasets
-table_diseases_main_pilot = rbind(table_diseases_enriched,
-                                  table_diseases_pilot)
+# I won't merge main with pilot since we do have different platekeys and column names.
 
-
-
-
-
-
-
-
+write.table(table_diseases_pilot, file = "table_diseases_enriched_PILOT_13diseases.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 # Enrich this table with popu  - to take best_guess-predicted_ancestry
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
