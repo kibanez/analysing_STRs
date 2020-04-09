@@ -98,6 +98,8 @@ table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels
 dim(table_diseases_enriched)
 # 11842  16
 
+write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+
 # Include or merge `table_diseases_enriched` with PILOT data following the same strategy
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_withPanels_280919.tsv",
                            header = T,
@@ -131,8 +133,19 @@ table_diseases_pilot = pilot_clin_data %>%
 
 View(table(table_diseases_pilot$specificDisease))
 # It's ok, we have them all
+dim(table_diseases_pilot)
+# 659  11
 
-write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+length(unique(table_diseases_pilot$plateKey))
+# 644
+
+# There are 644 unique genomes that have been recruited under any of these 13 diseases, some of them (15) have 1 or more above specificDisease
+# Let's merge now MAIN and PILOT datasets
+table_diseases_main_pilot = rbind(table_diseases_enriched,
+                                  table_diseases_pilot)
+
+
+
 
 
 
