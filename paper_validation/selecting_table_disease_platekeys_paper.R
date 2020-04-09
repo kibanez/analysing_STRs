@@ -152,10 +152,18 @@ popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCEST
 dim(popu_table)
 # 59464  36
 
+popu_table_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
+                            stringsAsFactors = F,
+                            header = T)
+dim(popu_table_pilot)
+# 4821  44
 
 table_diseases_enriched_popu = left_join(table_diseases_enriched,
                                     popu_table %>% select(ID,best_guess_predicted_ancstry, self_reported),
                                     by = c("plate_key.x" = "ID"))
+
+table_diseases_pilot_popu = left_join(table_diseases_pilot,
+                                      )
 
 # Enrich with pilot popu table
 popu_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
