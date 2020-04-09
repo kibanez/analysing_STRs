@@ -82,6 +82,10 @@ df_simpl = unique(df_simpl)
 dim(df_simpl)
 # 5212  4
 
+# Folder where we want to save the plots - PDFs
+output_folder = 'plots'
+dir.create(output_folder)
+
 
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
 # GRCh37 VCF files have 1,2,3,4...X,Y,MT chromosome nomenclature
