@@ -14,3 +14,11 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Working directory
 setwd("~/Documents/STRs/ANALYSIS/haplotyping/")
+
+# load main data
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      stringsAsFactors = F, 
+                      header= T)
+dim(popu_table)
+# 59464  36
+
