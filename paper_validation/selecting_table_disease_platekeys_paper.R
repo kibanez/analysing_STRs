@@ -1,4 +1,5 @@
 # Objective: select the platekeys/participant ids corresponding to the list of diseases we consider for the paper
+# Both: main and pilot programmes
 # libraries
 library(dplyr)
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
@@ -98,6 +99,10 @@ dim(table_diseases_enriched)
 # 11842  16
 
 write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+
+
+
+
 
 
 # Enrich this table with popu  - to take best_guess-predicted_ancestry
