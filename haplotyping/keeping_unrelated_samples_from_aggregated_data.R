@@ -31,3 +31,20 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
 dim(clin_data)
 # 1124633  31
 
+popu_table = left_join(popu_table,
+                       clin_data %>% select(platekey, rare_diseases_family_id, participant_type, programme, participant_stated_gender),
+                       by = c("ID" = "platekey"))
+popu_table = unique(popu_table)
+dim(popu_table)
+# 59464  40
+
+# List of unrelated = probands + is.na(participant_type)
+list_unrelated = unique(c(which(popu_table$participant_type %in% "Proband"),
+                   which(is.na(popu_table$participant_type)),
+                   which(popu_table$programme %in% "Cancer")))
+list_unrelated_platekeys = popu_table$ID[list_unrelated]
+length(list_unrelated_platekeys)
+# 33714
+
+# Write it into a file
+write.table(list_unrelated_platekeys, "list_33714_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
