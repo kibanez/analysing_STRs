@@ -22,3 +22,12 @@ popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCEST
 dim(popu_table)
 # 59464  36
 
+
+# clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+                     stringsAsFactors = F, 
+                     header = T,
+                     sep = "\t")
+dim(clin_data)
+# 1124633  31
+
