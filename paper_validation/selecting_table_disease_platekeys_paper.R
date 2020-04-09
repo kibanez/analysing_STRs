@@ -183,7 +183,7 @@ dim(table_diseases_enriched_popu)
 # 11842 20
 
 write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
-write.tabble(table_diseases_pilot_popu, "table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(table_diseases_pilot_popu, "table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
 # Distinguish participants/genomes having Intellectual disability as panel
 # Group 1: those having ONLY Intellectual disability in `panel_list`
