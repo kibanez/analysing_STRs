@@ -76,6 +76,13 @@ df = df %>%
 dim(df)
 # 7857  12
 
+df_simpl = df %>% 
+  select(chr, gene, allele, total_num_samples)
+df_simpl = unique(df_simpl)
+dim(df_simpl)
+# 5212  4
+
+
 # This research merged TSV file is special because we do have GRCh37 and GRCh38 genomes altogether
 # GRCh37 VCF files have 1,2,3,4...X,Y,MT chromosome nomenclature
 # GRCh38 VCF files have chr1, chr2, chr3, ..., chrX, chrX, chrMT nomenclature
