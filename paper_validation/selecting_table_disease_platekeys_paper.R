@@ -106,6 +106,32 @@ pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/p
 dim(pilot_clin_data)
 # 4974  11
 
+# Select individuals/genomes having recruited under any of the following diseases, for the pilot table `specificDisease`
+#"Intellectual disability",
+#"Amyotrophic lateral sclerosis or motor neuron disease", 
+#"Charcot-Marie-Tooth disease", "Congenital muscular dystrophy",
+#"Congenital myopathy", "Early onset dementia", "Early onset dystonia", 
+#"Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
+#"Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
+#"'Early onset and familial Parkinson''s Disease'"))
+table_diseases_pilot = pilot_clin_data %>%
+  filter(specificDisease %in% c("Intellectual disability",
+                                "Amyotrophic lateral sclerosis/motor neuron disease",
+                                "Charcot-Marie-Tooth disease",
+                                "Congenital muscular dystrophy",
+                                "Congenital myopathy",
+                                "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                                "Early onset dystonia",
+                                "Distal myopathies",
+                                "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                "Hereditary ataxia",
+                                "Hereditary spastic paraplegia",
+                                "Skeletal Muscle Channelopathies",
+                                "Early onset and familial Parkinson's Disease"))
+
+View(table(table_diseases_pilot$specificDisease))
+# It's ok, we have them all
+
 write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 
