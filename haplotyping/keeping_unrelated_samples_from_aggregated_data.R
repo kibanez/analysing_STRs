@@ -52,20 +52,21 @@ write.table(list_unrelated_platekeys, "list_33714_unrelated_genomes.txt", quote 
 # Write each unrelated list of genomes for each super population
 
 list_unrelated_EUR = popu_table %>%
-  filter(ID %in% list_unrelated_platekeys, self_reported %in% "European") %>%
+  #filter(ID %in% list_unrelated_platekeys, self_reported %in% "European") %>%
+  filter(ID %in% list_unrelated_platekeys, best_guess_predicted_ancstry %in% c("CEU", "FIN", "GBR", "IBS", "TSI")) %>%
   select(ID) %>%
   unique() %>%
   pull()
 length(list_unrelated_EUR)
-# 25249
+# 28153
 
 list_unrelated_EAS = popu_table %>%
-  filter(ID %in% list_unrelated_platekeys, self_reported %in% "East Asian") %>%
+  filter(ID %in% list_unrelated_platekeys, best_guess_predicted_ancstry %in% c("KHV", "JPT", "CHS", "CHB")) %>%
   select(ID) %>%
   unique() %>%
   pull()
 length(list_unrelated_EAS)
-# 90
+# 241
 
 list_unrelated_AFR = popu_table %>%
   filter(ID %in% list_unrelated_platekeys, self_reported %in% "African") %>%
@@ -74,3 +75,12 @@ list_unrelated_AFR = popu_table %>%
   pull()
 length(list_unrelated_AFR)
 # 1014
+
+list_unrelated_AMR = popu_table %>%
+  filter(ID %in% list_unrelated_platekeys, self_reported %in% "African") %>%
+  select(ID) %>%
+  unique() %>%
+  pull()
+length(list_unrelated_AMR)
+# 1014
+
