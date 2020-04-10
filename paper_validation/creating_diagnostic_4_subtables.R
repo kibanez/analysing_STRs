@@ -434,6 +434,29 @@ colnames(table_b_expanded)[1] = "platekey"
 colnames(table_b_expanded)[3] = "repeat_size" 
 write.table(table_b_expanded, "subtables/TableB_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
+# This is the raw data for Table B - Main
+# We want to compute all diseases in the coctail of `l_diseases_tableB` as 1
+l_diseases_tableB = unique(table_b$normalised_specific_disease)
+matrix_to_print = matrix(nrow  = length(l_diseases_tableB), ncol = length(l_genes_tableB))
+for(i in 1:length(l_diseases_tableB)){
+  for (j in 1:length(l_genes_tableB)){
+    number_to_print = table_b_expanded %>% 
+      filter(normalised_specific_disease %in% l_diseases_tableB[i], gene %in% l_genes_tableB[j]) %>% 
+      select(participant_id) %>% unique() %>% pull() %>% length()
+    
+    print(l_diseases_tableB[i])
+    print(l_genes_tableB[j])
+    print(number_to_print)
+    matrix_to_print[i,j] = number_to_print
+  }
+}
+
+rownames(matrix_to_print) = l_diseases_tableB
+colnames(matrix_to_print) = l_genes_tableB
+
+write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
+
+
 ################################################################################################################################################################
 # TABLE C
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
