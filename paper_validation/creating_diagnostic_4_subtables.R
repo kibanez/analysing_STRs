@@ -367,9 +367,34 @@ length(unique(table_b$plate_key.x))
 # 2449
 
 # Let's define the list of genes for Table B
-l_genes_tableB = c("ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
+l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
 
 l_platekeys_tableB = unique(table_b$plate_key.x)
+
+# Define specific thresholds for TABLE B
+gene_pathogenic_threshold_tableB = data.frame(locus = l_genes_tableB,
+                                              threshold = c(63,44,60,75,90,60,60))
+
+# Now, we want to see how many of them have an expansion on any of the genes in B
+expanded_table_main = data.frame()
+for (i in 1:length(l_genes_tableB)){
+  locus_name = l_genes_tableB[i]
+  patho_cutoff = gene_pathogenic_threshold_tableB %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_main = rbind(expanded_table_main,
+                              repeats_table_main %>% 
+                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_main)
+# 28  5
 
 
 ################################################################################################################################################################
