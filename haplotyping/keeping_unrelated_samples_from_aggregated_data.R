@@ -69,18 +69,27 @@ length(list_unrelated_EAS)
 # 241
 
 list_unrelated_AFR = popu_table %>%
-  filter(ID %in% list_unrelated_platekeys, self_reported %in% "African") %>%
+  filter(ID %in% list_unrelated_platekeys, best_guess_predicted_ancstry %in% c("ACB","ASW", "GWD", "LWK", "MSL", "YRI", "ESN")) %>%
   select(ID) %>%
   unique() %>%
   pull()
 length(list_unrelated_AFR)
-# 1014
+# 1458
 
 list_unrelated_AMR = popu_table %>%
-  filter(ID %in% list_unrelated_platekeys, self_reported %in% "African") %>%
+  filter(ID %in% list_unrelated_platekeys, best_guess_predicted_ancstry %in% c("MXL", "PEL", "PUR", "CLM")) %>%
   select(ID) %>%
   unique() %>%
   pull()
 length(list_unrelated_AMR)
-# 1014
+# 965
+
+
+list_unrelated_SAS = popu_table %>%
+  filter(ID %in% list_unrelated_platekeys, best_guess_predicted_ancstry %in% c("PJL", "ITU", "GIH", "BEB", "STU")) %>%
+  select(ID) %>%
+  unique() %>%
+  pull()
+length(list_unrelated_SAS)
+# 2897
 
