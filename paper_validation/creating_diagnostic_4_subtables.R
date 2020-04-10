@@ -54,6 +54,10 @@ repeats_table_main = read.csv("~/Documents/STRs/data/research/EH_2.5.5_research_
 dim(repeats_table_main)
 # 3983  11
 
+# recode repeats_table_main: FMR1 for b37 is `FMR1` and `FMR1_CGG` for b38, let's recode
+repeats_table_main$gene = recode(repeats_table_main$gene,
+                                 "FMR1" = "FMR1_CGG")
+
 repeats_table_pilot = read.csv("~/Documents/STRs/data/pilot/EH-offtarget-v2.5.5-Pilot_October2018/merged/merged_loci_4833_Pilot_genomes_EHv2.5.5.tsv",
                                stringsAsFactors = F, 
                                header = T,
@@ -648,11 +652,11 @@ l_genes_tableD = c("FMR1_CGG")
 
 # How many PIDs in the Main?
 length(unique(table_d$participant_id))
-# 6543
+# 6570
 
 # How many PIDs are in the Pilot?
 length(unique(table_d_pilot$plateKey))
-# 160
+# 161
 
 l_platekeys_tableD = unique(table_d$plate_key.x)
 l_platekeys_tableD_pilot = unique(table_d_pilot$plateKey)
