@@ -139,9 +139,9 @@ dim(table_diseases_pilot)
 # 660  11
 
 length(unique(table_diseases_pilot$plateKey))
-# 644
+# 645
 
-# There are 644 unique genomes that have been recruited under any of these 13 diseases, some of them (15) have 1 or more above specificDisease
+# There are 645 unique genomes that have been recruited under any of these 13 diseases, some of them (15) have 1 or more above specificDisease
 # I won't merge main with pilot since we do have different platekeys and column names.
 
 write.table(table_diseases_pilot, file = "table_diseases_enriched_PILOT_13diseases.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
@@ -182,7 +182,7 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
 
 table_diseases_enriched_popu = unique(table_diseases_enriched_popu)
 dim(table_diseases_enriched_popu)
-# 11842 20
+# 11870 19
 
 write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 write.table(table_diseases_pilot_popu, "table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
@@ -200,7 +200,7 @@ table_panels_row = table_diseases_enriched_popu %>%
   as.data.frame()
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 49878  7
+# 50415  7
 
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
 
@@ -212,7 +212,7 @@ table_panels_row$panels = recode(table_panels_row$panels,
 
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 46919  7
+# 47436  7
 
 
 # Group 1
@@ -224,7 +224,7 @@ l_pid_only_one_panel = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_only_one_panel)  
-# 2313
+# 2320
 
 # From 297 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
 l_pid_ID_group1 = table_panels_row %>%
@@ -234,9 +234,9 @@ l_pid_ID_group1 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_ID_group1)
-# 2137
+# 2144
 
-write.table(l_pid_ID_group1, "list_2137_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pid_ID_group1, "list_2144_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
 
 
 # Group 2
@@ -272,9 +272,9 @@ l_ID_group2 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_ID_group2)
-# 2449
+# 2459
 
-write.table(l_ID_group2, "./list_2449_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
+write.table(l_ID_group2, "./list_2459_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
 
 
 
