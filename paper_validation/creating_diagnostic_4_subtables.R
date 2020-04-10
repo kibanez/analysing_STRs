@@ -464,12 +464,13 @@ write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t"
 # MAIN
 table_c = table_diseases %>%
   filter(normalised_specific_disease %in% c("Intellectual disability",
+                                            "Kabuki syndrome",
                                             "Congenital muscular dystrophy",
                                             "Congenital myopathy",
                                             "Skeletal Muscle Channelopathies",
                                             "Distal myopathies"))
 dim(table_c)
-# 7665  21
+# 7695  21
 
 # PILOT
 table_c_pilot = table_diseases_pilot %>%
