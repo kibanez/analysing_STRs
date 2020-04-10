@@ -366,6 +366,11 @@ dim(table_b)
 length(unique(table_b$plate_key.x))
 # 2449
 
+# Let's define the list of genes for Table B
+l_genes_tableB = c("ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
+
+l_platekeys_tableB = unique(table_b$plate_key.x)
+
 
 ################################################################################################################################################################
 # TABLE C
