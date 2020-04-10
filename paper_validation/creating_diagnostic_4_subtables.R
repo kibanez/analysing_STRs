@@ -19,7 +19,7 @@ table_diseases = read.csv("table_diseases_enriched_popu_includingSkeletalMuscleC
                           header = T,
                           sep = "\t")
 dim(table_diseases)
-# 11842  20
+# 11870  19
 
 # Pilot table
 table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
@@ -27,7 +27,7 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
                                 header = T,
                                 sep = "\t")
 dim(table_diseases_pilot)
-# 659  13
+# 660  13
 
 # Define AGE, by using YOB
 table_diseases = table_diseases %>%
@@ -350,21 +350,21 @@ write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep
 
 ################################################################################################################################################################
 # TABLE B
-# We need to take the list of PIDs from `list_2449_PIDs_ID_and_others_as_panels.txt`
+# We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
 
 # load list of 2449 PIDs 
-l_complex_ID_group2 = read.table("~/Documents/STRs/VALIDATION/list_2449_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
+l_complex_ID_group2 = read.table("list_2459_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
 l_complex_ID_group2 = l_complex_ID_group2$V1
 length(l_complex_ID_group2)
-# 2449
+# 2459
 
 table_b = table_diseases %>%
   filter(participant_id %in% l_complex_ID_group2)
 dim(table_b)
-# 2823  21
+# 2834  21
 
 length(unique(table_b$plate_key.x))
-# 2449
+# 2459
 
 # Let's define the list of genes for Table B
 l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
