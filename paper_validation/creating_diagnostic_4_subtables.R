@@ -41,3 +41,8 @@ table_diseases_pilot = table_diseases_pilot %>%
   mutate(age = 2020 - yearOfBirth) %>%
   ungroup() %>%
   as.data.frame()
+
+# Define adult or paediatric
+table_diseases = mutate(table_diseases, adult.paediatric = ifelse(age < 18, "Paediatric", "Adult"))
+table_diseases_pilot = mutate(table_diseases_pilot, adult.paediatric = ifelse(age < 18, "Paediatric", "Adult"))
+
