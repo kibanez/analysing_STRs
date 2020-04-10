@@ -350,6 +350,22 @@ write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep
 
 ################################################################################################################################################################
 # TABLE B
+# We need to take the list of PIDs from `list_2449_PIDs_ID_and_others_as_panels.txt`
+
+# load list of 2449 PIDs 
+l_complex_ID_group2 = read.table("~/Documents/STRs/VALIDATION/list_2449_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
+l_complex_ID_group2 = l_complex_ID_group2$V1
+length(l_complex_ID_group2)
+# 2449
+
+table_b = table_diseases %>%
+  filter(participant_id %in% l_complex_ID_group2)
+dim(table_b)
+# 2823  21
+
+length(unique(table_b$plate_key.x))
+# 2449
+
 
 ################################################################################################################################################################
 # TABLE C
