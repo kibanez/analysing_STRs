@@ -210,3 +210,4 @@ for(i in 1:length(l_diseases_tableA)){
 rownames(matrix_to_print) = l_diseases_tableA
 colnames(matrix_to_print) = l_genes_tableA
 
+write.table(matrix_to_print, "./subtables/tableA_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
