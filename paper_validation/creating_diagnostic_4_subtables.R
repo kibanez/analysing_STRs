@@ -662,27 +662,25 @@ dim(table_d_expanded)
 write.table(table_d_expanded, "subtables/TableD_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
 
 # This is the raw data for Table D- Main
-# Let's do numbers for DMPK and disease
-
-l_diseases_tableC = unique(table_c$normalised_specific_disease)
-matrix_to_print = matrix(nrow  = length(l_diseases_tableC), ncol = 1)
-for(i in 1:length(l_diseases_tableC)){
-  for (j in 1:length(l_genes_tableC)){
-    number_to_print = table_c_expanded %>% 
-      filter(normalised_specific_disease %in% l_diseases_tableC[i], gene %in% l_genes_tableC[j]) %>% 
+# Let's do numbers for FMR1 and Intellectual disability
+l_diseases_tableD = unique(table_d$normalised_specific_disease)
+matrix_to_print = matrix(nrow  = length(l_diseases_tableD), ncol = 1)
+for(i in 1:length(l_diseases_tableD)){
+  for (j in 1:length(l_genes_tableD)){
+    number_to_print = table_d_expanded %>% 
+      filter(normalised_specific_disease %in% l_diseases_tableD[i], gene %in% l_genes_tableD[j]) %>% 
       select(participant_id) %>% unique() %>% pull() %>% length()
     
-    print(l_diseases_tableC[i])
-    print(l_genes_tableC[j])
+    print(l_diseases_tableD[i])
+    print(l_genes_tableD[j])
     print(number_to_print)
     matrix_to_print[i,j] = number_to_print
   }
 }
 
-rownames(matrix_to_print) = l_diseases_tableC
-colnames(matrix_to_print) = l_genes_tableC
-
-write.table(matrix_to_print, "./subtables/tableC_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
+rownames(matrix_to_print) = l_diseases_tableD
+colnames(matrix_to_print) = l_genes_tableD
+write.table(matrix_to_print, "./subtables/tableD_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
 
 
 
