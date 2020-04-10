@@ -376,7 +376,7 @@ dim(table_c_pilot)
 # 241  15
 
 # Let's define the list of genes for Table C
-l_genes_tableA = c("DMPK_CTG")
+l_genes_tableC = c("DMPK_CTG")
 
 # How many PIDs in the Main?
 length(unique(table_c$participant_id))
@@ -385,6 +385,81 @@ length(unique(table_c$participant_id))
 # How many PIDs are in the Pilot?
 length(unique(table_c_pilot$plateKey))
 # 240 
+
+# Now, we want to see how many of them have an expansion on any of the genes in `DMPK` (cutoff >= 50)
+expanded_table_main = data.frame()
+for (i in 1:length(l_genes_tableC)){
+  locus_name = l_genes_tableC[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_main = rbind(expanded_table_main,
+                              repeats_table_main %>% 
+                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_main)
+# 55  5
+
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
+expanded_table_pilot = data.frame()
+for (i in 1:length(l_genes_tableC)){
+  locus_name = l_genes_tableC[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_pilot = rbind(expanded_table_pilot,
+                               repeats_table_pilot %>% 
+                                 filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_pilot)
+# 2  5
+
+# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
+# And also, focus only in the list of platekeys of Table A
+expanded_table_main_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_main$gene)){
+  list_affected_vcf = strsplit(expanded_table_main$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_main_per_locus = rbind(expanded_table_main_per_locus,
+                                          expanded_table_main[i,])
+    expanded_table_main_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
+dim(expanded_table_main_per_locus)
+# 88  5
+
+# The same for PILOT
+expanded_table_pilot_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_pilot$gene)){
+  list_affected_vcf = strsplit(expanded_table_pilot$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_pilot_per_locus = rbind(expanded_table_pilot_per_locus,
+                                           expanded_table_pilot[i,])
+    expanded_table_pilot_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
+dim(expanded_table_pilot_per_locus)
+# 2  5
 
 
 ################################################################################################################################################################
