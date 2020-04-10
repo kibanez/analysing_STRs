@@ -131,6 +131,27 @@ for (i in 1:length(l_genes_tableA)){
 dim(expanded_table_main)
 # 310  5
 
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
+expanded_table_pilot = data.frame()
+for (i in 1:length(l_genes_tableA)){
+  locus_name = l_genes_tableA[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_pilot = rbind(expanded_table_pilot,
+                              repeats_table_pilot %>% 
+                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_pilot)
+# 48  5
+
 # After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
 # And also, focus only in the list of platekeys of Table A
 
