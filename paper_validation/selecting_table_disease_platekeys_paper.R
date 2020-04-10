@@ -42,7 +42,7 @@ table(parkinson_to_enrich$normalised_specific_disease)
 
 table_diseases = rbind(table_diseases, parkinson_to_enrich)
 dim(table_diseases)
-# 11390  16
+# 11420  16
 
 write.table(table_diseases[ ,2], row.names = FALSE, col.names = FALSE, quote = FALSE, "./list_PIDs_table_diseases.txt")
 
@@ -52,7 +52,7 @@ table_diseases_dedup = table_diseases %>%
 
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 11052  3
+# 11080  3
 
 # Create new variable named latest_platekey
 table_diseases_dedup =  table_diseases_dedup %>%
@@ -64,11 +64,11 @@ table_diseases_dedup = table_diseases_dedup %>%
   select(participant_id, latest_platekey, genome_build)
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 10993  3
+# 11021  3
 
 list_duplicated_pid = table_diseases_dedup$participant_id[which(duplicated(table_diseases_dedup$participant_id))]
 length(list_duplicated_pid)
-# 187
+# 188
 
 # Take GRCh38 platekey for duplicate PIDs
 table_diseases_duplicates = table_diseases_dedup %>%
@@ -77,27 +77,27 @@ table_diseases_duplicates = table_diseases_dedup %>%
 table_diseases_duplicates = table_diseases_duplicates %>%
   filter(genome_build %in% "GRCh38")
 dim(table_diseases_duplicates)
-# 187  3
+# 188  3
 
 table_diseases_dedup = table_diseases_dedup %>%
   filter(!participant_id %in% list_duplicated_pid)
 dim(table_diseases_dedup)
-# 10619  3
+# 10645  3
 
 # merge
 table_diseases_dedup = rbind(table_diseases_dedup,
                              table_diseases_duplicates)
 
 dim(table_diseases_dedup)
-# 10806  3
+# 10833  3
 
 l_platekeys = table_diseases_dedup$latest_platekey
-# 10806
+# 10833
 
 table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
   filter(plate_key.x %in% l_platekeys)
 dim(table_diseases_enriched)
-# 11842  16
+# 11870  16
 
 write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
@@ -119,6 +119,7 @@ dim(pilot_clin_data)
 #"'Early onset and familial Parkinson''s Disease'"))
 table_diseases_pilot = pilot_clin_data %>%
   filter(specificDisease %in% c("Intellectual disability",
+                                "Kabuki syndrome",
                                 "Amyotrophic lateral sclerosis/motor neuron disease",
                                 "Charcot-Marie-Tooth disease",
                                 "Congenital muscular dystrophy",
@@ -135,7 +136,7 @@ table_diseases_pilot = pilot_clin_data %>%
 View(table(table_diseases_pilot$specificDisease))
 # It's ok, we have them all
 dim(table_diseases_pilot)
-# 659  11
+# 660  11
 
 length(unique(table_diseases_pilot$plateKey))
 # 644
