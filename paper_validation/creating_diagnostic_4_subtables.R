@@ -642,6 +642,47 @@ dim(table_d_expanded)
 
 # PILOT - nothing to merge
 
+# Simplify output TableD
+table_d_expanded = table_d_expanded %>%
+  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
+         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
+         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
+colnames(table_d_expanded)[1] = "platekey" 
+colnames(table_d_expanded)[3] = "repeat_size" 
+
+dim(table_d_expanded)
+# 143  24
+
+# we need to only include children recruited under ID
+table_d_expanded = table_d_expanded %>%
+  filter(adult.paediatric %in% "Paediatric")
+dim(table_d_expanded)
+# 110 24
+
+write.table(table_d_expanded, "subtables/TableD_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
+
+# This is the raw data for Table D- Main
+# Let's do numbers for DMPK and disease
+
+l_diseases_tableC = unique(table_c$normalised_specific_disease)
+matrix_to_print = matrix(nrow  = length(l_diseases_tableC), ncol = 1)
+for(i in 1:length(l_diseases_tableC)){
+  for (j in 1:length(l_genes_tableC)){
+    number_to_print = table_c_expanded %>% 
+      filter(normalised_specific_disease %in% l_diseases_tableC[i], gene %in% l_genes_tableC[j]) %>% 
+      select(participant_id) %>% unique() %>% pull() %>% length()
+    
+    print(l_diseases_tableC[i])
+    print(l_genes_tableC[j])
+    print(number_to_print)
+    matrix_to_print[i,j] = number_to_print
+  }
+}
+
+rownames(matrix_to_print) = l_diseases_tableC
+colnames(matrix_to_print) = l_genes_tableC
+
+write.table(matrix_to_print, "./subtables/tableC_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
 
 
 
