@@ -485,5 +485,13 @@ dim(table_c_expanded)
 
 # PILOT - nothing to merge
 
+# Simplify output TableC
+table_c_expanded = table_c_expanded %>%
+  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
+         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
+         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
+colnames(table_c_expanded)[1] = "platekey" 
+colnames(table_c_expanded)[3] = "repeat_size" 
+write.table(table_c_expanded, "subtables/TableC_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
 ################################################################################################################################################################
 # TABLE D
