@@ -26,9 +26,10 @@ table_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 
                                             "Congenital myopathy", "Early onset dementia", "Early onset dystonia", 
                                             "Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
                                             "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
-                                            "'Early onset and familial Parkinson''s Disease'"))
+                                            "'Early onset and familial Parkinson''s Disease'",
+                                            "Kabuki syndrome"))
 dim(table_diseases)
-# 11249  16
+# 11279  16
 
 table(table_diseases$normalised_specific_disease)
 
