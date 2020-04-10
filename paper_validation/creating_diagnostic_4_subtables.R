@@ -326,3 +326,24 @@ rownames(matrix_to_print) = l_diseases_tableA
 colnames(matrix_to_print) = l_genes_tableA
 
 write.table(matrix_to_print, "./subtables/tableA_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
+
+# This is the raw data for Table A - PILOT
+# Let's do numbers for each locus and disease
+matrix_to_print_pilot = matrix(ncol = 11, nrow = 8)
+for(i in 1:length(l_diseases_tableA)){
+  for (j in 1:length(l_genes_tableA)){
+      number_to_print = table_a_pilot_expanded %>% 
+      filter(specificDisease %in% l_diseases_tableA[i], gene %in% l_genes_tableA[j]) %>% 
+      select(gelID) %>% unique() %>% pull() %>% length()
+    
+    print(l_diseases_tableA[i])
+    print(l_genes_tableA[j])
+    print(number_to_print)
+    matrix_to_print_pilot[i,j] = number_to_print
+  }
+}
+
+rownames(matrix_to_print_pilot) = l_diseases_tableA
+colnames(matrix_to_print_pilot) = l_genes_tableA
+
+write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
