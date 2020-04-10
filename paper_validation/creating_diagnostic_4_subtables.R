@@ -396,6 +396,22 @@ for (i in 1:length(l_genes_tableB)){
 dim(expanded_table_main)
 # 28  5
 
+# separate platekeys
+expanded_table_main_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_main$gene)){
+  list_affected_vcf = strsplit(expanded_table_main$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_main_per_locus = rbind(expanded_table_main_per_locus,
+                                          expanded_table_main[i,])
+    expanded_table_main_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
+dim(expanded_table_main_per_locus)
+# 187  5
+
 
 ################################################################################################################################################################
 # TABLE C
