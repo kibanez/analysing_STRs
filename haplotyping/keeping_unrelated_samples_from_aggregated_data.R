@@ -67,3 +67,10 @@ list_unrelated_EAS = popu_table %>%
 length(list_unrelated_EAS)
 # 90
 
+list_unrelated_AFR = popu_table %>%
+  filter(ID %in% list_unrelated_platekeys, self_reported %in% "African") %>%
+  select(ID) %>%
+  unique() %>%
+  pull()
+length(list_unrelated_AFR)
+# 1014
