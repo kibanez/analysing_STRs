@@ -55,7 +55,7 @@ dim(repeats_table_main)
 # 3983  11
 
 # Load the pathogenic threshold for the loci
-gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt",
+gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pathogenic_reported.txt",
                                      sep = "\t",
                                      stringsAsFactors = F)
 
@@ -98,5 +98,21 @@ length(l_platekeys_tableA)
 # 3507
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
-expanded_tableA = 
+expanded_table_main = data.frame()
+for (i in 1:length(l_genes_tableA)){
+  locus_name = l_genes_tableA[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_main = rbind(expanded_table_main,
+                              repeats_table_main %>% 
+                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
 
