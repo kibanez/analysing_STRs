@@ -375,6 +375,16 @@ table_c_pilot = table_diseases_pilot %>%
 dim(table_c_pilot)
 # 241  15
 
+# Let's define the list of genes for Table C
+l_genes_tableA = c("DMPK_CTG")
+
+# How many PIDs in the Main?
+length(unique(table_c$participant_id))
+# 7317
+
+# How many PIDs are in the Pilot?
+length(unique(table_c_pilot$plateKey))
+# 240 
 
 
 ################################################################################################################################################################
