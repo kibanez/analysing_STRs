@@ -155,7 +155,36 @@ table_a_expanded = left_join(expanded_table_main_in_tableA,
 dim(table_a_expanded)
 # 120  25
 
+# Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
+# We also focus on our list of genes
+table_a_expanded = table_a_expanded %>%
+  filter(gene %in% l_genes_tableA)
+dim(table_a_expanded)
+# 120  25
 
+# Focus ONLY in adults
+# FXN exception
+table_a_FXN = table_a_expanded %>%
+  filter(gene %in% "FXN_GAA")
+dim(table_a_FXN)  
+# 53  25
 
+table_a_expanded = table_a_expanded %>%
+  filter(adult.paediatric %in% "Adult")
+dim(table_a_expanded)
+# 107  25
 
+table_a_expanded = rbind(table_a_expanded,
+                         table_a_FXN)
+table_a_expanded = unique(table_a_expanded)
+dim(table_a_expanded)
+# 112 225
 
+# Simplify output TableA
+table_a_expanded = table_a_expanded %>%
+  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
+         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
+         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
+colnames(table_a_expanded) = c()
+
+write.table(table_a_expanded, "subtables/TableA_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
