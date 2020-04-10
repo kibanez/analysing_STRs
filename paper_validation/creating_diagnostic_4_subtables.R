@@ -96,6 +96,19 @@ l_diseases_tableA = unique(table_a$normalised_specific_disease)
 length(l_diseases_tableA)
 # 8
 
+# select diseases we are interested for TABLE A - PILOT
+table_a_pilot = table_diseases_pilot %>%
+  filter(specificDisease %in% c("Amyotrophic lateral sclerosis/motor neuron disease",
+                                "Charcot-Marie-Tooth disease",
+                                "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                                "Early onset dystonia",
+                                "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                "Hereditary ataxia",
+                                "Hereditary spastic paraplegia",
+                                "Early onset and familial Parkinson's Disease"))
+dim(table_a_pilot)
+# 418  15
+
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
 
@@ -193,7 +206,7 @@ dim(expanded_table_main_in_tableA)
 
 # The same por PILOT
 expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableA)
+  filter(list_samples %in% l_platekeys_tableA_pilot)
 dim(expanded_table_pilot_in_tableA)
 # 0  5
 
