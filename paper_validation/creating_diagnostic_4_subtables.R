@@ -117,11 +117,20 @@ l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", 
 length(unique(table_a$participant_id))
 # 3507
 
+# How many PIDs are in the Pilot?
+length(unique(table_a_pilot$plateKey))
+# 408
+
 # List of platekeys
 # After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
 l_platekeys_tableA = unique(table_a$plate_key.x)
 length(l_platekeys_tableA)
 # 3507
+
+# PILOT
+l_platekeys_tableA_pilot = unique(table_a_pilot$plateKey)
+length(l_platekeys_tableA_pilot)
+# 408
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
 expanded_table_main = data.frame()
