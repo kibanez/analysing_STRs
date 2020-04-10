@@ -269,6 +269,43 @@ colnames(table_a_expanded)[3] = "repeat_size"
 
 write.table(table_a_expanded, "subtables/TableA_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
 
+# PILOT
+# Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
+# We also focus on our list of genes
+table_a_pilot_expanded = table_a_pilot_expanded %>%
+  filter(gene %in% l_genes_tableA)
+dim(table_a_pilot_expanded)
+# 12  19
+
+# Focus ONLY in adults
+# FXN exception
+table_a_pilot_FXN = table_a_pilot_expanded %>%
+  filter(gene %in% "FXN_GAA")
+dim(table_a_pilot_FXN)  
+# 9  19
+
+table_a_pilot_expanded = table_a_pilot_expanded %>%
+  filter(adult.paediatric %in% "Adult")
+dim(table_a_pilot_expanded)
+# 12  19
+
+table_a_pilot_expanded = rbind(table_a_pilot_expanded,
+                               table_a_pilot_FXN)
+table_a_pilot_expanded = unique(table_a_pilot_expanded)
+dim(table_a_pilot_expanded)
+# 12  19
+
+# Simplify output PILOT TableA
+table_a_pilot_expanded = table_a_pilot_expanded %>%
+  select(list_samples, gene, allele, Repeat_Motif, gelID, gelFamilyId.x, sex, biological_relation_to_proband, disease_status, yearOfBirth, specificDisease, ageOfOnset,
+         qc_state, panel_list, bestGUESS_sub_pop, bestGUESS_super_pop, age, adult.paediatric)
+colnames(table_a_pilot_expanded)[1] = "platekey" 
+colnames(table_a_pilot_expanded)[3] = "repeat_size" 
+
+
+write.table(table_a_pilot_expanded, "subtables/TableA_pilot.csv", quote = F, row.names = F, col.names = T, sep = ",")
+
+
 # This is the raw data for Table A - Main
 # Let's do numbers for each locus and disease
 matrix_to_print = matrix(ncol = 11, nrow = 8)
