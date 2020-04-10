@@ -412,6 +412,27 @@ expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
 # 187  5
 
+# From the expanded table, let's see how many are in l_platekeys_tableB
+expanded_table_main_in_tableB = expanded_table_main_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableB)
+dim(expanded_table_main_in_tableB)
+# 9  5
+
+# Let' enrich expanded TABLE B repeats with clinical data from `table_b`
+table_b_expanded = left_join(expanded_table_main_in_tableB,
+                             table_b,
+                             by = c("list_samples" = "plate_key.x"))
+dim(table_b_expanded)
+# 10  25
+
+# Simplify output TableB
+table_b_expanded = table_b_expanded %>%
+  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
+         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
+         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
+colnames(table_b_expanded)[1] = "platekey" 
+colnames(table_b_expanded)[3] = "repeat_size" 
+write.table(table_b_expanded, "subtables/TableB_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 ################################################################################################################################################################
 # TABLE C
