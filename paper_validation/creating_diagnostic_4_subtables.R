@@ -517,6 +517,43 @@ colnames(matrix_to_print) = l_genes_tableC
 
 write.table(matrix_to_print, "./subtables/tableC_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
 
-
 ################################################################################################################################################################
-# TABLE D
+# TABLE D. only including children recruited under ID (using >55. as cutoff)	
+# FMR1
+# Intellectual disability	
+
+# MAIN
+table_d = table_diseases %>%
+  filter(normalised_specific_disease %in% c("Intellectual disability"))
+dim(table_d)
+# 6860  21
+
+# PILOT
+table_d_pilot = table_diseases_pilot %>%
+  filter(specificDisease %in% c("Intellectual disability"))
+dim(table_d_pilot)
+# 160  15
+
+# Let's define the list of genes for Table C
+l_genes_tableD = c("FMR1_CGG")
+
+# How many PIDs in the Main?
+length(unique(table_d$participant_id))
+# 6542
+
+# How many PIDs are in the Pilot?
+length(unique(table_d_pilot$plateKey))
+# 160
+
+l_platekeys_tableD = unique(table_d$plate_key.x)
+l_platekeys_tableD_pilot = unique(table_d_pilot$plateKey)
+
+
+
+
+
+
+
+
+
+
