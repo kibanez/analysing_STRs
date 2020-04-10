@@ -621,6 +621,26 @@ expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
 dim(expanded_table_pilot_per_locus)
 # 88  5
 
+# From the expanded table, let's see how many are in l_platekeys_tableC
+expanded_table_main_in_tableD = expanded_table_main_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableD)
+dim(expanded_table_main_in_tableD)
+# 135  5
+
+# The same por PILOT
+expanded_table_pilot_in_tableD = expanded_table_pilot_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableD_pilot)
+dim(expanded_table_pilot_in_tableD)
+# 0  5
+
+# Let' enrich expanded TABLE C repeats with clinical data from `table_a`
+table_d_expanded = left_join(expanded_table_main_in_tableD,
+                             table_d,
+                             by = c("list_samples" = "plate_key.x"))
+dim(table_d_expanded)
+# 143  25
+
+# PILOT - nothing to merge
 
 
 
