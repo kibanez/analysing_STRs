@@ -185,6 +185,28 @@ table_a_expanded = table_a_expanded %>%
   select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
          affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
          panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
-colnames(table_a_expanded) = c()
+colnames(table_a_expanded)[1] = "platekey" 
+colnames(table_a_expanded)[3] = "repeat_size" 
+
 
 write.table(table_a_expanded, "subtables/TableA_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
+
+# This is the raw data for Table A - Main
+# Let's do numbers for each locus and disease
+matrix_to_print = matrix(ncol = 11, nrow = 8)
+for(i in 1:length(l_diseases_tableA)){
+  for (j in 1:length(l_genes_tableA)){
+    number_to_print = table_a_expanded %>% 
+      filter(normalised_specific_disease %in% l_diseases_tableA[i], gene %in% l_genes_tableA[j]) %>% 
+      select(participant_id) %>% unique() %>% pull() %>% length()
+    
+    print(l_diseases_tableA[i])
+    print(l_genes_tableA[j])
+    print(number_to_print)
+    matrix_to_print[i,j] = number_to_print
+  }
+}
+
+rownames(matrix_to_print) = l_diseases_tableA
+colnames(matrix_to_print) = l_genes_tableA
+
