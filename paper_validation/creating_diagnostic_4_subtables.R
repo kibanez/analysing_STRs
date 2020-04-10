@@ -62,7 +62,7 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
 # Let's define now the 4 subtables for the purpose of the paper
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
 # (OR YOU CAN PRODUCE A TABLE USING THE PREMUTATION CUTOFF, BUT I SUSPOECT IT WILL BE VERY NOISY AND WOULD NOT REFELCT THE THRESHOLDS THAT PANELAPP IS CURRENTLY USING)
-l_genes = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
 # select diseases we are interested for TABLE A
 table_a = table_diseases %>%
   filter(normalised_specific_disease %in% c("Amyotrophic lateral sclerosis or motor neuron disease", 
@@ -83,7 +83,15 @@ table_a = rbind(table_a,
 dim(table_a)
 # 3659  21
 
+# How many PIDs in the Main?
+length(unique(table_a$participant_id))
+# 3507
 
+# List of platekeys
+l_platekeys_tableA= unique(table_a$plate_key.x)
+length(l_platekeys_tableA)
+# 3507
 
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
 
 
