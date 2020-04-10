@@ -386,6 +386,9 @@ length(unique(table_c$participant_id))
 length(unique(table_c_pilot$plateKey))
 # 240 
 
+l_platekeys_tableC = unique(table_c$plate_key.x)
+l_platekeys_tableC_pilot = unique(table_c_pilot$plateKey)
+
 # Now, we want to see how many of them have an expansion on any of the genes in `DMPK` (cutoff >= 50)
 expanded_table_main = data.frame()
 for (i in 1:length(l_genes_tableC)){
@@ -461,6 +464,26 @@ expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
 dim(expanded_table_pilot_per_locus)
 # 2  5
 
+# From the expanded table, let's see how many are in l_platekeys_tableC
+expanded_table_main_in_tableC = expanded_table_main_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableC)
+dim(expanded_table_main_in_tableC)
+# 16  5
+
+# The same por PILOT
+expanded_table_pilot_in_tableC = expanded_table_pilot_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableC_pilot)
+dim(expanded_table_pilot_in_tableC)
+# 0  5
+
+# Let' enrich expanded TABLE C repeats with clinical data from `table_a`
+table_c_expanded = left_join(expanded_table_main_in_tableC,
+                             table_c,
+                             by = c("list_samples" = "plate_key.x"))
+dim(table_c_expanded)
+# 16  25
+
+# PILOT - nothing to merge
 
 ################################################################################################################################################################
 # TABLE D
