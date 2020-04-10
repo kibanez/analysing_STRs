@@ -217,7 +217,7 @@ dim(expanded_table_main_in_tableA)
 expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA_pilot)
 dim(expanded_table_pilot_in_tableA)
-# 0  5
+# 12  5
 
 # Let' enrich expanded TABLE A repeats with clinical data from `table_a`
 table_a_expanded = left_join(expanded_table_main_in_tableA,
@@ -225,6 +225,13 @@ table_a_expanded = left_join(expanded_table_main_in_tableA,
                     by = c("list_samples" = "plate_key.x"))
 dim(table_a_expanded)
 # 120  25
+
+# PILOT
+table_a_pilot_expanded = left_join(expanded_table_pilot_in_tableA,
+                                   table_a_pilot,
+                                   by = c("list_samples" = "plateKey"))
+dim(table_a_pilot_expanded)
+# 12  19
 
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
 # We also focus on our list of genes
