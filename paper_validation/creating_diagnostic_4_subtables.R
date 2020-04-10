@@ -63,5 +63,27 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
 # (OR YOU CAN PRODUCE A TABLE USING THE PREMUTATION CUTOFF, BUT I SUSPOECT IT WILL BE VERY NOISY AND WOULD NOT REFELCT THE THRESHOLDS THAT PANELAPP IS CURRENTLY USING)
 l_genes = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+# select diseases we are interested for TABLE A
+table_a = table_diseases %>%
+  filter(normalised_specific_disease %in% c("Amyotrophic lateral sclerosis or motor neuron disease", 
+                                            "Charcot-Marie-Tooth disease",
+                                            "Early onset dementia", 
+                                            "Early onset dystonia", 
+                                            "Complex Parkinsonism", 
+                                            "Hereditary ataxia", 
+                                            "Hereditary spastic paraplegia",
+                                            "'Early onset and familial Parkinson''s Disease'"))
+dim(table_a)
+# 3518  21
+
+# Complex parkinsonism is missing here
+table_a = rbind(table_a,
+                table_diseases %>%
+                  filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
+dim(table_a)
+# 3659  21
+
+
+
 
 
