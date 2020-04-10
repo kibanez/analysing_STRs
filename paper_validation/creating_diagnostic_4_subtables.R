@@ -347,3 +347,35 @@ rownames(matrix_to_print_pilot) = l_diseases_tableA
 colnames(matrix_to_print_pilot) = l_genes_tableA
 
 write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
+
+################################################################################################################################################################
+# TABLE B
+
+################################################################################################################################################################
+# TABLE C
+# patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
+
+# MAIN
+table_c = table_diseases %>%
+  filter(normalised_specific_disease %in% c("Intellectual disability",
+                                            "Congenital muscular dystrophy",
+                                            "Congenital myopathy",
+                                            "Skeletal Muscle Channelopathies",
+                                            "Distal myopathies"))
+dim(table_c)
+# 7665  21
+
+# PILOT
+table_c_pilot = table_diseases_pilot %>%
+  filter(specificDisease %in% c("Intellectual disability",
+                                "Congenital muscular dystrophy",
+                                "Congenital myopathy",
+                                "Skeletal Muscle Channelopathies",
+                                "Distal myopathies"))
+dim(table_c_pilot)
+# 241  15
+
+
+
+################################################################################################################################################################
+# TABLE D
