@@ -680,7 +680,7 @@ for (i in 1:length(l_genes_tableD)){
   
 }
 dim(expanded_table_main)
-# 79  5
+# 113  5
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
 expanded_table_pilot = data.frame()
@@ -717,7 +717,7 @@ for (i in 1:length(expanded_table_main$gene)){
 }
 expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
-# 1970  5
+# 2147  5
 
 # The same for PILOT
 expanded_table_pilot_per_locus = data.frame()
@@ -739,7 +739,7 @@ dim(expanded_table_pilot_per_locus)
 expanded_table_main_in_tableD = expanded_table_main_per_locus %>%
   filter(list_samples %in% l_platekeys_tableD)
 dim(expanded_table_main_in_tableD)
-# 135  5
+# 159  5
 
 # The same por PILOT
 expanded_table_pilot_in_tableD = expanded_table_pilot_per_locus %>%
@@ -752,7 +752,7 @@ table_d_expanded = left_join(expanded_table_main_in_tableD,
                              table_d,
                              by = c("list_samples" = "plate_key.x"))
 dim(table_d_expanded)
-# 143  25
+# 170  25
 
 # PILOT - nothing to merge
 
@@ -765,13 +765,13 @@ colnames(table_d_expanded)[1] = "platekey"
 colnames(table_d_expanded)[3] = "repeat_size" 
 
 dim(table_d_expanded)
-# 143  24
+# 170  24
 
 # we need to only include children recruited under ID
 table_d_expanded = table_d_expanded %>%
   filter(adult.paediatric %in% "Paediatric")
 dim(table_d_expanded)
-# 110 24
+# 132 24
 
 write.table(table_d_expanded, "subtables/TableD_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
