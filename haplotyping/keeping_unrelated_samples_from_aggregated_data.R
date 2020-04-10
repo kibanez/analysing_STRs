@@ -48,3 +48,11 @@ length(list_unrelated_platekeys)
 
 # Write it into a file
 write.table(list_unrelated_platekeys, "list_33714_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
+
+# Write each unrelated list of genomes for each super population
+
+list_unrelated_EUR = popu_table %>%
+  filter(ID %in% list_unrelated_platekeys, self_reported %in% "European") %>%
+  select(ID) %>%
+  unique() %>%
+  pull()
