@@ -475,6 +475,7 @@ dim(table_c)
 # PILOT
 table_c_pilot = table_diseases_pilot %>%
   filter(specificDisease %in% c("Intellectual disability",
+                                "Kabuki syndrome",
                                 "Congenital muscular dystrophy",
                                 "Congenital myopathy",
                                 "Skeletal Muscle Channelopathies",
