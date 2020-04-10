@@ -54,6 +54,13 @@ repeats_table_main = read.csv("~/Documents/STRs/data/research/EH_2.5.5_research_
 dim(repeats_table_main)
 # 3983  11
 
+repeats_table_pilot = read.csv("~/Documents/STRs/data/pilot/EH-offtarget-v2.5.5-Pilot_October2018/merged/merged_loci_4833_Pilot_genomes_EHv2.5.5.tsv",
+                               stringsAsFactors = F, 
+                               header = T,
+                               sep = "\t")
+dim(repeats_table_pilot)
+# 912  11
+
 # Load the pathogenic threshold for the loci
 gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pathogenic_reported.txt",
                                      sep = "\t",
