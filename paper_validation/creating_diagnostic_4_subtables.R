@@ -481,18 +481,18 @@ table_c_pilot = table_diseases_pilot %>%
                                 "Skeletal Muscle Channelopathies",
                                 "Distal myopathies"))
 dim(table_c_pilot)
-# 241  15
+# 242  15
 
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
 
 # How many PIDs in the Main?
 length(unique(table_c$participant_id))
-# 7317
+# 7345
 
 # How many PIDs are in the Pilot?
 length(unique(table_c_pilot$plateKey))
-# 240 
+# 241
 
 l_platekeys_tableC = unique(table_c$plate_key.x)
 l_platekeys_tableC_pilot = unique(table_c_pilot$plateKey)
@@ -634,13 +634,14 @@ table_d = table_diseases %>%
   filter(normalised_specific_disease %in% c("Intellectual disability",
                                             "Kabuki syndrome"))
 dim(table_d)
-# 6862  21
+# 6890  21
 
 # PILOT
 table_d_pilot = table_diseases_pilot %>%
-  filter(specificDisease %in% c("Intellectual disability"))
+  filter(specificDisease %in% c("Intellectual disability",
+                                "Kabuki syndrome"))
 dim(table_d_pilot)
-# 160  15
+# 161  15
 
 # Let's define the list of genes for Table C
 l_genes_tableD = c("FMR1_CGG")
