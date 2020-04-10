@@ -142,10 +142,20 @@ expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
 # 1571  5
 
+# From the expanded table, let's see how many are in l_platekeys_tableA
+expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableA)
+dim(expanded_table_main_in_tableA)
+# 114  5
+
+# Let' enrich expanded TABLE A repeats with clinical data from `table_a`
+table_a_expanded = left_join(expanded_table_main_in_tableA,
+                    table_a,
+                    by = c("list_samples" = "plate_key.x"))
+dim(table_a_expanded)
+# 120  25
 
 
-expanded_table_main %>%
-  filter(grepl(l_platekeys_tableA, list_samples))
 
 
 
