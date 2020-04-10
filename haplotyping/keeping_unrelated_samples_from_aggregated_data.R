@@ -56,3 +56,14 @@ list_unrelated_EUR = popu_table %>%
   select(ID) %>%
   unique() %>%
   pull()
+length(list_unrelated_EUR)
+# 25249
+
+list_unrelated_EAS = popu_table %>%
+  filter(ID %in% list_unrelated_platekeys, self_reported %in% "East Asian") %>%
+  select(ID) %>%
+  unique() %>%
+  pull()
+length(list_unrelated_EAS)
+# 90
+
