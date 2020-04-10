@@ -60,9 +60,10 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
                                      stringsAsFactors = F)
 
 # Let's define now the 4 subtables for the purpose of the paper
+
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
 # (OR YOU CAN PRODUCE A TABLE USING THE PREMUTATION CUTOFF, BUT I SUSPOECT IT WILL BE VERY NOISY AND WOULD NOT REFELCT THE THRESHOLDS THAT PANELAPP IS CURRENTLY USING)
-l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+
 # select diseases we are interested for TABLE A
 table_a = table_diseases %>%
   filter(normalised_specific_disease %in% c("Amyotrophic lateral sclerosis or motor neuron disease", 
@@ -88,12 +89,17 @@ l_diseases_tableA = unique(table_a$normalised_specific_disease)
 length(l_diseases_tableA)
 # 8
 
+# Let's define the list of genes for Table A
+l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+
+
 # How many PIDs in the Main?
 length(unique(table_a$participant_id))
 # 3507
 
 # List of platekeys
-l_platekeys_tableA= unique(table_a$plate_key.x)
+# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
+l_platekeys_tableA = unique(table_a$plate_key.x)
 length(l_platekeys_tableA)
 # 3507
 
@@ -115,4 +121,11 @@ for (i in 1:length(l_genes_tableA)){
                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
   
 }
+dim(expanded_table_main)
+# 310  5
+
+# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
+l_platekeys_tableA = unique(table_a$plate_key.x)
+
+
 
