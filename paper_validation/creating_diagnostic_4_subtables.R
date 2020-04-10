@@ -267,7 +267,7 @@ colnames(table_a_expanded)[1] = "platekey"
 colnames(table_a_expanded)[3] = "repeat_size" 
 
 
-write.table(table_a_expanded, "subtables/TableA_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
+write.table(table_a_expanded, "subtables/TableA_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # PILOT
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
@@ -303,7 +303,7 @@ colnames(table_a_pilot_expanded)[1] = "platekey"
 colnames(table_a_pilot_expanded)[3] = "repeat_size" 
 
 
-write.table(table_a_pilot_expanded, "subtables/TableA_pilot.csv", quote = F, row.names = F, col.names = T, sep = ",")
+write.table(table_a_pilot_expanded, "subtables/TableA_pilot.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 
 # This is the raw data for Table A - Main
@@ -491,7 +491,7 @@ table_c_expanded = table_c_expanded %>%
          panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
 colnames(table_c_expanded)[1] = "platekey" 
 colnames(table_c_expanded)[3] = "repeat_size" 
-write.table(table_c_expanded, "subtables/TableC_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
+write.table(table_c_expanded, "subtables/TableC_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # This is the raw data for Table C - Main
 # Let's do numbers for DMPK and disease
@@ -523,9 +523,10 @@ write.table(matrix_to_print, "./subtables/tableC_main_for_excel.tsv", sep = "\t"
 
 # MAIN
 table_d = table_diseases %>%
-  filter(normalised_specific_disease %in% c("Intellectual disability"))
+  filter(normalised_specific_disease %in% c("Intellectual disability",
+                                            "Kabuki syndrome"))
 dim(table_d)
-# 6860  21
+# 6862  21
 
 # PILOT
 table_d_pilot = table_diseases_pilot %>%
@@ -538,7 +539,7 @@ l_genes_tableD = c("FMR1_CGG")
 
 # How many PIDs in the Main?
 length(unique(table_d$participant_id))
-# 6542
+# 6543
 
 # How many PIDs are in the Pilot?
 length(unique(table_d_pilot$plateKey))
@@ -659,7 +660,7 @@ table_d_expanded = table_d_expanded %>%
 dim(table_d_expanded)
 # 110 24
 
-write.table(table_d_expanded, "subtables/TableD_main.csv", quote = F, row.names = F, col.names = T, sep = ",")
+write.table(table_d_expanded, "subtables/TableD_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # This is the raw data for Table D- Main
 # Let's do numbers for FMR1 and Intellectual disability
