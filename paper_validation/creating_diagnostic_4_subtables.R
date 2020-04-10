@@ -154,7 +154,6 @@ dim(expanded_table_pilot)
 
 # After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
 # And also, focus only in the list of platekeys of Table A
-
 expanded_table_main_per_locus = data.frame()
 index_kutre = 1
 for (i in 1:length(expanded_table_main$gene)){
@@ -170,11 +169,33 @@ expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
 # 1571  5
 
+# The same for PILOT
+expanded_table_pilot_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_pilot$gene)){
+  list_affected_vcf = strsplit(expanded_table_pilot$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_pilot_per_locus = rbind(expanded_table_pilot_per_locus,
+                                           expanded_table_pilot[i,])
+    expanded_table_pilot_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
+dim(expanded_table_pilot_per_locus)
+# 88  5
+
 # From the expanded table, let's see how many are in l_platekeys_tableA
 expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA)
 dim(expanded_table_main_in_tableA)
 # 114  5
+
+# The same por PILOT
+expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableA)
+dim(expanded_table_pilot_in_tableA)
+# 0  5
 
 # Let' enrich expanded TABLE A repeats with clinical data from `table_a`
 table_a_expanded = left_join(expanded_table_main_in_tableA,
