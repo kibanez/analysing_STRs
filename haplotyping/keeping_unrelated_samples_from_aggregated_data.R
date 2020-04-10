@@ -93,3 +93,10 @@ list_unrelated_SAS = popu_table %>%
 length(list_unrelated_SAS)
 # 2897
 
+# Write into files
+write.table(list_unrelated_EUR, "list_EUR_28153_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
+write.table(list_unrelated_EAS, "list_EAS_241_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
+write.table(list_unrelated_AFR, "list_AFR_1458_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
+write.table(list_unrelated_AMR, "list_AMR_965_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
+write.table(list_unrelated_SAS, "list_SAS_2897_unrelated_genomes.txt", quote = F, col.names = F, row.names = F)
+
