@@ -83,6 +83,11 @@ table_a = rbind(table_a,
 dim(table_a)
 # 3659  21
 
+# Let's define list of diseases for Table A, as we have done for the genes
+l_diseases_tableA = unique(table_a$normalised_specific_disease)
+length(l_diseases_tableA)
+# 8
+
 # How many PIDs in the Main?
 length(unique(table_a$participant_id))
 # 3507
@@ -93,5 +98,5 @@ length(l_platekeys_tableA)
 # 3507
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
-
+expanded_tableA = 
 
