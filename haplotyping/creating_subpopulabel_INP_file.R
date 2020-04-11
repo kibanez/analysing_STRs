@@ -112,4 +112,9 @@ writeLines(as.character(l_superpopus), fileConn, sep = ' ')
 close(fileConn)
 
 # Print the association of subpopulations and subpopulation labels
+to_print = popu_1kg %>% select(sub_populations_labels, sub_populations)
 write.table(to_print, "./list_subpopulations_subpopulation_labels.txt", quote = F, row.names = F, col.names = F, sep = "\t")
+
+# Print the association of superpopulations and superpopulation labels
+to_print = popu_1kg %>% select(superpopulations_labels, superpopulations)
+write.table(to_print, "./list_superpopulations_superpopulation_labels.txt", quote = F, row.names = F, col.names = F, sep = "\t")
