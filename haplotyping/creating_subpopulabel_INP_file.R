@@ -57,5 +57,20 @@ popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCEST
 dim(popu_table)
 # 59464  36
 
+# Dataframe with <PLATEKEY> and <BEST GUESS SUBPOPU>
+df_platekey_popu = popu_table %>%
+  filter(ID %in% list_platekeys) %>%
+  select(ID, best_guess_predicted_ancstry)
+
+# Merge with labels
+df_platekey_popu = left_join(df_platekey_popu,
+                             popu_1kg,
+                             by = c("best_guess_predicted_ancstry" = "sub_populations"))
+dim(df_platekey_popu)
+# 33714  5
+
+
+
+
 
 
