@@ -110,3 +110,6 @@ close(fileConn)
 fileConn<-file("./60k_GRCH38_germline_mergedgVCF_chrX_67495316_67595385_unrelated_superpopus_labels.inp")
 writeLines(as.character(l_superpopus), fileConn, sep = ' ')
 close(fileConn)
+
+# Print the association of subpopulations and subpopulation labels
+write.table(to_print, "./list_subpopulations_subpopulation_labels.txt", quote = F, row.names = F, col.names = F, sep = "\t")
