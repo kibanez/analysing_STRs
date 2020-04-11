@@ -43,3 +43,9 @@ popu_1kg = data.frame(cbind(superpopulations,
 
 popu_1kg$sub_populations_labels = as.integer(popu_1kg$sub_populations_labels)
 popu_1kg$superpopulations_labels = as.integer(popu_1kg$superpopulations_labels)
+
+# Load list of platekeys within VCF fo run through fastPHASE
+list_platekeys = read.table("./list_33714_platekeys.txt", stringsAsFactors = F)
+list_platekeys = list_platekeys$V1
+length(list_platekeys)
+# 33714
