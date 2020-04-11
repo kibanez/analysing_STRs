@@ -49,3 +49,13 @@ list_platekeys = read.table("./list_33714_platekeys.txt", stringsAsFactors = F)
 list_platekeys = list_platekeys$V1
 length(list_platekeys)
 # 33714
+
+# Load popu table
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_table)
+# 59464  36
+
+
+
