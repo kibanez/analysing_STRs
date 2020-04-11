@@ -70,29 +70,43 @@ dim(df_platekey_popu)
 # 33714  5
 
 # Take the SUBPOPU labels for the list of platekeys KEEPING THE SAME ORDER!!!
-index_platekeys = which(df_platekey_popu$ID %in% list_platekeys)
+index_platekeys = which(df_platekey_popu$ID == list_platekeys)
 
-# List of subpopus
-l_subpopus = df_platekey_popu$sub_populations_labels[index_platekeys]
+# Are identical?
+identical(list_platekeys, df_platekey_popu$ID)
+# FALSE 
 
-# List of superpopus
-l_superpopus = df_platekey_popu$superpopulations_labels[index_platekeys]
+identical(list_platekeys, df_platekey_popu$ID[index_platekeys])
+# FALSE 
+
+# Since it does not keep the same order I'll do it in cromagnon style
+l_subpopus = c()
+for(i in 1:length(list_platekeys)){
+  l_subpopus = c(l_subpopus,
+                 df_platekey_popu %>%
+                   filter(ID %in% list_platekeys[i]) %>%
+                   select(sub_populations_labels) %>%
+                   pull())
+}
+length(l_subpopus)
+# 33714
+
+l_superpopus = c()
+for(i in 1:length(list_platekeys)){
+  l_superpopus = c(l_superpopus,
+                 df_platekey_popu %>%
+                   filter(ID %in% list_platekeys[i]) %>%
+                   select(superpopulations_labels) %>%
+                   pull())
+}
+length(l_superpopus)
+# 33714
 
 # Write into files
-# Need to change `\n` for ' ' a posteriori
-write.table(l_subpopus, 
-            "./60k_GRCH38_germline_mergedgVCF_chrX_67495316_67595385_unrelated_subpopus_labels.inp",
-            quote = F,
-            sep = "\n",
-            row.names = F,
-            col.names = F)
+fileConn<-file("./60k_GRCH38_germline_mergedgVCF_chrX_67495316_67595385_unrelated_subpopus_labels.inp")
+writeLines(as.character(l_subpopus), fileConn, sep = ' ')
+close(fileConn)
 
-write.table(l_superpopus, 
-            "./60k_GRCH38_germline_mergedgVCF_chrX_67495316_67595385_unrelated_superpopus_labels.inp",
-            quote = F,
-            sep = "\n",
-            row.names = F,
-            col.names = F)
-
-
-
+fileConn<-file("./60k_GRCH38_germline_mergedgVCF_chrX_67495316_67595385_unrelated_superpopus_labels.inp")
+writeLines(as.character(l_superpopus), fileConn, sep = ' ')
+close(fileConn)
