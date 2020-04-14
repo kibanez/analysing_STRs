@@ -260,7 +260,7 @@ table_a_expanded = rbind(table_a_expanded,
                          table_a_FXN)
 table_a_expanded = unique(table_a_expanded)
 dim(table_a_expanded)
-# 112 225
+# 112 25
 
 # Simplify output TableA
 table_a_expanded = table_a_expanded %>%
@@ -357,7 +357,7 @@ write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep
 # We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
 
 # load list of 2449 PIDs 
-l_complex_ID_group2 = read.table("list_2459_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
+l_complex_ID_group2 = read.table("list_2576_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
 l_complex_ID_group2 = l_complex_ID_group2$V1
 length(l_complex_ID_group2)
 # 2459
