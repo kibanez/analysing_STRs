@@ -43,7 +43,7 @@ table(parkinson_to_enrich$normalised_specific_disease)
 
 table_diseases = rbind(table_diseases, parkinson_to_enrich)
 dim(table_diseases)
-# 11420  16
+# 11801  16
 
 write.table(table_diseases[ ,2], row.names = FALSE, col.names = FALSE, quote = FALSE, "./list_PIDs_table_diseases.txt")
 
@@ -53,7 +53,7 @@ table_diseases_dedup = table_diseases %>%
 
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 11080  3
+# 11432  3
 
 # Create new variable named latest_platekey
 table_diseases_dedup =  table_diseases_dedup %>%
@@ -65,11 +65,11 @@ table_diseases_dedup = table_diseases_dedup %>%
   select(participant_id, latest_platekey, genome_build)
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 11021  3
+# 11370  3
 
 list_duplicated_pid = table_diseases_dedup$participant_id[which(duplicated(table_diseases_dedup$participant_id))]
 length(list_duplicated_pid)
-# 188
+# 198
 
 # Take GRCh38 platekey for duplicate PIDs
 table_diseases_duplicates = table_diseases_dedup %>%
@@ -78,27 +78,28 @@ table_diseases_duplicates = table_diseases_dedup %>%
 table_diseases_duplicates = table_diseases_duplicates %>%
   filter(genome_build %in% "GRCh38")
 dim(table_diseases_duplicates)
-# 188  3
+# 198  3
 
 table_diseases_dedup = table_diseases_dedup %>%
   filter(!participant_id %in% list_duplicated_pid)
 dim(table_diseases_dedup)
-# 10645  3
+# 10974  3
 
 # merge
 table_diseases_dedup = rbind(table_diseases_dedup,
                              table_diseases_duplicates)
 
 dim(table_diseases_dedup)
-# 10833  3
+# 11172  3
 
 l_platekeys = table_diseases_dedup$latest_platekey
-# 10833
+length(l_platekeys)
+# 11172
 
 table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
   filter(plate_key.x %in% l_platekeys)
 dim(table_diseases_enriched)
-# 11870  16
+# 12254  16
 
 write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
@@ -183,7 +184,7 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
 
 table_diseases_enriched_popu = unique(table_diseases_enriched_popu)
 dim(table_diseases_enriched_popu)
-# 11870 19
+# 12254 19
 
 write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 write.table(table_diseases_pilot_popu, "table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
@@ -201,7 +202,7 @@ table_panels_row = table_diseases_enriched_popu %>%
   as.data.frame()
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 50415  7
+# 52302  7
 
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
 
@@ -213,7 +214,7 @@ table_panels_row$panels = recode(table_panels_row$panels,
 
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 47436  7
+# 49305  7
 
 
 # Group 1
@@ -225,9 +226,9 @@ l_pid_only_one_panel = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_only_one_panel)  
-# 2320
+# 2327
 
-# From 297 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
+# From 2327 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
 l_pid_ID_group1 = table_panels_row %>%
   filter(grepl("Intellectual disability", panel_list) & participant_id %in% l_pid_only_one_panel) %>%
   select(participant_id) %>%
@@ -273,9 +274,9 @@ l_ID_group2 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_ID_group2)
-# 2459
+# 2576
 
-write.table(l_ID_group2, "./list_2459_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
+write.table(l_ID_group2, "./list_2576_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
 
 
 
