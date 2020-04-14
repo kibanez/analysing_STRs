@@ -427,7 +427,7 @@ table_b_expanded = left_join(expanded_table_main_in_tableB,
                              table_b,
                              by = c("list_samples" = "plate_key.x"))
 dim(table_b_expanded)
-# 10  25
+# 12  25
 
 # Simplify output TableB
 table_b_expanded = table_b_expanded %>%
