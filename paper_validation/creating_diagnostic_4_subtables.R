@@ -360,15 +360,15 @@ write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep
 l_complex_ID_group2 = read.table("list_2576_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
 l_complex_ID_group2 = l_complex_ID_group2$V1
 length(l_complex_ID_group2)
-# 2459
+# 2576
 
 table_b = table_diseases %>%
   filter(participant_id %in% l_complex_ID_group2)
 dim(table_b)
-# 2834  21
+# 2962  21
 
 length(unique(table_b$plate_key.x))
-# 2459
+# 2576
 
 # Let's define the list of genes for Table B
 l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
@@ -420,7 +420,7 @@ dim(expanded_table_main_per_locus)
 expanded_table_main_in_tableB = expanded_table_main_per_locus %>%
   filter(list_samples %in% l_platekeys_tableB)
 dim(expanded_table_main_in_tableB)
-# 9  5
+# 11  5
 
 # Let' enrich expanded TABLE B repeats with clinical data from `table_b`
 table_b_expanded = left_join(expanded_table_main_in_tableB,
