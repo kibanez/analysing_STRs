@@ -27,9 +27,10 @@ table_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 
                                             "Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
                                             "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
                                             "'Early onset and familial Parkinson''s Disease'",
+                                            "Mitochondrial disorders",
                                             "Kabuki syndrome"))
 dim(table_diseases)
-# 11279  16
+# 11660  16
 
 table(table_diseases$normalised_specific_disease)
 
