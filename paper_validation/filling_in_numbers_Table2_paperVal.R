@@ -16,3 +16,10 @@ dim(table_diseases)
 # 11801  16
 
 # Load pilot table
+table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
+                                stringsAsFactors = F,
+                                header = T,
+                                sep = "\t")
+dim(table_diseases_pilot)
+# 660 13
+
