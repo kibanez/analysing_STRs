@@ -372,16 +372,36 @@ mean_age_main_female = table_diseases %>%
   pull() %>%
   mean()
 
-mean_age_pilot = table_diseases_pilot %>%
-  filter(gelID %in% l_pid_ID_kabuki_pilot) %>%
+mean_age_main_male = table_diseases %>%
+  filter(participant_id %in% l_main_male) %>%
   select(age) %>%
   pull() %>%
   mean()
 
-mean_merged = mean(mean_age_main,
-                   mean_age_pilot)
-print(mean_merged)
-# 13.33
+
+mean_age_pilot_female = table_diseases_pilot %>%
+  filter(gelID %in% l_pilot_female) %>%
+  select(age) %>%
+  pull() %>%
+  mean()
+
+mean_age_pilot_male = table_diseases_pilot %>%
+  filter(gelID %in% l_pilot_male) %>%
+  select(age) %>%
+  pull() %>%
+  mean()
+
+
+mean_merged_female = mean(mean_age_main_female,
+                   mean_age_pilot_female)
+
+mean_merged_male = mean(mean_age_main_male,
+                          mean_age_pilot_male)
+
+print(mean_merged_female)
+# 28.4
+print(mean_merged_male)
+# 25.4
 
 
 main_age_0_18 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age %in% c(0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
