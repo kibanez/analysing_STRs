@@ -24,7 +24,8 @@ dim(table_diseases_pilot)
 # 660 13
 
 # Counting number of participants, age (mean and distribution)
-# Create the list of diseases
+
+# Create the list of diseases in MAIN
 l_diseases_main = c("Intellectual disability",
                     "Amyotrophic lateral sclerosis or motor neuron disease", 
                     "Charcot-Marie-Tooth disease", 
@@ -33,7 +34,6 @@ l_diseases_main = c("Intellectual disability",
                     "Early onset dementia", 
                     "Early onset dystonia", 
                     "Distal myopathies", 
-                    "Complex Parkinsonism", 
                     "Hereditary ataxia", 
                     "Hereditary spastic paraplegia", 
                     "Skeletal Muscle Channelopathies",
@@ -41,10 +41,23 @@ l_diseases_main = c("Intellectual disability",
                     "Mitochondrial disorders",
                     "Kabuki syndrome")
 
-table_diseases %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(normalised_specific_disease) %>% unique() 
-#   normalised_specific_disease
-#           Hereditary ataxia
-table_diseases %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
-# 1038  
+for (i in 1:length(l_diseases_main)){
+  # Check we are ONLY analysing the corresponding `disease`
+  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(normalised_specific_disease) %>% unique() %>% print()
+  
+  # Number of UNIQUE participants
+  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+  
+  # Age: median
+  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(age) %>% unique() %>% pull() %>% length() %>% print()
+}
+
+# "Complex Parkinsonism" is different
+table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(normalised_specific_disease) %>% unique() %>% print()
+#normalised_specific_disease
+# Complex Parkinsonism (includes pallido-pyramidal syndromes)
+table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+# 139
+
 
 table_diseases_pilot %>% filter()
