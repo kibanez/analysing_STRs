@@ -24,6 +24,7 @@ dim(table_diseases_pilot)
 # 660 13
 
 # Define AGE, by using YOB
+table_diseases$year_of_birth = as.integer(table_diseases$year_of_birth)
 table_diseases = table_diseases %>%
   group_by(participant_id) %>%
   mutate(age = 2020 - year_of_birth) %>%
@@ -59,11 +60,36 @@ for (i in 1:length(l_diseases_main)){
   table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(normalised_specific_disease) %>% unique() %>% print()
   
   # Number of UNIQUE participants
-  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+  num_pid = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  print(num_pid)
   
   # Age: median
-  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(age) %>% unique() %>% pull() %>% length() %>% print()
+  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i]) %>% select(age) %>% pull() %>% mean() %>% print()
+  
+  # Age: 0-18 %
+  age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i], age > 0, age <= 18) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: 19-40%
+  age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i], age > 19, age <= 40) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: 41-60%
+  age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i], age > 41, age <= 60) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: 61-80%
+  age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i], age > 61, age <= 80) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: >80 %
+  age_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main[i], age > 80) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  print(age_0_18)
+  print(age_19_40)
+  print(age_41_60)
+  print(age_61_80)
+  print(age_80)
 }
+
+
+
 
 # "Complex Parkinsonism" is different
 table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(normalised_specific_disease) %>% unique() %>% print()
@@ -71,6 +97,6 @@ table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) 
 # Complex Parkinsonism (includes pallido-pyramidal syndromes)
 table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
 # 139
-
+table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(age) %>% pull() %>% mean() %>% print()
 
 table_diseases_pilot %>% filter()
