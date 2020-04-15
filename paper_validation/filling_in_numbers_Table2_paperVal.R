@@ -23,6 +23,19 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
 dim(table_diseases_pilot)
 # 660 13
 
+# Define AGE, by using YOB
+table_diseases = table_diseases %>%
+  group_by(participant_id) %>%
+  mutate(age = 2020 - year_of_birth) %>%
+  ungroup() %>%
+  as.data.frame()
+
+table_diseases_pilot = table_diseases_pilot %>%
+  group_by(plateKey) %>%
+  mutate(age = 2020 - yearOfBirth) %>%
+  ungroup() %>%
+  as.data.frame()
+
 # Counting number of participants, age (mean and distribution)
 
 # Create the list of diseases in MAIN
