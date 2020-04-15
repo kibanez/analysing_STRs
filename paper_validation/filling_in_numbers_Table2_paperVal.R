@@ -48,7 +48,7 @@ table_diseases = table_diseases %>%
   as.data.frame()
 
 table_diseases_pilot = table_diseases_pilot %>%
-  group_by(plateKey) %>%
+  group_by(gelID) %>%
   mutate(age = 2020 - yearOfBirth) %>%
   ungroup() %>%
   as.data.frame()
