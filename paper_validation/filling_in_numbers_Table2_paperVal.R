@@ -325,6 +325,9 @@ table_diseases = table_diseases %>%
 table_diseases_pilot = table_diseases_pilot %>%
   select(gelID, sex, yearOfBirth, specificDisease)
 
+table_diseases = unique(table_diseases)
+table_diseases_pilot = unique(table_diseases_pilot)
+
 # Define AGE, by using YOB
 table_diseases$year_of_birth = as.integer(table_diseases$year_of_birth)
 table_diseases = table_diseases %>%
@@ -399,9 +402,9 @@ mean_merged_male = mean(mean_age_main_male,
                           mean_age_pilot_male)
 
 print(mean_merged_female)
-# 28.4
+# 29.02
 print(mean_merged_male)
-# 25.4
+# 25.9
 
 # for females
 main_age_0_18 = (table_diseases %>% filter(participant_id %in% l_main_female, age %in% c(0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
@@ -424,3 +427,70 @@ main_age_more80 = (table_diseases %>% filter(participant_id %in% l_main_female, 
 pilot_age_more80 = (table_diseases_pilot %>% filter(gelID %in% l_pilot_female, age >= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_more80 = sum(main_age_more80, pilot_age_more80) / length(l_merged_female)
 
+# for males
+main_age_0_18 = (table_diseases %>% filter(participant_id %in% l_main_male, age %in% c(0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_0_18 = (table_diseases_pilot %>% filter(gelID %in% l_pilot_male, age %in% c(0:18)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_0_18 = sum(main_age_0_18, pilot_age_0_18) / length(l_merged_male)
+
+main_age_19_40 = (table_diseases %>% filter(participant_id %in% l_main_male, age %in% c(19:40)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_19_40 = (table_diseases_pilot %>% filter(gelID %in% l_pilot_male, age %in% c(19:40)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_19_40 = sum(main_age_19_40, pilot_age_19_40) / length(l_merged_male)
+
+main_age_41_60 = (table_diseases %>% filter(participant_id %in% l_main_male, age %in% c(41:60)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_41_60 = (table_diseases_pilot %>% filter(gelID %in% l_pilot_male, age %in% c(41:60)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_41_60 = sum(main_age_41_60, pilot_age_41_60) / length(l_merged_male)
+
+main_age_61_80 = (table_diseases %>% filter(participant_id %in% l_main_male, age %in% c(61:80)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_61_80 = (table_diseases_pilot %>% filter(gelID %in% l_pilot_male, age %in% c(61:80)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_61_80 = sum(main_age_61_80, pilot_age_61_80) / length(l_merged_male)
+
+main_age_more80 = (table_diseases %>% filter(participant_id %in% l_main_male, age >= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_more80 = (table_diseases_pilot %>% filter(gelID %in% l_pilot_male, age >= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_more80 = sum(main_age_more80, pilot_age_more80) / length(l_merged_male)
+
+# Let's compute now the ethnicity reported (just for Main, since Pilot is lacking that info)
+l_ethnias = unique(table_diseases$participant_ethnic_category)
+length(l_ethnias)
+# 18
+
+# Let's see mean and breakdown age across existing 18 diff ethnias
+for (i in 1:length(l_ethnias)){
+  # Check we are ONLY analysing the corresponding `disease`
+  table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i]) %>% select(participant_ethnic_category) %>% unique() %>% print()
+  
+  # Number of UNIQUE participants
+  num_pid_main = table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i]) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  total_num_pid = num_pid_main 
+  print(total_num_pid)
+  
+  # Age: median
+  l_age_main = table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i]) %>% select(age) %>% pull() 
+  print(mean(l_age_main))
+  
+  # Age: 0-18 %
+  main_age_0_18 = (table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i], age %in% (0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_0_18 = sum(main_age_0_18) / total_num_pid
+  
+  # Age: 19-40%
+  main_age_19_40 = (table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i], age %in% (19:40)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_19_40 = sum(main_age_19_40) / total_num_pid
+  
+  # Age: 41-60%
+  main_age_41_60 = (table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i], age %in% (41:60)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_41_60 = sum(main_age_41_60) / total_num_pid
+  
+  # Age: 61-80%
+  main_age_61_80 = (table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i], age %in% (61:80)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_61_80 = sum(main_age_61_80) / total_num_pid
+  
+  # Age: >80 %
+  main_age_80 = (table_diseases %>% filter(participant_ethnic_category %in% l_ethnias[i], age > 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_80 = sum(main_age_80) / total_num_pid
+  
+  print(merged_age_0_18)
+  print(merged_age_19_40)
+  print(merged_age_41_60)
+  print(merged_age_61_80)
+  print(merged_age_80)
+  
+}
