@@ -169,28 +169,28 @@ for (i in 1:length(l_diseases_merge)){
   print(mean(l_age_merged))
   
   # Age: 0-18 %
-  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 0, age <= 18) %>% select(age) %>% pull() %>% length())
-  pilot_age_0_18 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 0, age <= 18) %>% select(age) %>% pull() %>% length()) 
+  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age >= 0, age <= 18) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_0_18 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 0, age <= 18) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
   merged_age_0_18 = sum(main_age_0_18, pilot_age_0_18) / total_num_pid
   
   # Age: 19-40%
-  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 19, age <= 40) %>% select(age) %>% pull() %>% length())
-  pilot_age_19_40 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 19, age <= 40) %>% select(age) %>% pull() %>% length()) 
+  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 19, age <= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_19_40 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 19, age <= 40) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_19_40 = sum(main_age_19_40, pilot_age_19_40) / total_num_pid
   
   # Age: 41-60%
-  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 41, age <= 60) %>% select(age) %>% pull() %>% length())
-  pilot_age_41_60 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 41, age <= 60) %>% select(age) %>% pull() %>% length()) 
+  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 41, age <= 60) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_41_60 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 41, age <= 60) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_41_60 = sum(main_age_41_60, pilot_age_41_60) / total_num_pid
   
   # Age: 61-80%
-  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 61, age <= 80) %>% select(age) %>% pull() %>% length()) 
-  pilot_age_61_80 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 61, age <= 80) %>% select(age) %>% pull() %>% length()) 
+  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 61, age <= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_61_80 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 61, age <= 80) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_61_80 = sum(main_age_61_80, pilot_age_61_80) / total_num_pid
   
   # Age: >80 %
-  main_age_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 80) %>% select(age) %>% pull() %>% length()) 
-  pilot_age_80 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 80) %>% select(age) %>% pull() %>% length()) 
+  main_age_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_80 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i], age > 80) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_80 = sum(main_age_80, pilot_age_80) / total_num_pid
   
   print(merged_age_0_18)
@@ -210,3 +210,60 @@ extra_pilot = setdiff(l_diseases_pilot,
 
 
 # Also Intellectual disability needs to be consider as `Kabuki` + ID
+l_pid_ID_kabuki_main = table_diseases %>% 
+  filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome")) %>% 
+  select(participant_id) %>% 
+  unique() %>%
+  pull()
+
+l_pid_ID_kabuki_pilot = table_diseases_pilot %>%
+  filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome")) %>% 
+  select(gelID) %>%
+  unique() %>%
+  pull()
+
+l_pid_merged = c(l_pid_ID_kabuki_main,
+                 l_pid_ID_kabuki_pilot)
+
+length(l_pid_merged)
+# 6731
+
+# Mean age?
+mean_age_main = table_diseases %>%
+  filter(participant_id %in% l_pid_ID_kabuki_main) %>%
+  select(age) %>%
+  pull() %>%
+  mean()
+
+mean_age_pilot = table_diseases_pilot %>%
+  filter(gelID %in% l_pid_ID_kabuki_pilot) %>%
+  select(age) %>%
+  pull() %>%
+  mean()
+
+mean_merged = mean(mean_age_main,
+                   mean_age_pilot)
+print(mean_merged)
+# 13.33
+
+# Age by distribution
+main_age_0_18 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 0, age <= 18) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_0_18 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 0, age <= 18) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_0_18 = sum(main_age_0_18, pilot_age_0_18) / length(l_pid_merged)
+
+
+main_age_19_40 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 19, age <= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_19_40 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 19, age <= 40) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_19_40 = sum(main_age_19_40, pilot_age_19_40) / length(l_pid_merged)
+
+main_age_41_60 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 41, age <= 60) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_41_60 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 41, age <= 60) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_41_60 = sum(main_age_41_60, pilot_age_41_60) / length(l_pid_merged)
+
+main_age_61_80 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 61, age <= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_61_80 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 61, age <= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_61_80 = sum(main_age_61_80, pilot_age_61_80) / length(l_pid_merged)
+
+main_age_more80 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_more80 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+merged_age_more80 = sum(main_age_more80, pilot_age_more80) / length(l_pid_merged)
