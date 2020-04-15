@@ -88,9 +88,6 @@ for (i in 1:length(l_diseases_main)){
   print(age_80)
 }
 
-
-
-
 # "Complex Parkinsonism" is different
 table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(normalised_specific_disease) %>% unique() %>% print()
 #normalised_specific_disease
@@ -99,4 +96,19 @@ table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) 
 # 139
 table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)) %>% select(age) %>% pull() %>% mean() %>% print()
 
-table_diseases_pilot %>% filter()
+# Create the list of diseases in PILOT
+l_diseases_pilot = c("Intellectual disability",
+                     "Kabuki syndrome",
+                     "Amyotrophic lateral sclerosis/motor neuron disease",
+                     "Charcot-Marie-Tooth disease",
+                     "Congenital muscular dystrophy",
+                     "Congenital myopathy",
+                     "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                     "Early onset dystonia",
+                     "Distal myopathies",
+                     "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                     "Hereditary ataxia",
+                     "Hereditary spastic paraplegia",
+                     "Skeletal Muscle Channelopathies",
+                     "Early onset and familial Parkinson's Disease")
+
