@@ -204,6 +204,49 @@ for (i in 1:length(l_diseases_merge)){
 # This separately
 extra_main = setdiff(l_diseases_main,
                      l_diseases_pilot)
+# the only extra disease in MAIN not in PILOT is mitochondrial disorders
+l_diseases_merge = c("Mitochondrial disorders")
+for (i in 1:length(l_diseases_merge)){
+  # Check we are ONLY analysing the corresponding `disease`
+  table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i]) %>% select(normalised_specific_disease) %>% unique() %>% print()
+  
+  # Number of UNIQUE participants
+  num_pid_main = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i]) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  total_num_pid = num_pid_main 
+  print(total_num_pid)
+  
+  # Age: median
+  l_age_main = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i]) %>% select(age) %>% pull() 
+  print(mean(l_age_main))
+  
+  # Age: 0-18 %
+  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age >= 0, age <= 18) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_0_18 = sum(main_age_0_18) / total_num_pid
+  
+  # Age: 19-40%
+  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 19, age <= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_19_40 = sum(main_age_19_40) / total_num_pid
+  
+  # Age: 41-60%
+  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 41, age <= 60) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_41_60 = sum(main_age_41_60) / total_num_pid
+  
+  # Age: 61-80%
+  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 61, age <= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_61_80 = sum(main_age_61_80) / total_num_pid
+  
+  # Age: >80 %
+  main_age_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  merged_age_80 = sum(main_age_80) / total_num_pid
+  
+  print(merged_age_0_18)
+  print(merged_age_19_40)
+  print(merged_age_41_60)
+  print(merged_age_61_80)
+  print(merged_age_80)
+}
+
+
 
 extra_pilot = setdiff(l_diseases_pilot,
                       l_diseases_main)
