@@ -13,7 +13,7 @@ table_diseases = read.csv("table_diseases_enriched_popu_includingSkeletalMuscleC
                           header = T,
                           sep = "\t")
 dim(table_diseases)
-# 11801  16
+# 12254  19
 
 # Load pilot table
 table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
@@ -22,6 +22,22 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
                                 sep = "\t")
 dim(table_diseases_pilot)
 # 660 13
+
+# Removing platekey and genome assembly columns, since I'm interested in PID, and it's easier to deduplicate tables
+table_diseases = table_diseases[-1]
+table_diseases = table_diseases[-3]
+table_diseases = unique(table_diseases)
+dim(table_diseases)
+# 12039  17
+
+length(unique(table_diseases$participant_id))
+# 11172 -- there are 867 duplicated pids, because they might have `disease_group` and `disease_subgroup`. 
+
+# From here, I can see we need to focus only on the column names we want
+table_diseases = table_diseases %>%
+  select(participant_id, year_of_birth, normalised_specific_disease)
+table_diseases_pilot = table_diseases_pilot %>%
+  select(gelID, yearOfBirth, specificDisease)
 
 # Define AGE, by using YOB
 table_diseases$year_of_birth = as.integer(table_diseases$year_of_birth)
