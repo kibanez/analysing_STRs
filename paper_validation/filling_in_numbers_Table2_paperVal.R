@@ -157,9 +157,9 @@ for (i in 1:length(l_diseases_merge)){
   table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i]) %>% select(specificDisease) %>% unique() %>% print()
   
   # Number of UNIQUE participants
-  num_pid_main = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i]) %>% select(participant_id) %>% unique() %>% pull() %>% length()
-  num_pid_pilot = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i]) %>% select(gelID) %>% unique() %>% pull() %>% length()
-  total_num_pid = num_pid_main + num_pid_pilot 
+  l_pid_disease_main = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i]) %>% select(participant_id) %>% unique() %>% pull()
+  l_pid_disease_pilot = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_merge[i]) %>% select(gelID) %>% unique() %>% pull()
+  total_num_pid = length(l_pid_disease_main) + length(l_pid_disease_pilot)
   print(total_num_pid)
   
   # Age: median
@@ -360,3 +360,4 @@ merged_age_61_80 = sum(main_age_61_80, pilot_age_61_80) / length(l_pid_merged)
 main_age_more80 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
 pilot_age_more80 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_more80 = sum(main_age_more80, pilot_age_more80) / length(l_pid_merged)
+
