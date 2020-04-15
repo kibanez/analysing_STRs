@@ -280,24 +280,72 @@ print(mean_merged)
 # 13.33
 
 # Age by distribution
-main_age_0_18 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 0, age <= 18) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-pilot_age_0_18 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 0, age <= 18) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+main_age_0_18 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age %in% c(0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_0_18 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age %in% c(0:18)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_0_18 = sum(main_age_0_18, pilot_age_0_18) / length(l_pid_merged)
 
-
-main_age_19_40 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 19, age <= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-pilot_age_19_40 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 19, age <= 40) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+main_age_19_40 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age %in% c(19:40)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_19_40 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age %in% c(19:40)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_19_40 = sum(main_age_19_40, pilot_age_19_40) / length(l_pid_merged)
 
-main_age_41_60 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 41, age <= 60) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-pilot_age_41_60 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 41, age <= 60) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+main_age_41_60 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age %in% c(41:60)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_41_60 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age %in% c(41:60)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_41_60 = sum(main_age_41_60, pilot_age_41_60) / length(l_pid_merged)
 
-main_age_61_80 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 61, age <= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-pilot_age_61_80 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 61, age <= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+main_age_61_80 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age %in% c(61:80)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+pilot_age_61_80 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age %in% c(61:80)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_61_80 = sum(main_age_61_80, pilot_age_61_80) / length(l_pid_merged)
 
 main_age_more80 = (table_diseases %>% filter(participant_id %in% l_pid_ID_kabuki_main, age >= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
 pilot_age_more80 = (table_diseases_pilot %>% filter(gelID %in% l_pid_ID_kabuki_pilot, age >= 80) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
 merged_age_more80 = sum(main_age_more80, pilot_age_more80) / length(l_pid_merged)
 
+
+# total of participants
+# Load main table
+table_diseases = read.csv("table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv",
+                          stringsAsFactors = F, 
+                          header = T,
+                          sep = "\t")
+dim(table_diseases)
+# 12254  19
+
+# Load pilot table
+table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
+                                stringsAsFactors = F,
+                                header = T,
+                                sep = "\t")
+dim(table_diseases_pilot)
+# 660 13
+
+# males vs females
+# From here, I will select the correpsonding columns I want to work with
+table_diseases = table_diseases %>%
+  select(participant_id, participant_phenotypic_sex, year_of_birth, participant_ethnic_category)
+table_diseases_pilot = table_diseases_pilot %>%
+  select(gelID, sex, yearOfBirth, specificDisease)
+
+# How many male vs female?
+# Main
+l_main_female = table_diseases %>% filter(participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() 
+length(l_main_female)
+# 4749
+l_main_male = table_diseases %>% filter(participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() 
+length(l_main_male)
+# 6423
+
+# Pilot
+l_pilot_female = table_diseases_pilot %>% filter(sex %in% "female") %>% select(gelID) %>% unique() %>% pull()
+length(l_pilot_female)
+# 297
+l_pilot_male = table_diseases_pilot %>% filter(sex %in% "male") %>% select(gelID) %>% unique() %>% pull()
+length(l_pilot_male)
+# 348
+
+
+l_merged_female = c(l_main_female, l_pilot_female)
+l_merged_male = c(l_main_male, l_pilot_male)
+length(l_merged_female)
+# 5046
+length(l_merged_male)
+# 6771
