@@ -159,19 +159,19 @@ for (i in 1:length(l_diseases_merge)){
   print(mean(l_age_main))
   
   # Age: 0-18 %
-  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age >= 0, age <= 18) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age %in% (0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
   merged_age_0_18 = sum(main_age_0_18) / total_num_pid
   
   # Age: 19-40%
-  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 19, age <= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age %in% (19:40)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
   merged_age_19_40 = sum(main_age_19_40) / total_num_pid
   
   # Age: 41-60%
-  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 41, age <= 60) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age %in% (41:60)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
   merged_age_41_60 = sum(main_age_41_60) / total_num_pid
   
   # Age: 61-80%
-  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age > 61, age <= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age %in% (61:80)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
   merged_age_61_80 = sum(main_age_61_80) / total_num_pid
   
   # Age: >80 %
