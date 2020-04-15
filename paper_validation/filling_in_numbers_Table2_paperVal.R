@@ -112,3 +112,36 @@ l_diseases_pilot = c("Intellectual disability",
                      "Skeletal Muscle Channelopathies",
                      "Early onset and familial Parkinson's Disease")
 
+for (i in 1:length(l_diseases_pilot)){
+  # Check we are ONLY analysing the corresponding `disease`
+  table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i]) %>% select(specificDisease) %>% unique() %>% print()
+  
+  # Number of UNIQUE participants
+  num_pid = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i]) %>% select(gelID) %>% unique() %>% pull() %>% length()
+  print(num_pid)
+  
+  # Age: median
+  table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i]) %>% select(age) %>% pull() %>% mean() %>% print()
+  
+  # Age: 0-18 %
+  age_0_18 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i], age > 0, age <= 18) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: 19-40%
+  age_19_40 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i], age > 19, age <= 40) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: 41-60%
+  age_41_60 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i], age > 41, age <= 60) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: 61-80%
+  age_61_80 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i], age > 61, age <= 80) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  # Age: >80 %
+  age_80 = (table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot[i], age > 80) %>% select(age) %>% pull() %>% length()) / num_pid
+  
+  print(age_0_18)
+  print(age_19_40)
+  print(age_41_60)
+  print(age_61_80)
+  print(age_80)
+}
+
