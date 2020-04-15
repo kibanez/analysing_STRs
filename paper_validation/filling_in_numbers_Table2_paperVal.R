@@ -69,7 +69,8 @@ l_diseases_main = c("Intellectual disability",
                     "Skeletal Muscle Channelopathies",
                     "'Early onset and familial Parkinson''s Disease'",
                     "Mitochondrial disorders",
-                    "Kabuki syndrome")
+                    "Kabuki syndrome",
+                    "Complex Parkinsonism (includes pallido-pyramidal syndromes)")
 
 # Create the list of diseases in PILOT
 l_diseases_pilot = c("Intellectual disability",
@@ -185,14 +186,12 @@ for (i in 1:length(l_diseases_merge)){
   print(merged_age_80)
 }
 
-
-
 extra_main = setdiff(l_diseases_main,
                      l_diseases_pilot)
 
 extra_pilot = setdiff(l_diseases_pilot,
                       l_diseases_main)
-extra_main = extra_main[-5]
+extra_main = extra_main[-4]
 
 for (i in 1:length(extra_main)){
   # Check we are ONLY analysing the corresponding `disease`
@@ -212,23 +211,23 @@ for (i in 1:length(extra_main)){
   print(mean(l_age_merged))
   
   # Age: 0-18 %
-  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age >= 0, age <= 18) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-  pilot_age_0_18 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age > 0, age <= 18) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
+  main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age %in% (0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_0_18 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age %in% (0:18)) %>% select(gelID) %>% unique() %>% pull() %>% length()) 
   merged_age_0_18 = sum(main_age_0_18, pilot_age_0_18) / total_num_pid
   
   # Age: 19-40%
-  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age > 19, age <= 40) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-  pilot_age_19_40 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age > 19, age <= 40) %>% select(gelID) %>% unique() %>% pull() %>% length())
+  main_age_19_40 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age %in% (19:40)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_19_40 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age %in% (19:40)) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_19_40 = sum(main_age_19_40, pilot_age_19_40) / total_num_pid
   
   # Age: 41-60%
-  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age > 41, age <= 60) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-  pilot_age_41_60 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age > 41, age <= 60) %>% select(gelID) %>% unique() %>% pull() %>% length())
+  main_age_41_60 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age %in% (41:60)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_41_60 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age %in% (41:60)) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_41_60 = sum(main_age_41_60, pilot_age_41_60) / total_num_pid
   
   # Age: 61-80%
-  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age > 61, age <= 80) %>% select(participant_id) %>% unique() %>% pull() %>% length())
-  pilot_age_61_80 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age > 61, age <= 80) %>% select(gelID) %>% unique() %>% pull() %>% length())
+  main_age_61_80 = (table_diseases %>% filter(normalised_specific_disease %in% extra_main[i], age %in% (61:80)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+  pilot_age_61_80 = (table_diseases_pilot %>% filter(specificDisease %in% extra_pilot[i], age %in% (61:80)) %>% select(gelID) %>% unique() %>% pull() %>% length())
   merged_age_61_80 = sum(main_age_61_80, pilot_age_61_80) / total_num_pid
   
   # Age: >80 %
