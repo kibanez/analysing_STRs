@@ -207,6 +207,55 @@ prop.table(table(l_eth_merged))
 #Asian       Black       Mixed  Not Stated       Other       White 
 #0.052090473 0.007539411 0.008224812 0.363262509 0.006854010 0.562028787 
 
+# Let's automate for the rest of diseases: ONlY adults (removing HA from disease list)
+l_diseases_tableA = l_diseases_tableA[-2]
+for(i in 1:length(l_diseases_tableA)){
+  # Number of UNIQUE pids
+  # MAIN
+  table_a %>% filter(normalised_specific_disease %in% l_diseases_tableA[i]) %>% select(normalised_specific_disease) %>% unique()
+  l_pid_disease_main = table_a %>% filter(normalised_specific_disease %in% l_diseases_tableA[i]) %>% select(participant_id) %>% unique() %>% pull() 
+  
+  # Pilot
+  table_a_pilot %>% filter(specificDisease %in% l_diseases_tableA[i])  %>% select(specificDisease) %>% unique()
+  l_pid_disease_pilot = table_a_pilot %>% filter(specificDisease %in% l_diseases_tableA[i])  %>% select(gelID) %>% unique() %>% pull()
+  
+  # MERGE
+  l_pid_merged = c(l_pid_disease_main, l_pid_disease_pilot)
+  print(length(l_pid_merged))  
+  
+  # Age
+  # MAIN
+  l_age_disease_main = table_a %>% filter(participant_id %in% l_pid_disease_main) %>% select(age) %>% pull()
+  l_age_disease_pilot = table_a_pilot %>% filter(gelID %in% l_pid_disease_pilot) %>% select(age) %>% pull()
+  
+  l_age_merged_disease = c(l_age_disease_main,
+                           l_age_disease_pilot)
+  print(mean(l_age_merged_disease))
+  print(summary(l_age_merged_disease))
+  
+  # GENDER
+  # Main
+  female_main = table_a %>% filter(participant_id %in% l_pid_disease_main, participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  male_main = table_a %>% filter(participant_id %in% l_pid_disease_pilot, participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  
+  # Pilot
+  female_pilot = table_a_pilot %>% filter(gelID %in% l_pid_ha_pilot, sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+  male_pilot = table_a_pilot %>% filter(gelID %in% l_pid_ha_pilot, sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+  
+  # Female (main + pilot) vs total
+  print((female_main + female_pilot) / length(l_pid_merged))
+  # Male (main + pilot) vs total
+  print((male_main + male_pilot) / length(l_pid_merged))
+  
+  
+  
+  
+}
+
+
+
+
+
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
 
