@@ -599,6 +599,19 @@ dim(table_b)
 length(unique(table_b$plate_key.x))
 # 2576
 
+
+# Number of participants
+l_pid_tableB = unique(table_b$participant_id)
+length(l_pid_tableB)
+# 2576
+
+# Age
+table_b %>% filter(participant_id %in% l_pid_tableB) %>% select(age) %>% pull %>% mean()
+# 15.03
+table_b %>% filter(participant_id %in% l_pid_tableB) %>% select(age) %>% pull %>% summary()
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 3.00    8.00   12.00   15.03   19.00   90.00 
+
 # Let's define the list of genes for Table B
 l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
 
