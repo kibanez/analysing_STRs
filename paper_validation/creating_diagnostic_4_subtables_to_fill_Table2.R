@@ -821,11 +821,11 @@ l_genes_tableC = c("DMPK_CTG")
 
 # How many PIDs in the Main?
 length(unique(table_c1$participant_id))
-# 6570
+# 6512
 
 # How many PIDs are in the Pilot?
 length(unique(table_c1_pilot$plateKey))
-# 161
+# 143
 
 l_platekeys_tableC1 = unique(table_c1$plate_key.x)
 l_platekeys_tableC1_pilot = unique(table_c1_pilot$plateKey)
