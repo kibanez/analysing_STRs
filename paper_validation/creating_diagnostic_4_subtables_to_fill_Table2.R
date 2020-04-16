@@ -754,10 +754,10 @@ write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t"
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
 any_exist <- function(list1, list2) {
   for (i in list1){
-    if (i %in% list2){
-      return(TRUE)
+      if (i %in% list2){
+        return(TRUE)
+      }
     }
-  }
   return(FALSE)
 }
 
@@ -793,6 +793,12 @@ table_c1 = table_panels_row %>%
 dim(table_c1)
 # 26573  7
 
+# Remove `panel_lists` == NA (we don't want pids recruited under ID that have NA as panels, nothing)
+index_na = which(is.na(table_c1$panel_list))
+table_c1 = table_c1[-index_na,]
+dim(table_c1)
+# 26515  7
+
 # PILOT
 table_c1_pilot = table_panels_row_pilot %>%
   filter(specificDisease %in% c("Intellectual disability",
@@ -800,6 +806,15 @@ table_c1_pilot = table_panels_row_pilot %>%
            any_exist(l_panels_group1,panels))
 dim(table_c1_pilot)
 # 291  5
+
+# Remove NA's
+index_na = which(is.na(table_c1_pilot$panel_list))
+table_c1_pilot = table_c1_pilot[-index_na,]
+dim(table_c1_pilot)
+# 273  5
+
+# Let's analyse here the number of unique pids for each disease
+
 
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
@@ -924,7 +939,7 @@ write.table(table_c_expanded, "subtables/TableC1_main.tsv", quote = F, row.names
 # This is the raw data for Table C - Main
 # Let's do numbers for DMPK and disease
 
-l_diseases_tableC = unique(table_c$normalised_specific_disease)
+l_diseases_tableC = unique(table_c1$normalised_specific_disease)
 matrix_to_print = matrix(nrow  = length(l_diseases_tableC), ncol = 1)
 for(i in 1:length(l_diseases_tableC)){
   for (j in 1:length(l_genes_tableC)){
