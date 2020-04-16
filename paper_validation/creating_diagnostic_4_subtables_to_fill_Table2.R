@@ -141,8 +141,11 @@ table_a$participant_ethnic_category = recode(table_a$participant_ethnic_category
                                              "Black or Black British: Caribbean"="Black",
                                              "Mixed: White and Black African"="Mixed",
                                              "Black or Black British: Any other Black background"="Black",
-                                             "Other Ethnic Groups: Chinese"="Other", 
-                                             "Not stated"="NA")
+                                             "Other Ethnic Groups: Chinese"="Other")
+# Defining NA's as `Not stated`
+which_na = which(is.na(table_a$participant_ethnic_category))
+table_a$participant_ethnic_category[which_na] = "Not Stated"
+
 table_a = unique(table_a)
 table_a_pilot = unique(table_a_pilot)
 
@@ -192,6 +195,17 @@ table_a_pilot %>% filter(gelID %in% l_pid_ha_pilot, sex %in% "male") %>% select(
 # Male (main + pilot) vs total
 (525 + 72) / 1182
 # 0.51
+
+# Ethnicity
+# MAIN
+l_eth_main = table_a %>% filter(participant_id %in% l_pid_ha_main) %>% select(participant_ethnic_category) %>% pull() #%>% table() %>% prop.table()
+# PILOT - consider all them `Not stated`
+l_eth_pilot = rep("Not Stated", length(table_a_pilot$gelID))
+
+l_eth_merged = c(l_eth_main, l_eth_pilot)
+prop.table(table(l_eth_merged))
+#Asian       Black       Mixed  Not Stated       Other       White 
+#0.052090473 0.007539411 0.008224812 0.363262509 0.006854010 0.562028787 
 
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
