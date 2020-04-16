@@ -305,7 +305,16 @@ all_merged = unique(c(l_pid_merged_main,
 length(all_merged)
 # 3609
 
+# age
+denak_main = table_a %>% filter(participant_id %in% all_merged) %>% select(age) %>% pull() 
+denak_pilot = table_a_pilot %>% filter(gelID %in% all_merged) %>% select(age) %>% pull()
+denak_age = c(denak_main, denak_pilot)
 
+mean(denak_age)
+# 53.5
+summary(denak_age)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#5.00   41.00   56.00   53.52   68.00  101.00 
 
 ####
 # Let's define the list of genes for Table A
