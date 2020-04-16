@@ -258,10 +258,6 @@ for(i in 1:length(l_diseases_tableA)){
   print(prop.table(table(l_eth_merged)))
 }
 
-
-
-
-
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
 
