@@ -743,13 +743,23 @@ write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t"
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
 
 # As for DMPK: select patients in this way: 
-# 1) recruited under intellectual disability AND who have been applied EITHER one of the following panel: 
+# 1) recruited under intellectual disability (normalised spec disease) AND who have been applied EITHER one of the following panel: 
 # "Congenital muscular dystrophy", " Congenital myopathy", "Skeletal Muscle Channelopathies"; 
+
 # 2) adult and children only that are recruited under specific disease "Congenital muscular dystrophy" OR 
 # " Congenital myopathy" OR  
 # "Skeletal Muscle Channelopathies" OR 
 # "Distal myopathies": 
 
+# Function that checks if any of the items in list of characters 1 does exist in list of characters 2
+any_exist <- function(list1, list2) {
+  for (i in list1){
+    if (i %in% list2){
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
 
 # MAIN
 table_c = table_diseases %>%
@@ -1000,8 +1010,8 @@ l_eth_pilot = rep("Not Stated", length(unique(table_d_pilot$gelID)))
 
 l_eth_merged = c(l_eth_main, l_eth_pilot)
 print(prop.table(table(l_eth_merged)))
-
-
+# Asian      Black      Mixed Not Stated      Other      White
+#0.08920720 0.01942987 0.03616508 0.19472415 0.01049497 0.64997873 
 
 ###
 # Let's define the list of genes for Table C
