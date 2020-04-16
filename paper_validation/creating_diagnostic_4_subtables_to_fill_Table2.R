@@ -122,8 +122,30 @@ table_a = table_a %>%
 table_a_pilot = table_a_pilot %>%
   select(gelID, specificDisease, adult.paediatric, sex, age)
 
+
+# Let's recode the ethnicity, simplifying it
+table_a$participant_ethnic_category = recode(table_a$participant_ethnic_category,
+                                             "White: British"= "White",
+                                             "White White: British"= "White",
+                                             "White: Any other White background"="White",
+                                             "Asian or Asian British: Pakistani"="Asian",
+                                             "Asian or Asian British: Indian"="Asian",
+                                             "Asian or Asian British: Any other Asian background"="Asian",
+                                             "Black or Black British: African"="Black",
+                                             "Other Ethnic Groups: Any other ethnic group"="Other", 
+                                             "Mixed: Any other mixed background"="Mixed",
+                                             "White: Irish"="White",
+                                             "Asian or Asian British: Bangladeshi"="Asian",
+                                             "Mixed: White and Asian"="Mixed",
+                                             "Mixed: White and Black Caribbean"="Mixed",
+                                             "Black or Black British: Caribbean"="Black",
+                                             "Mixed: White and Black African"="Mixed",
+                                             "Black or Black British: Any other Black background"="Black",
+                                             "Other Ethnic Groups: Chinese"="Other", 
+                                             "Not stated"="NA")
 table_a = unique(table_a)
 table_a_pilot = unique(table_a_pilot)
+
 
 table_a %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(normalised_specific_disease) %>% unique()
 l_pid_ha_main = table_a %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() 
