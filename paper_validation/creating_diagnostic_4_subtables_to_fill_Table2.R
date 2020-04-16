@@ -618,7 +618,34 @@ table_b %>% filter(participant_id %in% l_pid_tableB, participant_phenotypic_sex 
 table_b %>% filter(participant_id %in% l_pid_tableB, participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 1435
 
+# Ethnicity
+table_b$participant_ethnic_category = recode(table_b$participant_ethnic_category,
+                                             "White: British"= "White",
+                                             "White White: British"= "White",
+                                             "White: Any other White background"="White",
+                                             "Asian or Asian British: Pakistani"="Asian",
+                                             "Asian or Asian British: Indian"="Asian",
+                                             "Asian or Asian British: Any other Asian background"="Asian",
+                                             "Black or Black British: African"="Black",
+                                             "Other Ethnic Groups: Any other ethnic group"="Other", 
+                                             "Mixed: Any other mixed background"="Mixed",
+                                             "White: Irish"="White",
+                                             "Asian or Asian British: Bangladeshi"="Asian",
+                                             "Mixed: White and Asian"="Mixed",
+                                             "Mixed: White and Black Caribbean"="Mixed",
+                                             "Black or Black British: Caribbean"="Black",
+                                             "Mixed: White and Black African"="Mixed",
+                                             "Black or Black British: Any other Black background"="Black",
+                                             "Other Ethnic Groups: Chinese"="Other")
+# Defining NA's as `Not stated`
+which_na = which(is.na(table_b$participant_ethnic_category))
+table_b$participant_ethnic_category[which_na] = "Not Stated"
 
+table_b = unique(table_b)
+
+table_b %>% filter(participant_id %in% l_pid_tableB) %>% select(participant_ethnic_category) %>% table() %>% prop.table()
+#     Asian       Black       Mixed  Not Stated       Other       White 
+# 0.131667792 0.022282242 0.034098582 0.169480081 0.009453072 0.633018231 
 
 # Let's define the list of genes for Table B
 l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
