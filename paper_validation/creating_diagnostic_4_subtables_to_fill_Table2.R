@@ -258,6 +258,56 @@ for(i in 1:length(l_diseases_tableA)){
   print(prop.table(table(l_eth_merged)))
 }
 
+
+# total number for all
+# HA
+l_pid_ha_main = table_a %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_ha_pilot = table_a_pilot %>% filter(specificDisease %in% "Hereditary ataxia")  %>% select(gelID) %>% unique() %>% pull()
+
+# "Early onset dystonia"
+l_pid_eod_main = table_a %>% filter(normalised_specific_disease %in% "Early onset dystonia", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_eod_pilot = table_a_pilot %>% filter(specificDisease %in% "Early onset dystonia", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+# "Hereditary spastic paraplegia"
+l_pid_hsp_main = table_a %>% filter(normalised_specific_disease %in% "Hereditary spastic paraplegia", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_hsp_pilot = table_a_pilot %>% filter(specificDisease %in% "Hereditary spastic paraplegia", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+# "Charcot-Marie-Tooth disease" 
+l_pid_cmt_main = table_a %>% filter(normalised_specific_disease %in% "Charcot-Marie-Tooth disease", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_cmt_pilot = table_a_pilot %>% filter(specificDisease %in% "Charcot-Marie-Tooth disease", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+# "Early onset dementia"
+l_pid_eode_main = table_a %>% filter(normalised_specific_disease %in% "Early onset dementia", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_eode_pilot = table_a_pilot %>% filter(specificDisease %in% "Early onset dementia", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+# "Amyotrophic lateral sclerosis or motor neuron disease"
+l_pid_als_main = table_a %>% filter(normalised_specific_disease %in% "Amyotrophic lateral sclerosis or motor neuron disease", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_als_pilot = table_a_pilot %>% filter(specificDisease %in% "Amyotrophic lateral sclerosis or motor neuron disease", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+# "'Early onset and familial Parkinson''s Disease'"
+l_pid_park_main = table_a %>% filter(normalised_specific_disease %in% "'Early onset and familial Parkinson''s Disease'", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_park_pilot = table_a_pilot %>% filter(specificDisease %in% "'Early onset and familial Parkinson''s Disease'", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+# "Complex Parkinsonism (includes pallido-pyramidal syndromes)"
+l_pid_cpark_main = table_a %>% filter(normalised_specific_disease %in% "Complex Parkinsonism (includes pallido-pyramidal syndromes)", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_cpark_pilot = table_a_pilot %>% filter(specificDisease %in% "Complex Parkinsonism (includes pallido-pyramidal syndromes)", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
+
+
+l_pid_merged_main = unique(c(l_pid_ha_main, l_pid_eod_main, l_pid_hsp_main, l_pid_cmt_main, l_pid_eode_main, l_pid_als_main, l_pid_park_main, l_pid_cpark_main))
+length(l_pid_merged_main)
+# 3231
+l_pid_merged_pilot = unique(c(l_pid_ha_pilot, l_pid_eod_pilot, l_pid_hsp_pilot, l_pid_cmt_pilot, l_pid_eode_pilot, l_pid_als_pilot, l_pid_park_pilot, l_pid_cpark_pilot))
+length(l_pid_merged_pilot)
+# 378
+
+all_merged = unique(c(l_pid_merged_main,
+                      l_pid_merged_pilot))
+length(all_merged)
+# 3609
+
+
+
+####
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
 
