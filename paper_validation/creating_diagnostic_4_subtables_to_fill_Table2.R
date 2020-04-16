@@ -146,7 +146,6 @@ table_a$participant_ethnic_category = recode(table_a$participant_ethnic_category
 table_a = unique(table_a)
 table_a_pilot = unique(table_a_pilot)
 
-
 table_a %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(normalised_specific_disease) %>% unique()
 l_pid_ha_main = table_a %>% filter(normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() 
 length(l_pid_ha_main)
@@ -166,6 +165,7 @@ l_age_ha_pilot = table_a_pilot %>% filter(gelID %in% l_pid_ha_pilot) %>% select(
 
 l_age_merged_ha = c(l_age_ha_main,
                     l_age_ha_pilot)
+length(l_age_merged_ha)
 
 mean(l_age_merged_ha)
 # 53.6
@@ -173,7 +173,25 @@ summary(l_age_merged_ha)
 #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 5.00   41.00   57.00   53.64   70.00  101.00 
 
-main_age_0_18 = (table_diseases %>% filter(normalised_specific_disease %in% l_diseases_merge[i], age %in% (0:18)) %>% select(participant_id) %>% unique() %>% pull() %>% length())
+# Gender
+# Main
+table_a %>% filter(participant_id %in% l_pid_ha_main, participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 513
+table_a %>% filter(participant_id %in% l_pid_ha_main, participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 525
+
+# Pilot
+table_a_pilot %>% filter(gelID %in% l_pid_ha_pilot, sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 72
+table_a_pilot %>% filter(gelID %in% l_pid_ha_pilot, sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 72
+
+# Female (main + pilot) vs total
+(513 + 72) / 1182
+# 0.49
+# Male (main + pilot) vs total
+(525 + 72) / 1182
+# 0.51
 
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
