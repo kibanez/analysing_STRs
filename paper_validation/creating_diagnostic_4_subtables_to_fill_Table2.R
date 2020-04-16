@@ -782,17 +782,16 @@ dim(table_panels_row_pilot)
 
 
 # We will create 2 groups as above
-l_group1 = c("Congenital muscular dystrophy", "")
+l_panels_group1 = c("Congenital muscular dystrophy", " Congenital muscular dystrophy", 
+                    "Congenital myopathy", " Congenital myopathy",
+                    "Skeletal Muscle Channelopathies", " Skeletal Muscle Channelopathies")
 # MAIN
-table_c = table_diseases %>%
+table_c1 = table_panels_row %>%
   filter(normalised_specific_disease %in% c("Intellectual disability",
-                                            "Kabuki syndrome",
-                                            "Congenital muscular dystrophy",
-                                            "Congenital myopathy",
-                                            "Skeletal Muscle Channelopathies",
-                                            "Distal myopathies"))
-dim(table_c)
-# 7695  21
+                                            "Kabuki syndrome") &
+         any_exist(l_panels_group1,panels))
+dim(table_c1)
+# 26573  7
 
 # PILOT
 table_c_pilot = table_diseases_pilot %>%
