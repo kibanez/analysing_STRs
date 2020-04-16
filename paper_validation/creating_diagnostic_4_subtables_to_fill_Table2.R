@@ -316,6 +316,24 @@ summary(denak_age)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #5.00   41.00   56.00   53.52   68.00  101.00 
 
+# Gender
+# Main
+female_main = table_a %>% filter(participant_id %in% all_merged, participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+male_main = table_a %>% filter(participant_id %in% all_merged, participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+
+# Pilot
+female_pilot = table_a_pilot %>% filter(gelID %in% all_merged, sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+male_pilot = table_a_pilot %>% filter(gelID %in% all_merged, sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+
+# Female (main + pilot) vs total
+print((female_main + female_pilot) / length(all_merged))
+# 0.468
+# Male (main + pilot) vs total
+print((male_main + male_pilot) / length(all_merged))
+# 0.531
+
+
+
 ####
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
