@@ -332,7 +332,14 @@ print((female_main + female_pilot) / length(all_merged))
 print((male_main + male_pilot) / length(all_merged))
 # 0.531
 
+# Ethnicity
+# MAIN
+l_eth_main = table_a %>% filter(participant_id %in% all_merged) %>% select(participant_ethnic_category) %>% pull() 
+# PILOT - consider all them `Not stated`
+l_eth_pilot = rep("Not Stated", table_a_pilot %>% filter(gelID %in% all_merged) %>% select(gelID) %>% pull() %>% length())
 
+l_eth_merged = c(l_eth_main, l_eth_pilot)
+print(prop.table(table(l_eth_merged)))
 
 ####
 # Let's define the list of genes for Table A
