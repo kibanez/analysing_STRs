@@ -612,6 +612,14 @@ table_b %>% filter(participant_id %in% l_pid_tableB) %>% select(age) %>% pull %>
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 3.00    8.00   12.00   15.03   19.00   90.00 
 
+# Females
+table_b %>% filter(participant_id %in% l_pid_tableB, participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1141
+table_b %>% filter(participant_id %in% l_pid_tableB, participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1435
+
+
+
 # Let's define the list of genes for Table B
 l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
 
