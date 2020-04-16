@@ -959,8 +959,24 @@ table_d$participant_ethnic_category[which_na] = "Not Stated"
 table_d = unique(table_d)
 table_d_pilot = unique(table_d_pilot)
 
+# Num participants
+length(unique(table_d$participant_id))
+# 6570
+length(unique(table_d_pilot$gelID))
+# 161
 
+# Age
+l_age_main = table_d$age
+l_age_pilot = table_d_pilot$age
+l_age_merged = c(l_age_main, l_age_pilot)
 
+mean(l_age_merged)
+# 13.5
+summary(l_age_merged)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#2.00    8.00   11.00   13.49   16.00   72.00 
+
+###
 # Let's define the list of genes for Table C
 l_genes_tableD = c("FMR1_CGG")
 
