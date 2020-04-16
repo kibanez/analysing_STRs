@@ -761,6 +761,28 @@ any_exist <- function(list1, list2) {
   return(FALSE)
 }
 
+# Since we are going to work with panels, let's make life simple
+table_panels_row = table_diseases %>% 
+  select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+table_panels_row = unique(table_panels_row)
+dim(table_panels_row)
+# 52302  7
+
+table_panels_row_pilot = table_diseases_pilot %>%
+  select(plateKey, gelID, specificDisease, panel_list) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+table_panels_row_pilot = unique(table_panels_row_pilot)
+dim(table_panels_row_pilot)
+# 1129  5
+
+
+# We will create 2 groups as above
+l_group1 = c("Congenital muscular dystrophy", "")
 # MAIN
 table_c = table_diseases %>%
   filter(normalised_specific_disease %in% c("Intellectual disability",
