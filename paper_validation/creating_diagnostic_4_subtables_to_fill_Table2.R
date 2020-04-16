@@ -976,6 +976,22 @@ summary(l_age_merged)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #2.00    8.00   11.00   13.49   16.00   72.00 
 
+
+# GEnder
+table_d %>% filter(participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 2615
+table_d %>% filter(participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 3955
+
+table_d_pilot %>% filter(sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 65
+table_d_pilot %>% filter(sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 96
+
+(2615 + 65) / 6731
+# 0.395
+(3955 + 96) / 6731
+# 0.60
 ###
 # Let's define the list of genes for Table C
 l_genes_tableD = c("FMR1_CGG")
