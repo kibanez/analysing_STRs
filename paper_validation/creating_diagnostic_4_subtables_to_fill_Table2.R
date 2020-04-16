@@ -742,6 +742,15 @@ write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t"
 # TABLE C
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
 
+# As for DMPK: select patients in this way: 
+# 1) recruited under intellectual disability AND who have been applied EITHER one of the following panel: 
+# "Congenital muscular dystrophy", " Congenital myopathy", "Skeletal Muscle Channelopathies"; 
+# 2) adult and children only that are recruited under specific disease "Congenital muscular dystrophy" OR 
+# " Congenital myopathy" OR  
+# "Skeletal Muscle Channelopathies" OR 
+# "Distal myopathies": 
+
+
 # MAIN
 table_c = table_diseases %>%
   filter(normalised_specific_disease %in% c("Intellectual disability",
@@ -923,6 +932,34 @@ table_d_pilot = table_diseases_pilot %>%
                                 "Kabuki syndrome"))
 dim(table_d_pilot)
 # 161  15
+
+# Recode ethnicity
+table_d$participant_ethnic_category = recode(table_d$participant_ethnic_category,
+                                             "White: British"= "White",
+                                             "White White: British"= "White",
+                                             "White: Any other White background"="White",
+                                             "Asian or Asian British: Pakistani"="Asian",
+                                             "Asian or Asian British: Indian"="Asian",
+                                             "Asian or Asian British: Any other Asian background"="Asian",
+                                             "Black or Black British: African"="Black",
+                                             "Other Ethnic Groups: Any other ethnic group"="Other", 
+                                             "Mixed: Any other mixed background"="Mixed",
+                                             "White: Irish"="White",
+                                             "Asian or Asian British: Bangladeshi"="Asian",
+                                             "Mixed: White and Asian"="Mixed",
+                                             "Mixed: White and Black Caribbean"="Mixed",
+                                             "Black or Black British: Caribbean"="Black",
+                                             "Mixed: White and Black African"="Mixed",
+                                             "Black or Black British: Any other Black background"="Black",
+                                             "Other Ethnic Groups: Chinese"="Other")
+# Defining NA's as `Not stated`
+which_na = which(is.na(table_d$participant_ethnic_category))
+table_d$participant_ethnic_category[which_na] = "Not Stated"
+
+table_d = unique(table_d)
+table_d_pilot = unique(table_d_pilot)
+
+
 
 # Let's define the list of genes for Table C
 l_genes_tableD = c("FMR1_CGG")
