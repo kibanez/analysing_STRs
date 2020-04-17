@@ -897,6 +897,22 @@ summary(l_overall_age_merged)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #2.00    8.00   12.00   16.09   18.00  100.00
 
+table_c %>% filter(participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 2948
+table_c %>% filter(participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 4397
+
+table_c_pilot %>% filter(sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 107
+table_c_pilot %>% filter(sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 134
+
+(2948 + 107) / 7592
+# 0.40
+(4397 + 134) / 7592
+# 0.59
+
+
 
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
