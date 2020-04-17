@@ -842,6 +842,50 @@ for(i in 1:length(l_diseases)){
   print(prop.table(table(l_eth_merged)))
 }
 
+# We need to merge ID = ID + kabuki
+table_c %>% filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(normalised_specific_disease) %>% unique() %>% pull() %>% print()
+table_c_pilot %>% filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(specificDisease) %>% unique() %>% pull() %>% print()
+
+l_pid_main = table_c %>% filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_pilot = table_c_pilot %>% filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(gelID) %>% unique() %>% pull() 
+l_pid_merge = unique(c(l_pid_main, l_pid_pilot))
+print(length(l_pid_merge))
+
+# Age
+# MAIN
+l_age_disease_main = table_c %>% filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(age) %>% pull()
+l_age_disease_pilot = table_c_pilot %>% filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(age) %>% pull()
+
+l_age_merged_disease = c(l_age_disease_main,
+                         l_age_disease_pilot)
+print(mean(l_age_merged_disease))
+print(summary(l_age_merged_disease))
+
+# GENDER
+# Main
+female_main = table_c %>% filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome"), participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+male_main = table_c %>% filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome"), participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+
+# Pilot
+female_pilot = table_c_pilot %>% filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome"), sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+male_pilot = table_c_pilot %>% filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome"), sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+
+# Female (main + pilot) vs total
+print((female_main + female_pilot) / length(l_pid_merge))
+# Male (main + pilot) vs total
+print((male_main + male_pilot) / length(l_pid_merge))
+
+# Ethnicity
+# MAIN
+l_eth_main = table_c %>% filter(normalised_specific_disease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(participant_ethnic_category) %>% pull() 
+# PILOT - consider all them `Not stated`
+l_eth_pilot = rep("Not Stated", table_c_pilot %>% filter(specificDisease %in% c("Intellectual disability", "Kabuki syndrome")) %>% select(gelID) %>% unique() %>% pull() %>% length())
+
+l_eth_merged = c(l_eth_main, l_eth_pilot)
+print(prop.table(table(l_eth_merged)))
+
+
+
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
 
