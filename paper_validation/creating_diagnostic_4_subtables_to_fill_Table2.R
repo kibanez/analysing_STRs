@@ -742,93 +742,41 @@ write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t"
 # TABLE C
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
 
-# As for DMPK: select patients in this way: 
-# 1) recruited under intellectual disability (normalised spec disease) AND who have been applied EITHER one of the following panel: 
-# "Congenital muscular dystrophy", " Congenital myopathy", "Skeletal Muscle Channelopathies"; 
-
-# 2) adult and children only that are recruited under specific disease "Congenital muscular dystrophy" OR 
-# " Congenital myopathy" OR  
-# "Skeletal Muscle Channelopathies" OR 
-# "Distal myopathies": 
-
-# Function that checks if any of the items in list of characters 1 does exist in list of characters 2
-any_exist <- function(list1, list2) {
-  for (i in list1){
-      if (i %in% list2){
-        return(TRUE)
-      }
-    }
-  return(FALSE)
-}
-
-# Since we are going to work with panels, let's make life simple
-table_panels_row = table_diseases %>% 
-  select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list) %>%
-  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
-  unnest(panels) %>%
-  as.data.frame()
-table_panels_row = unique(table_panels_row)
-dim(table_panels_row)
-# 52302  7
-
-table_panels_row_pilot = table_diseases_pilot %>%
-  select(plateKey, gelID, specificDisease, panel_list) %>%
-  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
-  unnest(panels) %>%
-  as.data.frame()
-table_panels_row_pilot = unique(table_panels_row_pilot)
-dim(table_panels_row_pilot)
-# 1129  5
-
-
-# We will create 2 groups as above
-l_panels_group1 = c("Congenital muscular dystrophy", " Congenital muscular dystrophy", 
-                    "Congenital myopathy", " Congenital myopathy",
-                    "Skeletal Muscle Channelopathies", " Skeletal Muscle Channelopathies")
 # MAIN
-table_c1 = table_panels_row %>%
+table_c = table_diseases %>%
   filter(normalised_specific_disease %in% c("Intellectual disability",
-                                            "Kabuki syndrome") &
-         any_exist(l_panels_group1,panels))
-dim(table_c1)
-# 26573  7
-
-# Remove `panel_lists` == NA (we don't want pids recruited under ID that have NA as panels, nothing)
-index_na = which(is.na(table_c1$panel_list))
-table_c1 = table_c1[-index_na,]
-dim(table_c1)
-# 26515  7
+                                            "Kabuki syndrome",
+                                            "Congenital muscular dystrophy",
+                                            "Congenital myopathy",
+                                            "Skeletal Muscle Channelopathies",
+                                            "Distal myopathies"))
+dim(table_c)
+# 7695  21
 
 # PILOT
-table_c1_pilot = table_panels_row_pilot %>%
+table_c_pilot = table_diseases_pilot %>%
   filter(specificDisease %in% c("Intellectual disability",
-                                "Kabuki syndrome") &
-           any_exist(l_panels_group1,panels))
-dim(table_c1_pilot)
-# 291  5
-
-# Remove NA's
-index_na = which(is.na(table_c1_pilot$panel_list))
-table_c1_pilot = table_c1_pilot[-index_na,]
-dim(table_c1_pilot)
-# 273  5
-
-# Let's analyse here the number of unique pids for each disease
-
+                                "Kabuki syndrome",
+                                "Congenital muscular dystrophy",
+                                "Congenital myopathy",
+                                "Skeletal Muscle Channelopathies",
+                                "Distal myopathies"))
+dim(table_c_pilot)
+# 242  15
 
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
 
 # How many PIDs in the Main?
-length(unique(table_c1$participant_id))
-# 6512
+length(unique(table_c$participant_id))
+# 7345
 
 # How many PIDs are in the Pilot?
-length(unique(table_c1_pilot$plateKey))
-# 143
+length(unique(table_c_pilot$plateKey))
+# 241
 
-l_platekeys_tableC1 = unique(table_c1$plate_key.x)
-l_platekeys_tableC1_pilot = unique(table_c1_pilot$plateKey)
+l_platekeys_tableC = unique(table_c$plate_key.x)
+l_platekeys_tableC_pilot = unique(table_c_pilot$plateKey)
 
 # Now, we want to see how many of them have an expansion on any of the genes in `DMPK` (cutoff >= 50)
 expanded_table_main = data.frame()
@@ -851,7 +799,7 @@ for (i in 1:length(l_genes_tableC)){
 dim(expanded_table_main)
 # 55  5
 
-# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableC` - but for Pilot data
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
 expanded_table_pilot = data.frame()
 for (i in 1:length(l_genes_tableC)){
   locus_name = l_genes_tableC[i]
@@ -905,41 +853,39 @@ dim(expanded_table_pilot_per_locus)
 # 2  5
 
 # From the expanded table, let's see how many are in l_platekeys_tableC
-expanded_table_main_in_tableC1 = expanded_table_main_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableC1)
-dim(expanded_table_main_in_tableC1)
-# 11  5
+expanded_table_main_in_tableC = expanded_table_main_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableC)
+dim(expanded_table_main_in_tableC)
+# 16  5
 
 # The same por PILOT
-expanded_table_pilot_in_tableC1 = expanded_table_pilot_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableC1_pilot)
-dim(expanded_table_pilot_in_tableC1)
+expanded_table_pilot_in_tableC = expanded_table_pilot_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableC_pilot)
+dim(expanded_table_pilot_in_tableC)
 # 0  5
 
 # Let' enrich expanded TABLE C repeats with clinical data from `table_a`
-table_c_expanded = left_join(expanded_table_main_in_tableC1,
-                             table_c1,
+table_c_expanded = left_join(expanded_table_main_in_tableC,
+                             table_c,
                              by = c("list_samples" = "plate_key.x"))
 dim(table_c_expanded)
-# 46  11
+# 16  25
 
 # PILOT - nothing to merge
 
 # Simplify output TableC
 table_c_expanded = table_c_expanded %>%
-  select(list_samples, gene, allele, Repeat_Motif, participant_id, normalised_specific_disease, disease_sub_group, disease_group, 
-         panel_list)
+  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
+         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
+         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
 colnames(table_c_expanded)[1] = "platekey" 
 colnames(table_c_expanded)[3] = "repeat_size" 
-table_c_expanded = unique(table_c_expanded)
-dim(table_c_expanded)
-# 11 9
-write.table(table_c_expanded, "subtables/TableC1_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_c_expanded, "subtables/TableC_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # This is the raw data for Table C - Main
 # Let's do numbers for DMPK and disease
 
-l_diseases_tableC = unique(table_c1$normalised_specific_disease)
+l_diseases_tableC = unique(table_c$normalised_specific_disease)
 matrix_to_print = matrix(nrow  = length(l_diseases_tableC), ncol = 1)
 for(i in 1:length(l_diseases_tableC)){
   for (j in 1:length(l_genes_tableC)){
