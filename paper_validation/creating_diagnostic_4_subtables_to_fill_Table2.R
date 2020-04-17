@@ -794,14 +794,24 @@ dim(table_c)
 # 7695  21
 dim(table_c_pilot)
 # 242  15
+
 # Let's analyse here the number of unique PIDs, gender, ethnicity, etc. for Table2
 # Number of unique PIDs
-l_diseases
+l_diseases = unique(table_c$normalised_specific_disease)
 
-# MAIN
-
-# PILOT
-
+for(i in 1:length(l_diseases)){
+  table_c %>% filter(normalised_specific_disease %in% l_diseases[i]) %>% select(normalised_specific_disease) %>% unique() %>% pull() %>% print()
+  table_c_pilot %>% filter(specificDisease %in% l_diseases[i]) %>% select(specificDisease) %>% unique() %>% pull() %>% print()
+  
+  l_pid_main = table_c %>% filter(normalised_specific_disease %in% l_diseases[i]) %>% select(participant_id) %>% unique() %>% pull() 
+  l_pid_pilot = table_c_pilot %>% filter(specificDisease %in% l_diseases[i]) %>% select(gelID) %>% unique() %>% pull() 
+  l_pid_merge = unique(c(l_pid_main, l_pid_pilot))
+  print(length(l_pid_merge))
+  
+  # Age
+  
+    
+}
 
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
