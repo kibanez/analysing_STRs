@@ -764,6 +764,45 @@ table_c_pilot = table_diseases_pilot %>%
 dim(table_c_pilot)
 # 242  15
 
+# Let's recode ethnicity codes
+table_c$participant_ethnic_category = recode(table_c$participant_ethnic_category,
+                                             "White: British"= "White",
+                                             "White White: British"= "White",
+                                             "White: Any other White background"="White",
+                                             "Asian or Asian British: Pakistani"="Asian",
+                                             "Asian or Asian British: Indian"="Asian",
+                                             "Asian or Asian British: Any other Asian background"="Asian",
+                                             "Black or Black British: African"="Black",
+                                             "Other Ethnic Groups: Any other ethnic group"="Other", 
+                                             "Mixed: Any other mixed background"="Mixed",
+                                             "White: Irish"="White",
+                                             "Asian or Asian British: Bangladeshi"="Asian",
+                                             "Mixed: White and Asian"="Mixed",
+                                             "Mixed: White and Black Caribbean"="Mixed",
+                                             "Black or Black British: Caribbean"="Black",
+                                             "Mixed: White and Black African"="Mixed",
+                                             "Black or Black British: Any other Black background"="Black",
+                                             "Other Ethnic Groups: Chinese"="Other")
+# Defining NA's as `Not stated`
+which_na = which(is.na(table_c$participant_ethnic_category))
+table_c$participant_ethnic_category[which_na] = "Not Stated"
+
+table_c = unique(table_c)
+table_c_pilot = unique(table_c_pilot)
+
+dim(table_c)
+# 7695  21
+dim(table_c_pilot)
+# 242  15
+# Let's analyse here the number of unique PIDs, gender, ethnicity, etc. for Table2
+# Number of unique PIDs
+l_diseases
+
+# MAIN
+
+# PILOT
+
+
 # Let's define the list of genes for Table C
 l_genes_tableC = c("DMPK_CTG")
 
