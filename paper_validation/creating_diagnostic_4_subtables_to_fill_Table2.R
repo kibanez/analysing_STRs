@@ -912,6 +912,15 @@ table_c_pilot %>% filter(sex %in% "male") %>% select(gelID) %>% unique() %>% pul
 (4397 + 134) / 7592
 # 0.59
 
+# ethnicity
+l_eth_main = table_c %>% select(participant_ethnic_category) %>% pull() 
+# PILOT - consider all them `Not stated`
+l_eth_pilot = rep("Not Stated", length(table_c_pilot$gelID))
+
+l_eth_merged = c(l_eth_main, l_eth_pilot)
+print(prop.table(table(l_eth_merged)))
+#Asian      Black      Mixed Not Stated      Other      White 
+#0.09021041 0.02041073 0.03439587 0.19642182 0.01247323 0.64608794
 
 
 # Let's define the list of genes for Table C
