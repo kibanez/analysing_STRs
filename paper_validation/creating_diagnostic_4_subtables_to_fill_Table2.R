@@ -809,8 +809,37 @@ for(i in 1:length(l_diseases)){
   print(length(l_pid_merge))
   
   # Age
+  # MAIN
+  l_age_disease_main = table_c %>% filter(normalised_specific_disease %in% l_diseases[i]) %>% select(age) %>% pull()
+  l_age_disease_pilot = table_c_pilot %>% filter(specificDisease %in% l_diseases[i]) %>% select(age) %>% pull()
   
-    
+  l_age_merged_disease = c(l_age_disease_main,
+                           l_age_disease_pilot)
+  print(mean(l_age_merged_disease))
+  print(summary(l_age_merged_disease))
+  
+  # GENDER
+  # Main
+  female_main = table_c %>% filter(normalised_specific_disease %in% l_diseases[i], participant_phenotypic_sex %in% "Female") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  male_main = table_c %>% filter(normalised_specific_disease %in% l_diseases[i], participant_phenotypic_sex %in% "Male") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+  
+  # Pilot
+  female_pilot = table_c_pilot %>% filter(specificDisease %in% l_diseases[i], sex %in% "female") %>% select(gelID) %>% unique() %>% pull() %>% length()
+  male_pilot = table_c_pilot %>% filter(specificDisease %in% l_diseases[i], sex %in% "male") %>% select(gelID) %>% unique() %>% pull() %>% length()
+  
+  # Female (main + pilot) vs total
+  print((female_main + female_pilot) / length(l_pid_merge))
+  # Male (main + pilot) vs total
+  print((male_main + male_pilot) / length(l_pid_merge))
+  
+  # Ethnicity
+  # MAIN
+  l_eth_main = table_c %>% filter(normalised_specific_disease %in% l_diseases[i]) %>% select(participant_ethnic_category) %>% pull() 
+  # PILOT - consider all them `Not stated`
+  l_eth_pilot = rep("Not Stated", length(table_c_pilot$gelID))
+  
+  l_eth_merged = c(l_eth_main, l_eth_pilot)
+  print(prop.table(table(l_eth_merged)))
 }
 
 # Let's define the list of genes for Table C
