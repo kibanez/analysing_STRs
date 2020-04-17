@@ -884,6 +884,18 @@ l_eth_pilot = rep("Not Stated", table_c_pilot %>% filter(specificDisease %in% c(
 l_eth_merged = c(l_eth_main, l_eth_pilot)
 print(prop.table(table(l_eth_merged)))
 
+# The overall TABLE C numbers
+l_overall_age_main = table_c$age
+l_overall_age_pilot = table_c_pilot$age
+l_overall_age_merged = c(l_overall_age_main, l_overall_age_pilot)
+
+# mean
+mean(l_overall_age_merged)
+# 16.1
+# summary
+summary(l_overall_age_merged)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#2.00    8.00   12.00   16.09   18.00  100.00
 
 
 # Let's define the list of genes for Table C
