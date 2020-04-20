@@ -747,7 +747,7 @@ expanded_table_pilot_in_tableD = expanded_table_pilot_per_locus %>%
 dim(expanded_table_pilot_in_tableD)
 # 0  5
 
-# Let' enrich expanded TABLE C repeats with clinical data from `table_a`
+# Let' enrich expanded TABLE D repeats with clinical data from `table_a`
 table_d_expanded = left_join(expanded_table_main_in_tableD,
                              table_d,
                              by = c("list_samples" = "plate_key.x"))
@@ -796,6 +796,15 @@ rownames(matrix_to_print) = l_diseases_tableD
 colnames(matrix_to_print) = l_genes_tableD
 write.table(matrix_to_print, "./subtables/tableD_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
 
+# Total number of participants across all tables (A, B, C, D)
+length(unique(table_a$participant_id)) + 
+  length(unique(table_a_pilot$gelID)) + 
+  length(unique(table_b$participant_id)) + 
+  length(unique(table_c$participant_id)) + 
+  length(unique(table_c_pilot$gelID)) + 
+  length(unique(table_d$participant_id)) + 
+  length(unique(table_d_pilot$gelID))
+# 20808
 
 
 
