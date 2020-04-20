@@ -277,8 +277,3 @@ length(l_ID_group2)
 # 2576
 
 write.table(l_ID_group2, "./list_2576_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
-
-
-
-
-
