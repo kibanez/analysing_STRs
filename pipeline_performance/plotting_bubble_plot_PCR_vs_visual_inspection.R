@@ -25,16 +25,17 @@ val_data = read.csv("./GEL_accuracy_final.tsv",
 dim(val_data)
 # 616  9
 
-# Filter the good ones
-# 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
-val_data = val_data %>%
-  filter(Pileup_quality %in% "Good" | Pileup_quality %in% "good" | Pileup_quality %in% "" | Pileup_quality %in% "MISSING")
+# 1 - Define min and max alleles for both PCR and EH 
+val_data = val_data %>% 
+  group_by(LP_number, locus) %>%
+  mutate(min_PCR = min(exp_PCR_a1, exp_PCR_a2),
+         max_PCR = max(exp_PCR_a1, exp_PCR_a2),
+         min_EH = min(Truth.Short.Allele, Truth.Long.Allele),
+         max_EH = max(Truth.Short.Allele, Truth.Long.Allele)) %>%
+  ungroup() %>%
+  as.data.frame()
 dim(val_data)
-# 543  22
-
-# Let's simplify the data we need from `val_data`
-val_data = val_data %>%
-  select(LP_Number, locus_bioinfo, locus, STR_a1, STR_a2, EH_a1_avg, EH_a2_avg)
+# 616  13
 
 # 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
 # Let's see index for which `STR_a1` and `STR_a2` separately have not integer or numbers for allele estimation
