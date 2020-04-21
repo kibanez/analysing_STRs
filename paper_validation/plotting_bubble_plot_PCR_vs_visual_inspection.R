@@ -133,12 +133,12 @@ locus_v2 = locus_v2[-index_NA]
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
 for(i in 1:length(l_locus)){
-  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_PCR) %>% pull() %>% as.integer() 
-  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_PCR) %>% pull() %>% as.integer() 
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_EH) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_EH) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
-  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_EH) %>% pull() %>% as.integer() 
-  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_EH) %>% pull() %>% as.integer() 
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max.EHv312.a2) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
