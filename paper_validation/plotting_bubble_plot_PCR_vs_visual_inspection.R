@@ -23,7 +23,7 @@ val_data = read.csv("./GEL_accuracy_final.tsv",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 616  9
+# 616  11
 
 # 1 - Define min and max alleles for both PCR and EH 
 val_data = val_data %>% 
@@ -35,7 +35,7 @@ val_data = val_data %>%
   ungroup() %>%
   as.data.frame()
 dim(val_data)
-# 616  13
+# 616  15
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
@@ -113,4 +113,30 @@ dev.off()
 pdf("figures/joint_bubble_plot_EH_visualInspection_vs_PCR_generalView.pdf")
 print(joint_plot)
 dev.off()
+
+# Mike's suggestion - 1
+# Truth short and truth long alleles in X axis
+# minEhv3 and maxEHv3 in Y axis
+
+# Let's take the important meat
+exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
+eh_alleles_v2 = c(as.integer(val_data$min_EH), as.integer(val_data$max_EH))
+locus_v2 = c(val_data$locus, val_data$locus)
+
+joint_plot = ggplot(df_data_with_freq_v2, 
+                    aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
+  geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
+  xlim(5,max_value) + 
+  ylim(5,max_value) + 
+  labs(title = "", 
+       y = "Repeat sizes for each allele \n Expansion Hunter after visual inspection", 
+       x = "Repeat sizes for each allele \n Experimental PCR validation") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+
 
