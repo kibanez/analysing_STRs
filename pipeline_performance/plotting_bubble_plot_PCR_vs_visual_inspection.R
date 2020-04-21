@@ -18,12 +18,12 @@ library(RColorBrewer); packageDescription ("RColorBrewer", fields = "Version") #
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
 # Load golden validation table - EHv2.5.5
-val_data = read.csv("EHv2_avg_VS_EHv2_maxCI/STRVALIDATION_ALLDATA_2019-10-7_ALL_kibanez_EHv255_avg_VS_EHv255_maxCI_checkFXN_withPileup_and_expValidatedData_tweaking_ATN1_updated_AR_from_NHNN.tsv",
+val_data = read.csv("./GEL_accuracy_final.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 635  22
+# 616  9
 
 # Filter the good ones
 # 1 - Only keep with `Pileup_quality` == good or Good, `MISSING` and `blanks`
