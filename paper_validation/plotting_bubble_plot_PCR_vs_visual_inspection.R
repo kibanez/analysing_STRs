@@ -176,4 +176,65 @@ png("figures/joint_bubble_plot_Truth_shortLarg_alleles_vs_EHv3_calls.png", units
 print(joint_plot_mike1)
 dev.off()
 
+# Mike's suggestion - 2
+# min and max PCR sizes in X axis
+# minEhv3 and maxEHv3 in Y axis
+
+# Let's take the important meat
+exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
+eh_alleles_v2 = c(as.integer(val_data$min.EHv312.a1), as.integer(val_data$max.EHv312.a2))
+locus_v2 = c(val_data$locus, val_data$locus)
+
+# Remove NAs
+index_NA = which(is.na(exp_alleles_v2))
+exp_alleles_v2 = exp_alleles_v2[-index_NA]
+eh_alleles_v2 = eh_alleles_v2[-index_NA]
+locus_v2 = locus_v2[-index_NA]
+
+# Create dataframe with exp, eh, freq for each locus
+df_data_with_freq_v2 = data.frame()
+l_locus = unique(locus_v2)
+for(i in 1:length(l_locus)){
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_PCR) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_PCR) %>% pull() %>% as.integer() 
+  aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
+  
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_EH) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_EH) %>% pull() %>% as.integer() 
+  aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
+  
+  data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
+  
+  df_data_aux = data.frame(eh_alleles = data_aux$y,
+                           exp_alleles = data_aux$x,
+                           number_of_alleles = data_aux$number,
+                           locus = rep(l_locus[i], length(data_aux$x)))
+  # Concat info per locus
+  df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
+                               df_data_aux)
+  
+}
+
+max_value = max(df_data_with_freq_v2$eh_alleles, 
+                df_data_with_freq_v2$exp_alleles,
+                na.rm = TRUE) + 5
+
+joint_plot_mike2 = ggplot(df_data_with_freq_v2, 
+                          aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
+  geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
+  xlim(5,max_value) + 
+  ylim(5,max_value) + 
+  labs(title = "", 
+       y = "Repeat sizes for each allele \n EHv3 calls (X & Y columns)", 
+       x = "Repeat sizes for each allele \n PCR sizes (I & J columns)") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("figures/joint_bubble_plot_PCRsizes_vs_EHv3_calls.png", units="in", width=5, height=5, res=300)
+print(joint_plot_mike2)
+dev.off()
 
