@@ -37,78 +37,9 @@ val_data = val_data %>%
 dim(val_data)
 # 616  13
 
-# 2 - Only keep experimental val numbers (STR_a1, STR_a2) that are integer
-# Let's see index for which `STR_a1` and `STR_a2` separately have not integer or numbers for allele estimation
-index_a1 = c(which(val_data$STR_a1 == "normal"), 
-             which(val_data$STR_a1 == "positive"), 
-             which(is.na(val_data$STR_a1)))
-length(index_a1)
-# 8
-
-index_a2 = c(which(val_data$STR_a2 == "positive"), 
-             which(val_data$STR_a2 == "premutation"), 
-             which(val_data$STR_a2 == "na"), 
-             which(val_data$STR_a2 == "full_mutation"), 
-             which(val_data$STR_a2 == "EXP"),
-             which(val_data$STR_a2 == "."),
-             which(is.na(val_data$STR_a2)))
-length(index_a2)
-# 43
-
-# EH alleles with no integer
-index_eh_a1 = c(which(is.na(val_data$EH_a1_avg)))
-length(index_eh_a1)
-# 1
-
-index_eh_a2 = c(which(is.na(val_data$EH_a2_avg)))
-length(index_eh_a2)
-# 12
-
-# We will use `index_a1` and `index_a2` when filtering out STR_a1, and EH_a1_avg; and STR_a2 and EH_a2_avg respectively
-index_allele1 = unique(c(index_eh_a1, index_a1))
-length(index_allele1)
-# 9
-
-index_allele2 = unique(c(index_eh_a2, index_a2))
-length(index_allele2)
-# 45
-
-# in case there is only 1 allele, we should have 1 allele for expValidation and EH
-# in case there are 2 alleles, then the `a1` for expValidation and EH should be the minimum (minor repeat size)
-val_data$STR_a1 = as.integer(val_data$STR_a1)
-val_data$STR_a2 = as.integer(val_data$STR_a2)
-val_data$EH_a1_avg = as.integer(val_data$EH_a1_avg)
-val_data$EH_a2_avg = as.integer(val_data$EH_a2_avg)
-for (i in 1:length(val_data$LP_Number)){
-  val_validation_a1 = val_data$STR_a1[i]
-  val_validation_a2 = val_data$STR_a2[i]
-  val_eh_a1 = val_data$EH_a1_avg[i]
-  val_eh_a2 = val_data$EH_a2_avg[i]
-  
-  # For alleles that there is no estimation (EH only calls 1 allele) we do have a `0` -- we ignore/avoid this step in these cases
-  if (val_eh_a2 == 0 | is.na(val_eh_a2)){
-    min_validation = val_validation_a1
-    min_eh = val_eh_a1
-    max_validation = NA
-    max_eh = NA
-  }else{
-    min_validation = min(val_validation_a1, val_validation_a2)
-    max_validation = max(val_validation_a1, val_validation_a2)
-    min_eh = min(val_eh_a1, val_eh_a2)
-    max_eh = max(val_eh_a1, val_eh_a2)
-  }
-  # Post-processing the new values
-  val_data$validation_a1[i] = min_validation
-  val_data$validation_a2[i] = max_validation
-  val_data$eh_a1[i] = min_eh
-  val_data$eh_a2[i] = max_eh
-}
-dim(val_data)
-# 543  11
-
 # Let's take the important meat: experimentally validated data and EH estimations
-exp_alleles_v2 = c(as.integer(val_data$validation_a1), as.integer(val_data$validation_a2))
-eh_alleles_v2 = c(as.integer(val_data$eh_a1), as.integer(val_data$eh_a2))
+exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
+eh_alleles_v2 = c(as.integer(val_data$min_EH), as.integer(val_data$max_EH))
 locus_v2 = c(val_data$locus, val_data$locus)
 
 # Remove NAs
@@ -121,12 +52,12 @@ locus_v2 = locus_v2[-index_NA]
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
 for(i in 1:length(l_locus)){
-  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(validation_a1) %>% pull() %>% as.integer() 
-  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(validation_a2) %>% pull() %>% as.integer() 
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_PCR) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_PCR) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
-  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(eh_a1) %>% pull() %>% as.integer() 
-  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(eh_a2) %>% pull() %>% as.integer() 
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_EH) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_EH) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
@@ -165,8 +96,8 @@ joint_plot = ggplot(df_data_with_freq_v2,
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
-       y = "Repeat sizes for each allele \n Expansion Hunter (EH-v2.5.5)", 
-       x = "Repeat sizes for each allele \n Experimental validation") + 
+       y = "Repeat sizes for each allele \n Expansion Hunter after visual inspection", 
+       x = "Repeat sizes for each allele \n Experimental PCR validation") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
   scale_fill_manual(values=group.colors) +  
@@ -175,11 +106,11 @@ joint_plot = ggplot(df_data_with_freq_v2,
   guides(size = FALSE) 
 
 
-png("figures/joint_bubble_plot_EHv2_generalView.png", units="in", width=5, height=5, res=300)
+png("figures/joint_bubble_plot_EH_visualInspection_vs_PCR_generalView.png", units="in", width=5, height=5, res=300)
 print(joint_plot)
 dev.off()
 
-pdf("figures/joint_bubble_plot_EHv2_generalView.pdf")
+pdf("figures/joint_bubble_plot_EH_visualInspection_vs_PCR_generalView.pdf")
 print(joint_plot)
 dev.off()
 
