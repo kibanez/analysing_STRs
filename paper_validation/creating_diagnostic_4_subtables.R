@@ -7,6 +7,7 @@ R.version.string ## "R version 3.3.2 (2016-10-31)"
 
 # libraries
 library(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.5"
+library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
 library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 
 # set the working directory
@@ -303,6 +304,26 @@ colnames(table_a_expanded)[3] = "repeat_size"
 l_genes_tablea_part2 = c("ATN1_CAG", "FXN_GAA", "C9orf72_GGGGCC", "HTT_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "CACNA1A_CAG", "ATXN7_CAG", "TBP_CAG", "AR_CAG")
 # Larger than (not equal or larger)
 l_cutoff_tablea_part2 = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
+# List panels
+list_panels = c("Amyotrophic lateral sclerosis/motor neuron disease",
+                "Hereditary neuropathy",
+                "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                "Parkinson Disease and Complex Parkinsonism",
+                "Early onset dystonia",
+                "Hereditary spastic paraplegia",
+                "Hereditary ataxia")
+
+# let's make life simple: split into rows panel info
+table_panels_row = table_diseases %>% 
+  select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+table_panels_row = unique(table_panels_row)
+dim(table_panels_row)
+# 52302  7
+table_panels_row$participant_id = as.character(table_panels_row$participant_id)
+
 
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
 any_exist <- function(list1, list2) {
