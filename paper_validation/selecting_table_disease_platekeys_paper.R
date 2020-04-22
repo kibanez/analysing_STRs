@@ -102,7 +102,7 @@ table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels
 dim(table_diseases_enriched)
 # 13868  16
 
-write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan_and_Ultra-rarr.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan_and_Ultra-rare.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 # Include or merge `table_diseases_enriched` with PILOT data following the same strategy
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_withPanels_280919.tsv",
@@ -185,9 +185,9 @@ table_diseases_enriched_popu = left_join(table_diseases_enriched_popu,
 
 table_diseases_enriched_popu = unique(table_diseases_enriched_popu)
 dim(table_diseases_enriched_popu)
-# 12254 19
+# 13868 19
 
-write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(table_diseases_enriched_popu, "table_diseases_enriched_popu_includingSkeletalMuscleChan_and_ultra-rare.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 write.table(table_diseases_pilot_popu, "table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
 # Distinguish participants/genomes having Intellectual disability as panel
@@ -203,7 +203,7 @@ table_panels_row = table_diseases_enriched_popu %>%
   as.data.frame()
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 52302  7
+# 58449  7
 
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
 
@@ -215,7 +215,7 @@ table_panels_row$panels = recode(table_panels_row$panels,
 
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 49305  7
+# 55355  7
 
 
 # Group 1
@@ -227,9 +227,9 @@ l_pid_only_one_panel = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_only_one_panel)  
-# 2327
+# 2450
 
-# From 2327 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
+# From 2450 PIDs having only A UNIQUE panel assigned, which ones have been assigned ID
 l_pid_ID_group1 = table_panels_row %>%
   filter(grepl("Intellectual disability", panel_list) & participant_id %in% l_pid_only_one_panel) %>%
   select(participant_id) %>%
@@ -237,9 +237,9 @@ l_pid_ID_group1 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_pid_ID_group1)
-# 2144
+# 2173
 
-write.table(l_pid_ID_group1, "list_2144_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pid_ID_group1, "list_2173_PIDs_only_ID_as_panel_assigned.txt", quote = F, row.names = F, col.names = F)
 
 
 # Group 2
@@ -275,6 +275,6 @@ l_ID_group2 = table_panels_row %>%
   pull() %>%
   as.character()
 length(l_ID_group2)
-# 2576
+# 2743
 
-write.table(l_ID_group2, "./list_2576_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
+write.table(l_ID_group2, "./list_2743_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
