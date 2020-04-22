@@ -87,6 +87,7 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
 # Hereditary spastic paraplegia, 
 # Hereditary ataxia
 
+# We will also apply the new cutoffs to the whole data in Table A
 # Change thresholds to these: 
 l_genes_tablea_part2 = c("ATN1_CAG", "FXN_GAA", "C9orf72_GGGGCC", "HTT_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "CACNA1A_CAG", "ATXN7_CAG", "TBP_CAG", "AR_CAG")
 # Larger than (not equal or larger)
@@ -155,12 +156,9 @@ length(l_platekeys_tableA_pilot)
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
 expanded_table_main = data.frame()
-for (i in 1:length(l_genes_tableA)){
-  locus_name = l_genes_tableA[i]
-  patho_cutoff = gene_pathogenic_threshold %>% 
-    filter(locus %in% locus_name) %>%
-    select(threshold) %>%
-    pull()
+for (i in 1:length(l_genes_tablea_part2)){
+  locus_name = l_genes_tablea_part2[i]
+  patho_cutoff = l_cutoff_tablea_part2[i]
   
   print(locus_name)
   print(patho_cutoff)
@@ -172,7 +170,7 @@ for (i in 1:length(l_genes_tableA)){
   
 }
 dim(expanded_table_main)
-# 310  5
+# 370  5
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
 expanded_table_pilot = data.frame()
