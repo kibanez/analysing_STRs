@@ -324,6 +324,15 @@ dim(table_panels_row)
 # 52302  7
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
 
+table_panels_row_pilot = table_diseases_pilot %>%
+  select(plateKey, gelID, specificDisease, panel_list) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+table_panels_row_pilot = unique(table_panels_row_pilot)
+dim(table_panels_row_pilot)
+# 1129  5 
+
 
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
 any_exist <- function(list1, list2) {
