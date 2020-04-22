@@ -15,12 +15,12 @@ setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
 # Load table with the diagnostics 
 # Main table
-table_diseases = read.csv("table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv",
+table_diseases = read.csv("table_diseases_enriched_popu_includingSkeletalMuscleChan_and_ultra-rare.tsv",
                           stringsAsFactors = F, 
                           header = T,
                           sep = "\t")
 dim(table_diseases)
-# 12254  19
+# 13868  19
 
 # Pilot table
 table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
@@ -350,77 +350,34 @@ table_a_part2 = table_panels_row %>%
 dim(table_a_part2)
 # 18  8
 
-
 # select diseases we are interested for TABLE A - PILOT - part2
 # NO, there is no `Ultra-rare undescribed monogenic disorders` specific disease in PILOT
 
-# Let's define the list of genes for Table A
-l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
-
-
 # How many PIDs in the Main?
-length(unique(table_a$participant_id))
-# 3507
+length(unique(table_a_part2$participant_id))
+# 2
 
-# How many PIDs are in the Pilot?
-length(unique(table_a_pilot$plateKey))
-# 408
+l_platekeys_tableA_part2 = unique(table_a_part2$plate_key.x)
 
-# List of platekeys
-# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
-l_platekeys_tableA = unique(table_a$plate_key.x)
-length(l_platekeys_tableA)
-# 3507
-
-# PILOT
-l_platekeys_tableA_pilot = unique(table_a_pilot$plateKey)
-length(l_platekeys_tableA_pilot)
-# 408
-
-# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tablea_part2`
 expanded_table_main = data.frame()
-for (i in 1:length(l_genes_tableA)){
-  locus_name = l_genes_tableA[i]
-  patho_cutoff = gene_pathogenic_threshold %>% 
-    filter(locus %in% locus_name) %>%
-    select(threshold) %>%
-    pull()
+for (i in 1:length(l_genes_tablea_part2)){
+  locus_name = l_genes_tablea_part2[i]
+  patho_cutoff = l_cutoff_tablea_part2[i]
   
   print(locus_name)
   print(patho_cutoff)
   
+  # larger than cutoff, not larger or equal!!!
   expanded_table_main = rbind(expanded_table_main,
                               repeats_table_main %>% 
-                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                filter(gene %in% locus_name, allele > patho_cutoff) %>%
                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
   
 }
 dim(expanded_table_main)
-# 310  5
+# 352  5
 
-# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
-expanded_table_pilot = data.frame()
-for (i in 1:length(l_genes_tableA)){
-  locus_name = l_genes_tableA[i]
-  patho_cutoff = gene_pathogenic_threshold %>% 
-    filter(locus %in% locus_name) %>%
-    select(threshold) %>%
-    pull()
-  
-  print(locus_name)
-  print(patho_cutoff)
-  
-  expanded_table_pilot = rbind(expanded_table_pilot,
-                               repeats_table_pilot %>% 
-                                 filter(gene %in% locus_name, allele >= patho_cutoff) %>%
-                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
-  
-}
-dim(expanded_table_pilot)
-# 48  5
-
-# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
-# And also, focus only in the list of platekeys of Table A
 expanded_table_main_per_locus = data.frame()
 index_kutre = 1
 for (i in 1:length(expanded_table_main$gene)){
@@ -434,35 +391,13 @@ for (i in 1:length(expanded_table_main$gene)){
 }
 expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
-# 1571  5
+# 1957  5
 
-# The same for PILOT
-expanded_table_pilot_per_locus = data.frame()
-index_kutre = 1
-for (i in 1:length(expanded_table_pilot$gene)){
-  list_affected_vcf = strsplit(expanded_table_pilot$list_samples[i], ';')[[1]]
-  for (j in 1:length(list_affected_vcf)){
-    expanded_table_pilot_per_locus = rbind(expanded_table_pilot_per_locus,
-                                           expanded_table_pilot[i,])
-    expanded_table_pilot_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
-    index_kutre = index_kutre + 1
-  }
-}
-expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
-dim(expanded_table_pilot_per_locus)
-# 88  5
-
-# From the expanded table, let's see how many are in l_platekeys_tableA
+# From the expanded table, let's see how many are in `l_platekeys_tableA_part2`
 expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableA)
+  filter(list_samples %in% l_platekeys_tableA_part2)
 dim(expanded_table_main_in_tableA)
-# 114  5
-
-# The same por PILOT
-expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableA_pilot)
-dim(expanded_table_pilot_in_tableA)
-# 12  5
+# 0  5
 
 # Let' enrich expanded TABLE A repeats with clinical data from `table_a`
 table_a_expanded = left_join(expanded_table_main_in_tableA,
