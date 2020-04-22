@@ -306,33 +306,30 @@ l_genes_tablea_part2 = c("ATN1_CAG", "FXN_GAA", "C9orf72_GGGGCC", "HTT_CAG", "AT
 l_cutoff_tablea_part2 = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
 # List panels
 list_panels = c("Amyotrophic lateral sclerosis/motor neuron disease",
+                " Amyotrophic lateral sclerosis/motor neuron disease",
                 "Hereditary neuropathy",
+                " Hereditary neuropathy",
                 "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                " Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
                 "Parkinson Disease and Complex Parkinsonism",
+                " Parkinson Disease and Complex Parkinsonism",
                 "Early onset dystonia",
+                " Early onset dystonia",
                 "Hereditary spastic paraplegia",
-                "Hereditary ataxia")
+                " Hereditary spastic paraplegia",
+                "Hereditary ataxia",
+                " Hereditary ataxia")
 
 # let's make life simple: split into rows panel info
 table_panels_row = table_diseases %>% 
-  select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list) %>%
+  select(plate_key.x, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list, adult.paediatric) %>%
   mutate(panels = strsplit(as.character(panel_list), ",")) %>%
   unnest(panels) %>%
   as.data.frame()
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 52302  7
+# 52302  8
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
-
-table_panels_row_pilot = table_diseases_pilot %>%
-  select(plateKey, gelID, specificDisease, panel_list) %>%
-  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
-  unnest(panels) %>%
-  as.data.frame()
-table_panels_row_pilot = unique(table_panels_row_pilot)
-dim(table_panels_row_pilot)
-# 1129  5 
-
 
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
 any_exist <- function(list1, list2) {
@@ -346,36 +343,16 @@ any_exist <- function(list1, list2) {
 
 
 # select diseases we are interested for TABLE A - part2
-table_a_part2 = table_diseases %>%
-  filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders", 
-         adult.paediatric %in% "Adult")
+table_a_part2 = table_panels_row %>%
+  filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders" &
+         adult.paediatric %in% "Adult" &
+         any_exist(list_panels,panels))
 dim(table_a_part2)
-# 3518  21
+# 18  8
 
-# Complex parkinsonism is missing here
-table_a = rbind(table_a,
-                table_diseases %>%
-                  filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
-dim(table_a)
-# 3659  21
 
-# Let's define list of diseases for Table A, as we have done for the genes
-l_diseases_tableA = unique(table_a$normalised_specific_disease)
-length(l_diseases_tableA)
-# 8
-
-# select diseases we are interested for TABLE A - PILOT
-table_a_pilot = table_diseases_pilot %>%
-  filter(specificDisease %in% c("Amyotrophic lateral sclerosis/motor neuron disease",
-                                "Charcot-Marie-Tooth disease",
-                                "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
-                                "Early onset dystonia",
-                                "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
-                                "Hereditary ataxia",
-                                "Hereditary spastic paraplegia",
-                                "Early onset and familial Parkinson's Disease"))
-dim(table_a_pilot)
-# 418  15
+# select diseases we are interested for TABLE A - PILOT - part2
+# NO, there is no `Ultra-rare undescribed monogenic disorders` specific disease in PILOT
 
 # Let's define the list of genes for Table A
 l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
