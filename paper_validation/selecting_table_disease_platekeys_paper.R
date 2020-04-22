@@ -28,7 +28,8 @@ table_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 
                                             "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
                                             "'Early onset and familial Parkinson''s Disease'",
                                             "Mitochondrial disorders",
-                                            "Kabuki syndrome"))
+                                            "Kabuki syndrome",
+                                            "Ultra-rare undescribed monogenic disorders"))
 dim(table_diseases)
 # 11660  16
 
