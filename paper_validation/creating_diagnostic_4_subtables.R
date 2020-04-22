@@ -412,9 +412,9 @@ table_p1_p2 = rbind(table_a_expanded,
                     table_a_expanded_part2)
 table_p1_p2 = unique(table_p1_p2)
 dim(table_p1_p2)
-# 144  10
+# 181  10
 
-write.table(table_p1_p2, "subtables/TableA_main_including_ultrarare.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_p1_p2, "subtables/TableA_main_including_ultrarare_same_cutoff_for_tableA.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # PILOT
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
@@ -422,7 +422,7 @@ write.table(table_p1_p2, "subtables/TableA_main_including_ultrarare.tsv", quote 
 table_a_pilot_expanded = table_a_pilot_expanded %>%
   filter(gene %in% l_genes_tableA)
 dim(table_a_pilot_expanded)
-# 12  19
+# 16  19
 
 # Focus ONLY in adults
 # FXN exception
@@ -434,13 +434,13 @@ dim(table_a_pilot_FXN)
 table_a_pilot_expanded = table_a_pilot_expanded %>%
   filter(adult.paediatric %in% "Adult")
 dim(table_a_pilot_expanded)
-# 12  19
+# 16  19
 
 table_a_pilot_expanded = rbind(table_a_pilot_expanded,
                                table_a_pilot_FXN)
 table_a_pilot_expanded = unique(table_a_pilot_expanded)
 dim(table_a_pilot_expanded)
-# 12  19
+# 16  19
 
 # Simplify output PILOT TableA
 table_a_pilot_expanded = table_a_pilot_expanded %>%
@@ -450,7 +450,7 @@ colnames(table_a_pilot_expanded)[1] = "platekey"
 colnames(table_a_pilot_expanded)[3] = "repeat_size" 
 
 
-write.table(table_a_pilot_expanded, "subtables/TableA_pilot.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_a_pilot_expanded, "subtables/TableA_pilot_new_cutoffs.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 
 # This is the raw data for Table A - Main
