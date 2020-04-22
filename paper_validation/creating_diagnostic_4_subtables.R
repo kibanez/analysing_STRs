@@ -205,7 +205,7 @@ for (i in 1:length(expanded_table_main$gene)){
 }
 expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
-# 1571  5
+# 2365  5
 
 # The same for PILOT
 expanded_table_pilot_per_locus = data.frame()
@@ -221,58 +221,58 @@ for (i in 1:length(expanded_table_pilot$gene)){
 }
 expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
 dim(expanded_table_pilot_per_locus)
-# 88  5
+# 138  5
 
 # From the expanded table, let's see how many are in l_platekeys_tableA
 expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA)
 dim(expanded_table_main_in_tableA)
-# 114  5
+# 151  5
 
 # The same por PILOT
 expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA_pilot)
 dim(expanded_table_pilot_in_tableA)
-# 12  5
+# 16  5
 
 # Let' enrich expanded TABLE A repeats with clinical data from `table_a`
 table_a_expanded = left_join(expanded_table_main_in_tableA,
                     table_a,
                     by = c("list_samples" = "plate_key.x"))
 dim(table_a_expanded)
-# 120  25
+# 158  25
 
 # PILOT
 table_a_pilot_expanded = left_join(expanded_table_pilot_in_tableA,
                                    table_a_pilot,
                                    by = c("list_samples" = "plateKey"))
 dim(table_a_pilot_expanded)
-# 12  19
+# 16  19
 
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
 # We also focus on our list of genes
 table_a_expanded = table_a_expanded %>%
-  filter(gene %in% l_genes_tableA)
+  filter(gene %in% l_genes_tablea_part2)
 dim(table_a_expanded)
-# 120  25
+# 158  25
 
 # Focus ONLY in adults
 # FXN exception
 table_a_FXN = table_a_expanded %>%
   filter(gene %in% "FXN_GAA")
 dim(table_a_FXN)  
-# 53  25
+# 55  25
 
 table_a_expanded = table_a_expanded %>%
   filter(adult.paediatric %in% "Adult")
 dim(table_a_expanded)
-# 107  25
+# 144  25
 
 table_a_expanded = rbind(table_a_expanded,
                          table_a_FXN)
 table_a_expanded = unique(table_a_expanded)
 dim(table_a_expanded)
-# 112 25
+# 149 25
 
 # Simplify output TableA
 table_a_expanded = table_a_expanded %>%
