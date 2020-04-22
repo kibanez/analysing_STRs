@@ -87,9 +87,9 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
 # Hereditary ataxia
 
 # Change thresholds to these: 
-l_genes_tablea = c("ATN1", "FXN", "C9orf72", "HTT", "ATXN1", "ATXN2", "ATXN3", "CACNA1A", "ATXN7", "TBP", "AR")
+l_genes_tablea_part2 = c("ATN1_CAG", "FXN_GAA", "C9orf72_GGGGCC", "HTT_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "CACNA1A_CAG", "ATXN7_CAG", "TBP_CAG", "AR_CAG")
 # Larger than (not equal or larger)
-l_cutoff_tablea = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
+l_cutoff_tablea_part2 = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
 
 # select diseases we are interested for TABLE A
 table_a = table_diseases %>%
