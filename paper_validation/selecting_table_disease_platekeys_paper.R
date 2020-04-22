@@ -31,7 +31,7 @@ table_diseases <- clinical_data_research_cohort_86457_genomes_withPanels_250919 
                                             "Kabuki syndrome",
                                             "Ultra-rare undescribed monogenic disorders"))
 dim(table_diseases)
-# 11660  16
+# 13237  16
 
 table(table_diseases$normalised_specific_disease)
 
@@ -44,7 +44,7 @@ table(parkinson_to_enrich$normalised_specific_disease)
 
 table_diseases = rbind(table_diseases, parkinson_to_enrich)
 dim(table_diseases)
-# 11801  16
+# 13378  16
 
 write.table(table_diseases[ ,2], row.names = FALSE, col.names = FALSE, quote = FALSE, "./list_PIDs_table_diseases.txt")
 
@@ -54,7 +54,7 @@ table_diseases_dedup = table_diseases %>%
 
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 11432  3
+# 12978  3
 
 # Create new variable named latest_platekey
 table_diseases_dedup =  table_diseases_dedup %>%
@@ -66,11 +66,11 @@ table_diseases_dedup = table_diseases_dedup %>%
   select(participant_id, latest_platekey, genome_build)
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 11370  3
+# 12905  3
 
 list_duplicated_pid = table_diseases_dedup$participant_id[which(duplicated(table_diseases_dedup$participant_id))]
 length(list_duplicated_pid)
-# 198
+# 219
 
 # Take GRCh38 platekey for duplicate PIDs
 table_diseases_duplicates = table_diseases_dedup %>%
@@ -79,30 +79,30 @@ table_diseases_duplicates = table_diseases_dedup %>%
 table_diseases_duplicates = table_diseases_duplicates %>%
   filter(genome_build %in% "GRCh38")
 dim(table_diseases_duplicates)
-# 198  3
+# 219  3
 
 table_diseases_dedup = table_diseases_dedup %>%
   filter(!participant_id %in% list_duplicated_pid)
 dim(table_diseases_dedup)
-# 10974  3
+# 12467  3
 
 # merge
 table_diseases_dedup = rbind(table_diseases_dedup,
                              table_diseases_duplicates)
 
 dim(table_diseases_dedup)
-# 11172  3
+# 12686  3
 
 l_platekeys = table_diseases_dedup$latest_platekey
 length(l_platekeys)
-# 11172
+# 12686
 
 table_diseases_enriched = clinical_data_research_cohort_86457_genomes_withPanels_250919 %>% 
   filter(plate_key.x %in% l_platekeys)
 dim(table_diseases_enriched)
-# 12254  16
+# 13868  16
 
-write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+write.table(table_diseases_enriched, file = "table_diseases_enriched_including_skeletalMuscleChan_and_Ultra-rarr.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 # Include or merge `table_diseases_enriched` with PILOT data following the same strategy
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_withPanels_280919.tsv",
