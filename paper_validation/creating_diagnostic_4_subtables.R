@@ -287,6 +287,198 @@ colnames(table_a_expanded)[1] = "platekey"
 colnames(table_a_expanded)[3] = "repeat_size" 
 
 
+# Include and add the second part re `ultrare` on April 22nd 2020
+# Change on 22nd April: 
+# add ADULT patients recruited under: 'Ultra-rare undescribed monogenic disorders' (SPECIFIC DISEASE), 
+# only the ones that have been applied one or more of the following PANELS:  
+# Amyotrophic lateral sclerosis/motor neuron disease, 
+# Hereditary neuropathy, 
+# Early onset dementia (encompassing fronto-temporal dementia and prion disease), 
+# Parkinson Disease and Complex Parkinsonism, 
+# Early onset dystonia, 
+# Hereditary spastic paraplegia, 
+# Hereditary ataxia
+
+# Change thresholds to these: 
+l_genes_tablea_part2 = c("ATN1_CAG", "FXN_GAA", "C9orf72_GGGGCC", "HTT_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "CACNA1A_CAG", "ATXN7_CAG", "TBP_CAG", "AR_CAG")
+# Larger than (not equal or larger)
+l_cutoff_tablea_part2 = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
+
+# Function that checks if any of the items in list of characters 1 does exist in list of characters 2
+any_exist <- function(list1, list2) {
+  for (i in list1){
+    if (i %in% list2){
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
+
+
+# select diseases we are interested for TABLE A - part2
+table_a_part2 = table_diseases %>%
+  filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders", 
+         adult.paediatric %in% "Adult")
+dim(table_a_part2)
+# 3518  21
+
+# Complex parkinsonism is missing here
+table_a = rbind(table_a,
+                table_diseases %>%
+                  filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
+dim(table_a)
+# 3659  21
+
+# Let's define list of diseases for Table A, as we have done for the genes
+l_diseases_tableA = unique(table_a$normalised_specific_disease)
+length(l_diseases_tableA)
+# 8
+
+# select diseases we are interested for TABLE A - PILOT
+table_a_pilot = table_diseases_pilot %>%
+  filter(specificDisease %in% c("Amyotrophic lateral sclerosis/motor neuron disease",
+                                "Charcot-Marie-Tooth disease",
+                                "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                                "Early onset dystonia",
+                                "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                "Hereditary ataxia",
+                                "Hereditary spastic paraplegia",
+                                "Early onset and familial Parkinson's Disease"))
+dim(table_a_pilot)
+# 418  15
+
+# Let's define the list of genes for Table A
+l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+
+
+# How many PIDs in the Main?
+length(unique(table_a$participant_id))
+# 3507
+
+# How many PIDs are in the Pilot?
+length(unique(table_a_pilot$plateKey))
+# 408
+
+# List of platekeys
+# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
+l_platekeys_tableA = unique(table_a$plate_key.x)
+length(l_platekeys_tableA)
+# 3507
+
+# PILOT
+l_platekeys_tableA_pilot = unique(table_a_pilot$plateKey)
+length(l_platekeys_tableA_pilot)
+# 408
+
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
+expanded_table_main = data.frame()
+for (i in 1:length(l_genes_tableA)){
+  locus_name = l_genes_tableA[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_main = rbind(expanded_table_main,
+                              repeats_table_main %>% 
+                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_main)
+# 310  5
+
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
+expanded_table_pilot = data.frame()
+for (i in 1:length(l_genes_tableA)){
+  locus_name = l_genes_tableA[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_pilot = rbind(expanded_table_pilot,
+                               repeats_table_pilot %>% 
+                                 filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_pilot)
+# 48  5
+
+# After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
+# And also, focus only in the list of platekeys of Table A
+expanded_table_main_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_main$gene)){
+  list_affected_vcf = strsplit(expanded_table_main$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_main_per_locus = rbind(expanded_table_main_per_locus,
+                                          expanded_table_main[i,])
+    expanded_table_main_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
+dim(expanded_table_main_per_locus)
+# 1571  5
+
+# The same for PILOT
+expanded_table_pilot_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_pilot$gene)){
+  list_affected_vcf = strsplit(expanded_table_pilot$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_pilot_per_locus = rbind(expanded_table_pilot_per_locus,
+                                           expanded_table_pilot[i,])
+    expanded_table_pilot_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
+dim(expanded_table_pilot_per_locus)
+# 88  5
+
+# From the expanded table, let's see how many are in l_platekeys_tableA
+expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableA)
+dim(expanded_table_main_in_tableA)
+# 114  5
+
+# The same por PILOT
+expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
+  filter(list_samples %in% l_platekeys_tableA_pilot)
+dim(expanded_table_pilot_in_tableA)
+# 12  5
+
+# Let' enrich expanded TABLE A repeats with clinical data from `table_a`
+table_a_expanded = left_join(expanded_table_main_in_tableA,
+                             table_a,
+                             by = c("list_samples" = "plate_key.x"))
+dim(table_a_expanded)
+# 120  25
+
+# PILOT
+table_a_pilot_expanded = left_join(expanded_table_pilot_in_tableA,
+                                   table_a_pilot,
+                                   by = c("list_samples" = "plateKey"))
+dim(table_a_pilot_expanded)
+# 12  19
+
+# Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
+# We also focus on our list of genes
+table_a_expanded = table_a_expanded %>%
+  filter(gene %in% l_genes_tableA)
+dim(table_a_expanded)
+# 120  25
+
+
 write.table(table_a_expanded, "subtables/TableA_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # PILOT
