@@ -328,7 +328,7 @@ table_panels_row = table_diseases %>%
   as.data.frame()
 table_panels_row = unique(table_panels_row)
 dim(table_panels_row)
-# 52302  8
+# 58449  8
 table_panels_row$participant_id = as.character(table_panels_row$participant_id)
 
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
@@ -348,14 +348,14 @@ table_a_part2 = table_panels_row %>%
          adult.paediatric %in% "Adult" &
          any_exist(list_panels,panels))
 dim(table_a_part2)
-# 18  8
+# 2504  8
 
 # select diseases we are interested for TABLE A - PILOT - part2
 # NO, there is no `Ultra-rare undescribed monogenic disorders` specific disease in PILOT
 
 # How many PIDs in the Main?
 length(unique(table_a_part2$participant_id))
-# 2
+# 696
 
 l_platekeys_tableA_part2 = unique(table_a_part2$plate_key.x)
 
@@ -397,31 +397,29 @@ dim(expanded_table_main_per_locus)
 expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA_part2)
 dim(expanded_table_main_in_tableA)
-# 0  5
+# 31  5
 
 # Let' enrich expanded TABLE A repeats with clinical data from `table_a`
-table_a_expanded = left_join(expanded_table_main_in_tableA,
-                             table_a,
-                             by = c("list_samples" = "plate_key.x"))
-dim(table_a_expanded)
-# 120  25
+table_a_expanded_part2 = left_join(expanded_table_main_in_tableA,
+                                   table_a_part2,
+                                   by = c("list_samples" = "plate_key.x"))
+dim(table_a_expanded_part2)
+# 125  12
 
-# PILOT
-table_a_pilot_expanded = left_join(expanded_table_pilot_in_tableA,
-                                   table_a_pilot,
-                                   by = c("list_samples" = "plateKey"))
-dim(table_a_pilot_expanded)
-# 12  19
+table_a_expanded_part2 = table_a_expanded_part2 %>%
+  select(list_samples, gene, allele, Repeat_Motif, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list, adult.paediatric)
+colnames(table_a_expanded_part2) = c("platekey", "gene", "repeat_size", "Repeat_Motif", "participant_id", "normalised_specific_disease", "disease_sub_group", "disease_group", "panel_list", "adult.paediatric")
 
-# Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
-# We also focus on our list of genes
 table_a_expanded = table_a_expanded %>%
-  filter(gene %in% l_genes_tableA)
-dim(table_a_expanded)
-# 120  25
+  select(platekey, gene, repeat_size, Repeat_Motif, participant_id, normalised_specific_disease, disease_sub_group, disease_group, panel_list, adult.paediatric)
 
+table_p1_p2 = rbind(table_a_expanded,
+                    table_a_expanded_part2)
+table_p1_p2 = unique(table_p1_p2)
+dim(table_p1_p2)
+# 144  10
 
-write.table(table_a_expanded, "subtables/TableA_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_p1_p2, "subtables/TableA_main_including_ultrarare.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # PILOT
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
