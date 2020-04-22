@@ -75,6 +75,22 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
 # (OR YOU CAN PRODUCE A TABLE USING THE PREMUTATION CUTOFF, BUT I SUSPOECT IT WILL BE VERY NOISY AND WOULD NOT REFELCT THE THRESHOLDS THAT PANELAPP IS CURRENTLY USING)
 
+# Change on 22nd April: 
+# add ADULT patients recruited under: 'Ultra-rare undescribed monogenic disorders' (SPECIFIC DISEASE), 
+# only the ones that have been applied one or more of the following PANELS:  
+# Amyotrophic lateral sclerosis/motor neuron disease, 
+# Hereditary neuropathy, 
+# Early onset dementia (encompassing fronto-temporal dementia and prion disease), 
+# Parkinson Disease and Complex Parkinsonism, 
+# Early onset dystonia, 
+# Hereditary spastic paraplegia, 
+# Hereditary ataxia
+
+# Change thresholds to these: 
+l_genes_tablea = c("ATN1", "FXN", "C9orf72", "HTT", "ATXN1", "ATXN2", "ATXN3", "CACNA1A", "ATXN7", "TBP", "AR")
+# Larger than (not equal or larger)
+l_cutoff_tablea = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
+
 # select diseases we are interested for TABLE A
 table_a = table_diseases %>%
   filter(normalised_specific_disease %in% c("Amyotrophic lateral sclerosis or motor neuron disease", 
