@@ -250,7 +250,7 @@ dev.off()
 
 # Combining joint_plot_mike1 and joint_plot_mike2 into a single one
 tontz = ggplot() +
-geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#989898") +
+geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
   xlim(5,max_value) +
   ylim(5,max_value) +
@@ -269,7 +269,7 @@ dev.off()
 
 # breakdown by locus
 breakdown_by_locus = ggplot(df_strategy1) +
-  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#989898") +
+  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
   xlim(5,max_value) +
   ylim(5,max_value) +
