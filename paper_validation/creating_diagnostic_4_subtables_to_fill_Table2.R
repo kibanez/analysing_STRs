@@ -15,12 +15,12 @@ setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
 # Load table with the diagnostics 
 # Main table
-table_diseases = read.csv("table_diseases_enriched_popu_includingSkeletalMuscleChan.tsv",
+table_diseases = read.csv("table_diseases_enriched_including_skeletalMuscleChan_and_Ultra-rare.tsv",
                           stringsAsFactors = F, 
                           header = T,
                           sep = "\t")
 dim(table_diseases)
-# 12254  19
+# 13868  16
 
 # Pilot table
 table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
@@ -100,6 +100,64 @@ dim(table_a)
 l_diseases_tableA = unique(table_a$normalised_specific_disease)
 length(l_diseases_tableA)
 # 8
+
+l_diseases_tableA = c(l_diseases_tableA,
+                      "Ultra-rare undescribed monogenic disorders")
+
+
+list_panels_part2 = c("Amyotrophic lateral sclerosis/motor neuron disease",
+                      " Amyotrophic lateral sclerosis/motor neuron disease",
+                      "Hereditary neuropathy",
+                      " Hereditary neuropathy",
+                      "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                      " Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                      "Parkinson Disease and Complex Parkinsonism",
+                      " Parkinson Disease and Complex Parkinsonism",
+                      "Early onset dystonia",
+                      " Early onset dystonia",
+                      "Hereditary spastic paraplegia",
+                      " Hereditary spastic paraplegia",
+                      "Hereditary ataxia",
+                      " Hereditary ataxia")
+
+# Function that checks if any of the items in list of characters 1 does exist in list of characters 2
+any_exist <- function(list1, list2) {
+  list2_sep = unique(strsplit(list2, ',')[[1]])
+  for (i in list1){
+    if (i %in% list2_sep){
+      return(TRUE)
+    }
+  }
+  return(FALSE)
+}
+
+
+# select diseases we are interested for TABLE A - part2
+table_a_part2 = table_diseases %>%
+  filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders",
+         adult.paediatric %in% "Adult")
+dim(table_a_part2)
+# 725  21
+
+# Let's take only those that have any of the panels specified in part2 within list_panels
+table_a_part2 = table_a_part2 %>%
+  group_by(participant_id) %>%
+  mutate(any_panel_in_listpanels_part2 = any_exist(list_panels_part2, panel_list)) %>%
+  ungroup() %>%
+  as.data.frame()
+dim(table_a_part2)
+# 725  22 
+
+# just take the ones including any of the panels suggested
+table_a_part2 = table_a_part2 %>%
+  filter(any_panel_in_listpanels_part2)
+dim(table_a_part2)
+# 49  22
+
+# remove last column from part2
+table_a_part2 = table_a_part2[,-22]
+table_a = rbind(table_a,
+                table_a_part2)
 
 # select diseases we are interested for TABLE A - PILOT
 table_a_pilot = table_diseases_pilot %>%
