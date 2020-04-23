@@ -87,14 +87,14 @@ table_a = table_diseases %>%
                                             "Hereditary spastic paraplegia",
                                             "'Early onset and familial Parkinson''s Disease'"))
 dim(table_a)
-# 3518  18
+# 3518  21
 
 # Complex parkinsonism is missing here
 table_a = rbind(table_a,
                 table_diseases %>%
                   filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
 dim(table_a)
-# 3659  18
+# 3659  21
 
 # Let's define list of diseases for Table A, as we have done for the genes
 l_diseases_tableA = unique(table_a$normalised_specific_disease)
@@ -137,7 +137,7 @@ table_a_part2 = table_diseases %>%
   filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders",
          adult.paediatric %in% "Adult")
 dim(table_a_part2)
-# 725  18
+# 725  21
 
 # Let's take only those that have any of the panels specified in part2 within list_panels
 table_a_part2 = table_a_part2 %>%
@@ -146,16 +146,16 @@ table_a_part2 = table_a_part2 %>%
   ungroup() %>%
   as.data.frame()
 dim(table_a_part2)
-# 725  19
+# 725  22
 
 # just take the ones including any of the panels suggested
 table_a_part2 = table_a_part2 %>%
   filter(any_panel_in_listpanels_part2)
 dim(table_a_part2)
-# 49  19
+# 49  22
 
 # remove last column from part2
-table_a_part2 = table_a_part2[,-19]
+table_a_part2 = table_a_part2[,-22]
 table_a = rbind(table_a,
                 table_a_part2)
 
