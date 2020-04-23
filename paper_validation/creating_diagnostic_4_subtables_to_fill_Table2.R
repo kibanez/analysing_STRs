@@ -350,10 +350,12 @@ l_pid_park_pilot = table_a_pilot %>% filter(specificDisease %in% "'Early onset a
 l_pid_cpark_main = table_a %>% filter(normalised_specific_disease %in% "Complex Parkinsonism (includes pallido-pyramidal syndromes)", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
 l_pid_cpark_pilot = table_a_pilot %>% filter(specificDisease %in% "Complex Parkinsonism (includes pallido-pyramidal syndromes)", adult.paediatric %in% "Adult")  %>% select(gelID) %>% unique() %>% pull()
 
+# Ultra-rare
+l_pid_ultrarare_main = table_a %>% filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders", adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
 
-l_pid_merged_main = unique(c(l_pid_ha_main, l_pid_eod_main, l_pid_hsp_main, l_pid_cmt_main, l_pid_eode_main, l_pid_als_main, l_pid_park_main, l_pid_cpark_main))
+l_pid_merged_main = unique(c(l_pid_ha_main, l_pid_eod_main, l_pid_hsp_main, l_pid_cmt_main, l_pid_eode_main, l_pid_als_main, l_pid_park_main, l_pid_cpark_main, l_pid_ultrarare_main))
 length(l_pid_merged_main)
-# 3231
+# 3279
 l_pid_merged_pilot = unique(c(l_pid_ha_pilot, l_pid_eod_pilot, l_pid_hsp_pilot, l_pid_cmt_pilot, l_pid_eode_pilot, l_pid_als_pilot, l_pid_park_pilot, l_pid_cpark_pilot))
 length(l_pid_merged_pilot)
 # 378
@@ -361,7 +363,7 @@ length(l_pid_merged_pilot)
 all_merged = unique(c(l_pid_merged_main,
                       l_pid_merged_pilot))
 length(all_merged)
-# 3609
+# 3657
 
 # age
 denak_main = table_a %>% filter(participant_id %in% all_merged) %>% select(age) %>% pull() 
