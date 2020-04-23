@@ -13,6 +13,7 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.7.4"
 library(lattice); packageDescription ("lattice", fields = "Version") #"0.20-35"
 library(tidyverse); packageDescription ("tidyverse", fields = "Version") #"1.2.1"
 library(RColorBrewer); packageDescription ("RColorBrewer", fields = "Version") #"1.1-2"
+library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
@@ -219,9 +220,15 @@ max_value = max(df_data_with_freq_v2$eh_alleles,
                 df_data_with_freq_v2$exp_alleles,
                 na.rm = TRUE) + 5
 
+group.colors.gray = c("AR" = "#DCDCDC", "ATN1" = "#D3D3D3", "ATXN1" ="#C0C0C0", "ATXN2" = "#A9A9A9", "ATXN3" = "#808080", 
+                 "ATXN7" = "#696969", "CACNA1A" = "#778899", "FXN" = "#708090", "HTT" ="#2F4F4F", "TBP" = "#AAAAAA", 
+                 "C9orf72" = "#BBBBBB", "FMR1" = "#CCCCCC", "PPP2R2B" = "black")
+
+df_mike2 = df_data_with_freq_v2
+
 joint_plot_mike2 = ggplot(df_data_with_freq_v2, 
                           aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
-  geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
+  geom_point(aes(fill = factor(locus), size = number_of_alleles), alpha = .3) + 
   xlim(5,max_value) + 
   ylim(5,max_value) + 
   labs(title = "", 
@@ -229,7 +236,7 @@ joint_plot_mike2 = ggplot(df_data_with_freq_v2,
        x = "Repeat sizes for each allele \n PCR sizes (I & J columns)") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
-  scale_fill_manual(values=group.colors) +  
+  scale_fill_manual(values=group.colors.gray) +  
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) + 
   guides(size = FALSE) 
@@ -238,3 +245,12 @@ png("figures/joint_bubble_plot_PCRsizes_vs_EHv3_calls.png", units="in", width=5,
 print(joint_plot_mike2)
 dev.off()
 
+
+# Combining joint_plot_mike1 and joint_plot_mike2 into a single one
+
+aligned_plots <- align_plots(joint_plot_mike1,
+                             joint_plot_mike2, 
+                             align="hv", 
+                             axis="tblr")
+
+ggpoint( data= data1, aes( x, y, col..), alpha =03) +   ggpoint( data= data2, aes( x, y, col..) ) 
