@@ -120,7 +120,7 @@ dev.off()
 # minEhv3 and maxEHv3 in Y axis
 
 # Let's take the important meat
-exp_alleles_v2 = c(as.integer(val_data$min_EH), as.integer(val_data$max_EH))
+exp_alleles_v2 = c(as.integer(val_data$Truth.Short.Allele), as.integer(val_data$Truth.Long.Allele))
 eh_alleles_v2 = c(as.integer(val_data$min.EHv312.a1), as.integer(val_data$max.EHv312.a2))
 locus_v2 = c(val_data$locus, val_data$locus)
 
@@ -134,8 +134,8 @@ locus_v2 = locus_v2[-index_NA]
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
 for(i in 1:length(l_locus)){
-  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_EH) %>% pull() %>% as.integer() 
-  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_EH) %>% pull() %>% as.integer() 
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(Truth.Short.Allele) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(Truth.Long.Allele) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
   aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
@@ -184,7 +184,7 @@ dev.off()
 # minEhv3 and maxEHv3 in Y axis
 
 # Let's take the important meat
-exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
+exp_alleles_v2 = c(as.integer(val_data$exp_PCR_a1), as.integer(val_data$exp_PCR_a2))
 eh_alleles_v2 = c(as.integer(val_data$min.EHv312.a1), as.integer(val_data$max.EHv312.a2))
 locus_v2 = c(val_data$locus, val_data$locus)
 
@@ -198,8 +198,8 @@ locus_v2 = locus_v2[-index_NA]
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
 for(i in 1:length(l_locus)){
-  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_PCR) %>% pull() %>% as.integer() 
-  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_PCR) %>% pull() %>% as.integer() 
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(exp_PCR_a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(exp_PCR_a2) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
   aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
@@ -249,12 +249,6 @@ dev.off()
 
 
 # Combining joint_plot_mike1 and joint_plot_mike2 into a single one
-aligned_plots <- align_plots(joint_plot_mike1,
-                             joint_plot_mike2, 
-                             align="hv", 
-                             axis="tblr")
-ggdraw(aligned_plots[[1]]) + draw_plot(aligned_plots[[2]])
-
 tontz = ggplot() +
 geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#989898") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
