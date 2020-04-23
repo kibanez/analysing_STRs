@@ -467,20 +467,25 @@ colnames(table_a_pilot_expanded)[3] = "repeat_size"
 
 write.table(table_a_pilot_expanded, "subtables/TableA_pilot_new_cutoffs.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
+l_diseases_tableA = c(l_diseases_tableA,
+                      "Ultra-rare undescribed monogenic disorders")
 
 # This is the raw data for Table A - Main
 # Let's do numbers for each locus and disease
-matrix_to_print = matrix(ncol = 11, nrow = 8)
+matrix_to_print = matrix(ncol = 11, nrow = 9)
 for(i in 1:length(l_diseases_tableA)){
-  for (j in 1:length(l_genes_tablea_part2)){
-    number_to_print = table_a_expanded %>% 
-      filter(normalised_specific_disease %in% l_diseases_tableA[i], gene %in% l_genes_tableA[j]) %>% 
-      select(participant_id) %>% unique() %>% pull() %>% length()
-    
-    print(l_diseases_tableA[i])
-    print(l_genes_tableA[j])
-    print(number_to_print)
-    matrix_to_print[i,j] = number_to_print
+  l_genes_in_disease = table_p1_p2 %>% filter(normalised_specific_disease %in% l_diseases_tableA[i]) %>% select(gene) %>% unique() %>% pull()
+  for (j in 1:length(l_genes_tableA)){
+    if (l_genes_tableA[j] %in% l_genes_in_disease){
+      number_to_print = table_p1_p2 %>% 
+        filter(normalised_specific_disease %in% l_diseases_tableA[i], gene %in% l_genes_tableA[j]) %>% 
+        select(participant_id) %>% unique() %>% pull() %>% length()
+      
+      print(l_diseases_tableA[i])
+      print(l_genes_tableA[j])
+      print(number_to_print)
+      matrix_to_print[i,j] = number_to_print
+    }
   }
 }
 
