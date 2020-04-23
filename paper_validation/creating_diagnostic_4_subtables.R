@@ -300,7 +300,7 @@ l_genes_tablea_part2 = c("ATN1_CAG", "FXN_GAA", "C9orf72_GGGGCC", "HTT_CAG", "AT
 # Larger than (not equal or larger)
 l_cutoff_tablea_part2 = c(34, 65, 60, 35, 43, 31, 43, 17, 17, 48, 37)
 # List panels
-list_panels = c("Amyotrophic lateral sclerosis/motor neuron disease",
+list_panels_part2 = c("Amyotrophic lateral sclerosis/motor neuron disease",
                 " Amyotrophic lateral sclerosis/motor neuron disease",
                 "Hereditary neuropathy",
                 " Hereditary neuropathy",
@@ -328,8 +328,9 @@ table_panels_row$participant_id = as.character(table_panels_row$participant_id)
 
 # Function that checks if any of the items in list of characters 1 does exist in list of characters 2
 any_exist <- function(list1, list2) {
+  list2_sep = unique(strsplit(list2, ',')[[1]])
   for (i in list1){
-    if (i %in% list2){
+    if (i %in% list2_sep){
       return(TRUE)
     }
   }
@@ -338,12 +339,26 @@ any_exist <- function(list1, list2) {
 
 
 # select diseases we are interested for TABLE A - part2
-table_a_part2 = table_panels_row %>%
-  filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders" &
-         adult.paediatric %in% "Adult" &
-         any_exist(list_panels,panels))
+table_a_part2 = table_diseases %>%
+  filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders",
+         adult.paediatric %in% "Adult")
 dim(table_a_part2)
-# 2504  8
+# 725  21
+
+# Let's take only those that have any of the panels specified in part2 within list_panels
+table_a_part2 = table_a_part2 %>%
+  group_by(participant_id) %>%
+  mutate(any_panel_in_listpanels_part2 = any_exist(list_panels_part2, panel_list)) %>%
+  ungroup() %>%
+  as.data.frame()
+dim(table_a_part2)
+# 725  22 
+
+# just take the ones including any of the panels suggested
+table_a_part2 = table_a_part2 %>%
+  filter(any_panel_in_listpanels_part2)
+dim(table_a_part2)
+# 49  22
 
 # select diseases we are interested for TABLE A - PILOT - part2
 # NO, there is no `Ultra-rare undescribed monogenic disorders` specific disease in PILOT
