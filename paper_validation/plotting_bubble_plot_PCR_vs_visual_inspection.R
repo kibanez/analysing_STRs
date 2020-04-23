@@ -271,3 +271,20 @@ png("tontz.png",units="in", width=5, height=5, res=300)
 print(tontz)
 dev.off()
 
+
+
+# breakdown by locus
+ggplot(df_strategy1) +
+  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#696969") +
+  geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+  xlim(5,max_value) +
+  ylim(5,max_value) +
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) +
+  guides(size = FALSE) +
+  facet_wrap(locus~ .)
+
+
