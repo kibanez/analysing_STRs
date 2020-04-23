@@ -15,12 +15,12 @@ setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
 # Load table with the diagnostics 
 # Main table
-table_diseases = read.csv("table_diseases_enriched_including_skeletalMuscleChan_and_Ultra-rare.tsv",
+table_diseases = read.csv("./table_diseases_enriched_popu_includingSkeletalMuscleChan_and_ultra-rare.tsv",
                           stringsAsFactors = F, 
                           header = T,
                           sep = "\t")
 dim(table_diseases)
-# 13868  16
+# 13868  19
 
 # Pilot table
 table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
@@ -87,14 +87,14 @@ table_a = table_diseases %>%
                                             "Hereditary spastic paraplegia",
                                             "'Early onset and familial Parkinson''s Disease'"))
 dim(table_a)
-# 3518  21
+# 3518  18
 
 # Complex parkinsonism is missing here
 table_a = rbind(table_a,
                 table_diseases %>%
                   filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
 dim(table_a)
-# 3659  21
+# 3659  18
 
 # Let's define list of diseases for Table A, as we have done for the genes
 l_diseases_tableA = unique(table_a$normalised_specific_disease)
@@ -137,7 +137,7 @@ table_a_part2 = table_diseases %>%
   filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders",
          adult.paediatric %in% "Adult")
 dim(table_a_part2)
-# 725  21
+# 725  18
 
 # Let's take only those that have any of the panels specified in part2 within list_panels
 table_a_part2 = table_a_part2 %>%
@@ -146,16 +146,16 @@ table_a_part2 = table_a_part2 %>%
   ungroup() %>%
   as.data.frame()
 dim(table_a_part2)
-# 725  22 
+# 725  19
 
 # just take the ones including any of the panels suggested
 table_a_part2 = table_a_part2 %>%
   filter(any_panel_in_listpanels_part2)
 dim(table_a_part2)
-# 49  22
+# 49  19
 
 # remove last column from part2
-table_a_part2 = table_a_part2[,-22]
+table_a_part2 = table_a_part2[,-19]
 table_a = rbind(table_a,
                 table_a_part2)
 
