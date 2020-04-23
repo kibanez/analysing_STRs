@@ -256,7 +256,7 @@ aligned_plots <- align_plots(joint_plot_mike1,
 ggdraw(aligned_plots[[1]]) + draw_plot(aligned_plots[[2]])
 
 tontz = ggplot() +
-geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#696969") +
+geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#989898") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
   xlim(5,max_value) +
   ylim(5,max_value) +
@@ -267,15 +267,15 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("tontz.png",units="in", width=5, height=5, res=300)
+png("./figures/before_vs_after_visualQC.png",units="in", width=5, height=5, res=300)
 print(tontz)
 dev.off()
 
 
 
 # breakdown by locus
-ggplot(df_strategy1) +
-  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#696969") +
+breakdown_by_locus = ggplot(df_strategy1) +
+  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#989898") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
   xlim(5,max_value) +
   ylim(5,max_value) +
@@ -286,5 +286,9 @@ ggplot(df_strategy1) +
         axis.text.x.top = element_text()) +
   guides(size = FALSE) +
   facet_wrap(locus~ .)
+
+png("./figures/before_vs_after_visualQC_breakdown.png",units="in", width=5, height=5, res=300)
+print(breakdown_by_locus)
+dev.off()
 
 
