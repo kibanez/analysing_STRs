@@ -9,7 +9,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # defining working directory
-setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT/")
+setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/PAT/")
 
 # in this case, the first analysis we will perform is called PAT: pilot adult ataxia 
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
@@ -63,12 +63,12 @@ dim(main_clin_data)
 pilot_cases = pilot_clin_data %>%
   filter(yearOfBirth < 2000, 
          grepl("[Aa]taxia", specificDisease), 
-         biological_relation_to_proband %in% "Proband")
+         (biological_relation_to_proband %in% "Proband") | (disease_status %in% "Affected"))
 dim(pilot_cases)
-# 117  12
+# 122  12
 
 length(unique(pilot_cases$plateKey))
-# 117
+# 122
 
 l_pilot_cases = unique(pilot_cases$plateKey)
 
@@ -90,15 +90,15 @@ length(unique(pilot_controls$plateKey))
 # - for `main` take GRCh37
 
 main_cases = main_clin_data %>%
-  filter(participant_type %in% "Proband",
+  filter((participant_type %in% "Proband" | affection_status %in% "Affected") &
          year_of_birth < 2000,
          genome_build %in% "GRCh37",
          grepl("[Aa]taxia", specific_disease))
 dim(main_cases)
-# 4350  28
+# 5465  28
 
 length(unique(main_cases$plate_key))
-# 97
+# 119
 
 l_main_cases = unique(main_cases$plate_key)
 
@@ -117,42 +117,42 @@ length(unique(main_controls$plate_key))
 
 # Writing individual files
 l_pilot_cases = unique(pilot_cases$plateKey)
-write.table(l_pilot_cases, "input/pilot_117_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_pilot_cases, "input/pilot_122_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_pilot_controls = unique(pilot_controls$plateKey)
 write.table(l_pilot_controls, "input/pilot_865_controls.txt", quote = F, row.names = F, col.names = F)
 
 l_main_cases = unique(main_cases$plate_key)
-write.table(l_main_cases, "input/main_97_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "input/main_119_cases.txt", quote = F, row.names = F, col.names = F)
 # which(l_main_cases %in% l_platekey_both)
-write.table(l_main_cases[-which(l_main_cases %in% l_platekey_both)], "input/main_79_cases.txt", quote = F, row.names = F, col.names = F)
+#write.table(, "input/main_79_cases.txt", quote = F, row.names = F, col.names = F)
 
 
 l_main_controls = unique(main_controls$plate_key)
 write.table(l_main_controls, "input/main_1391_controls.txt", quote = F, row.names = F, col.names = F)
 # which(l_main_controls %in% l_platekey_both)
-write.table(l_main_controls[-which(l_main_controls %in% l_platekey_both)], "input/main_1199_controls.txt", quote = F, row.names = F, col.names = F)
+#write.table(l_main_controls[-which(l_main_controls %in% l_platekey_both)], "input/main_1199_controls.txt", quote = F, row.names = F, col.names = F)
 
 
 # Merged CASE and CONTROL files
-#l_cases = unique(c(l_pilot_cases,
-#                   l_main_cases))
-
 l_cases = unique(c(l_pilot_cases,
-                   l_main_cases[-which(l_main_cases %in% l_platekey_both)]))
+                   l_main_cases))
 
-#l_controls = unique(c(l_pilot_controls,
-#                      l_main_controls))
+#l_cases = unique(c(l_pilot_cases,
+#                   l_main_cases[-which(l_main_cases %in% l_platekey_both)]))
 
 l_controls = unique(c(l_pilot_controls,
-                      l_main_controls[-which(l_main_controls %in% l_platekey_both)]))
+                      l_main_controls))
 
-#write.table(l_cases, "input/merged_pilot_main_214_cases.txt", quote = F, row.names = F, col.names = F)
-#write.table(l_controls, "input/merged_pilot_main_2256_controls.txt", quote = F, row.names = F, col.names = F)
+#l_controls = unique(c(l_pilot_controls,
+#                      l_main_controls[-which(l_main_controls %in% l_platekey_both)]))
+
+write.table(l_cases, "input/merged_pilot_main_241_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_controls, "input/merged_pilot_main_2256_controls.txt", quote = F, row.names = F, col.names = F)
 
 # only b37
-write.table(l_cases, "input/merged_pilot_main_196_cases.txt", quote = F, row.names = F, col.names = F)
-write.table(l_controls, "input/merged_pilot_main_2064_controls.txt", quote = F, row.names = F, col.names = F)
+#write.table(l_cases, "input/merged_pilot_main_196_cases.txt", quote = F, row.names = F, col.names = F)
+#write.table(l_controls, "input/merged_pilot_main_2064_controls.txt", quote = F, row.names = F, col.names = F)
 
 
 # Let's create now the `manifest` file
@@ -173,7 +173,7 @@ cases_df = data.frame(platekey = l_cases,
 
 cases_df = cases_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -182,7 +182,7 @@ controls_df = data.frame(platekey = l_controls,
 
 controls_df = controls_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/genomes/scratch/kgarikano/GEL_STR/EHdn/case-control/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/PAT/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -190,16 +190,14 @@ merged_df = rbind(cases_df,
                   controls_df)
 
 dim(merged_df)
-# 2470  3
-# 2260  3
+# 2497  3
 
 # QC check - there should not be duplicated platekeys
 length(merged_df$platekey)
-# 2470
-# 2260
+# 2497
 
 write.table(merged_df,
-            "input/manifest_PAT_only_b37.tsv",
+            "input/manifest_PAT.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
@@ -209,8 +207,8 @@ save.image("PAT_case_control_environment.Rdata")
 
 # run quality control checks
 source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
-plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT/PAT_case_control_environment.Rdata", 
-                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.8.6/case-control/analysis/PAT/")
+plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/PAT/PAT_case_control_environment.Rdata", 
+                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/PAT/")
 
 
 
