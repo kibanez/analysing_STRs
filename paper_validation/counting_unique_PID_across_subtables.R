@@ -30,4 +30,7 @@ table_c_main = read.csv("./TableC_main.tsv",
                         stringsAsFactors = F,
                         header = T,
                         sep = "\t")
-
+table_d_main = read.csv("./TableD_main.tsv",
+                        stringsAsFactors = F,
+                        header = T,
+                        sep = "\t")
