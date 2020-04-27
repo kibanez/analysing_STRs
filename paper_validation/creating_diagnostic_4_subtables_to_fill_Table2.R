@@ -71,6 +71,10 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
                                      sep = "\t",
                                      stringsAsFactors = F)
 
+# New variable to count total number of unique participants across A, B, C, and D subtables
+total_pids = c()
+
+
 # Let's define now the 4 subtables for the purpose of the paper
 
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
@@ -158,6 +162,10 @@ dim(table_a_part2)
 table_a_part2 = table_a_part2[,-22]
 table_a = rbind(table_a,
                 table_a_part2)
+
+total_pids = c(total_pids, table_a$participant_id)
+length(unique(total_pids))
+# 3555
 
 # select diseases we are interested for TABLE A - PILOT
 table_a_pilot = table_diseases_pilot %>%
