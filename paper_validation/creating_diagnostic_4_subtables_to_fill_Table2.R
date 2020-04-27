@@ -180,6 +180,10 @@ table_a_pilot = table_diseases_pilot %>%
 dim(table_a_pilot)
 # 418  15
 
+total_pids = c(total_pids,
+               table_a_pilot$gelID)
+length(unique(total_pids))
+# 3963
 
 # Let's see number of participants fROM ROW DATA
 # Let's simplify the table
@@ -653,7 +657,7 @@ write.table(matrix_to_print_pilot, "./subtables/tableA_pilot_for_excel.tsv", sep
 # TABLE B
 # We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
 
-# load list of 2449 PIDs 
+# load list of 2576 PIDs 
 l_complex_ID_group2 = read.table("list_2576_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
 l_complex_ID_group2 = l_complex_ID_group2$V1
 length(l_complex_ID_group2)
@@ -663,6 +667,11 @@ table_b = table_diseases %>%
   filter(participant_id %in% l_complex_ID_group2)
 dim(table_b)
 # 2962  21
+
+total_pids = c(total_pids,
+               table_b$participant_id)
+length(unique(total_pids))
+# 6236
 
 length(unique(table_b$plate_key.x))
 # 2576
@@ -831,6 +840,12 @@ table_c_pilot = table_diseases_pilot %>%
                                 "Distal myopathies"))
 dim(table_c_pilot)
 # 242  15
+
+total_pids = c(total_pids,
+               table_c$participant_id,
+               table_c_pilot$gelID)
+length(unique(total_pids))
+# 11642
 
 # Let's recode ethnicity codes
 table_c$participant_ethnic_category = recode(table_c$participant_ethnic_category,
@@ -1150,6 +1165,12 @@ table_d_pilot = table_diseases_pilot %>%
                                 "Kabuki syndrome"))
 dim(table_d_pilot)
 # 161  15
+
+total_pids = c(total_pids,
+               table_d$participant_id,
+               table_d_pilot$gelID)
+length(unique(total_pids))
+# 11642
 
 # Recode ethnicity
 table_d$participant_ethnic_category = recode(table_d$participant_ethnic_category,
