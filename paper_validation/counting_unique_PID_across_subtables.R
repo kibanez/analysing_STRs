@@ -25,3 +25,9 @@ table_b_main = read.csv("./TableB_main.tsv",
                         stringsAsFactors = F,
                         header = T,
                         sep = "\t")
+
+table_c_main = read.csv("./TableC_main.tsv",
+                        stringsAsFactors = F,
+                        header = T,
+                        sep = "\t")
+
