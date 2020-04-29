@@ -32,20 +32,33 @@ pg_hiseq = read.csv("./NA12878_S1_Edico.HiSeq.repeats.tsv",
                     header = F)
 
 # Novaseq1
+ash_nova1 = read.csv("./LP4100018-DNA_E11_Edico.Ash.NovaSeq.repeats.tsv",
+                     stringsAsFactors = F,
+                     sep = "\t",
+                     header = F)
+
 pg_nova1= read.csv("./LP4100018-DNA_E05_Edico.NovaSeq.repeats.tsv",
                     stringsAsFactors = F, 
                     sep = "\t",
                     header = F)
 
 
-ash_nova1 = read.csv("./NA12878_S1_Edico.HiSeq.repeats.tsv",
-                    stringsAsFactors = F,
-                    sep = "\t",
-                    header = F)
 
 # Novaseq2
+ash_nova2 = read.csv("./LP4100018-DNA_F11_Edico.Ash.NovaSeq.repeats.tsv",
+                     stringsAsFactors = F,
+                     sep = "\t",
+                     header = F)
+
 pg_nova2= read.csv("./LP4100016-DNA_D02_Edico.NovaSeq.repeats.tsv",
                     stringsAsFactors = F, 
                     sep = "\t",
                     header = F)
 
+
+merged_all = rbind(ash_hiseq,
+                   pg_hiseq,
+                   ash_nova1,
+                   pg_nova1,
+                   ash_nova2,
+                   pg_nova2)
