@@ -20,6 +20,7 @@ setwd("/Users/kibanez/Documents/STRs/ANALYSIS/novaseq/STRs/")
 
 # Load data
 
+# Hiseq data
 ash_hiseq = read.csv("./HG002_Edico.HiSeq.repeats.tsv",
                      stringsAsFactors = F, 
                      sep = "\t",
@@ -29,3 +30,22 @@ pg_hiseq = read.csv("./NA12878_S1_Edico.HiSeq.repeats.tsv",
                     stringsAsFactors = F,
                     sep = "\t",
                     header = F)
+
+# Novaseq1
+pg_nova1= read.csv("./LP4100018-DNA_E05_Edico.NovaSeq.repeats.tsv",
+                    stringsAsFactors = F, 
+                    sep = "\t",
+                    header = F)
+
+
+ash_nova1 = read.csv("./NA12878_S1_Edico.HiSeq.repeats.tsv",
+                    stringsAsFactors = F,
+                    sep = "\t",
+                    header = F)
+
+# Novaseq2
+pg_nova2= read.csv("./LP4100016-DNA_D02_Edico.NovaSeq.repeats.tsv",
+                    stringsAsFactors = F, 
+                    sep = "\t",
+                    header = F)
+
