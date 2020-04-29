@@ -18,3 +18,14 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/novaseq/STRs/")
 
+# Load data
+
+ash_hiseq = read.csv("./HG002_Edico.HiSeq.repeats.tsv",
+                     stringsAsFactors = F, 
+                     sep = "\t",
+                     header = F)
+
+pg_hiseq = read.csv("./NA12878_S1_Edico.HiSeq.repeats.tsv",
+                    stringsAsFactors = F,
+                    sep = "\t",
+                    header = F)
