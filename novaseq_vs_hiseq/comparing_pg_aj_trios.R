@@ -26,12 +26,15 @@ ash_hiseq = read.csv("./HG002_Edico.HiSeq.repeats.tsv",
                      sep = "\t",
                      header = F)
 ash_hiseq$tech = rep("HiSeq", length(ash_hiseq$V1))
+ash_hiseq$trio = rep("Ash", length(ash_hiseq$V1))
 
 pg_hiseq = read.csv("./NA12878_S1_Edico.HiSeq.repeats.tsv",
                     stringsAsFactors = F,
                     sep = "\t",
                     header = F)
 pg_hiseq$tech = rep("HiSeq", length(pg_hiseq$V1))
+pg_hiseq$trio = rep("PG", length(pg_hiseq$V1))
+
 
 # Novaseq1
 ash_nova1 = read.csv("./LP4100018-DNA_E11_Edico.Ash.NovaSeq.repeats.tsv",
@@ -39,12 +42,14 @@ ash_nova1 = read.csv("./LP4100018-DNA_E11_Edico.Ash.NovaSeq.repeats.tsv",
                      sep = "\t",
                      header = F)
 ash_nova1$tech = rep("NovaSeq", length(ash_nova1$V1))
+ash_nova1$trio = rep("Ash", length(ash_nova1$V1))
 
 pg_nova1= read.csv("./LP4100018-DNA_E05_Edico.NovaSeq.repeats.tsv",
                     stringsAsFactors = F, 
                     sep = "\t",
                     header = F)
 pg_nova1$tech = rep("NovaSeq", length(pg_nova1$V1))
+pg_nova1$trio = rep("PG", length(pg_nova1$V1))
 
 # Novaseq2
 ash_nova2 = read.csv("./LP4100018-DNA_F11_Edico.Ash.NovaSeq.repeats.tsv",
@@ -52,12 +57,14 @@ ash_nova2 = read.csv("./LP4100018-DNA_F11_Edico.Ash.NovaSeq.repeats.tsv",
                      sep = "\t",
                      header = F)
 ash_nova2$tech = rep("NovaSeq", length(ash_nova2$V1))
+ash_nova2$trio = rep("Ash", length(ash_nova2$V1))
 
 pg_nova2= read.csv("./LP4100016-DNA_D02_Edico.NovaSeq.repeats.tsv",
                     stringsAsFactors = F, 
                     sep = "\t",
                     header = F)
 pg_nova2$tech = rep("NovaSeq", length(pg_nova2$V1))
+pg_nova2$trio = rep("Ash", length(pg_nova2$V1))
 
 
 merged_all = rbind(ash_hiseq,
@@ -66,26 +73,32 @@ merged_all = rbind(ash_hiseq,
                    pg_nova1,
                    ash_nova2,
                    pg_nova2)
-colnames(merged_all) = c("sequencing", "locus", "EHv3_a1", "EHv3_a2", "technology")
+colnames(merged_all) = c("sequencing", "locus", "EHv3_a1", "EHv3_a2", "technology", "trio")
 
 # Focus only in the 13 loci we have validated clinically (paper)
-l_genes = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "FXN_GAA", "HTT_CAG", "C9orf72_GGGGCC", "CACNA1A_CAG", "FXN_GAA", "HTT_CAG", "TBP_CAG", "PPPP2R2B_CAG")
+l_genes = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "FXN_GAA", "HTT_CAG", "C9orf72_GGGGCC", "FXN_GAA","TBP_CAG", "PPPP2R2B_CAG")
 
 # Filling manually colours (locus)
 brewer.pal(n = 8, name = "Dark2")
 brewer.pal(n = 8, name = "Set1")
-# "#E41A1C" "#377EB8" "#4DAF4A" "#984EA3" "#FF7F00" "#FFFF33" "#A65628" "#F781BF"
 
 group.colors = c("AR_CAG" = "#1B9E77", "ATN1_CAG" = "#D95F02", "ATXN1_CAG" ="#7570B3", "ATXN2_CAG" = "#E7298A", "ATXN3_CAG" = "#66A61E", 
                  "ATXN7_CAG" = "#E6AB02", "CACNA1A_CAG" = "#A6761D", "FXN_GAA" = "#666666", "HTT_CAG" ="#E41A1C", "TBP_CAG" = "#FF7F00", 
-                 "C9orf72_GGGGCC" = "#FFFF33", "FMR1" = "#F781BF", "PPP2R2B_CAG" = "black")
+                 "C9orf72_GGGGCC" = "#FFFF33", "PPP2R2B_CAG" = "black")
 
 merged_genes = merged_all %>%
   filter(locus %in% l_genes)
 
+ash_hiseq = merged_genes %>%
+  filter(trio %in% "Ash", technology %in% "HiSeq")
+ash_novaseq = merged_genes %>%
+  filter(trio %in% "Ash", technology %in% "NovaSeq")
+
+pg_hiseq = merged_genes %>%
+  filter(trio %in% "PG", technology %in% "HiSeq")
 
 joint_plot = ggplot(merged_genes, 
-                    aes(x = merged_genes %>% filter(technology %in% "HiSeq"), y = merged_genes %>% filter(technology %in% "NovaSeq"), colour = factor(locus))) + 
+                    aes(x = ash_hiseq, y = ash_novaseq), colour = factor(locus)) + 
   geom_point(aes(fill = factor(locus))) + 
   labs(title = "", 
        y = "Repeat sizes for each allele \n NovaSeq", 
