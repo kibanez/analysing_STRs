@@ -17,3 +17,4 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/novaseq/STRs/")
+
