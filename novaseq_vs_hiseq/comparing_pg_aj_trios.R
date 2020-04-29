@@ -62,3 +62,4 @@ merged_all = rbind(ash_hiseq,
                    pg_nova1,
                    ash_nova2,
                    pg_nova2)
+colnames(merged_all) = c("sequencing", "locus", "EHv3_a1", "EHv3_a2")
