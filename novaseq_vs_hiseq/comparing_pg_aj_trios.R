@@ -41,14 +41,14 @@ ash_nova1 = read.csv("./LP4100018-DNA_E11_Edico.Ash.NovaSeq.repeats.tsv",
                      stringsAsFactors = F,
                      sep = "\t",
                      header = F)
-ash_nova1$tech = rep("NovaSeq", length(ash_nova1$V1))
+ash_nova1$tech = rep("NovaSeq1", length(ash_nova1$V1))
 ash_nova1$trio = rep("Ash", length(ash_nova1$V1))
 
 pg_nova1= read.csv("./LP4100018-DNA_E05_Edico.NovaSeq.repeats.tsv",
                     stringsAsFactors = F, 
                     sep = "\t",
                     header = F)
-pg_nova1$tech = rep("NovaSeq", length(pg_nova1$V1))
+pg_nova1$tech = rep("NovaSeq1", length(pg_nova1$V1))
 pg_nova1$trio = rep("PG", length(pg_nova1$V1))
 
 # Novaseq2
@@ -56,15 +56,15 @@ ash_nova2 = read.csv("./LP4100018-DNA_F11_Edico.Ash.NovaSeq.repeats.tsv",
                      stringsAsFactors = F,
                      sep = "\t",
                      header = F)
-ash_nova2$tech = rep("NovaSeq", length(ash_nova2$V1))
+ash_nova2$tech = rep("NovaSeq2", length(ash_nova2$V1))
 ash_nova2$trio = rep("Ash", length(ash_nova2$V1))
 
 pg_nova2= read.csv("./LP4100016-DNA_D02_Edico.NovaSeq.repeats.tsv",
                     stringsAsFactors = F, 
                     sep = "\t",
                     header = F)
-pg_nova2$tech = rep("NovaSeq", length(pg_nova2$V1))
-pg_nova2$trio = rep("Ash", length(pg_nova2$V1))
+pg_nova2$tech = rep("NovaSeq2", length(pg_nova2$V1))
+pg_nova2$trio = rep("PG", length(pg_nova2$V1))
 
 
 merged_all = rbind(ash_hiseq,
@@ -90,19 +90,21 @@ merged_genes = merged_all %>%
   filter(locus %in% l_genes)
 
 ash_hiseq = merged_genes %>%
-  filter(trio %in% "Ash", technology %in% "HiSeq")
-ash_novaseq = merged_genes %>%
-  filter(trio %in% "Ash", technology %in% "NovaSeq")
+  filter(trio %in% "Ash", technology %in% "HiSeq") %>%
+  select(EHv3_a1, EHv3_a2)
+l_ash_hiseq = c(ash_hiseq$EHv3_a1,ash_hiseq$EHv3_a2)
 
-pg_hiseq = merged_genes %>%
-  filter(trio %in% "PG", technology %in% "HiSeq")
+ash_novaseq1 = merged_genes %>%
+  filter(trio %in% "Ash", technology %in% "NovaSeq1") %>%
+  select(EHv3_a1, EHv3_a2)
+l_ash_novaseq1 = c(ash_novaseq1$EHv3_a1, ash_novaseq1$EHv3_a2)
 
-joint_plot = ggplot(merged_genes, 
-                    aes(x = ash_hiseq, y = ash_novaseq), colour = factor(locus)) + 
-  geom_point(aes(fill = factor(locus))) + 
-  labs(title = "", 
-       y = "Repeat sizes for each allele \n NovaSeq", 
-       x = "Repeat sizes for each allele \n HiSeq") + 
+joint_plot_HiSeq_ash = ggplot(merged_genes %>% filter(technology %in% c("HiSeq", "NovaSeq1"), trio %in% "Ash"), 
+                    aes(x = l_ash_hiseq, y = l_ash_novaseq1), colour = factor(locus)) + 
+  geom_point(aes(colour = factor(locus))) + 
+  labs(title = "Ashkenazim", 
+       y = "Repeat sizes NovaSeq1", 
+       x = "Repeat sizes HiSeq") + 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
   scale_fill_manual(values=group.colors) +  
@@ -110,3 +112,118 @@ joint_plot = ggplot(merged_genes,
         axis.text.x.top = element_text()) + 
   guides(size = FALSE) 
 
+png("Ashkenazim_HiSeq_vs_NovaSeq1.png")
+print(joint_plot_HiSeq_ash)
+dev.off()
+
+
+ash_novaseq2 = merged_genes %>%
+  filter(trio %in% "Ash", technology %in% "NovaSeq2") %>%
+  select(EHv3_a1, EHv3_a2)
+l_ash_novaseq2 = c(ash_novaseq2$EHv3_a1, ash_novaseq2$EHv3_a2)
+
+
+joint_plot_HiSeq_ash2 = ggplot(merged_genes %>% filter(technology %in% c("HiSeq", "NovaSeq2"), trio %in% "Ash"), 
+                              aes(x = l_ash_hiseq, y = l_ash_novaseq2), colour = factor(locus)) + 
+  geom_point(aes(colour = factor(locus))) + 
+  labs(title = "Ashkenazim", 
+       y = "Repeat sizes NovaSeq2", 
+       x = "Repeat sizes HiSeq") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("Ashkenazim_HiSeq_vs_NovaSeq2.png")
+print(joint_plot_HiSeq_ash2)
+dev.off()
+
+
+# PG
+pg_hiseq = merged_genes %>%
+  filter(trio %in% "PG", technology %in% "HiSeq") %>%
+  select(EHv3_a1, EHv3_a2)
+l_pg_hiseq = c(pg_hiseq$EHv3_a1,pg_hiseq$EHv3_a2)
+
+pg_novaseq1 = merged_genes %>%
+  filter(trio %in% "PG", technology %in% "NovaSeq1") %>%
+  select(EHv3_a1, EHv3_a2)
+l_pg_novaseq1 = c(pg_novaseq1$EHv3_a1, pg_novaseq1$EHv3_a2)
+
+joint_plot_HiSeq_PG = ggplot(merged_genes %>% filter(technology %in% c("HiSeq", "NovaSeq1"), trio %in% "PG"), 
+                              aes(x = l_pg_hiseq, y = l_pg_novaseq1), colour = factor(locus)) + 
+  geom_point(aes(colour = factor(locus))) + 
+  labs(title = "Platinum Genome", 
+       y = "Repeat sizes NovaSeq1", 
+       x = "Repeat sizes HiSeq") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("PG_HiSeq_vs_NovaSeq1.png")
+print(joint_plot_HiSeq_PG)
+dev.off()
+
+
+pg_novaseq2 = merged_genes %>%
+  filter(trio %in% "PG", technology %in% "NovaSeq2") %>%
+  select(EHv3_a1, EHv3_a2)
+l_pg_novaseq2 = c(pg_novaseq2$EHv3_a1, pg_novaseq2$EHv3_a2)
+
+joint_plot_HiSeq_PG2 = ggplot(merged_genes %>% filter(technology %in% c("HiSeq", "NovaSeq2"), trio %in% "PG"), 
+                             aes(x = l_pg_hiseq, y = l_pg_novaseq2), colour = factor(locus)) + 
+  geom_point(aes(colour = factor(locus))) + 
+  labs(title = "Platinum Genome", 
+       y = "Repeat sizes NovaSeq1", 
+       x = "Repeat sizes HiSeq") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("PG_HiSeq_vs_NovaSeq2.png")
+print(joint_plot_HiSeq_PG2)
+dev.off()
+
+
+joint_plot_novaseq1_vs_novaseq2_pg = ggplot(merged_genes %>% filter(technology %in% c("NovaSeq1", "NovaSeq2"), trio %in% "PG"), 
+                              aes(x = l_pg_novaseq1, y = l_pg_novaseq2), colour = factor(locus)) + 
+  geom_point(aes(colour = factor(locus))) + 
+  labs(title = "Platinum Genome", 
+       y = "Repeat sizes NovaSeq2", 
+       x = "Repeat sizes NovaSeq1") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("PG_NovaSeq1_vs_NovaSeq2.png")
+print(joint_plot_novaseq1_vs_novaseq2_pg)
+dev.off()
+
+
+joint_plot_novaseq1_vs_novaseq2_ash = ggplot(merged_genes %>% filter(technology %in% c("NovaSeq1", "NovaSeq2"), trio %in% "Ash"), 
+                                            aes(x = l_ash_novaseq1, y = l_ash_novaseq2), colour = factor(locus)) + 
+  geom_point(aes(colour = factor(locus))) + 
+  labs(title = "Ashkenazim", 
+       y = "Repeat sizes NovaSeq2", 
+       x = "Repeat sizes NovaSeq1") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("Ash_NovaSeq1_vs_NovaSeq2.png")
+print(joint_plot_novaseq1_vs_novaseq2_ash)
+dev.off()
