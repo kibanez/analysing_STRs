@@ -256,12 +256,15 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
   ylim(5,max_value) +
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
+  labs(title = "", 
+       y = "EH repeat sizes", 
+       x = "PCR repeat sizes") + 
   scale_fill_manual(values=group.colors) +  
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/before_vs_after_visualQC.png",units="in", width=5, height=5, res=300)
+png("./figures/Figure2B_before_vs_after_visualQC.png",units="in", width=5, height=5, res=300)
 print(tontz)
 dev.off()
 
@@ -275,13 +278,16 @@ breakdown_by_locus = ggplot(df_strategy1) +
   ylim(5,max_value) +
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
+  labs(title = "", 
+       y = "EH repeat sizes", 
+       x = "PCR repeat sizes") + 
   scale_fill_manual(values=group.colors) +  
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) +
   guides(size = FALSE) +
   facet_wrap(locus~ .)
 
-png("./figures/before_vs_after_visualQC_breakdown.png",units="in", width=5, height=5, res=300)
+png("./figures/FigureS3_before_vs_after_visualQC_breakdown_600dpi.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
 
