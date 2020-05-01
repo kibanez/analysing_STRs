@@ -44,3 +44,10 @@ dim(main_controls)
 
 length(unique(main_controls$plate_key))
 # 11355
+
+# Writing into files
+write.table(l_main_cases, "input/main_6_cases.txt", quote = F, row.names = F, col.names = F)
+
+l_main_controls = unique(main_controls$plate_key)
+write.table(l_main_controls, "input/main_11355_controls.txt", quote = F, row.names = F, col.names = F)
+
