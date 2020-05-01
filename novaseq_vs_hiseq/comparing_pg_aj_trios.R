@@ -220,6 +220,7 @@ joint_plot_novaseq1_vs_novaseq2_ash = ggplot(merged_genes %>% filter(technology 
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
   coord_equal() +
   scale_fill_manual(values=group.colors) +  
+  
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) + 
   guides(size = FALSE) 
