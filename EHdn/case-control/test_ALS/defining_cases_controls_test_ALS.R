@@ -51,3 +51,45 @@ write.table(l_main_cases, "input/main_6_cases.txt", quote = F, row.names = F, co
 l_main_controls = unique(main_controls$plate_key)
 write.table(l_main_controls, "input/main_11355_controls.txt", quote = F, row.names = F, col.names = F)
 
+# Let's create now the `manifest` file
+cases_df = data.frame(platekey = l_main_cases,
+                      group = rep("case", length(l_cases)))
+
+cases_df = cases_df %>%
+  group_by(platekey) %>%
+  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/ALS_test/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+controls_df = data.frame(platekey = l_main_controls,
+                         group = rep("control", length(l_main_controls)))
+
+controls_df = controls_df %>%
+  group_by(platekey) %>%
+  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/ALS_test/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+merged_df = rbind(cases_df,
+                  controls_df)
+
+dim(merged_df)
+# 11361  3
+
+# QC check - there should not be duplicated platekeys
+length(merged_df$platekey)
+# 11361
+
+write.table(merged_df,
+            "input/manifest_test_ALS.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+save.image("test_ALS_case_control_environment.Rdata")
+
+# run quality control checks
+source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
+plotting_age_distribution(environment_file = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/test_ALS/test_ALS_case_control_environment.Rdata", 
+                          working_directory = "~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/test_ALS/")
