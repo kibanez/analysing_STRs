@@ -87,6 +87,25 @@ write.table(merged_df,
             row.names = F,
             col.names = F)
 
+
+# There are some genomes that have not been included in EHdn calculation
+real_list = read.table("./list_11226_cases.txt", stringsAsFactors = F)
+real_list = real_list$V1
+# 11226
+
+merged_df = merged_df %>%
+  filter(platekey %in% real_list, group %in% "control" | group %in% "case")
+dim(merged_df)
+# 11226  3
+
+write.table(merged_df,
+            "input/manifest_test_ALS_real.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+
 save.image("test_ALS_case_control_environment.Rdata")
 
 # run quality control checks
