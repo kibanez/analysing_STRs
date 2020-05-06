@@ -25,25 +25,65 @@ list_fxn_genomes = list_fxn_genomes$V1
 length(list_fxn_genomes)
 # 43
 
-path_vcf = clin_data %>%
+df_path_vcf = clin_data %>%
   filter(platekey %in% list_fxn_genomes) %>%
+  select(file_path, genome_build) %>%
+  unique()
+dim(df_path_vcf)  
+# 43  2
+
+table(df_path_vcf$genome_build)
+#GRCh37 GRCh38 
+#5     38 
+
+# we need to split into GRCh37 and GRCh38 !!!! in order to annotate them properly
+
+path_vcf_38 = clin_data %>%
+  filter(platekey %in% list_fxn_genomes, genome_build %in% "GRCh38") %>%
   select(file_path) %>%
   unique() %>%
   pull()
-length(path_vcf)
-# 43
+length(path_vcf_38)
+# 38
 
-l_path_genome = c()
-for (i in 1:length(path_vcf)){
-  l_split = strsplit(path_vcf[i], "/")[[1]]
+path_vcf_37 = clin_data %>%
+  filter(platekey %in% list_fxn_genomes, genome_build %in% "GRCh37") %>%
+  select(file_path) %>%
+  unique() %>%
+  pull()
+length(path_vcf_37)
+# 5
+
+
+l_path_genome38 = c()
+for (i in 1:length(path_vcf_38)){
+  l_split = strsplit(path_vcf_38[i], "/")[[1]]
   # take the part of the path we are interested in
   l_split = l_split[c(1:6)]
   l_split = c(l_split, "Variations")
   l_split = c(l_split, paste(l_split[6], ".genome.vcf.gz", sep = ""))
   new_char = paste(l_split, collapse = '/')
-  l_path_genome = c(l_path_genome,
+  l_path_genome38 = c(l_path_genome38,
                     new_char)
   
 }
-length(l_path_genome)
-# 43
+length(l_path_genome38)
+# 38
+
+l_path_genome37 = c()
+for (i in 1:length(path_vcf_37)){
+  l_split = strsplit(path_vcf_37[i], "/")[[1]]
+  # take the part of the path we are interested in
+  l_split = l_split[c(1:6)]
+  l_split = c(l_split, "Variations")
+  l_split = c(l_split, paste(l_split[6], ".genome.vcf.gz", sep = ""))
+  new_char = paste(l_split, collapse = '/')
+  l_path_genome37 = c(l_path_genome37,
+                      new_char)
+  
+}
+length(l_path_genome37)
+# 5
+
+write.table(l_path_genome37, "list_5_genomeVCF_path_GRCh37.tsv", quote = F, row.names = F, col.names = F)
+write.table(l_path_genome38, "list_38_genomeVCF_path_GRCh38.tsv", quote = F, row.names = F, col.names = F)
