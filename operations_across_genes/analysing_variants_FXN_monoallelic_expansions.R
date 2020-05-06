@@ -33,3 +33,17 @@ path_vcf = clin_data %>%
 length(path_vcf)
 # 43
 
+l_path_genome = c()
+for (i in 1:length(path_vcf)){
+  l_split = strsplit(path_vcf[i], "/")[[1]]
+  # take the part of the path we are interested in
+  l_split = l_split[c(1:6)]
+  l_split = c(l_split, "Variations")
+  l_split = c(l_split, paste(l_split[6], ".genome.vcf.gz", sep = ""))
+  new_char = paste(l_split, collapse = '/')
+  l_path_genome = c(l_path_genome,
+                    new_char)
+  
+}
+length(l_path_genome)
+# 43
