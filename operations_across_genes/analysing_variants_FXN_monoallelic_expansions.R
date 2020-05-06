@@ -12,3 +12,10 @@ library(dplyr)
 # defining working directory
 setwd("~/Documents/STRs/ANALYSIS/FXN_monoallelic/")
 
+# 1 - Retrieve the genome.vcf.gz for each genome
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+#
