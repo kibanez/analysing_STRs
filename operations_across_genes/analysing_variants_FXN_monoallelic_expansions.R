@@ -18,4 +18,18 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-#
+# 1124633      31
+
+list_fxn_genomes = read.table("./list_43_platekeys_monoallelic_STR_FXN.tsv", stringsAsFactors = F)
+list_fxn_genomes = list_fxn_genomes$V1
+length(list_fxn_genomes)
+# 43
+
+path_vcf = clin_data %>%
+  filter(platekey %in% list_fxn_genomes) %>%
+  select(file_path) %>%
+  unique() %>%
+  pull()
+length(path_vcf)
+# 43
+
