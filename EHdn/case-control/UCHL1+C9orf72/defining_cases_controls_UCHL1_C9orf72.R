@@ -9,10 +9,10 @@ R.version.string ## "R version 3.6.3 (2020-02-29)"
 library(dplyr)
 
 # defining working directory
-setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/test_ALS/")
+setwd("~/Documents/STRs/ANALYSIS/EHdn/EHdn-v0.9.0/case-control/analysis/UCHL1_C9orf72/")
 
 # Load list of cases
-l_cases = read.table("./list_ALS_GRCh38.txt", stringsAsFactors = F)
+l_cases = read.table("./input/list_4_genomes_UCLH1.txt", stringsAsFactors = F)
 l_cases = l_cases$V1
 
 
