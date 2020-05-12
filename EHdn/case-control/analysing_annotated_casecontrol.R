@@ -42,6 +42,13 @@ dim(cc_data_filtered)
 # We need to analyse `counts` field
 # Create cases and controls columns, and put there the % of how many are there??
 
+# Define first columns
+
+cc_data_filtered$list_cases = rep(".", length(cc_data_filtered$contig))
+cc_data_filtered$list_controls = rep(".", length(cc_data_filtered$contig))
+cc_data_filtered$perc_cases = rep(".", length(cc_data_filtered$contig))
+cc_data_filtered$perc_controls = rep(".", length(cc_data_filtered$contig))
+
 for (i in 1:length(cc_data_filtered$counts)){
   aver = strsplit(cc_data_filtered$counts[i], ",")[[1]]
   total_counts = length(aver)
@@ -58,12 +65,25 @@ for (i in 1:length(cc_data_filtered$counts)){
   }
   
   # Raw list of cases and controls
-  cc_data_filtered$list_cases[i] = paste(unlist(cases_l), collapse = ';')
-  cc_data_filtered$list_controls[i] = paste(unlist(controls_l), collapse = ';')
+  if (length(cases_l) == 0){
+    cc_data_filtered$list_cases[i] = '.'
+  }else{
+    cc_data_filtered$list_cases[i] = paste(unlist(as.character(cases_l)), collapse = ';')  
+  }
+  
+  cc_data_filtered$list_controls[i] = paste(unlist(as.character(controls_l)), collapse = ';')
   
   # % of cases and controls
-  perc_cases = length(cases_l) / length(l_cases)
+  if (length(cases_l) == 0){
+    perc_cases = 0
+  }else{
+    perc_cases = length(cases_l) / length(l_cases)  
+  }
+  
   perc_controls = length(controls_l) / length(l_controls)
+  
+  #print(perc_cases)
+  #print(perc_controls)
   
   cc_data_filtered$perc_cases[i] = perc_cases
   cc_data_filtered$perc_controls[i] = perc_controls
@@ -73,8 +93,18 @@ for (i in 1:length(cc_data_filtered$counts)){
 dim(cc_data_filtered)
 # 186  13
 
+# Remove the `counts` column
+cc_data_filtered = cc_data_filtered[-9]
+
 write.table(cc_data_filtered,
-            "aver.tsv",
+            "./test_ALS/output/casecontrol_test_ALS_locus-based_annotated_filtered_with_lists.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+write.table(cc_data_filtered %>% select(contig, start, end, motif, gene, region, pvalue, bonf_pvalue, perc_cases, perc_controls),
+            "./test_ALS/output/casecontrol_test_ALS_locus-based_annotated_filtered_removing_lists.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
