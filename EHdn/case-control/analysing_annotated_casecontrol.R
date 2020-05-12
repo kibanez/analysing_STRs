@@ -19,10 +19,20 @@ cc_data = read.csv("./test_ALS/output/casecontrol_test_ALS_locus-based_annotated
 dim(cc_data)
 # 8832  9
 
+# List of cases
+l_cases = read.table("./test_ALS/input/main_6_cases.txt",
+                     stringsAsFactors = F)
+l_cases = l_cases$V1
+length(l_cases)
+# 6
 
 # Filtering criteria: pvalue <= 0.05 
 cc_data_filtered = cc_data %>%
   filter(pvalue <= 0.05)
 dim(cc_data_filtered)
 # 186  9
+
+# Filtering those genes or repeat-motifs that are significantly enriched in cases
+
+
 
