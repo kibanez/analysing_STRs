@@ -22,4 +22,7 @@ dim(cc_data)
 
 # Filtering criteria: pvalue <= 0.05 
 cc_data_filtered = cc_data %>%
-  filter()
+  filter(pvalue <= 0.05)
+dim(cc_data_filtered)
+# 186  9
+
