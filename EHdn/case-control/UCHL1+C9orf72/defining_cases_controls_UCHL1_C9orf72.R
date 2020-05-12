@@ -46,7 +46,7 @@ length(unique(main_controls$plate_key))
 # 11355
 
 # Writing into files
-write.table(l_main_cases, "input/main_6_cases.txt", quote = F, row.names = F, col.names = F)
+write.table(l_main_cases, "input/main_4_cases.txt", quote = F, row.names = F, col.names = F)
 
 l_main_controls = unique(main_controls$plate_key)
 write.table(l_main_controls, "input/main_11355_controls.txt", quote = F, row.names = F, col.names = F)
@@ -57,7 +57,7 @@ cases_df = data.frame(platekey = l_main_cases,
 
 cases_df = cases_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/ALS_test/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/UCHL1_C9orf72/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -66,7 +66,7 @@ controls_df = data.frame(platekey = l_main_controls,
 
 controls_df = controls_df %>%
   group_by(platekey) %>%
-  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/ALS_test/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
+  mutate(path = paste(paste("/home/kgarikano/GEL_STR/EHdn/case-control/EHdn_v0.9.0/analysis/UCHL1_C9orf72/str-profiles", platekey, sep = "/"), "_EHdeNovo.str_profile.json", sep = "")) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -74,14 +74,14 @@ merged_df = rbind(cases_df,
                   controls_df)
 
 dim(merged_df)
-# 11361  3
+# 11359  3
 
 # QC check - there should not be duplicated platekeys
 length(merged_df$platekey)
-# 11361
+# 11359
 
 write.table(merged_df,
-            "input/manifest_test_ALS.tsv",
+            "input/manifest_UCHL1.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
@@ -89,24 +89,24 @@ write.table(merged_df,
 
 
 # There are some genomes that have not been included in EHdn calculation
-real_list = read.table("./list_11226_cases.txt", stringsAsFactors = F)
+real_list = read.table("../test_ALS/list_11226_cases.txt", stringsAsFactors = F)
 real_list = real_list$V1
 # 11226
 
 merged_df = merged_df %>%
-  filter(platekey %in% real_list, group %in% "control" | group %in% "case")
+  filter(group %in% "case" | (platekey %in% real_list & group %in% "control"))
 dim(merged_df)
-# 11226  3
+# 11225  3
 
 write.table(merged_df,
-            "input/manifest_test_ALS_real.tsv",
+            "input/manifest_UCHL1_real.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
             col.names = F)
 
 
-save.image("test_ALS_case_control_environment.Rdata")
+save.image("UCHL1_C9orf72_case_control_environment.Rdata")
 
 # run quality control checks
 source("~/git/analysing_STRs/EHdn/case-control/functions/quality_control.R")
