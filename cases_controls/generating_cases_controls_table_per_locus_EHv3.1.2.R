@@ -10,24 +10,26 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/cases_controls/EHv3.1.2/")
+setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/")
 
 # Load data
-merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged_genotypeUpdated/merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv",
+#merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged_genotypeUpdated/merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv",
+merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
                        sep = '\t',
                        header = T,
                        stringsAsFactors = F)
 dim(merged_data)
-# 4495  12
+# 8560  12
 
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
 #clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_250919.tsv",
-clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+#clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(clin_data)  
-# 1124633  28
+# 1124633  31
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(panel_name)) %>% ungroup() %>% as.data.frame()
@@ -41,21 +43,21 @@ dim(list_hpos)
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
-  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, normalised_specific_disease, specific_disease, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status)
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, normalised_specific_disease, specific_disease, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
 dim(clin_data)
-# 1124633  14
+# 1124633  16
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  15
+# 1124633  17
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-#  1124633   16
+#  1124633   18
 
 # Let's include the population information
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv",
@@ -69,7 +71,7 @@ clin_data = left_join(clin_data,
                       popu_table %>% select(participant_id, population),
                       by = "participant_id")
 dim(clin_data)
-# 1124753  17
+# 1124753  19
 
 # As output
 # We want to the following output - NOTE each row is an allele (!!!)
@@ -133,7 +135,7 @@ for (i in 1:length(l_genes)){
   }# dim(locus_data) > 0
   
   # Write all `locus_data_new` output into a file
-  output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.1.2", l_genes[i], sep = "_")
+  output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
   output_file = paste(output_file, ".tsv" , sep = ".")
   write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
   
@@ -143,7 +145,7 @@ for (i in 1:length(l_genes)){
   
   # Adapt column names (for better understanding)
   colnames(locus_data_new)[6] = "repeat_size"
-  output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.1.2", l_genes[i], sep = "_")
+  output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
   output_file = paste(output_file, "_simplified.tsv" , sep = "")
   write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
   
