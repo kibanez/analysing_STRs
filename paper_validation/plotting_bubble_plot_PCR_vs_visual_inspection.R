@@ -260,11 +260,13 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
        y = "EH repeat sizes", 
        x = "PCR repeat sizes") + 
   scale_fill_manual(values=group.colors) +  
+  theme_light() +
   theme(legend.title = element_blank(),
+        text = element_text(size=13),
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/Figure2B_before_vs_after_visualQC.png",units="in", width=5, height=5, res=300)
+png("./figures/Figure2B_before_vs_after_visualQC_ryanFormat.png",units="in", width=5, height=5, res=300)
 print(tontz)
 dev.off()
 
