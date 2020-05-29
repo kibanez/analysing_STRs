@@ -35,3 +35,11 @@ merged_table = left_join(cellbase_table,
                          by = c("start" = "Start"))
 dim(merged_table)
 # 284 139
+
+# Write into a final merged file
+write.table(merged_table,
+            "merged_38_mono_expanded_FXN_genome_b38_annovar_cellbase.csv",
+            sep = ",",
+            quote = F,
+            col.names = T,
+            row.names = F)
