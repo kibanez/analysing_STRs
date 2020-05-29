@@ -30,3 +30,8 @@ annovar_table = read.csv(annovar_output,
 dim(annovar_table)
 # 18636  104
 
+merged_table = left_join(cellbase_table,
+                         annovar_table,
+                         by = c("start" = "Start"))
+dim(merged_table)
+# 284 139
