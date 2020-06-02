@@ -21,7 +21,10 @@ cellbase_table = read.csv(cellbase_output,
                           stringsAsFactors = F,
                           sep = ",")
 dim(cellbase_table)
-# 304  36
+# 304  35
+
+# Change the chr nomenclature for cellbase to `chr`
+cellbase_table$chr = paste('chr', cellbase_table$chr, sep = '')
 
 annovar_table = read.csv(annovar_output,
                          header = T,
@@ -30,11 +33,14 @@ annovar_table = read.csv(annovar_output,
 dim(annovar_table)
 # 18636  104
 
-merged_table = left_join(cellbase_table,
-                         annovar_table,
-                         by = c("start" = "Start"))
+# Merge annovar and cellbase tables
+merged_table = merge(cellbase_table,
+                     annovar_table,
+                     by.x = c("chr", "start", "ref", "alt"),
+                     by.y = c("Chr", "Start", "Ref", "Alt"))
+
 dim(merged_table)
-# 284 139
+# 206 135
 
 # Write into a final merged file
 write.table(merged_table,
