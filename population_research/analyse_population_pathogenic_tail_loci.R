@@ -30,7 +30,7 @@ popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCEST
 dim(popu_table)
 # 59464  36
 
-# Lodd PILOT popu table 
+# Load PILOT popu table 
 pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
                             stringsAsFactors = F,
                             sep = ",",
@@ -46,6 +46,14 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
 dim(clin_data)
 # 1124633  31
 
+# Pilot clin data
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                           stringsAsFactors = F,
+                           sep = "\t",
+                           header = T)
+dim(pilot_clin_data)
+# 4974  10
+
 # Merge popu table with family ID from clin_data
 popu_table = left_join(popu_table,
                        clin_data %>% select(platekey, rare_diseases_family_id, affection_status),
@@ -53,6 +61,14 @@ popu_table = left_join(popu_table,
 popu_table = unique(popu_table)
 dim(popu_table)
 # 59465  38
+
+# For PILOT we don't have that info, but let's merge with family ID
+pilot_popu_table = left_join(pilot_popu_table,
+                             pilot_clin_data %>% select(plateKey, gelID, disease_status, biological_relation_to_proband),
+                             by = c("ID" = "plateKey"))
+pilot_popu_table = unique(pilot_popu_table)
+dim(pilot_popu_table)
+# 4821  47
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
@@ -89,6 +105,61 @@ merged_table = merged_table %>%
 # For each locus
 
 # AR
+merged_table_atn1 = merged_table %>%
+  filter(gene %in% "ATN1", allele > 34)
+
+list_vcf_patho_atn1 = c()
+for (i in 1:length(merged_table_atn1$list_samples)){
+  list_vcf_patho_atn1 = c(list_vcf_patho_atn1,
+                          strsplit(merged_table_atn1$list_samples[i], ';')[[1]][1])
+  
+}
+
+list_vcf_patho_atn1 = gsub('.vcf', '', list_vcf_patho_atn1)
+list_vcf_patho_atn1 = gsub('^EH_', '', list_vcf_patho_atn1)
+length(list_vcf_patho_atn1)
+# 18
+
+# Enrich platekeys now with ancestry info: MAIN and PILOT
+patho_popu = popu_table %>%
+  filter(ID %in% list_vcf_patho_atn1) %>%
+  select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, affection_status)
+dim(patho_popu)
+# 11  5
+
+patho_popu2 = clin_data %>%
+  filter(platekey %in% list_vcf_patho_atn1) %>%
+  select(platekey, participant_ethnic_category) 
+patho_popu2 = unique(patho_popu2)
+dim(patho_popu2)
+# 14 2
+
+pilot_patho_popu = pilot_popu_table %>%
+  filter(ID %in% list_vcf_patho_atn1) %>%
+  select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained, gelID, disease_status, biological_relation_to_proband)
+dim(pilot_patho_popu)
+# 1 7
+
+patho_merged = full_join(patho_popu,
+                         patho_popu2,
+                         by = c("ID" = "platekey"))
+
+patho_merged = full_join(patho_merged,
+                         pilot_patho_popu,
+                         by = "ID")
+
+dim(patho_merged)
+# 16  12
+
+# Add locus name as column
+patho_merged$locus = rep('AR', length(patho_merged$ID))
+
+write.table(patho_merged, 
+            "AR_beyond_premutation_EHv322_90K_population.tsv", 
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
 
 # ATN1
 merged_table_atn1 = merged_table %>%
@@ -106,7 +177,7 @@ list_vcf_patho_atn1 = gsub('^EH_', '', list_vcf_patho_atn1)
 length(list_vcf_patho_atn1)
 # 18
 
-# Enrich platekeys now with ancestry info
+# Enrich platekeys now with ancestry info: MAIN and PILOT
 patho_popu = popu_table %>%
   filter(ID %in% list_vcf_patho_atn1) %>%
   select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, affection_status)
@@ -120,11 +191,25 @@ patho_popu2 = unique(patho_popu2)
 dim(patho_popu2)
 # 14 2
 
+pilot_patho_popu = pilot_popu_table %>%
+  filter(ID %in% list_vcf_patho_atn1) %>%
+  select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained, gelID, disease_status, biological_relation_to_proband)
+dim(pilot_patho_popu)
+# 1 7
+
 patho_merged = full_join(patho_popu,
                          patho_popu2,
                          by = c("ID" = "platekey"))
+
+patho_merged = full_join(patho_merged,
+                         pilot_patho_popu,
+                         by = "ID")
+
 dim(patho_merged)
-# 15  6
+# 16  12
+
+# Add locus name as column
+patho_merged$locus = rep('ATN1', length(patho_merged$ID))
 
 write.table(patho_merged, 
             "ATN1_beyond_premutation_EHv322_90K_population.tsv", 
