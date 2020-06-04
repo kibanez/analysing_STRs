@@ -171,3 +171,29 @@ ggplot(raw_numbers_popus_pilot,
   xlab("Ancestry cohorts - EHv3.2.2 - Pilot cohort") 
 dev.off()
 
+raw_numbers_popus_merged = full_join(raw_numbers_popus_main,
+                                     raw_numbers_popus_pilot,
+                                     by = "population")
+# replace NA by 0
+raw_numbers_popus_merged$`Number of genomes.y`[which(is.na(raw_numbers_popus_merged$`Number of genomes.y`))] = 0
+
+raw_numbers_popus_merged = raw_numbers_popus_merged %>%
+  mutate(number_genomes = `Number of genomes.x` + `Number of genomes.y`)
+
+
+png("figures/barplot_ancestry_groups_raw_numbers_pilotANDmain_unrelated.png")
+ggplot(raw_numbers_popus_merged, 
+       aes(x = reorder(population, -number_genomes), y = number_genomes)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=number_genomes), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - EHv3.2.2") 
+dev.off()
+
+
+
+
+
+
+
+
