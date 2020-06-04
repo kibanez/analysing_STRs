@@ -38,4 +38,43 @@ pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT
 dim(pilot_popu_table)
 # 4821  44 
 
+# recode PC names in pilot_popu_table
+colnames(pilot_popu_table) = c("ID", "PC1", "PC2", "PC3", "PC4", "PC5", "PC6", colnames(pilot_popu_table)[c(8:44)])
+
+# We cannot Merge Main and Pilot ancestry tables, since PCs have been computed in a diff way
+
+# enrich merged_table with PC1 and PC2 values
+list_exp_genomes = unique(merged_table$ID)
+length(list_exp_genomes)
+# 512
+
+merged_table_main = left_join(merged_table,
+                              popu_table %>% filter(ID %in% list_exp_genomes) %>% select(ID, PC1, PC2),
+                              by = "ID")
+dim(merged_table_main)
+# 514  6
+
+merged_table_pilot = left_join(merged_table,
+                              pilot_popu_table %>% filter(ID %in% list_exp_genomes) %>% select(ID, PC1, PC2),
+                              by = "ID")
+dim(merged_table_pilot)
+# 514  6
+
+png("figures/expanded_genomes_MAIN.png")
+ggplot(data=merged_table_main %>% filter(!is.na(merged.superpopu)), 
+       aes(x=PC2, y=PC1, colour = merged.superpopu)) +
+  geom_point() +
+  xlab("PC2") +
+  ylab("PC1") +
+  guides(fill = FALSE)
+dev.off()
+
+png("figures/expanded_genomes_PILOT.png")
+ggplot(data=merged_table_pilot %>% filter(!is.na(merged.superpopu), !is.na(PC1)), 
+       aes(x=PC2, y=PC1, colour = merged.superpopu)) +
+  geom_point() +
+  xlab("PC2") +
+  ylab("PC1") +
+  guides(fill = FALSE)
+dev.off()
 
