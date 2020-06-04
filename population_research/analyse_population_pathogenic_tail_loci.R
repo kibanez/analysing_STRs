@@ -103,171 +103,68 @@ merged_table = merged_table %>%
 
 
 # For each locus
+l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
+l_premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41)
 
-# AR
-merged_table_ar = merged_table %>%
-  filter(gene %in% "AR", allele > 34)
-
-list_vcf_patho_ar = c()
-for (i in 1:length(merged_table_ar$list_samples)){
-  list_vcf_patho_ar = c(list_vcf_patho_ar,
-                          strsplit(merged_table_ar$list_samples[i], ';')[[1]][1])
+for (i in 1:length(l_genes)){
+  print(l_genes[j])
+  merged_table_locus = merged_table %>%
+    filter(gene %in% l_genes[i], allele > l_premut_cutoff[i])
   
-}
-
-list_vcf_patho_ar = gsub('.vcf', '', list_vcf_patho_ar)
-list_vcf_patho_ar = gsub('^EH_', '', list_vcf_patho_ar)
-length(list_vcf_patho_ar)
-# 27
-
-# Enrich platekeys now with ancestry info: MAIN and PILOT
-patho_popu = popu_table %>%
-  filter(ID %in% list_vcf_patho_ar) %>%
-  select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, affection_status)
-dim(patho_popu)
-# 14  5
-
-patho_popu2 = clin_data %>%
-  filter(platekey %in% list_vcf_patho_ar) %>%
-  select(platekey, participant_ethnic_category) 
-patho_popu2 = unique(patho_popu2)
-dim(patho_popu2)
-# 22 2
-
-pilot_patho_popu = pilot_popu_table %>%
-  filter(ID %in% list_vcf_patho_ar) %>%
-  select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained, gelID, disease_status, biological_relation_to_proband)
-dim(pilot_patho_popu)
-# 4 7
-
-patho_merged = full_join(patho_popu,
-                         patho_popu2,
-                         by = c("ID" = "platekey"))
-
-patho_merged = full_join(patho_merged,
-                         pilot_patho_popu,
-                         by = "ID")
-
-dim(patho_merged)
-# 26  12
-
-# Add locus name as column
-patho_merged$locus = rep('AR', length(patho_merged$ID))
-
-write.table(patho_merged, 
-            "AR_beyond_premutation_EHv322_90K_population.tsv", 
-            sep = "\t",
-            quote = F,
-            row.names = F,
-            col.names = T)
-
-# ATN1
-merged_table_atn1 = merged_table %>%
-  filter(gene %in% "ATN1", allele > 34)
-
-list_vcf_patho_atn1 = c()
-for (i in 1:length(merged_table_atn1$list_samples)){
-  list_vcf_patho_atn1 = c(list_vcf_patho_atn1,
-                          strsplit(merged_table_atn1$list_samples[i], ';')[[1]][1])
+  list_vcf_patho_locus = c()
+  for (j in 1:length(merged_table_locus$list_samples)){
+    list_vcf_patho_locus = c(list_vcf_patho_locus,
+                          strsplit(merged_table_locus$list_samples[j], ';')[[1]][1])
+    
+  }
   
-}
-
-list_vcf_patho_atn1 = gsub('.vcf', '', list_vcf_patho_atn1)
-list_vcf_patho_atn1 = gsub('^EH_', '', list_vcf_patho_atn1)
-length(list_vcf_patho_atn1)
-# 18
-
-# Enrich platekeys now with ancestry info: MAIN and PILOT
-patho_popu = popu_table %>%
-  filter(ID %in% list_vcf_patho_atn1) %>%
-  select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, affection_status)
-dim(patho_popu)
-# 11  5
-
-patho_popu2 = clin_data %>%
-  filter(platekey %in% list_vcf_patho_atn1) %>%
-  select(platekey, participant_ethnic_category) 
-patho_popu2 = unique(patho_popu2)
-dim(patho_popu2)
-# 14 2
-
-pilot_patho_popu = pilot_popu_table %>%
-  filter(ID %in% list_vcf_patho_atn1) %>%
-  select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained, gelID, disease_status, biological_relation_to_proband)
-dim(pilot_patho_popu)
-# 1 7
-
-patho_merged = full_join(patho_popu,
-                         patho_popu2,
-                         by = c("ID" = "platekey"))
-
-patho_merged = full_join(patho_merged,
-                         pilot_patho_popu,
-                         by = "ID")
-
-dim(patho_merged)
-# 16  12
-
-# Add locus name as column
-patho_merged$locus = rep('ATN1', length(patho_merged$ID))
-
-write.table(patho_merged, 
-            "ATN1_beyond_premutation_EHv322_90K_population.tsv", 
-            sep = "\t",
-            quote = F,
-            row.names = F,
-            col.names = T)
-
-# ATXN1
-# ATXN2
-# ATXN3
-# ATXN7
-# CACNA1A
-# C9orf72
-# DMPK
-# HTT
-merged_table_htt = merged_table %>%
-  filter(gene %in% "HTT", allele >= 40)
-list_vcf_patho_htt = c()
-for (i in 1:length(merged_table_htt$list_samples)){
-  list_vcf_patho_htt = c(list_vcf_patho_htt,
-                         strsplit(merged_table_htt$list_samples[i], ';')[[1]][1])
+  list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
+  list_vcf_patho_locus = gsub('^EH_', '', list_vcf_patho_locus)
+  print(length(list_vcf_patho_locus))
   
+  # Enrich platekeys now with ancestry info: MAIN and PILOT
+  patho_popu = popu_table %>%
+    filter(ID %in% list_vcf_patho_locus) %>%
+    select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, affection_status)
+  print(dim(patho_popu))
+
+  
+  patho_popu2 = clin_data %>%
+    filter(platekey %in% list_vcf_patho_locus) %>%
+    select(platekey, participant_ethnic_category) 
+  patho_popu2 = unique(patho_popu2)
+  print(dim(patho_popu2))
+  
+  
+  pilot_patho_popu = pilot_popu_table %>%
+    filter(ID %in% list_vcf_patho_locus) %>%
+    select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained, gelID, disease_status, biological_relation_to_proband)
+  print(dim(pilot_patho_popu))
+  
+  patho_merged = full_join(patho_popu,
+                           patho_popu2,
+                           by = c("ID" = "platekey"))
+  
+  patho_merged = full_join(patho_merged,
+                           pilot_patho_popu,
+                           by = "ID")
+  
+  print(dim(patho_merged))
+  
+  # Add locus name as column
+  patho_merged$locus = rep(l_genes[i], length(patho_merged$ID))
+  
+  output_file_name = paste(l_genes[i], "beyond_", sep = "_")
+  output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
+  output_file_name = paste(output_file_name, as.character(l_premut_cutoff[i]), sep = "")
+  output_file_name = paste(output_file_name, "EHv322_92K_population.tsv", sep = "_")
+  write.table(patho_merged, 
+              output_file_name, 
+              sep = "\t",
+              quote = F,
+              row.names = F,
+              col.names = T)
 }
-
-list_vcf_patho_htt = gsub('.vcf', '', list_vcf_patho_htt)
-list_vcf_patho_htt = gsub('^EH_', '', list_vcf_patho_htt)
-length(list_vcf_patho_htt)
-# 19
-
-# Enrich platekeys now with ancestry info
-patho_popu = popu_table %>%
-  filter(ID %in% list_vcf_patho_htt) %>%
-  select(ID, best_guess_predicted_ancstry, self_reported)
-dim(patho_popu)
-# 5  3
-
-patho_popu2 = clin_data %>%
-  filter(plate_key %in% list_vcf_patho_htt) %>%
-  select(plate_key, participant_ethnic_category) 
-patho_popu2 = unique(patho_popu2)
-dim(patho_popu2)
-# 10 2
-
-patho_merged = left_join(patho_popu2,
-                         patho_popu,
-                         by = c("plate_key" = "ID"))
-write.table(patho_merged, 
-            "./population_pathogenic_tail/HTT_pathogenic_tail.tsv", 
-            sep = "\t",
-            quote = F,
-            row.names = F,
-            col.names = T)
-
-# FMR1
-# FXN
-# TBP
-
 
 
 # ATXN10
