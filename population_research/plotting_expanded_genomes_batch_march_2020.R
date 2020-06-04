@@ -69,7 +69,48 @@ ggplot(data=merged_table_main %>% filter(!is.na(merged.superpopu)),
   guides(fill = FALSE)
 dev.off()
 
-png("figures/expanded_genomes_PILOT.png")
+# only unrelated
+merged_table_main_unrelated = merged_table_main %>%
+  filter(!is.na(merged.familyID), !is.na(PC1))
+
+l_dup_families = merged_table_main_unrelated$merged.familyID[which(duplicated(merged_table_main_unrelated$merged.familyID))]
+# Take only 1 member for each of the duplicated families
+
+dup_families = merged_table_main_unrelated %>%
+  filter(merged.familyID %in% l_dup_families)
+
+merged_table_main_unrelated = merged_table_main_unrelated %>%
+  filter(!merged.familyID %in% l_dup_families)
+dim(merged_table_main_unrelated)
+# 200 6
+
+to_add= data.frame()
+for(i in 1:length(l_dup_families)){
+  aux = dup_families %>%
+    filter(merged.familyID %in% l_dup_families[i])
+  
+  to_add = rbind(to_add,
+                 aux[1,])
+}
+
+merged_table_main_unrelated = rbind(merged_table_main_unrelated,
+                                    to_add)
+
+
+png("figures/expanded_unrelated_genomes_MAIN.png")
+ggplot(data=merged_table_main_unrelated %>% filter(!is.na(merged.superpopu)), 
+       aes(x=PC2, y=PC1, colour = merged.superpopu)) +
+  geom_point() +
+  xlab("PC2") +
+  ylab("PC1") +
+  guides(fill = FALSE)
+dev.off()
+
+
+
+# PILOT
+
+png("figures/expanded_unrelated_genomes_PILOT.png")
 ggplot(data=merged_table_pilot %>% filter(!is.na(merged.superpopu), !is.na(PC1)), 
        aes(x=PC2, y=PC1, colour = merged.superpopu)) +
   geom_point() +
@@ -78,3 +119,23 @@ ggplot(data=merged_table_pilot %>% filter(!is.na(merged.superpopu), !is.na(PC1))
   guides(fill = FALSE)
 dev.off()
 
+
+# only unrelated
+merged_table_pilot_unrelated = merged_table_pilot %>%
+  filter(!is.na(merged.familyID), !is.na(PC1))
+dim(merged_table_pilot_unrelated)
+# 45  6
+
+l_dup_families = merged_table_pilot_unrelated$merged.familyID[which(duplicated(merged_table_pilot_unrelated$merged.familyID))]
+length(l_dup_families)
+# 1
+
+# Take only 1 member for each of the duplicated families
+dup_families = merged_table_pilot_unrelated %>%
+  filter(merged.familyID %in% l_dup_families)
+
+#dup_families
+#locus                ID merged.superpopu merged.familyID         PC1         PC2
+#1   HTT LP2000711-DNA_B12              EUR        50001165 0.002179575 -0.02190111
+#2   FXN LP2000711-DNA_B12              EUR        50001165 0.002179575 -0.02190111
+# Diff loci, we are good then
