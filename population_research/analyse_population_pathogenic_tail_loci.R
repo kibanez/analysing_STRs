@@ -12,26 +12,31 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
-setwd("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/")
-
-# Output directory for plots
-output_folder = "./population_pathogenic_tail/"
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/")
 
 # load data
-merged_table = read.csv("./merged_92663_genomes_EHv3.2.2.tsv",
+merged_table = read.csv("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
                         sep = "\t",
                         stringsAsFactors = F, 
                         header = T)
 dim(merged_table)
 # 8560  12
 
-# Load popu table we have so far
+# Load MAIN popu table we have so far
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
                       stringsAsFactors = F, 
                       sep = ",",
                       header = T)
 dim(popu_table)
 # 59464  36
+
+# Lodd PILOT popu table 
+pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
+                            stringsAsFactors = F,
+                            sep = ",",
+                            header = T)
+dim(pilot_popu_table)
+# 4821  44 
 
 # Load clin data, `participant_ethnic_category`
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
