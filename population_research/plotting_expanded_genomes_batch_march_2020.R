@@ -139,3 +139,35 @@ dup_families = merged_table_pilot_unrelated %>%
 #1   HTT LP2000711-DNA_B12              EUR        50001165 0.002179575 -0.02190111
 #2   FXN LP2000711-DNA_B12              EUR        50001165 0.002179575 -0.02190111
 # Diff loci, we are good then
+
+
+
+# Barplots
+
+# Let's plot the raw numbers of each ancestry superpopu
+raw_numbers_popus_main = as.data.frame(table(merged_table_main_unrelated$merged.superpopu))
+colnames(raw_numbers_popus_main) = c("population", "Number of genomes")
+
+
+raw_numbers_popus_pilot = as.data.frame(table(merged_table_pilot_unrelated$merged.superpopu))
+colnames(raw_numbers_popus_pilot) = c("population", "Number of genomes")
+
+
+png("figures/barplot_ancestry_groups_raw_numbers_main_unrelated.png")
+ggplot(raw_numbers_popus_main, 
+       aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - EHv3.2.2 - Main cohort") 
+dev.off()
+
+png("figures/barplot_ancestry_groups_raw_numbers_pilot_unrelated.png")
+ggplot(raw_numbers_popus_pilot, 
+       aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - EHv3.2.2 - Pilot cohort") 
+dev.off()
+
