@@ -105,40 +105,40 @@ merged_table = merged_table %>%
 # For each locus
 
 # AR
-merged_table_atn1 = merged_table %>%
-  filter(gene %in% "ATN1", allele > 34)
+merged_table_ar = merged_table %>%
+  filter(gene %in% "AR", allele > 34)
 
-list_vcf_patho_atn1 = c()
-for (i in 1:length(merged_table_atn1$list_samples)){
-  list_vcf_patho_atn1 = c(list_vcf_patho_atn1,
-                          strsplit(merged_table_atn1$list_samples[i], ';')[[1]][1])
+list_vcf_patho_ar = c()
+for (i in 1:length(merged_table_ar$list_samples)){
+  list_vcf_patho_ar = c(list_vcf_patho_ar,
+                          strsplit(merged_table_ar$list_samples[i], ';')[[1]][1])
   
 }
 
-list_vcf_patho_atn1 = gsub('.vcf', '', list_vcf_patho_atn1)
-list_vcf_patho_atn1 = gsub('^EH_', '', list_vcf_patho_atn1)
-length(list_vcf_patho_atn1)
-# 18
+list_vcf_patho_ar = gsub('.vcf', '', list_vcf_patho_ar)
+list_vcf_patho_ar = gsub('^EH_', '', list_vcf_patho_ar)
+length(list_vcf_patho_ar)
+# 27
 
 # Enrich platekeys now with ancestry info: MAIN and PILOT
 patho_popu = popu_table %>%
-  filter(ID %in% list_vcf_patho_atn1) %>%
+  filter(ID %in% list_vcf_patho_ar) %>%
   select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, affection_status)
 dim(patho_popu)
-# 11  5
+# 14  5
 
 patho_popu2 = clin_data %>%
-  filter(platekey %in% list_vcf_patho_atn1) %>%
+  filter(platekey %in% list_vcf_patho_ar) %>%
   select(platekey, participant_ethnic_category) 
 patho_popu2 = unique(patho_popu2)
 dim(patho_popu2)
-# 14 2
+# 22 2
 
 pilot_patho_popu = pilot_popu_table %>%
-  filter(ID %in% list_vcf_patho_atn1) %>%
+  filter(ID %in% list_vcf_patho_ar) %>%
   select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained, gelID, disease_status, biological_relation_to_proband)
 dim(pilot_patho_popu)
-# 1 7
+# 4 7
 
 patho_merged = full_join(patho_popu,
                          patho_popu2,
@@ -149,7 +149,7 @@ patho_merged = full_join(patho_merged,
                          by = "ID")
 
 dim(patho_merged)
-# 16  12
+# 26  12
 
 # Add locus name as column
 patho_merged$locus = rep('AR', length(patho_merged$ID))
