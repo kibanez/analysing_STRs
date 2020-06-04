@@ -14,3 +14,11 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/")
+
+# Load data - all merged
+merged_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - merged_all.tsv",
+                        stringsAsFactors = F, 
+                        header = T,
+                        sep = "\t")
+dim(merged_table)
+# 514  4
