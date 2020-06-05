@@ -56,19 +56,19 @@ dim(pilot_clin_data)
 
 # Merge popu table with family ID from clin_data
 popu_table = left_join(popu_table,
-                       clin_data %>% select(platekey, rare_diseases_family_id, affection_status),
+                       clin_data %>% select(platekey, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, panel_name),
                        by = c("ID" = "platekey"))
 popu_table = unique(popu_table)
 dim(popu_table)
-# 59465  38
+# 153948  46
 
 # For PILOT we don't have that info, but let's merge with family ID
 pilot_popu_table = left_join(pilot_popu_table,
-                             pilot_clin_data %>% select(plateKey, gelID, disease_status, biological_relation_to_proband),
+                             pilot_clin_data %>% select(plateKey, gelID, gelFamilyId.x, sex, biological_relation_to_proband, disease_status, yearOfBirth, specificDisease),
                              by = c("ID" = "plateKey"))
 pilot_popu_table = unique(pilot_popu_table)
 dim(pilot_popu_table)
-# 4821  47
+# 4961  51
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
@@ -107,20 +107,27 @@ l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF7
 l_premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41)
 
 for (i in 1:length(l_genes)){
-  print(l_genes[j])
+  print(l_genes[i])
   merged_table_locus = merged_table %>%
     filter(gene %in% l_genes[i], allele > l_premut_cutoff[i])
   
   list_vcf_patho_locus = c()
+  list_allele_size = c()
   for (j in 1:length(merged_table_locus$list_samples)){
-    list_vcf_patho_locus = c(list_vcf_patho_locus,
-                          strsplit(merged_table_locus$list_samples[j], ';')[[1]][1])
+    list_vcf_allele = strsplit(merged_table_locus$list_samples[j], ';')[[1]]
+    number_vcf = length(list_vcf_allele)
+    for (k in 1:length(list_vcf_allele)){
+      list_vcf_patho_locus = c(list_vcf_patho_locus,
+                               strsplit(merged_table_locus$list_samples[k], ';')[[1]][1])
+    }
+    list_allele_size = c(list_allele_size,
+                         rep(merged_table_locus$allele[j], number_vcf))
     
   }
   
   list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
   list_vcf_patho_locus = gsub('^EH_', '', list_vcf_patho_locus)
-  print(length(list_vcf_patho_locus))
+  
   
   # Enrich platekeys now with ancestry info: MAIN and PILOT
   patho_popu = popu_table %>%
