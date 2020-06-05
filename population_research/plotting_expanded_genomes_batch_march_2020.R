@@ -190,8 +190,22 @@ ggplot(raw_numbers_popus_merged,
   xlab("Ancestry cohorts - EHv3.2.2") 
 dev.off()
 
+# Who are the 15 AFR genomes?
+# Load data - all merged
+merged_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - merged_all.tsv",
+                        stringsAsFactors = F, 
+                        header = T,
+                        sep = "\t")
+dim(merged_table)
+# 514  4
 
-
+to_print_AFR = merged_table %>% filter(merged.superpopu %in% "AFR", !is.na(merged.familyID))
+write.table(to_print_AFR,
+            "table_17_related_genomes_AFR.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
 
 
 
