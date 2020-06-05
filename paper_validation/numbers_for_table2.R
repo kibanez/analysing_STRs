@@ -77,10 +77,27 @@ l_diseases_pilot = c("Intellectual disability",
                      "Early onset and familial Parkinson's Disease")
 
 # How many unique PIDs are in MAIN and PILOT cohorts with these diseases?
-table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+l_main_pid = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_id) %>% unique() %>% pull() 
 # 12548
-table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+l_main_pid_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() 
 # 139
-table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(gelID) %>% unique() %>% pull() %>% length()
+l_pilot_pid = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(gelID) %>% unique() %>% pull() 
 # 645
 
+l_pid_all = unique(c(l_main_pid,
+                l_main_pid_extra,
+                l_pilot_pid))
+length(l_pid_all)
+# 13331 
+
+# Age of all
+l_main_age = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(age) %>% unique() %>% pull() 
+l_main_age_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(age) %>% unique() %>% pull() 
+l_pilot_age = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(age) %>% unique() %>% pull() 
+
+l_age_all = c(l_main_age,
+              l_main_age_extra,
+              l_pilot_age)
+summary(l_age_all)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#2.00   30.25   53.00   51.15   72.00  101.00
