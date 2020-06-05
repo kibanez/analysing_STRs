@@ -46,3 +46,41 @@ table_diseases_pilot = table_diseases_pilot %>%
 # Define adult or paediatric
 table_diseases = mutate(table_diseases, adult.paediatric = ifelse(age < 18, "Paediatric", "Adult"))
 table_diseases_pilot = mutate(table_diseases_pilot, adult.paediatric = ifelse(age < 18, "Paediatric", "Adult"))
+
+# List of normalised specific diseases
+l_diseases_main = c("Intellectual disability",
+               "Amyotrophic lateral sclerosis or motor neuron disease", 
+               "Charcot-Marie-Tooth disease", "Congenital muscular dystrophy",
+               "Congenital myopathy", "Early onset dementia", "Early onset dystonia", 
+               "Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
+               "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
+               "'Early onset and familial Parkinson''s Disease'",
+               "Mitochondrial disorders",
+               "Kabuki syndrome",
+               "Ultra-rare undescribed monogenic disorders")
+
+l_diseases_main_extra = "Complex Parkin"
+
+l_diseases_pilot = c("Intellectual disability",
+                     "Kabuki syndrome",
+                     "Amyotrophic lateral sclerosis/motor neuron disease",
+                     "Charcot-Marie-Tooth disease",
+                     "Congenital muscular dystrophy",
+                     "Congenital myopathy",
+                     "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                     "Early onset dystonia",
+                     "Distal myopathies",
+                     "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                     "Hereditary ataxia",
+                     "Hereditary spastic paraplegia",
+                     "Skeletal Muscle Channelopathies",
+                     "Early onset and familial Parkinson's Disease")
+
+# How many unique PIDs are in MAIN and PILOT cohorts with these diseases?
+table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 12548
+table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 139
+table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(gelID) %>% unique() %>% pull() %>% length()
+# 645
+
