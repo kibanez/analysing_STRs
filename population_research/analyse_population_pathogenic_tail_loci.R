@@ -68,7 +68,7 @@ pilot_popu_table = left_join(pilot_popu_table,
                              by = c("ID" = "plateKey"))
 pilot_popu_table = unique(pilot_popu_table)
 dim(pilot_popu_table)
-# 4961  51
+# 5243  58
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
@@ -128,6 +128,9 @@ for (i in 1:length(l_genes)){
   list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
   list_vcf_patho_locus = gsub('^EH_', '', list_vcf_patho_locus)
   
+  # Create dataframe with platekey-repeat-size, for the expanded genomes
+  df_platekey_size = data.frame(platekey = list_vcf_patho_locus,
+                                repeat_size = list_allele_size)
   
   # Enrich platekeys now with ancestry info: MAIN and PILOT
   patho_popu = popu_table %>%
