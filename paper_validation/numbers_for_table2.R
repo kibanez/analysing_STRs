@@ -91,13 +91,31 @@ length(l_pid_all)
 # 13331 
 
 # Age of all
-l_main_age = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(age) %>% unique() %>% pull() 
-l_main_age_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(age) %>% unique() %>% pull() 
-l_pilot_age = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(age) %>% unique() %>% pull() 
+l_main_age = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(age) %>% pull() 
+l_main_age_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(age)  %>% pull() 
+l_pilot_age = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(age) %>% pull() 
 
 l_age_all = c(l_main_age,
               l_main_age_extra,
               l_pilot_age)
 summary(l_age_all)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#2.00   30.25   53.00   51.15   72.00  101.00
+#2.00    9.00   17.00   27.34   45.00  101.00 
+
+# Gender
+l_main_gender = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_phenotypic_sex)  %>% pull() 
+l_main_gender_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_phenotypic_sex) %>% pull() 
+l_pilot_gender = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(sex) %>% pull() 
+
+l_gender_all = c(l_main_gender,
+                 l_main_gender_extra,
+                 l_pilot_gender)
+
+table(l_gender_all)
+# female Female   male   Male 
+# 302   5817    358   7481 
+
+# female =  6119
+# male = 7839
+
+# total = 13958
