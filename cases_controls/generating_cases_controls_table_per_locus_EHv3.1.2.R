@@ -110,8 +110,8 @@ for (i in 1:length(l_genes)){
       for (k in 1:length(number_samp)){
         # we write for each LP/sample/participant the same line/row, but also enriching with clinical data
         new_line = locus_data[j,c(1:10)]
-        new_line$list_vcf_affected = number_samp[k]
         number_samp[k] = gsub("_x2", "", number_samp[k])
+        new_line$list_vcf_affected = number_samp[k]
         
         to_include = clin_data %>% 
           filter(platekey %in% number_samp[k]) %>% 
