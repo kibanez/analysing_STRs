@@ -139,7 +139,7 @@ for (i in 1:length(l_genes)){
   # Enrich platekeys now with ancestry info: MAIN and PILOT
   patho_popu = popu_table %>%
     filter(ID %in% list_vcf_patho_locus) %>%
-    select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, panel_name)
+    select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type)
   print(dim(patho_popu))
 
   
@@ -168,6 +168,8 @@ for (i in 1:length(l_genes)){
                            by = c("ID" = "platekey"))
   
   print(dim(patho_merged))
+  
+  patho_merged = unique(patho_merged)
   
   # Add locus name as column
   patho_merged$locus = rep(l_genes[i], length(patho_merged$ID))
