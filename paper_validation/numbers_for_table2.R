@@ -30,6 +30,31 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
 dim(table_diseases_pilot)
 # 660  13
 
+
+# Let's recode the ethnicity, simplifying it
+table_diseases$participant_ethnic_category = recode(table_diseases$participant_ethnic_category,
+                                             "White: British"= "White",
+                                             "White White: British"= "White",
+                                             "White: Any other White background"="White",
+                                             "Asian or Asian British: Pakistani"="Asian",
+                                             "Asian or Asian British: Indian"="Asian",
+                                             "Asian or Asian British: Any other Asian background"="Asian",
+                                             "Black or Black British: African"="Black",
+                                             "Other Ethnic Groups: Any other ethnic group"="Other", 
+                                             "Mixed: Any other mixed background"="Mixed",
+                                             "White: Irish"="White",
+                                             "Asian or Asian British: Bangladeshi"="Asian",
+                                             "Mixed: White and Asian"="Mixed",
+                                             "Mixed: White and Black Caribbean"="Mixed",
+                                             "Black or Black British: Caribbean"="Black",
+                                             "Mixed: White and Black African"="Mixed",
+                                             "Black or Black British: Any other Black background"="Black",
+                                             "Other Ethnic Groups: Chinese"="Other")
+# Defining NA's as `Not stated`
+which_na = which(is.na(table_diseases$participant_ethnic_category))
+table_diseases$participant_ethnic_category[which_na] = "Not Stated"
+
+
 # Define AGE, by using YOB
 table_diseases = table_diseases %>%
   group_by(participant_id) %>%
@@ -120,6 +145,18 @@ table(l_gender_all)
 
 # total = 13958
 
+# Ethnicity
+l_main_eth = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_ethnic_category)  %>% pull() 
+l_main_eth_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_ethnic_category) %>% pull() 
+l_eth_all = c(l_main_eth,
+              l_main_eth_extra)
+table(l_eth_all)
+#Asian      Black      Mixed Not Stated      Other      White 
+#1235        264        384       2109        174       9132 
+
+
+
+
 # Let's calculate across independent diseases
 l_independent_diseases = c("Hereditary ataxia",
                            "Hereditary spastic paraplegia",
@@ -181,6 +218,11 @@ for (i in 1:length(l_independent_diseases)){
                    l_pilot_gender)
   
   print(table(l_gender_all))
+  
+  # Ethnicity
+  l_main_eth = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(participant_ethnic_category)  %>% pull() 
+  print(table(l_main_eth))
+  
   
   
 }
