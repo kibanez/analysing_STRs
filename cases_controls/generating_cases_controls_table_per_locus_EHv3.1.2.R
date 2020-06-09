@@ -31,6 +31,7 @@ clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_
 dim(clin_data)  
 # 1124633  31
 
+
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(panel_name)) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
@@ -41,9 +42,21 @@ list_hpos = clin_data %>% group_by(participant_id) %>% summarise(hpo_list = toSt
 dim(list_hpos)
 # 87395  2
 
+# Let's put all specific diseases into 1 single string splitted by ','
+list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_list = toString(normalised_specific_disease)) %>% ungroup() %>% as.data.frame()
+dim(list_diseases)
+# 87395  2
+
+
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
-  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, normalised_specific_disease, specific_disease, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, specific_disease, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
+dim(clin_data)
+# 1124633  15
+
+clin_data = left_join(clin_data,
+                      list_diseases,
+                      by = "participant_id")
 dim(clin_data)
 # 1124633  16
 
@@ -58,6 +71,7 @@ clin_data = left_join(clin_data,
                       by = "participant_id")
 dim(clin_data)
 #  1124633   18
+
 
 # Let's include the population information
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv",
@@ -151,4 +165,7 @@ for (i in 1:length(l_genes)){
   write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
   
 }
+
+
+
 
