@@ -33,44 +33,44 @@ dim(clin_data)
 
 
 # Let´s put all panel names into 1 single string splitted by ','
-list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(panel_name)) %>% ungroup() %>% as.data.frame()
+list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
 # 87395  2
 
 # Let´s put all HPO terms into 1 single string splitted by ','
-list_hpos = clin_data %>% group_by(participant_id) %>% summarise(hpo_list = toString(hpo_term)) %>% ungroup() %>% as.data.frame()
+list_hpos = clin_data %>% group_by(participant_id) %>% summarise(hpo_list = toString(unique(hpo_term))) %>% ungroup() %>% as.data.frame()
 dim(list_hpos)
 # 87395  2
 
 # Let's put all specific diseases into 1 single string splitted by ','
-list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_list = toString(normalised_specific_disease)) %>% ungroup() %>% as.data.frame()
+list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_list = toString(unique(normalised_specific_disease))) %>% ungroup() %>% as.data.frame()
 dim(list_diseases)
 # 87395  2
 
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
-  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, specific_disease, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
 dim(clin_data)
-# 1124633  15
+# 1124633  14
 
 clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  16
+# 1124633  15
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  17
+# 1124633  16
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-#  1124633   18
+#  1124633   17
 
 
 # Let's include the population information
@@ -85,7 +85,7 @@ clin_data = left_join(clin_data,
                       popu_table %>% select(participant_id, population),
                       by = "participant_id")
 dim(clin_data)
-# 1124753  19
+# 1124753  18
 
 # As output
 # We want to the following output - NOTE each row is an allele (!!!)
