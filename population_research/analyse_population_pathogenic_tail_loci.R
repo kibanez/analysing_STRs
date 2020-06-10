@@ -442,6 +442,11 @@ merged_table = rbind(ar_table,
 dim(merged_table)
 # 9651  5
 
+# Let's focus on the ~38K unrelated genomes from Loukas' group team
+l_unrelated = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/60k_HWE_30k_random_unrelated_participants.txt", stringsAsFactors = F)
+l_unrelated = l_unrelated$V1
+length(l_unrelated)
+# 38344
 
 
 
