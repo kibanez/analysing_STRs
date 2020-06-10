@@ -448,7 +448,10 @@ l_unrelated = l_unrelated$V1
 length(l_unrelated)
 # 38344
 
-
+merged_table_unrelated = merged_table %>%
+  filter(ID %in% l_unrelated)
+dim(merged_table_unrelated)
+# 4102  5
 
 
 
