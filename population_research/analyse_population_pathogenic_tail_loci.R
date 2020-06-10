@@ -453,7 +453,11 @@ merged_table_unrelated = merged_table %>%
 dim(merged_table_unrelated)
 # 4102  5
 
-
+write.table(merged_table_unrelated,
+            "merged_13_loci_unrelated_beyond_premutation_cutoff.tsv",
+            sep = "\t",
+            row.names = F,
+            col.names = T)
 
 
 
