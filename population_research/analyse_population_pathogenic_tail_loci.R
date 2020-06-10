@@ -60,7 +60,7 @@ popu_table = left_join(popu_table,
                        by = c("ID" = "platekey"))
 popu_table = unique(popu_table)
 dim(popu_table)
-# 153948  46
+# 60304  45
 
 # For PILOT we don't have that info, but let's merge with family ID
 pilot_popu_table = left_join(pilot_popu_table,
@@ -101,6 +101,57 @@ merged_table = merged_table %>%
   ungroup() %>%
   as.data.frame() 
 
+popu_table = popu_table %>%
+  mutate(merged_superpopu = case_when(best_guess_predicted_ancstry == "ACB" ~ "AFR",
+                                      best_guess_predicted_ancstry == "ASW" ~ "AFR",
+                                      best_guess_predicted_ancstry == "BEB" ~ "SAS",
+                                      best_guess_predicted_ancstry == "CEU" ~ "EUR",
+                                      best_guess_predicted_ancstry == "CHB" ~ "EAS",
+                                      best_guess_predicted_ancstry == "CHS" ~ "EAS",
+                                      best_guess_predicted_ancstry == "CLM" ~ "AMR",
+                                      best_guess_predicted_ancstry == "ESN" ~ "AFR",
+                                      best_guess_predicted_ancstry == "FIN" ~ "EUR",
+                                      best_guess_predicted_ancstry == "GBR" ~ "EUR",
+                                      best_guess_predicted_ancstry == "GIH" ~ "SAS",
+                                      best_guess_predicted_ancstry == "GWD" ~ "AFR",
+                                      best_guess_predicted_ancstry == "IBS" ~ "EUR",
+                                      best_guess_predicted_ancstry == "ITU" ~ "SAS",
+                                      best_guess_predicted_ancstry == "JPT" ~ "EAS",
+                                      best_guess_predicted_ancstry == "KHV" ~ "AFR",
+                                      best_guess_predicted_ancstry == "LWK" ~ "AFR",
+                                      best_guess_predicted_ancstry == "MSL" ~ "AFR",
+                                      best_guess_predicted_ancstry == "MXL" ~ "AMR",
+                                      best_guess_predicted_ancstry == "PEL" ~ "AMR",
+                                      best_guess_predicted_ancstry == "PJL" ~ "SAS",
+                                      best_guess_predicted_ancstry == "PUR" ~ "AMR",
+                                      best_guess_predicted_ancstry == "STU" ~ "SAS",                                      
+                                      best_guess_predicted_ancstry == "TSI" ~ "EUR",
+                                      best_guess_predicted_ancstry == "YRI" ~ "AFR"))
+
+
+pilot_popu_table = pilot_popu_table %>%
+  mutate(merged_superpopu_pilot = case_when(bestGUESS_sub_pop == "ACB" ~ "AFR",
+                                      bestGUESS_sub_pop == "ASW" ~ "AFR",
+                                      bestGUESS_sub_pop == "BEB" ~ "SAS",
+                                      bestGUESS_sub_pop == "CEU" ~ "EUR",
+                                      bestGUESS_sub_pop == "CHB" ~ "EAS",
+                                      bestGUESS_sub_pop == "CHS" ~ "EAS",
+                                      bestGUESS_sub_pop == "CLM" ~ "AMR",
+                                      bestGUESS_sub_pop == "ESN" ~ "AFR",
+                                      bestGUESS_sub_pop == "GBR" ~ "EUR",
+                                      bestGUESS_sub_pop == "GIH" ~ "SAS",
+                                      bestGUESS_sub_pop == "GWD" ~ "AFR",
+                                      bestGUESS_sub_pop == "IBS" ~ "EUR",
+                                      bestGUESS_sub_pop == "ITU" ~ "SAS",
+                                      bestGUESS_sub_pop == "KHV" ~ "AFR",
+                                      bestGUESS_sub_pop == "LWK" ~ "AFR",
+                                      bestGUESS_sub_pop == "MSL" ~ "AFR",
+                                      bestGUESS_sub_pop == "MXL" ~ "AMR",
+                                      bestGUESS_sub_pop == "PJL" ~ "SAS",
+                                      bestGUESS_sub_pop == "PUR" ~ "AMR",
+                                      bestGUESS_sub_pop == "STU" ~ "SAS",
+                                      bestGUESS_sub_pop == "TSI" ~ "EUR",
+                                      bestGUESS_sub_pop == "YRI" ~ "AFR"))
 
 # For each locus
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
@@ -139,7 +190,7 @@ for (i in 1:length(l_genes)){
   # Enrich platekeys now with ancestry info: MAIN and PILOT
   patho_popu = popu_table %>%
     filter(ID %in% list_vcf_patho_locus) %>%
-    select(ID, best_guess_predicted_ancstry, self_reported, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type)
+    select(ID, best_guess_predicted_ancstry, merged_superpopu, self_reported, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type)
   print(dim(patho_popu))
 
   
@@ -151,7 +202,7 @@ for (i in 1:length(l_genes)){
   
   pilot_patho_popu = pilot_popu_table %>%
     filter(ID %in% list_vcf_patho_locus) %>%
-    select(ID, gelID, gelFamilyId.x, sex, biological_relation_to_proband, disease_status, yearOfBirth, specificDisease, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained)
+    select(ID, gelID, gelFamilyId.x, sex, biological_relation_to_proband, disease_status, yearOfBirth, specificDisease, merged_superpopu_pilot, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained)
   print(dim(pilot_patho_popu))
   
   patho_merged = full_join(patho_popu,
@@ -295,6 +346,8 @@ dim(patho_popu2)
 patho_merged = left_join(patho_popu2,
                          patho_popu,
                          by = c("plate_key" = "ID"))
+
+# Create `merged_superpopu` column 
 
 write.table(patho_merged, 
             "./population_pathogenic_tail/NOP56_pathogenic_tail.tsv", 
