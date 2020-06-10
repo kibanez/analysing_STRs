@@ -156,7 +156,7 @@ for (i in 1:length(l_genes)){
   
   # Select interested columns
   locus_data_new = locus_data_new %>%
-    select(rare_diseases_family_id, participant_id, platekey, gene, Repeat_Motif, allele, specific_disease, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population)
+    select(rare_diseases_family_id, participant_id, platekey, list_vcf_affected, gene, Repeat_Motif, allele, specific_disease, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population)
   
   # Adapt column names (for better understanding)
   colnames(locus_data_new)[6] = "repeat_size"
