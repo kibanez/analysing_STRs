@@ -356,3 +356,81 @@ write.table(patho_merged,
             row.names = F,
             col.names = T)
 
+# After taking the columns and merging them from Google Excel
+# Set working dir
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/google_excel/")
+
+ar_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - AR.csv", stringsAsFactors = F, header = T, sep = ",")
+ar_table = ar_table %>% select(locus, repeat_size, ID, merged.superpopu, merged.familyID)
+dim(ar_table)
+# 331  5
+
+atn1_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - ATN1.csv", stringsAsFactors = F, header = T, sep = ",")
+atn1_table = atn1_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(atn1_table)
+# 30 5
+
+atxn1_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - ATXN1.csv", stringsAsFactors = F, header = T, sep = ",")
+atxn1_table = atxn1_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(atxn1_table)
+# 5007  5
+
+atxn2_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - ATXN2.csv", stringsAsFactors = F, header = T, sep = ",")
+atxn2_table = atxn2_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(atxn2_table)
+# 182  5
+
+atxn3_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - ATXN3.csv", stringsAsFactors = F, header = T, sep = ",")
+atxn3_table = atxn3_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(atxn3_table)
+# 13  5
+
+atxn7_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - ATXN7.csv", stringsAsFactors = F, header = T, sep = ",")
+atxn7_table = atxn7_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(atxn7_table)
+# 130  5
+
+c9orf72_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - C9orf72.csv", stringsAsFactors = F, header = T, sep = ",")
+c9orf72_table = c9orf72_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(c9orf72_table)
+# 145  5
+
+cacna1a_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - CACNA1A.csv", stringsAsFactors = F, header = T, sep = ",")
+cacna1a_table = cacna1a_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(cacna1a_table)
+# 70  5
+
+dmpk_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - DMPK.csv", stringsAsFactors = F, header = T, sep = ",")
+dmpk_table = dmpk_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(dmpk_table)
+# 69  5
+
+fmr1_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - FMR1.csv", stringsAsFactors = F, header = T, sep = ",")
+fmr1_table = fmr1_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(fmr1_table)
+# 736  5
+
+fxn_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - FXN.csv", stringsAsFactors = F, header = T, sep = ",")
+fxn_table = fxn_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(fxn_table)
+# 1445  5
+
+htt_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - HTT.csv", stringsAsFactors = F, header = T, sep = ",")
+htt_table = htt_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(htt_table)
+# 217  5
+
+tbp_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - TBP.csv", stringsAsFactors = F, header = T, sep = ",")
+tbp_table = tbp_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
+dim(tbp_table)
+# 1276  5
+
+
+
+
+
+
+
+
+
+
