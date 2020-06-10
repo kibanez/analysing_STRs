@@ -362,6 +362,7 @@ setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main
 
 ar_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - AR.csv", stringsAsFactors = F, header = T, sep = ",")
 ar_table = ar_table %>% select(locus, repeat_size, ID, merged.superpopu, merged.familyID)
+colnames(ar_table)[4] = "merged_superpopu"
 dim(ar_table)
 # 331  5
 
@@ -424,6 +425,22 @@ tbp_table = read.csv("./batch_march_92K_EHv322_expansions_beyond_premutation - T
 tbp_table = tbp_table %>% select(locus, repeat_size, ID, merged_superpopu, merged.familyID)
 dim(tbp_table)
 # 1276  5
+
+merged_table = rbind(ar_table,
+                     atn1_table,
+                     atxn1_table,
+                     atxn2_table,
+                     atxn3_table,
+                     atxn7_table,
+                     c9orf72_table,
+                     cacna1a_table,
+                     dmpk_table,
+                     fmr1_table,
+                     fxn_table,
+                     htt_table,
+                     tbp_table)
+dim(merged_table)
+# 9651  5
 
 
 
