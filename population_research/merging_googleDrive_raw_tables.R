@@ -143,7 +143,7 @@ for (j in 1:length(l_superpopu)){
     geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
     xlim(5,max_value) + 
     ylim(5,max_value) + 
-    labs(title = "", 
+    labs(title = l_superpopu[j], 
          y = "EHv255 repeat sizes", 
          x = "PCR repeat sizes") + 
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
@@ -154,7 +154,7 @@ for (j in 1:length(l_superpopu)){
     guides(size = FALSE) 
   
   
-  figure_name = paste("./figures/Figure1_", l_superpopu[j], sep = "")
+  figure_name = paste("./figures/Figure1_EHv255_", l_superpopu[j], sep = "")
   figure_name = paste(figure_name, "across_loci.png", sep = "_")
   png(figure_name,units="in", width=5, height=5, res=600)
   print(joint_plot)
@@ -167,7 +167,7 @@ for (j in 1:length(l_superpopu)){
     geom_point(aes(fill = factor(locus), size = number_of_alleles)) + 
     xlim(5,max_value) + 
     ylim(5,max_value) + 
-    labs(title = "", 
+    labs(title = l_superpopu[j], 
          y = "EHv255 repeat sizes", 
          x = "PCR repeat sizes") + 
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
@@ -178,7 +178,7 @@ for (j in 1:length(l_superpopu)){
     guides(size = FALSE) +
     facet_wrap(locus~ .)
 
-  figure_name = paste("./figures/Figure1_", l_superpopu[j], sep = "")
+  figure_name = paste("./figures/Figure1_EHv255_", l_superpopu[j], sep = "")
   figure_name = paste(figure_name, "across_loci_brokendown_by_loci.png", sep = "_")
   png(figure_name,units="in", width=5, height=5, res=600)
   print(joint_plot_breakdown)
