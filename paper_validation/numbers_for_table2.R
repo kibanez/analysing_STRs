@@ -155,8 +155,6 @@ table(l_eth_all)
 #1235        264        384       2109        174       9132 
 
 
-
-
 # Let's calculate across independent diseases
 l_independent_diseases = c("Hereditary ataxia",
                            "Hereditary spastic paraplegia",
@@ -191,6 +189,66 @@ l_independent_diseases_pilot = c("Hereditary ataxia",
                      "Congenital muscular dystrophy",
                      "Skeletal Muscle Channelopathies")
                      
+# Only adults for
+# Hereditary spastic paraplegia, 
+# Early onset and familial Parkinson's Disease
+# Complex Parkinsonism (includes pallido-pyramidal syndromes)
+# Early onset dystonia, 
+# Early onset dementia, 
+# Amyotrophic lateral sclerosis or motor neuron disease
+# Charcot-Marie-Tooth disease
+l_independent_diseases_adults = c("Hereditary spastic paraplegia",
+                           "'Early onset and familial Parkinson''s Disease'",
+                           "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                           "Early onset dystonia",
+                           "Early onset dementia",
+                           "Amyotrophic lateral sclerosis or motor neuron disease",
+                           "Charcot-Marie-Tooth disease")
+
+
+l_independent_diseases_pilot_adults = c("Hereditary spastic paraplegia",
+                                 "Early onset and familial Parkinson's Disease",
+                                 "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                 "Early onset dystonia",
+                                 "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                                 "Amyotrophic lateral sclerosis/motor neuron disease",
+                                 "Charcot-Marie-Tooth disease")
+
+for (i in 1:length(l_independent_diseases_adults)){
+  print(l_independent_diseases_adults[i])
+  # Unique PIDs
+  l_main_pid = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases_adults[i], adult.paediatric %in% "Adult") %>% select(participant_id) %>% unique() %>% pull() 
+  l_pilot_pid = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot_adults[i], adult.paediatric %in% "Adult") %>% select(gelID) %>% unique() %>% pull() 
+  
+  l_pid_all = unique(c(l_main_pid,
+                       l_pilot_pid))
+  print(length(l_pid_all))
+  
+  # Age of all
+  l_main_age = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases_adults[i], adult.paediatric %in% "Adult") %>% select(age) %>% pull() 
+  l_pilot_age = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot_adults[i], adult.paediatric %in% "Adult") %>% select(age) %>% pull() 
+  
+  l_age_all = c(l_main_age,
+                l_pilot_age)
+  print(summary(l_age_all))
+  
+  # Gender
+  l_main_gender = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases_adults[i], adult.paediatric %in% "Adult") %>% select(participant_phenotypic_sex)  %>% pull() 
+  l_pilot_gender = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot_adults[i], adult.paediatric %in% "Adult") %>% select(sex) %>% pull() 
+  
+  l_gender_all = c(l_main_gender,
+                   l_pilot_gender)
+  
+  print(table(l_gender_all))
+  
+  # Ethnicity
+  l_main_eth = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases_adults[i], adult.paediatric %in% "Adult") %>% select(participant_ethnic_category)  %>% pull() 
+  print(table(l_main_eth))
+  
+  
+  
+}
+
             
 for (i in 1:length(l_independent_diseases)){
   print(l_independent_diseases[i])
