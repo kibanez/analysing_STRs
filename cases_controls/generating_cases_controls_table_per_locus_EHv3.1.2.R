@@ -47,10 +47,17 @@ list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_li
 dim(list_diseases)
 # 87395  2
 
+list_disease_group = clin_data %>% group_by(participant_id) %>% summarise(diseasegroup_list = toString(unique(disease_group))) %>% ungroup() %>% as.data.frame()
+dim(list_disease_group)
+# 87395  2
+
+list_disease_subgroup = clin_data %>% group_by(participant_id) %>% summarise(diseasesubgroup_list = toString(unique(disease_sub_group))) %>% ungroup() %>% as.data.frame()
+dim(list_disease_subgroup)
+# 87395  2
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
-  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genome_build, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genome_build, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
 dim(clin_data)
 # 1124633  14
 
@@ -156,9 +163,13 @@ for (i in 1:length(l_genes)){
   
   # Select interested columns
   locus_data_new = locus_data_new %>%
-    select(rare_diseases_family_id, participant_id, platekey, list_vcf_affected, gene, Repeat_Motif, allele, specific_disease, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population)
+    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population)
+  
+  # There are some pids that have platekeys in b37 and b38 -- let's keep only b38 for those cases
+  df_more_than_2 = locus_data_new %>% group_by(platekey) %>% filter(n() > 2) %>% as.data.frame()
   
   # Adapt column names (for better understanding)
+  colnames(locus_data_new)[3] = "platekey"
   colnames(locus_data_new)[6] = "repeat_size"
   output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
   output_file = paste(output_file, "_simplified.tsv" , sep = "")
