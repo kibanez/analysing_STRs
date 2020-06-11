@@ -59,13 +59,26 @@ dim(list_disease_subgroup)
 clin_data = clin_data %>% 
   select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genome_build, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
 dim(clin_data)
-# 1124633  14
+# 1124633  12
 
 clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
+# 1124633  13
+
+clin_data = left_join(clin_data,
+                      list_disease_group,
+                      by = "participant_id")
+dim(clin_data)
+# 1124633  14
+
+clin_data = left_join(clin_data,
+                      list_disease_subgroup,
+                      by = "participant_id")
+dim(clin_data)
 # 1124633  15
+
 
 clin_data = left_join(clin_data,
                       list_panels,
@@ -136,13 +149,13 @@ for (i in 1:length(l_genes)){
         
         to_include = clin_data %>% 
           filter(platekey %in% number_samp[k]) %>% 
-          select(participant_id, platekey, rare_diseases_family_id, diseases_list, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population) %>%
+          select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population) %>%
           unique()
         
         if (dim(to_include)[1] <= 0){
           to_include = rep('.', dim(to_include)[2])
           to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "disease_group", "disease_sub_group", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "population")
+          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "population")
           
         }
         new_line = cbind(new_line, to_include)
@@ -163,10 +176,7 @@ for (i in 1:length(l_genes)){
   
   # Select interested columns
   locus_data_new = locus_data_new %>%
-    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, disease_group, disease_sub_group, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population)
-  
-  # There are some pids that have platekeys in b37 and b38 -- let's keep only b38 for those cases
-  df_more_than_2 = locus_data_new %>% group_by(platekey) %>% filter(n() > 2) %>% as.data.frame()
+    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, population)
   
   # Adapt column names (for better understanding)
   colnames(locus_data_new)[3] = "platekey"
