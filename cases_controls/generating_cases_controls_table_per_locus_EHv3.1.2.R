@@ -94,18 +94,18 @@ dim(clin_data)
 
 
 # Let's include the population information
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/population_and_super-population_definitions_across_59352_WGS_REv9_271119.tsv",
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
                       header = T,
-                      sep = "\t",
+                      sep = ",",
                       stringsAsFactors = F)
 dim(popu_table)
-# 59356  21
+# 59464  36
 
 clin_data = left_join(clin_data,
-                      popu_table %>% select(participant_id, population),
-                      by = "participant_id")
+                      popu_table %>% select(ID, best_guess_predicted_ancstry),
+                      by = c("platekey" = "ID"))
 dim(clin_data)
-# 1124753  18
+# 1124633  18
 
 # As output
 # We want to the following output - NOTE each row is an allele (!!!)
