@@ -279,6 +279,7 @@ for (j in 1:length(l_superpopu)){
 
 # More general plot, including all PCR-vs-EH estimations, splitted by superpopu (by merging all loci), and using a cutoff of 60
 
+# EHv255
 # Create dataframe with exp, eh, freq for each locus
 df_data_with_freq_v2 = data.frame()
 l_superpopu = unique(merge_all$Super.population)
@@ -342,5 +343,73 @@ joint_plot = ggplot(df_data_with_freq_v2,
   guides(size = FALSE) 
 
 png("./figures/Figure1_EHv255_splitted_by_superpopu.png",units="in", width=5, height=5, res=600)
+print(joint_plot)
+dev.off()
+
+
+# EHv312
+# Create dataframe with exp, eh, freq for each locus
+df_data_with_freq_v2 = data.frame()
+l_superpopu = unique(merge_all$Super.population)
+l_superpopu = l_superpopu[-5]
+for(i in 1:length(l_superpopu)){
+  aux_validation_a1 = merge_all %>% filter(Super.population %in% l_superpopu[i]) %>% select(min.PCR.a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = merge_all %>% filter(Super.population %in% l_superpopu[i]) %>% select(maxPCR.a2) %>% pull() %>% as.integer() 
+  aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
+  
+  aux_eh_a1 = merge_all %>% filter(Super.population %in% l_superpopu[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = merge_all %>% filter(Super.population %in% l_superpopu[i]) %>% select(max.EHv312.a2) %>% pull() %>% as.integer() 
+  aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
+  
+  data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
+  
+  df_data_aux = data.frame(eh_alleles = data_aux$y,
+                           exp_alleles = data_aux$x,
+                           number_of_alleles = data_aux$number,
+                           superpopu = rep(l_superpopu[i], length(data_aux$x)))
+  # Concat info per locus
+  df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
+                               df_data_aux)
+  
+}
+dim(df_data_with_freq_v2)
+# 426  4
+
+# Filter out any repeat-size >60
+df_data_with_freq_v2 = df_data_with_freq_v2 %>%
+  filter(eh_alleles <= 60)
+dim(df_data_with_freq_v2)
+# 387  4
+
+df_data_with_freq_v2 = df_data_with_freq_v2 %>%
+  filter(exp_alleles <= 60)
+dim(df_data_with_freq_v2)
+# 376  4
+
+max_value = max(df_data_with_freq_v2$eh_alleles, 
+                df_data_with_freq_v2$exp_alleles,
+                na.rm = TRUE) + 5
+
+group.colors = c("AR" = "#1B9E77", "ATN1" = "#D95F02", "ATXN1" ="#7570B3", "ATXN2" = "#E7298A", "ATXN3" = "#66A61E", 
+                 "ATXN7" = "#E6AB02", "CACNA1A" = "#A6761D", "FXN" = "#666666", "HTT" ="#E41A1C", "TBP" = "#FF7F00", 
+                 "C9orf72" = "#FFFF33", "FMR1" = "#F781BF", "PPP2R2B" = "black")
+
+
+joint_plot = ggplot(df_data_with_freq_v2, 
+                    aes(x = exp_alleles, y = eh_alleles, colour = factor(superpopu))) + 
+  geom_point(aes(fill = factor(superpopu), size = number_of_alleles)) + 
+  xlim(5,max_value) + 
+  ylim(5,max_value) + 
+  labs(title = "", 
+       y = "EHv312 repeat sizes", 
+       x = "PCR repeat sizes") + 
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_fill_manual(values=group.colors) +  
+  theme(legend.title = element_blank(),
+        axis.text.x.top = element_text()) + 
+  guides(size = FALSE) 
+
+png("./figures/Figure1_EHv312_splitted_by_superpopu.png",units="in", width=5, height=5, res=600)
 print(joint_plot)
 dev.off()
