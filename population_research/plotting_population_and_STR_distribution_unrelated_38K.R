@@ -92,26 +92,53 @@ popu_table_unrel = popu_table %>%
 dim(popu_table_unrel)
 # 38344 36
 
+# Enrich with superpopu
+popu_table_unrel = popu_table_unrel %>%
+  mutate(superpopu = case_when(best_guess_predicted_ancstry == "PJL" ~ "SAS",
+                               best_guess_predicted_ancstry == "GBR" ~ "EUR",
+                               best_guess_predicted_ancstry == "CEU" ~ "EUR",
+                               best_guess_predicted_ancstry == "TSI" ~ "EUR",
+                               best_guess_predicted_ancstry == "PUR" ~ "AMR",
+                               best_guess_predicted_ancstry == "ACB" ~ "AFR",
+                               best_guess_predicted_ancstry == "GIH" ~ "SAS",
+                               best_guess_predicted_ancstry == "ASW" ~ "AFR",
+                               best_guess_predicted_ancstry == "MXL" ~ "AMR",
+                               best_guess_predicted_ancstry == "ESN" ~ "AFR",
+                               best_guess_predicted_ancstry == "LWK" ~ "AFR",
+                               best_guess_predicted_ancstry == "CHS" ~ "EAS",
+                               best_guess_predicted_ancstry == "BEB" ~ "SAS",
+                               best_guess_predicted_ancstry == "KHV" ~ "EAS",
+                               best_guess_predicted_ancstry == "CLM" ~ "AMR",
+                               best_guess_predicted_ancstry == "MSL" ~ "AFR",
+                               best_guess_predicted_ancstry == "YRI" ~ "AFR",
+                               best_guess_predicted_ancstry == "GWD" ~ "AFR",
+                               best_guess_predicted_ancstry == "FIN" ~ "EUR",
+                               best_guess_predicted_ancstry == "ITU" ~ "SAS",
+                               best_guess_predicted_ancstry == "JPT" ~ "EAS",
+                               best_guess_predicted_ancstry == "STU" ~ "",
+                               best_guess_predicted_ancstry == "CHB" ~ "EAS",
+                               best_guess_predicted_ancstry == "PEL" ~ "AMR",
+                               best_guess_predicted_ancstry == "IBS" ~ "EUR"))
+
+
+atn1_table = read.csv("./ATN1_beyond__premutation_cutoff_34_EHv322_92K_population.tsv",
+                      stringsAsFactors = F,
+                      header = T,
+                      sep = "\t")
+dim(atn1_table)
+# 30 27
+
+atn1_table_unrel = atn1_table %>% filter(ID %in% l_unrelated) 
+# 11 27
+
+
 # With all population coctails
 png("figures/population_distribution_unrelated_all_ancestries.png")
-ggplot(data=popu_table_enriched %>% filter(!is.na(population)), 
-       aes(x=pc2, y=pc1, colour = population)) +
-  geom_hex(bins=300) +
-  xlab("PC2 across 56,176 genomes") +
-  ylab("PC1 across 56,176 genomes") +
-  guides(fill = FALSE)
-dev.off()
-
-# Just "pure" ancestries
-popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 56176
-
-png("figures/population_distribution_56176_pure_ancestries.png")
-ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR", "EAS", "ASI")) , 
-       aes(x=pc2, y=pc1, colour = population)) +
-  geom_hex(bins=300) +
-  xlab("PC2 across 56,176 genomes") +
-  ylab("PC1 across 56,176 genomes") +
+ggplot(data=popu_table_unrel %>% filter(!is.na(self_reported)), 
+       aes(x=PC2, y=PC1, colour = superpopu)) +
+  geom_point() +
+  xlab("PC2 across 38,344 unrelated genomes") +
+  ylab("PC1 across 38,344 unrelated genomes") +
   guides(fill = FALSE)
 dev.off()
 
