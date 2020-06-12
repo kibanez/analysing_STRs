@@ -24,38 +24,6 @@ l_unrelated = l_unrelated$V1
 length(l_unrelated)
 # 38344
 
-merged_table = read.csv("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
-                        sep = "\t",
-                        stringsAsFactors = F, 
-                        header = T)
-dim(merged_table)
-# 8560  12
-
-# Merged GRCh37 and GRCh38 tables, recoding chr names
-merged_table$chr = recode(merged_table$chr,
-                          "1" = "chr1",
-                          "2" = "chr2",
-                          "3" = "chr3",
-                          "4" = "chr4",
-                          "5" = "chr5",
-                          "6" = "chr6",
-                          "7" = "chr7",
-                          "8" = "chr8",
-                          "9" = "chr9",
-                          "10" = "chr10",
-                          "11" = "chr11",
-                          "12" = "chr12",
-                          "13" = "chr13",
-                          "14" = "chr14",
-                          "15" = "chr15",
-                          "16" = "chr16",
-                          "17" = "chr17",
-                          "18" = "chr18",
-                          "19" = "chr19",
-                          "20" = "chr20",
-                          "21" = "chr21",
-                          "22" = "chr22",
-                          "X" = "chrX")
 
 # Load MAIN popu table we have so far
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
