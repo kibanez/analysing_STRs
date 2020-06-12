@@ -88,13 +88,41 @@ popu_table_unrel = popu_table_unrel %>%
                                best_guess_predicted_ancstry == "PEL" ~ "AMR",
                                best_guess_predicted_ancstry == "IBS" ~ "EUR"))
 
+# Load here individual tables, per locus, including expanded genomes -- we need to focus only in unrelated genomes!
+l_files = list.files("./PAPER/expanded_genomes_main_pilot/", pattern = "\\.tsv$")
+l_files = paste("./PAPER/expanded_genomes_main_pilot/", l_files, sep = "")
 
-atn1_table = read.csv("./ATN1_beyond__premutation_cutoff_34_EHv322_92K_population.tsv",
-                      stringsAsFactors = F,
-                      header = T,
-                      sep = "\t")
-dim(atn1_table)
-# 30 27
+l_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
+l_superpopu = c("AFR", "AMR", "EAS", "EUR", "SAS")
+for(i in 1:length(l_files)){
+  print(l_files[i])
+  locus_table = read.csv(l_files[i],
+                         stringsAsFactors = F,
+                         header = T,
+                         sep = "\t")
+  
+  # focus on unrelated genomes
+  locus_table = locus_table %>%
+    filter(ID %in% l_unrelated)
+  
+  # Print total number of unrelated genomes with an expansion
+  locus_table %>% select(ID) %>% unique() %>% pull() %>% length() %>% print()
+  
+  # How many genomes in each superpopu?
+  for (j in 1:length(l_superpopu)){
+    print(l_superpopu[j])
+    
+    num_superpopu = locus_table %>%
+      filter(merged_superpopu %in% l_superpopu[j]) %>%
+      select(ID) %>%
+      unique() %>%
+      pull() %>%
+      length() %>%
+      print()
+    
+  }
+}
+
 
 atn1_table_unrel = atn1_table %>% filter(ID %in% l_unrelated) 
 dim(atn1_table_unrel)
