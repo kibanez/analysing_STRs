@@ -115,7 +115,7 @@ popu_table_unrel = popu_table_unrel %>%
                                best_guess_predicted_ancstry == "FIN" ~ "EUR",
                                best_guess_predicted_ancstry == "ITU" ~ "SAS",
                                best_guess_predicted_ancstry == "JPT" ~ "EAS",
-                               best_guess_predicted_ancstry == "STU" ~ "",
+                               best_guess_predicted_ancstry == "STU" ~ "SAS",
                                best_guess_predicted_ancstry == "CHB" ~ "EAS",
                                best_guess_predicted_ancstry == "PEL" ~ "AMR",
                                best_guess_predicted_ancstry == "IBS" ~ "EUR"))
@@ -129,6 +129,7 @@ dim(atn1_table)
 # 30 27
 
 atn1_table_unrel = atn1_table %>% filter(ID %in% l_unrelated) 
+dim(atn1_table_unrel)
 # 11 27
 
 
