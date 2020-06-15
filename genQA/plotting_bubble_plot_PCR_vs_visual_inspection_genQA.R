@@ -130,7 +130,41 @@ dev.off()
 
 # Breakdown by locus and cutoff
 # For each locus
-l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
-l_premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41)
+l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP", "PPP2R2B")
+l_premut_cutoff = c(34,34,35,31,17,17,30,50,35,55,44,41,51)
+
+for(i in 1:length(l_genes)){
+  
+  df_data_with_freq_v2_indiv = df_data_with_freq_v2 %>% 
+    filter(locus %in% l_genes[i])
+  
+  max_value_indiv = max(df_data_with_freq_v2_indiv$eh_alleles, 
+                        df_data_with_freq_v2_indiv$exp_alleles,
+                        na.rm = TRUE) + 5
+  
+  joint_plot_individual = ggplot() +
+    geom_point(data = df_data_with_freq_v2_indiv,
+               aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = factor(locus))) +
+    xlim(5,max_value_indiv) +
+    ylim(5,max_value_indiv) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+    coord_equal() +
+    labs(title = l_genes[i], 
+         y = "EH repeat sizes", 
+         x = "PCR repeat sizes") + 
+    scale_fill_manual(values=group.colors) +  
+    theme_light() +
+    theme(legend.title = element_blank(),
+          text = element_text(size=13),
+          axis.text.x.top = element_text()) +
+    geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+    guides(size = FALSE)
+  
+  png(paste(paste("./figures/genQA_PCR_vs_EH_individual", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
+  print(joint_plot_individual)
+  dev.off()
+  
+}
+
 
 
