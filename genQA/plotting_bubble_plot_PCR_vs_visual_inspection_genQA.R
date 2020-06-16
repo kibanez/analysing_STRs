@@ -134,6 +134,7 @@ dev.off()
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP", "PPP2R2B")
 l_premut_cutoff = c(34,34,35,31,17,17,30,50,35,55,44,41,51)
 
+
 for(i in 1:length(l_genes)){
   
   df_data_with_freq_v2_indiv = df_data_with_freq_v2 %>% 
@@ -146,25 +147,23 @@ for(i in 1:length(l_genes)){
   joint_plot_individual = ggplot() +
     geom_point(data = df_data_with_freq_v2_indiv,
                aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles)) +
-    geom_rect(aes(xmin=l_premut_cutoff[i], xmax=max_value_indiv, ymin=5,ymax=max_value_indiv), alpha=0.2, fill="red") +
+    #geom_rect(aes(xmin=l_premut_cutoff[i], xmax=max_value_indiv, ymin=5,ymax=max_value_indiv), alpha=0.2, fill="red") +
     labs(title = l_genes[i], 
          y = "EH repeat sizes", 
          x = "PCR repeat sizes") + 
-    scale_fill_manual(values=group.colors) +  
+    scale_fill_manual(values=group.colors.classi) +  
     theme_light() +
     theme(legend.title = element_blank(),
           text = element_text(size=13),
           axis.text.x.top = element_text(),
           aspect.ratio=1) +
-    #geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+    geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+    geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
     guides(size = FALSE) + 
     coord_equal() +
     xlim(5,max_value_indiv) +
     ylim(5,max_value_indiv) +
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
-  
-    #annotate("rect", xmin = l_premut_cutoff[i], xmax = max_value_indiv, ymin = 0, ymax = Inf, fill = "red", alpha = 2) +
-    
   
   
   png(paste(paste("./figures/genQA_PCR_vs_EH_individual", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
@@ -174,4 +173,55 @@ for(i in 1:length(l_genes)){
 }
 
 
+# Now with classification
+# Enrich with classification
+l_classi = c()
+for (i in 1:length(l_genes)){
+  aux = df_data_with_freq_v2 %>% filter(locus %in% l_genes[i])
+  
+  aux_classi = ifelse(aux$exp_alleles > l_premut_cutoff[i], "TP", "TN")
+  l_classi = c(l_classi,
+               aux_classi)
+  
+}
+
+df_data_with_freq_v2$classi = l_classi
+group.colors.classi = c("TP" = "#666666", "TN" = "#FFFF33")
+
+for(i in 1:length(l_genes)){
+  
+  df_data_with_freq_v2_indiv = df_data_with_freq_v2 %>% 
+    filter(locus %in% l_genes[i])
+  
+  max_value_indiv = max(df_data_with_freq_v2_indiv$eh_alleles, 
+                        df_data_with_freq_v2_indiv$exp_alleles,
+                        na.rm = TRUE) + 5
+  
+  joint_plot_individual = ggplot() +
+    geom_point(data = df_data_with_freq_v2_indiv,
+               aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = factor(classi))) +
+    #geom_rect(aes(xmin=l_premut_cutoff[i], xmax=max_value_indiv, ymin=5,ymax=max_value_indiv), alpha=0.2, fill="red") +
+    labs(title = l_genes[i], 
+         y = "EH repeat sizes", 
+         x = "PCR repeat sizes") + 
+    scale_fill_manual(values=group.colors.classi) +  
+    theme_light() +
+    theme(legend.title = element_blank(),
+          text = element_text(size=13),
+          axis.text.x.top = element_text(),
+          aspect.ratio=1) +
+    geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+    geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+    guides(size = FALSE) + 
+    coord_equal() +
+    xlim(5,max_value_indiv) +
+    ylim(5,max_value_indiv) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
+  
+  
+  png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
+  print(joint_plot_individual)
+  dev.off()
+  
+}
 
