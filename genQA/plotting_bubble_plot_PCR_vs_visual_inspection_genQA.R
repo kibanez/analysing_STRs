@@ -29,10 +29,10 @@ dim(val_data)
 # 1 - Define min and max alleles for both PCR and EH 
 val_data = val_data %>% 
   group_by(Platekey, locus) %>%
-  mutate(min_PCR = min(GenQA_a1, GenQA_a2),
-         max_PCR = max(GenQA_a1, GenQA_a2),
-         min_EH = min(GEL_a1, GEL_a2),
-         max_EH = max(GEL_a1, GEL_a2)) %>%
+  mutate(min_PCR = min(GenQA_a1, GenQA_a2, na.rm = F),
+         max_PCR = max(GenQA_a1, GenQA_a2, na.rm = F),
+         min_EH = min(GEL_a1, GEL_a2, na.rm = F),
+         max_EH = max(GEL_a1, GEL_a2, na.rm = F)) %>%
   ungroup() %>%
   as.data.frame()
 dim(val_data)
