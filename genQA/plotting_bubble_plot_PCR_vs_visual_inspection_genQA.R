@@ -62,6 +62,13 @@ for(i in 1:length(l_locus)){
   aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GEL_a2) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
+  # Before calling xyTable, remove NAs
+  index_to_remove = which(is.na(aux_eh_alleles_v2))
+  if (length(index_to_remove) > 0){
+    aux_eh_alleles_v2 = aux_eh_alleles_v2[-index_to_remove]
+    aux_exp_alleles_v2 = aux_exp_alleles_v2[-index_to_remove]
+  }
+  
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
   
   df_data_aux = data.frame(eh_alleles = data_aux$y,
@@ -73,6 +80,9 @@ for(i in 1:length(l_locus)){
                                df_data_aux)
                       
 }
+
+dim(df_data_with_freq_v2)
+# 70  4
 
 output_folder = "./figures/"
 
@@ -133,7 +143,6 @@ dev.off()
 # For each locus
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP", "PPP2R2B")
 l_premut_cutoff = c(34,34,35,31,17,17,30,50,35,55,44,41,51)
-
 
 for(i in 1:length(l_genes)){
   
