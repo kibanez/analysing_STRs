@@ -24,9 +24,10 @@ val_data = read.csv("./merged_batch1_batch3_STRs.tsv",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 46  13
+# 46  17
 
 # 1 - Define min and max alleles for both PCR and EH 
+# Don't work for AR, FMR1 - when we do have NA values
 val_data = val_data %>% 
   group_by(Platekey, locus) %>%
   mutate(min_PCR = min(GenQA_a1, GenQA_a2, na.rm = F),
@@ -36,7 +37,7 @@ val_data = val_data %>%
   ungroup() %>%
   as.data.frame()
 dim(val_data)
-# 46  17
+# 46  21
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
@@ -53,12 +54,12 @@ locus_v2 = locus_v2[-index_NA]
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
 for(i in 1:length(l_locus)){
-  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_PCR) %>% pull() %>% as.integer() 
-  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_PCR) %>% pull() %>% as.integer() 
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GenQA_a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GenQA_a2) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
-  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min_EH) %>% pull() %>% as.integer() 
-  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max_EH) %>% pull() %>% as.integer() 
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GEL_a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GEL_a2) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
@@ -144,11 +145,8 @@ for(i in 1:length(l_genes)){
   
   joint_plot_individual = ggplot() +
     geom_point(data = df_data_with_freq_v2_indiv,
-               aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = factor(locus))) +
-    xlim(5,max_value_indiv) +
-    ylim(5,max_value_indiv) +
-    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
-    coord_equal() +
+               aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles)) +
+    geom_rect(aes(xmin=l_premut_cutoff[i], xmax=max_value_indiv, ymin=5,ymax=max_value_indiv), alpha=0.2, fill="red") +
     labs(title = l_genes[i], 
          y = "EH repeat sizes", 
          x = "PCR repeat sizes") + 
@@ -156,9 +154,18 @@ for(i in 1:length(l_genes)){
     theme_light() +
     theme(legend.title = element_blank(),
           text = element_text(size=13),
-          axis.text.x.top = element_text()) +
-    geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
-    guides(size = FALSE)
+          axis.text.x.top = element_text(),
+          aspect.ratio=1) +
+    #geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+    guides(size = FALSE) + 
+    coord_equal() +
+    xlim(5,max_value_indiv) +
+    ylim(5,max_value_indiv) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
+  
+    #annotate("rect", xmin = l_premut_cutoff[i], xmax = max_value_indiv, ymin = 0, ymax = Inf, fill = "red", alpha = 2) +
+    
+  
   
   png(paste(paste("./figures/genQA_PCR_vs_EH_individual", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
   print(joint_plot_individual)
