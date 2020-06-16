@@ -175,30 +175,30 @@ for(i in 1:length(l_genes)){
 
 # Now with classification
 # Enrich with classification
-l_classi = c()
+df_classi = data.frame()
 for (i in 1:length(l_genes)){
   aux = df_data_with_freq_v2 %>% filter(locus %in% l_genes[i])
   
   aux_classi = ifelse(aux$exp_alleles > l_premut_cutoff[i], "TP", "TN")
-  l_classi = c(l_classi,
-               aux_classi)
   
+  aux$classi = aux_classi
+  df_classi = rbind(df_classi,
+                    aux)
 }
 
-df_data_with_freq_v2$classi = l_classi
-group.colors.classi = c("TP" = "#666666", "TN" = "#FFFF33")
+group.colors.classi = c("TN" = "#12C420","TP" = "#C43212")
 
 for(i in 1:length(l_genes)){
   
-  df_data_with_freq_v2_indiv = df_data_with_freq_v2 %>% 
-    filter(locus %in% l_genes[i])
+  df_classi_indiv = df_classi %>% 
+    filter(locus %in% l_genes[i], !is.na(classi))
   
-  max_value_indiv = max(df_data_with_freq_v2_indiv$eh_alleles, 
-                        df_data_with_freq_v2_indiv$exp_alleles,
+  max_value_indiv = max(df_classi_indiv$eh_alleles, 
+                        df_classi_indiv$exp_alleles,
                         na.rm = TRUE) + 5
   
   joint_plot_individual = ggplot() +
-    geom_point(data = df_data_with_freq_v2_indiv,
+    geom_point(data = df_classi_indiv,
                aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = factor(classi))) +
     #geom_rect(aes(xmin=l_premut_cutoff[i], xmax=max_value_indiv, ymin=5,ymax=max_value_indiv), alpha=0.2, fill="red") +
     labs(title = l_genes[i], 
@@ -208,8 +208,7 @@ for(i in 1:length(l_genes)){
     theme_light() +
     theme(legend.title = element_blank(),
           text = element_text(size=13),
-          axis.text.x.top = element_text(),
-          aspect.ratio=1) +
+          axis.text.x.top = element_text()) +
     geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
     geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
     guides(size = FALSE) + 
