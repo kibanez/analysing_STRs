@@ -188,39 +188,41 @@ for (i in 1:length(l_genes)){
 
 group.colors.classi = c("TN" = "#12C420","TP" = "#C43212")
 
+df_classi$classi = as.factor(df_classi$classi)
 for(i in 1:length(l_genes)){
   
   df_classi_indiv = df_classi %>% 
     filter(locus %in% l_genes[i], !is.na(classi))
   
-  max_value_indiv = max(df_classi_indiv$eh_alleles, 
-                        df_classi_indiv$exp_alleles,
-                        na.rm = TRUE) + 5
-  
-  joint_plot_individual = ggplot() +
-    geom_point(data = df_classi_indiv,
-               aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = factor(classi))) +
-    #geom_rect(aes(xmin=l_premut_cutoff[i], xmax=max_value_indiv, ymin=5,ymax=max_value_indiv), alpha=0.2, fill="red") +
-    labs(title = l_genes[i], 
-         y = "EH repeat sizes", 
-         x = "PCR repeat sizes") + 
-    scale_fill_manual(values=group.colors.classi) +  
-    theme_light() +
-    theme(legend.title = element_blank(),
-          text = element_text(size=13),
-          axis.text.x.top = element_text()) +
-    geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
-    geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
-    guides(size = FALSE) + 
-    coord_equal() +
-    xlim(5,max_value_indiv) +
-    ylim(5,max_value_indiv) +
-    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
-  
-  
-  png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
-  print(joint_plot_individual)
-  dev.off()
-  
+  if (dim(df_classi_indiv)[1] > 0){
+    max_value_indiv = max(df_classi_indiv$eh_alleles, 
+                          df_classi_indiv$exp_alleles,
+                          na.rm = TRUE) + 5
+    
+    joint_plot_individual = ggplot() +
+      geom_point(data = df_classi_indiv,
+                 aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = classi)) +
+      labs(title = l_genes[i], 
+           y = "EH repeat sizes", 
+           x = "PCR repeat sizes") + 
+      scale_fill_manual(values=group.colors.classi) +  
+      theme_light() +
+      theme(legend.title = element_blank(),
+            text = element_text(size=13),
+            axis.text.x.top = element_text()) +
+      geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+      geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+      guides(size = FALSE) + 
+      coord_equal() +
+      xlim(5,max_value_indiv) +
+      ylim(5,max_value_indiv) +
+      geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
+    
+    
+    png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
+    print(joint_plot_individual)
+    dev.off()
+    
+  }
 }
 
