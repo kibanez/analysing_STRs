@@ -194,10 +194,13 @@ for (i in 1:length(l_genes)){
   df_classi = rbind(df_classi,
                     aux)
 }
+dim(df_classi)
+# 70  5
 
-group.colors.classi = c("TN" = "#12C420","TP" = "#C43212")
+group.colors.classi = c("TN" = "red", "TP" = "green")
 
 df_classi$classi = as.factor(df_classi$classi)
+df_classi$locus = as.character(df_classi$locus)
 for(i in 1:length(l_genes)){
   
   df_classi_indiv = df_classi %>% 
@@ -208,23 +211,23 @@ for(i in 1:length(l_genes)){
                           df_classi_indiv$exp_alleles,
                           na.rm = TRUE) + 5
     
-    joint_plot_individual = ggplot() +
-      geom_point(data = df_classi_indiv,
-                 aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = classi)) +
+    joint_plot_individual = ggplot(df_classi_indiv,
+                                   aes(x = exp_alleles, y = eh_alleles, colour = classi)) +
+      geom_point(aes(fill = classi, size = number_of_alleles)) +
+      coord_equal() +
+      scale_fill_manual(values=c("blue","green")) +  
       labs(title = l_genes[i], 
            y = "EH repeat sizes", 
            x = "PCR repeat sizes") + 
-      scale_fill_manual(values=group.colors.classi) +  
       theme_light() +
       theme(legend.title = element_blank(),
             text = element_text(size=13),
             axis.text.x.top = element_text()) +
-      geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
-      geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
       guides(size = FALSE) + 
-      coord_equal() +
       xlim(5,max_value_indiv) +
       ylim(5,max_value_indiv) +
+      geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+      geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
       geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
     
     
