@@ -39,17 +39,6 @@ val_data = val_data %>%
 dim(val_data)
 # 52  21
 
-# Let's take the important meat: experimentally validated data and EH estimations
-exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
-eh_alleles_v2 = c(as.integer(val_data$min_EH), as.integer(val_data$max_EH))
-locus_v2 = c(val_data$locus, val_data$locus)
-
-# Remove NAs
-index_NA = which(is.na(exp_alleles_v2))
-exp_alleles_v2 = exp_alleles_v2[-index_NA]
-eh_alleles_v2 = eh_alleles_v2[-index_NA]
-locus_v2 = locus_v2[-index_NA]
-
 # Create dataframe with exp, eh, freq for each locus
 df_data_with_freq_v2 = data.frame()
 l_locus = unique(locus_v2)
@@ -78,7 +67,7 @@ for(i in 1:length(l_locus)){
   # Concat info per locus
   df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
                                df_data_aux)
-                      
+  
 }
 
 dim(df_data_with_freq_v2)
@@ -237,4 +226,67 @@ for(i in 1:length(l_genes)){
     
   }
 }
+
+
+# The same but taking max CI value rather than average
+# Load golden validation table - EHv2.5.5
+val_data = read.csv("./merged_batch1_batch3_STRs.tsv",
+                    sep = "\t",
+                    header = T,
+                    stringsAsFactors = F)
+dim(val_data)
+# 52  17
+
+# Let's take the important meat: experimentally validated data and EH estimations - max CI values
+exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
+eh_alleles_v2 = c(as.integer(val_data$min_EH), as.integer(val_data$max_EH))
+locus_v2 = c(val_data$locus, val_data$locus)
+
+# Remove NAs
+index_NA = which(is.na(exp_alleles_v2))
+exp_alleles_v2 = exp_alleles_v2[-index_NA]
+eh_alleles_v2 = eh_alleles_v2[-index_NA]
+locus_v2 = locus_v2[-index_NA]
+
+# Decompose CI values
+val_data = val_data %>%
+  group_by(Platekey, locus) %>%
+  mutate(maxCI_a1 = strsplit(GEL_CI_a1, "-")[[1]][2],
+         maxCI_a2 = strsplit(GEL_CI_a2, "-")[[1]][2]) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Create dataframe with exp, eh, freq for each locus
+df_data_with_freq_v2 = data.frame()
+l_locus = unique(locus_v2)
+for(i in 1:length(l_locus)){
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GenQA_a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GenQA_a2) %>% pull() %>% as.integer() 
+  aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
+  
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(maxCI_a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(maxCI_a2) %>% pull() %>% as.integer() 
+  aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
+  
+  # Before calling xyTable, remove NAs
+  index_to_remove = which(is.na(aux_eh_alleles_v2))
+  if (length(index_to_remove) > 0){
+    aux_eh_alleles_v2 = aux_eh_alleles_v2[-index_to_remove]
+    aux_exp_alleles_v2 = aux_exp_alleles_v2[-index_to_remove]
+  }
+  
+  data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
+  
+  df_data_aux = data.frame(eh_alleles = data_aux$y,
+                           exp_alleles = data_aux$x,
+                           number_of_alleles = data_aux$number,
+                           locus = rep(l_locus[i], length(data_aux$x)))
+  # Concat info per locus
+  df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
+                               df_data_aux)
+  
+}
+
+dim(df_data_with_freq_v2)
+# 80  4
 
