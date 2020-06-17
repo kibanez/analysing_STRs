@@ -24,7 +24,7 @@ val_data = read.csv("./merged_batch1_batch3_STRs.tsv",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 46  17
+# 52  17
 
 # 1 - Define min and max alleles for both PCR and EH 
 # Don't work for AR, FMR1 - when we do have NA values
@@ -37,7 +37,7 @@ val_data = val_data %>%
   ungroup() %>%
   as.data.frame()
 dim(val_data)
-# 46  21
+# 52  21
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
@@ -82,7 +82,7 @@ for(i in 1:length(l_locus)){
 }
 
 dim(df_data_with_freq_v2)
-# 70  4
+# 80  4
 
 output_folder = "./figures/"
 
@@ -195,7 +195,7 @@ for (i in 1:length(l_genes)){
                     aux)
 }
 dim(df_classi)
-# 70  5
+# 80  5
 
 group.colors.classi = c("TN" = "red", "TP" = "green")
 
