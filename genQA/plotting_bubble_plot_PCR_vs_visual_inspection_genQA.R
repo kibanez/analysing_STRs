@@ -290,3 +290,58 @@ for(i in 1:length(l_locus)){
 dim(df_data_with_freq_v2)
 # 80  4
 
+# Now with classification
+# Enrich with classification
+df_classi = data.frame()
+for (i in 1:length(l_genes)){
+  aux = df_data_with_freq_v2 %>% filter(locus %in% l_genes[i])
+  
+  aux_classi = ifelse(aux$exp_alleles > l_premut_cutoff[i], "TP", "TN")
+  
+  aux$classi = aux_classi
+  df_classi = rbind(df_classi,
+                    aux)
+}
+dim(df_classi)
+# 80  5
+
+group.colors.classi = c("TN" = "red", "TP" = "green")
+
+df_classi$classi = as.factor(df_classi$classi)
+df_classi$locus = as.character(df_classi$locus)
+for(i in 1:length(l_genes)){
+  
+  df_classi_indiv = df_classi %>% 
+    filter(locus %in% l_genes[i], !is.na(classi))
+  
+  if (dim(df_classi_indiv)[1] > 0){
+    max_value_indiv = max(df_classi_indiv$eh_alleles, 
+                          df_classi_indiv$exp_alleles,
+                          na.rm = TRUE) + 5
+    
+    joint_plot_individual = ggplot(df_classi_indiv,
+                                   aes(x = exp_alleles, y = eh_alleles, colour = classi)) +
+      geom_point(aes(fill = classi, size = number_of_alleles)) +
+      coord_equal() +
+      scale_fill_manual(values=c("blue","green")) +  
+      labs(title = l_genes[i], 
+           y = "EH repeat sizes", 
+           x = "PCR repeat sizes") + 
+      theme_light() +
+      theme(legend.title = element_blank(),
+            text = element_text(size=13),
+            axis.text.x.top = element_text()) +
+      guides(size = FALSE) + 
+      xlim(5,max_value_indiv) +
+      ylim(5,max_value_indiv) +
+      geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+      geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+      geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
+    
+    
+    png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi_withMaxCI", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
+    print(joint_plot_individual)
+    dev.off()
+    
+  }
+}
