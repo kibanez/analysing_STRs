@@ -31,6 +31,7 @@ dim(table_diseases_pilot)
 # 660  13
 
 
+
 # Let's recode the ethnicity, simplifying it
 table_diseases$participant_ethnic_category = recode(table_diseases$participant_ethnic_category,
                                              "White: British"= "White",
@@ -114,6 +115,9 @@ l_pid_all = unique(c(l_main_pid,
                 l_pilot_pid))
 length(l_pid_all)
 # 13331 
+
+# From this list of 13K pids, I'll save it
+write.table(l_pid_all, "./list_13331_PIDs_table2.txt", row.names = F, col.names = F, quote = F)
 
 # Age of all
 l_main_age = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(age) %>% pull() 
