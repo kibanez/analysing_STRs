@@ -44,6 +44,22 @@ pilot_clin_data = unique(pilot_clin_data)
 dim(pilot_clin_data)
 # 4833  11
 
+# Let's enrich with popu data
+pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
+                            stringsAsFactors = F,
+                            header = T,
+                            sep = ",")
+dim(pilot_popu_table)
+# 4821  44
+
+pilot_clin_data = left_join(pilot_clin_data,
+                            pilot_popu_table %>% select(ID, bestGUESS_sub_pop, bestGUESS_super_pop, self_reported),
+                            by = c("plateKey"="ID"))
+
+pilot_clin_data = unique(pilot_clin_data)
+dim(pilot_clin_data)
+# 4834  15
+
 # Main
 clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
                        sep = "\t",
