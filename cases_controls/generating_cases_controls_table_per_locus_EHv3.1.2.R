@@ -144,6 +144,31 @@ clin_data = left_join(clin_data,
 dim(clin_data)
 # 1124633  18
 
+# Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
+colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported")
+
+# Generate extra columns from clin data for pilot clin data
+pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$participant_id))
+pilot_clin_data$programme = rep("RD Pilot", length(pilot_clin_data$participant_id))
+pilot_clin_data$family_group_type = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$diseasegroup_list = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$diseasesubgroup_list = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$panel_list = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$hpo_list = rep(".", length(pilot_clin_data$participant_id))
+
+# Select columns
+pilot_clin_data = pilot_clin_data %>%
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband,
+         genome_build, year_of_birth, participant_phenotypic_sex, programme,
+         family_group_type, affection_status, best_guess_predicted_ancstry, self_reported,
+         diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list, hpo_list)
+
+clin_data = rbind(clin_data,
+                  pilot_clin_data)
+dim(clin_data)
+# 1129467  17
+
+
 # As output
 # We want to the following output - NOTE each row is an allele (!!!)
 # Family ID
