@@ -22,8 +22,29 @@ dim(merged_data)
 # 8560  12
 
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
-#clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_250919.tsv",
-#clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_041219.tsv",
+# Pilot
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                           sep = "\t",
+                           stringsAsFactors = FALSE,
+                           header = TRUE)
+dim(pilot_clin_data)
+# 4974  10
+
+# Let´s put all panel names into 1 single string splitted by ','
+list_panels_pilot = pilot_clin_data %>% group_by(gelID) %>% summarise(panel_list = toString(unique(specificDisease))) %>% ungroup() %>% as.data.frame()
+dim(list_panels_pilot)
+# 4833  2
+
+pilot_clin_data = left_join(pilot_clin_data,
+                            list_panels_pilot,
+                            by = "gelID")
+# Remove specificDisease
+pilot_clin_data = pilot_clin_data[,-8]
+pilot_clin_data = unique(pilot_clin_data)
+dim(pilot_clin_data)
+# 4833  11
+
+# Main
 clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
