@@ -41,7 +41,7 @@ dim(val_data)
 
 # Create dataframe with exp, eh, freq for each locus
 df_data_with_freq_v2 = data.frame()
-l_locus = unique(locus_v2)
+l_locus = unique(val_data$locus)
 for(i in 1:length(l_locus)){
   aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GenQA_a1) %>% pull() %>% as.integer() 
   aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(GenQA_a2) %>% pull() %>% as.integer() 
@@ -71,7 +71,7 @@ for(i in 1:length(l_locus)){
 }
 
 dim(df_data_with_freq_v2)
-# 80  4
+# 82  4
 
 output_folder = "./figures/"
 
@@ -184,9 +184,9 @@ for (i in 1:length(l_genes)){
                     aux)
 }
 dim(df_classi)
-# 80  5
+# 82  5
 
-group.colors.classi = c("TN" = "red", "TP" = "green")
+group.colors.classi = c("TN" = "red", "TP" = "green", "FN" = "blue")
 
 df_classi$classi = as.factor(df_classi$classi)
 df_classi$locus = as.character(df_classi$locus)
@@ -204,7 +204,7 @@ for(i in 1:length(l_genes)){
                                    aes(x = exp_alleles, y = eh_alleles, colour = classi)) +
       geom_point(aes(fill = classi, size = number_of_alleles)) +
       coord_equal() +
-      scale_fill_manual(values=c("blue","green")) +  
+      scale_fill_manual(values=c("blue","green", "red")) +  
       labs(title = l_genes[i], 
            y = "EH repeat sizes", 
            x = "PCR repeat sizes") + 
@@ -220,7 +220,7 @@ for(i in 1:length(l_genes)){
       geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
     
     
-    png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
+    png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi_FXN", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
     print(joint_plot_individual)
     dev.off()
     
