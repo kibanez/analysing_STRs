@@ -129,21 +129,6 @@ clin_data = left_join(clin_data,
 dim(clin_data)
 #  1124633   17
 
-
-# Let's include the population information
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
-                      header = T,
-                      sep = ",",
-                      stringsAsFactors = F)
-dim(popu_table)
-# 59464  36
-
-clin_data = left_join(clin_data,
-                      popu_table %>% select(ID, best_guess_predicted_ancstry),
-                      by = c("platekey" = "ID"))
-dim(clin_data)
-# 1124633  18
-
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
 colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported")
 
