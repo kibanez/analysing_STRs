@@ -21,13 +21,35 @@ dim(merged_data)
 # 7857  11
 
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
+# Pilot
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                           sep = "\t",
+                           stringsAsFactors = FALSE,
+                           header = TRUE)
+dim(pilot_clin_data)
+# 4974  10
+
+# Let´s put all panel names into 1 single string splitted by ','
+list_panels_pilot = pilot_clin_data %>% group_by(gelID) %>% summarise(panel_list = toString(unique(specificDisease))) %>% ungroup() %>% as.data.frame()
+dim(list_panels_pilot)
+# 4833  2
+
+pilot_clin_data = left_join(pilot_clin_data,
+                            list_panels_pilot,
+                            by = "gelID")
+# Remove specificDisease
+pilot_clin_data = pilot_clin_data[,-8]
+pilot_clin_data = unique(pilot_clin_data)
+dim(pilot_clin_data)
+# 4833  11
+
+# Main
 clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(clin_data)  
 # 1124633  31
-
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
@@ -89,6 +111,8 @@ clin_data = left_join(clin_data,
 dim(clin_data)
 #  1124633   17
 
+# Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
+colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "diseases_list", "ageOfOnset", "qc_state")
 
 # Let's include the population information
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
@@ -150,6 +174,10 @@ for (i in 1:length(l_genes)){
           unique()
         
         if (dim(to_include)[1] <= 0){
+          # Check if Pilot genome
+                    
+          
+          
           to_include = rep('.', dim(to_include)[2])
           to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
           colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry.x")
