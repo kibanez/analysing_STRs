@@ -19,9 +19,29 @@ l_pid = l_pid$V1
 length(l_pid)
 # 13331
 
-merged_table = read.csv("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged_genotypeUpdated/merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
-                        sep = "\t",
-                        stringsAsFactors = F,
-                        header = T)
-dim(merged_table)
-# 3983  11
+# Strategy: take EHv255 case-control tables from latest batch march 2020
+# ATN1
+atn1_table = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv255/table_STR_repeat_size_each_row_allele_EHv2.5.5_ATN1_CAG_simplified.tsv",
+                    stringsAsFactors = F,
+                    sep = "\t",
+                    header = T)
+dim(atn1_table)
+# 188718  19
+
+atn1_table = atn1_table %>%
+  filter(participant_id %in% l_pid)
+atn1_table  = unique(atn1_table)
+dim(atn1_table)
+# 23864  19
+
+length(unique(atn1_table$platekey))
+# 12994
+length(unique(atn1_table$participant_id))
+# 12994
+
+write.table(atn1_table,
+            "./case-controls_ATN1_12994_pids.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
