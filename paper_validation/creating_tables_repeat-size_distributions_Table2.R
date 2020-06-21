@@ -74,4 +74,31 @@ write.table(atxn2_table,
 
 
 # ATXN7
+atxn7_table = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv255/table_STR_repeat_size_each_row_allele_EHv2.5.5_ATXN7_CAG_simplified.tsv",
+                       stringsAsFactors = F,
+                       sep = "\t",
+                       header = T)
+dim(atxn7_table)
+# 188680  19
+
+atxn7_table = atxn7_table %>%
+  filter(participant_id %in% l_pid)
+atxn7_table = unique(atxn7_table)
+dim(atxn7_table)
+# 17987  19
+
+length(unique(atxn7_table$participant_id))
+# 12993
+length(unique(atxn7_table$platekey))
+# 12993
+
+write.table(atxn2_table,
+            "./case-controls_ATXN7_12993_pids.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+
+
 # HTT
