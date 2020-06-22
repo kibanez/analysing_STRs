@@ -70,12 +70,14 @@ pilot_popu_table = unique(pilot_popu_table)
 dim(pilot_popu_table)
 # 4961  51
 
-# Load unrelated list of genomes from popu
+# Load unrelated list of genomes from popu - this is only main and also only the subcohort loukas' group worked on
 l_unrelated = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/60k_HWE_30k_random_unrelated_participants.txt",
                          stringsAsFactors = F)
 l_unrelated = l_unrelated$V1
 length(l_unrelated)
 # 38344
+
+# Let's define as unrelated: 38,344 from the main cohort + all pilot
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
@@ -243,6 +245,22 @@ for (i in 1:length(l_genes)){
               quote = F,
               row.names = F,
               col.names = T)
+  
+  # The same, but only keeping unrelated genomes + PILOT
+  patho_merged_unrelated = patho_merged %>%
+    filter(ID %in% )
+
+  output_file_name = paste(l_genes[i], "beyond_", sep = "_")
+  output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
+  output_file_name = paste(output_file_name, as.character(l_premut_cutoff[i]), sep = "")
+  output_file_name = paste(output_file_name, "EHv322_92K_population_unrelated.tsv", sep = "_")
+  write.table(patho_merged_unrelated, 
+              output_file_name, 
+              sep = "\t",
+              quote = F,
+              row.names = F,
+              col.names = T)
+  
 }
 
 
