@@ -78,6 +78,42 @@ length(l_unrelated)
 # 38344
 
 # Let's define as unrelated: 38,344 from the main cohort + all pilot
+# Take from pilot affected and 1 per family
+df_unrelated_pilot = pilot_clin_data %>%
+  filter(disease_status %in% "Affected") %>%
+  select(gelID, plateKey, gelFamilyId.x)
+df_unrelated_pilot = unique(df_unrelated_pilot)
+dim(df_unrelated_pilot)
+# 2391  3
+
+length(unique(df_unrelated_pilot$plateKey))
+# 2391
+length(unique(df_unrelated_pilot$gelFamilyId.x))
+# 2279
+
+# Take probands
+l_famIDs_dup = df_unrelated_pilot$gelFamilyId.x[which(duplicated(df_unrelated_pilot$gelFamilyId.x))]
+l_probands = pilot_clin_data %>%
+  filter(gelFamilyId.x %in% l_famIDs_dup, biological_relation_to_proband %in% "Proband") %>%
+  select(plateKey) %>%
+  pull()
+
+l_unrelated_platekeys_pilot = df_unrelated_pilot  %>%
+  filter(!gelFamilyId.x %in% l_famIDs_dup) %>%
+  select(plateKey) %>%
+  pull()
+length(l_unrelated_platekeys_pilot)
+# 2182
+
+l_unrelated_platekeys_pilot = c(l_unrelated_platekeys_pilot,
+                                l_probands)
+length(l_unrelated_platekeys_pilot)
+# 2283
+
+l_unrelated_merged = c(l_unrelated,
+                       l_unrelated_platekeys_pilot)
+length(l_unrelated_merged)
+# 40627
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
