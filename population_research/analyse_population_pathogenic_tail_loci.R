@@ -70,6 +70,13 @@ pilot_popu_table = unique(pilot_popu_table)
 dim(pilot_popu_table)
 # 4961  51
 
+# Load unrelated list of genomes from popu
+l_unrelated = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/60k_HWE_30k_random_unrelated_participants.txt",
+                         stringsAsFactors = F)
+l_unrelated = l_unrelated$V1
+length(l_unrelated)
+# 38344
+
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
                 "1" = "chr1",
