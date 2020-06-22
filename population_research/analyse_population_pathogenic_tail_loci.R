@@ -163,23 +163,23 @@ for (i in 1:length(l_genes)){
     filter(gene %in% l_genes[i], allele > l_premut_cutoff[i])
   
   list_allele_size = c()
+  df_platekey_size = data.frame()
   for (j in 1:length(merged_table_locus$list_samples)){
     list_vcf_allele = strsplit(merged_table_locus$list_samples[j], ';')[[1]]
     number_vcf = length(list_vcf_allele)
-    list_allele_size = c(list_allele_size,
-                         rep(merged_table_locus$allele[j], number_vcf))
+    list_allele_size = rep(merged_table_locus$allele[j], number_vcf)
+  
+    list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
+    list_vcf_allele = gsub('^EH_', '', list_vcf_allele)
+    list_vcf_allele = gsub('_x2', '', list_vcf_allele)
+    
+    # Create dataframe with platekey-repeat-size, for the expanded genomes
+    df_platekey_size = rbind(df_platekey_size,
+                             data.frame(platekey = list_vcf_allele,
+                                  repeat_size = list_allele_size))
+    df_platekey_size$platekey = as.character(df_platekey_size$platekey)
+    df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
   }
-  
-  list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
-  list_vcf_allele = gsub('^EH_', '', list_vcf_allele)
-  list_vcf_allele = gsub('_x2', '', list_vcf_allele)
-  
-  # Create dataframe with platekey-repeat-size, for the expanded genomes
-  df_platekey_size = data.frame(platekey = list_vcf_allele,
-                                repeat_size = list_allele_size)
-  df_platekey_size$platekey = as.character(df_platekey_size$platekey)
-  df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
-  
   
   # Enrich platekeys now with ancestry info: MAIN and PILOT
   patho_popu = popu_table %>%
