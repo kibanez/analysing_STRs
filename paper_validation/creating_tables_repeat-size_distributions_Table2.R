@@ -30,7 +30,6 @@ dim(atn1_table)
 
 atn1_table = atn1_table %>%
   filter(participant_id %in% l_pid)
-atn1_table  = unique(atn1_table)
 dim(atn1_table)
 # 23864  19
 
@@ -40,7 +39,7 @@ length(unique(atn1_table$participant_id))
 # 12994
 
 write.table(atn1_table,
-            "./case-controls_ATN1_12994_pids.tsv",
+            "./case-controls_ATN1_12994_pids_removingUnique.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
@@ -56,7 +55,6 @@ dim(atxn2_table)
 
 atxn2_table = atxn2_table %>%
   filter(participant_id %in% l_pid)
-atxn2_table = unique(atxn2_table)  
 dim(atxn2_table)
 # 16188 19
 
@@ -66,7 +64,7 @@ length(unique(atxn2_table$participant_id))
 # 12993
 
 write.table(atxn2_table,
-            "./case-controls_ATXN2_12993_pids.tsv",
+            "./case-controls_ATXN2_12993_pids_removingUnique.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
@@ -83,7 +81,6 @@ dim(atxn7_table)
 
 atxn7_table = atxn7_table %>%
   filter(participant_id %in% l_pid)
-atxn7_table = unique(atxn7_table)
 dim(atxn7_table)
 # 17987  19
 
@@ -93,7 +90,7 @@ length(unique(atxn7_table$platekey))
 # 12993
 
 write.table(atxn7_table,
-            "./case-controls_ATXN7_12993_pids.tsv",
+            "./case-controls_ATXN7_12993_pids_removingUnique.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
@@ -111,7 +108,6 @@ dim(htt_table)
 
 htt_table = htt_table %>%
   filter(participant_id %in% l_pid)
-htt_table = unique(htt_table)
 dim(htt_table)
 # 24119 19
 
@@ -121,7 +117,7 @@ length(unique(htt_table$platekey))
 # 12994
 
 write.table(htt_table,
-            "./case-controls_HTT_12994_pids.tsv",
+            "./case-controls_HTT_12994_pids_removingUnique.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
