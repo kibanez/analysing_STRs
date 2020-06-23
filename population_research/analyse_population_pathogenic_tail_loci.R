@@ -284,7 +284,7 @@ for (i in 1:length(l_genes)){
   
   # The same, but only keeping unrelated genomes + PILOT
   patho_merged_unrelated = patho_merged %>%
-    filter(ID %in% )
+    filter(ID %in% l_unrelated_merged)
 
   output_file_name = paste(l_genes[i], "beyond_", sep = "_")
   output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
