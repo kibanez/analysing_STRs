@@ -115,6 +115,25 @@ l_unrelated_merged = c(l_unrelated,
 length(l_unrelated_merged)
 # 40627
 
+# How many of these 40,627 are within 92K merged table?
+l_all_samples_merged = c()
+for (i in 1:length(merged_table$chr)){
+  aux_vcf = strsplit(merged_table$list_samples[i], ';')[[1]]
+  aux_vcf = gsub("EH_", "", aux_vcf)
+  aux_vcf = gsub(".vcf", "", aux_vcf)
+  aux_vcf = gsub("_x2", "", aux_vcf)
+  l_all_samples_merged = unique(c(l_all_samples_merged,
+                           aux_vcf))
+}
+
+# How many intersect, difference?
+length(intersect(l_all_samples_merged, l_unrelated_merged))
+#
+length(setdiff(l_all_samples_merged, l_unrelated_merged))
+#
+length(setdiff(l_unrelated_merged, l_all_samples_merged))
+#
+
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
                 "1" = "chr1",
