@@ -136,6 +136,7 @@ length(setdiff(l_all_samples_merged, l_unrelated_merged))
 length(setdiff(l_unrelated_merged, l_all_samples_merged))
 # 644
 
+
 #write down  these extra 644 in order to include in the next run
 write.table(setdiff(l_unrelated_merged, l_all_samples_merged),
             "~/Documents/STRs/data/research/input/list_644_genomes_not_included_in_batch_march2020_but_popu.tsv",
@@ -225,6 +226,17 @@ pilot_popu_table = pilot_popu_table %>%
                                       bestGUESS_sub_pop == "STU" ~ "SAS",
                                       bestGUESS_sub_pop == "TSI" ~ "EUR",
                                       bestGUESS_sub_pop == "YRI" ~ "AFR"))
+
+
+# Take the ones that intersect and see how many genomes from each superpopu we have
+l_genomes_batch_and_popu = intersect(l_all_samples_merged, l_unrelated_merged)
+popu_table %>% filter(ID %in% l_genomes_batch_and_popu) %>% select(merged_superpopu) %>% pull() %>% table()
+#  AFR   AMR   EAS   EUR   SAS 
+# 1599  1074   177 32207  3361 
+
+pilot_popu_table %>% filter(ID %in% l_genomes_batch_and_popu) %>% select(merged_superpopu_pilot) %>% pull() %>% table()
+# AFR  AMR  EAS  EUR  SAS 
+# 43   25    4 1779  161 
 
 # For each locus
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
