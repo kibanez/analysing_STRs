@@ -125,14 +125,23 @@ for (i in 1:length(merged_table$chr)){
   l_all_samples_merged = unique(c(l_all_samples_merged,
                            aux_vcf))
 }
+length(l_all_samples_merged)
+# 92663
 
 # How many intersect, difference?
 length(intersect(l_all_samples_merged, l_unrelated_merged))
-#
+# 39,979
 length(setdiff(l_all_samples_merged, l_unrelated_merged))
-#
+# 52684
 length(setdiff(l_unrelated_merged, l_all_samples_merged))
-#
+# 644
+
+#write down  these extra 644 in order to include in the next run
+write.table(setdiff(l_unrelated_merged, l_all_samples_merged),
+            "~/Documents/STRs/data/research/input/list_644_genomes_not_included_in_batch_march2020_but_popu.tsv",
+            quote = F,
+            row.names = F,
+            col.names = F)
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
