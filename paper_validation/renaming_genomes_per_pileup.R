@@ -25,6 +25,9 @@ df_ids = read.csv("./correspondence_gelID_paperID.tsv", stringsAsFactors = F, se
 dim(df_ids)
 # 635  3
 
+# Prepare at the same time input data to run python vintage script across all these
+df_to_write = data.frame()
+
 for (i in 1:length(df_pos_gel$V1)){
   prefix = paste("output_EHv255_positive_GEL/EH_", df_pos_gel$V1[i], sep = "")
   orig_vcf = paste(prefix, ".vcf", sep = "")
@@ -46,10 +49,11 @@ for (i in 1:length(df_pos_gel$V1)){
     file.rename(from = orig_json, to = new_json)
     file.rename(from = orig_log, to = new_log)
     
+    df_to_write = rbind(df_to_write,
+                        paperID = paperID, locus = df_pos_gel$V2[i])
   }else{
     print("error")
   }
 }
 
-# Prepare
 
