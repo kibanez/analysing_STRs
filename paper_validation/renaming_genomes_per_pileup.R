@@ -45,15 +45,21 @@ for (i in 1:length(df_pos_gel$V1)){
     new_json = paste(prefix_new, ".json", sep = "")
     new_log = paste(prefix_new, "_alignments_relevant_reads.log", sep = "")
     
-    file.rename(from = orig_vcf, to = new_vcf)
-    file.rename(from = orig_json, to = new_json)
-    file.rename(from = orig_log, to = new_log)
+    #file.rename(from = orig_vcf, to = new_vcf)
+    #file.rename(from = orig_json, to = new_json)
+    #file.rename(from = orig_log, to = new_log)
     
     df_to_write = rbind(df_to_write,
-                        paperID = paperID, locus = df_pos_gel$V2[i])
+                        data.frame(paperID = paperID, locus = df_pos_gel$V2[i]))
   }else{
     print("error")
   }
 }
 
 
+write.table(df_to_write, 
+            "./input_file_to_generate_pileup_from_vintage_EHv2.csv", 
+            quote = F,
+            sep = ",",
+            row.names = F,
+            col.names = F)
