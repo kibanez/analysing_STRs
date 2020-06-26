@@ -32,6 +32,13 @@ df_pos_gel = df_ids %>%
 dim(df_pos_gel)
 # 149  2
 
+# Write down the list of gelIDs in order to bring them to local
+write.table(df_pos_gel$gel_ID,
+            "list_149_GEL_platekey.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
 # Prepare at the same time input data to run python vintage script across all these
 df_to_write = data.frame()
 
