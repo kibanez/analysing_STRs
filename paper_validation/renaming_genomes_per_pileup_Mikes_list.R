@@ -33,8 +33,8 @@ dim(df_pos_gel)
 # 149  2
 
 # Write down the list of gelIDs in order to bring them to local
-write.table(df_pos_gel$gel_ID,
-            "list_149_GEL_platekey.txt",
+write.table(unique(df_pos_gel$gel_ID),
+            "list_unique_61_platekeys_149_GEL_platekey.txt",
             quote = F,
             row.names = F,
             col.names = F)
@@ -55,14 +55,15 @@ for (i in 1:length(df_pos_gel$gel_ID)){
     unique() %>%
     pull()
   if (length(paperID) > 0){
-    prefix_new = paste("output_list_149_Mike/", paperID, sep = "")
+    prefix_new = paste("output_list_149_Mike/with_paperIDs/", paperID, sep = "")
     new_vcf = paste(prefix_new, ".vcf", sep = "")
     new_json = paste(prefix_new, ".json", sep = "")
     new_log = paste(prefix_new, "_alignments_relevant_reads.log", sep = "")
     
-    file.rename(from = orig_vcf, to = new_vcf)
-    file.rename(from = orig_json, to = new_json)
-    file.rename(from = orig_log, to = new_log)
+    # strategy diff, since many GE_case are same platekey but diff locus
+    file.copy(from = orig_vcf, to = new_vcf)
+    file.copy(from = orig_json, to = new_json)
+    file.copy(from = orig_log, to = new_log)
     
     df_to_write = rbind(df_to_write,
                         data.frame(paperID = paperID, locus = df_pos_gel$locus[i]))
