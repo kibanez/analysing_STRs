@@ -38,6 +38,7 @@ write.table(df_pos_gel$gel_ID,
             quote = F,
             row.names = F,
             col.names = F)
+# Actually there are unique 61 platekeys
 
 # Prepare at the same time input data to run python vintage script across all these
 df_to_write = data.frame()
@@ -59,9 +60,9 @@ for (i in 1:length(df_pos_gel$gel_ID)){
     new_json = paste(prefix_new, ".json", sep = "")
     new_log = paste(prefix_new, "_alignments_relevant_reads.log", sep = "")
     
-    file.rename(from = orig_vcf, to = new_vcf)
-    file.rename(from = orig_json, to = new_json)
-    file.rename(from = orig_log, to = new_log)
+    #file.rename(from = orig_vcf, to = new_vcf)
+    #file.rename(from = orig_json, to = new_json)
+    #file.rename(from = orig_log, to = new_log)
     
     df_to_write = rbind(df_to_write,
                         data.frame(paperID = paperID, locus = df_pos_gel$locus[i]))
@@ -70,7 +71,8 @@ for (i in 1:length(df_pos_gel$gel_ID)){
   }
 }
 
-
+dim(df_to_write)
+# 149  2
 write.table(df_to_write, 
             "./input_file_to_generate_pileup_from_vintage_EHv2_149_Mike.csv", 
             quote = F,
