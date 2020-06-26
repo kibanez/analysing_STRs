@@ -23,24 +23,31 @@ length(l_ids)
 # From Table S7
 df_ids = read.csv("./correspondence_gelID_paperID.tsv", stringsAsFactors = F, sep = "\t")
 dim(df_ids)
-# 635  3
+# 634  3
+
+# Take the correspondance of gelID and locus for these 149 paper IDs
+df_pos_gel = df_ids %>%
+  filter(paper_ID %in% l_ids) %>%
+  select(gel_ID, locus)
+dim(df_pos_gel)
+# 149  2
 
 # Prepare at the same time input data to run python vintage script across all these
 df_to_write = data.frame()
 
-for (i in 1:length(df_pos_gel$V1)){
-  prefix = paste("output_EHv255_positive_GEL/EH_", df_pos_gel$V1[i], sep = "")
+for (i in 1:length(df_pos_gel$gel_ID)){
+  prefix = paste("output_list_149_Mike/EH_", df_pos_gel$gel_ID[i], sep = "")
   orig_vcf = paste(prefix, ".vcf", sep = "")
   orig_json = paste(prefix, ".json", sep = "")
   orig_log = paste(prefix, "_alignments_relevant_reads.log", sep = "")
   
   paperID = df_ids %>% 
-    filter(gel_ID %in% df_pos_gel$V1[i], locus %in% df_pos_gel$V2[i]) %>%
+    filter(gel_ID %in% df_pos_gel$gel_ID[i], locus %in% df_pos_gel$locus[i]) %>%
     select(paper_ID) %>%
     unique() %>%
     pull()
   if (length(paperID) > 0){
-    prefix_new = paste("output_EHv255_positive_GEL/", paperID, sep = "")
+    prefix_new = paste("output_list_149_Mike/", paperID, sep = "")
     new_vcf = paste(prefix_new, ".vcf", sep = "")
     new_json = paste(prefix_new, ".json", sep = "")
     new_log = paste(prefix_new, "_alignments_relevant_reads.log", sep = "")
@@ -50,7 +57,7 @@ for (i in 1:length(df_pos_gel$V1)){
     file.rename(from = orig_log, to = new_log)
     
     df_to_write = rbind(df_to_write,
-                        data.frame(paperID = paperID, locus = df_pos_gel$V2[i]))
+                        data.frame(paperID = paperID, locus = df_pos_gel$locus[i]))
   }else{
     print("error")
   }
@@ -58,7 +65,7 @@ for (i in 1:length(df_pos_gel$V1)){
 
 
 write.table(df_to_write, 
-            "./input_file_to_generate_pileup_from_vintage_EHv2.csv", 
+            "./input_file_to_generate_pileup_from_vintage_EHv2_149_Mike.csv", 
             quote = F,
             sep = ",",
             row.names = F,
