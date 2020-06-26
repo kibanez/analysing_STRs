@@ -13,10 +13,11 @@ library(dplyr)
 setwd("~/Documents/STRs/VALIDATION/QC_visual_inspection/pileups_june/")
 
 # Load original or raw data
-# Visual_QC_EHv2.5.5_ME.xlsx as tsv
-df_pos_gel = read.csv("./list_GEL_EHv2_as_positive.txt", stringsAsFactors = F, header = F, sep = "\t")
-dim(df_pos_gel)
-# 66  2
+# List of 149 PaperIDs from Mike's work
+l_ids = read.table("./list_149_GE_cases_from_Mike.txt", stringsAsFactors = F)
+l_ids = l_ids$V1
+length(l_ids)
+# 149
 
 # Load correspondence between GEL Platekey and Paper ID
 # From Table S7
