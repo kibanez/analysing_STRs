@@ -1,5 +1,5 @@
 # Objective: rename the cases/genomes that Mike, while doing visual inspection, adapted the truth repeat-size as EH
-
+# He changed the ‘truth’ from the PCR call
 date()
 Sys.info()[c("nodename", "user")]
 commandArgs()
