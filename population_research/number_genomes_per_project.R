@@ -13,3 +13,22 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/")
+
+# Load data
+gnomad_popu = read.csv("../gnomAD/number_genomes_per_superpopu.tsv",
+                       stringsAsFactors = F,
+                       header = F,
+                       sep = "\t")
+dim(gnomad_popu)
+# 9  2
+
+colnames(gnomad_popu) = c("superpopu", "number")
+
+png("../gnomAD/figures/barplot_ancestries_groups_raw_numbers.png")
+ggplot(gnomad_popu, 
+       aes(x = reorder(superpopu, - number), y = number)) + 
+  geom_bar(stat = "identity", aes(fill = superpopu)) + 
+  geom_text(aes(label=number), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - gnomAD V3 -  29,074 total genomes") 
+dev.off()
