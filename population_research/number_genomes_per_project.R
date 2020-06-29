@@ -24,6 +24,16 @@ dim(gnomad_popu)
 
 colnames(gnomad_popu) = c("superpopu", "number")
 
+# Load data only CRAMs
+gnomad_popu_crams = read.csv("../gnomAD/number_genomes_per_superpopu_with_CRAMs.tsv",
+                       stringsAsFactors = F,
+                       header = F,
+                       sep = "\t")
+dim(gnomad_popu_crams)
+# 9  2
+colnames(gnomad_popu_crams) = c("superpopu", "number")
+
+
 png("../gnomAD/figures/barplot_ancestries_groups_raw_numbers.png")
 ggplot(gnomad_popu, 
        aes(x = reorder(superpopu, - number), y = number)) + 
@@ -32,3 +42,14 @@ ggplot(gnomad_popu,
   ylab("Number of genomes") + 
   xlab("Ancestry cohorts - gnomAD V3 -  29,074 total genomes") 
 dev.off()
+
+# with crams
+png("../gnomAD/figures/barplot_ancestries_groups_raw_numbers_with_CRAMs.png")
+ggplot(gnomad_popu_crams, 
+       aes(x = reorder(superpopu, - number), y = number)) + 
+  geom_bar(stat = "identity", aes(fill = superpopu)) + 
+  geom_text(aes(label=number), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - gnomAD V3 -  16,392 total genomes (whole CRAMs)") 
+dev.off()
+
