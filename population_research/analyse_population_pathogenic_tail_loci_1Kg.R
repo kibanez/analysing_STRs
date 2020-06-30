@@ -127,5 +127,14 @@ for (i in 1:length(l_genes)){
                 row.names = F,
                 col.names = T)
   }
-  }
-  
+}
+
+
+# we have merged in google excel all loci
+merged_expanded = read.csv("./1K_phase3_EHv322_expansions_beyond_premutation - merged.tsv",
+                           stringsAsFactors = F,
+                           header = T,
+                           sep = "\t")
+dim(merged_expanded)  
+# 109  5
+
