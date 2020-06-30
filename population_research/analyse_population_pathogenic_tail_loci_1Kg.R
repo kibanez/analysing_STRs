@@ -59,6 +59,7 @@ metadata = metadata %>%
                                POPULATION == "JPT" ~ "EAS",
                                POPULATION == "STU" ~ "SAS",
                                POPULATION == "CHB" ~ "EAS",
+                               POPULATION == "CDX" ~ "EAS",
                                POPULATION == "PEL" ~ "AMR",
                                POPULATION == "IBS" ~ "EUR"))
 
@@ -100,43 +101,19 @@ for (i in 1:length(l_genes)){
   list_vcf_patho_locus = gsub('^EHv3.2.2_', '', list_vcf_patho_locus)
   list_vcf_patho_locus = gsub('_x2', '', list_vcf_patho_locus)
   
-  # Enrich platekeys now with ancestry info: MAIN and PILOT
-  patho_popu = popu_table %>%
-    filter(ID %in% list_vcf_patho_locus) %>%
-    select(ID, best_guess_predicted_ancstry, merged_superpopu, self_reported, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type)
+  # Enrich platekeys now with ancestry info
+  patho_popu = metadata %>%
+    filter(SAMPLE_NAME %in% list_vcf_patho_locus) %>%
+    select(SAMPLE_NAME, POPULATION, superpopu)
   print(dim(patho_popu))
 
-  
-  patho_popu2 = clin_data %>%
-    filter(platekey %in% list_vcf_patho_locus) %>%
-    select(platekey, participant_ethnic_category) 
-  patho_popu2 = unique(patho_popu2)
-  print(dim(patho_popu2))
-  
-  pilot_patho_popu = pilot_popu_table %>%
-    filter(ID %in% list_vcf_patho_locus) %>%
-    select(ID, gelID, gelFamilyId.x, sex, biological_relation_to_proband, disease_status, yearOfBirth, specificDisease, merged_superpopu_pilot, bestGUESS_sub_pop, bestGUESS_super_pop, PRED_SUM_fineGrained)
-  print(dim(pilot_patho_popu))
-  
-  patho_merged = full_join(patho_popu,
-                           patho_popu2,
-                           by = c("ID" = "platekey"))
-  
-  patho_merged = full_join(patho_merged,
-                           pilot_patho_popu,
-                           by = "ID")
-  
-  # enrich `patho_merged` with the corresponding repeat-size for each platekey
-  patho_merged = left_join(patho_merged,
-                           df_platekey_size,
-                           by = c("ID" = "platekey"))
-  
-  print(dim(patho_merged))
-  
-  patho_merged = unique(patho_merged)
-  
   # Add locus name as column
-  patho_merged$locus = rep(l_genes[i], length(patho_merged$ID))
+  patho_popu$locus = rep(l_genes[i], length(patho_popu$SAMPLE_NAME))
+  
+  # merge
+  patho_merged = left_join(df_platekey_size,
+                           patho_popu,
+                           by = c("platekey" = "SAMPLE_NAME"))
   
   output_file_name = paste(l_genes[i], "beyond_", sep = "_")
   output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
