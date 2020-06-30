@@ -75,54 +75,57 @@ for (i in 1:length(l_genes)){
   merged_table_locus = merged_table %>%
     filter(gene %in% l_genes[i], allele > l_premut_cutoff[i])
   
-  list_allele_size = c()
-  list_vcf_patho_locus = c()
-  df_platekey_size = data.frame()
-  for (j in 1:length(merged_table_locus$list_samples)){
-    list_vcf_allele = strsplit(merged_table_locus$list_samples[j], ';')[[1]]
-    number_vcf = length(list_vcf_allele)
-    list_vcf_patho_locus = c(list_vcf_patho_locus,
-                             list_vcf_allele)
-    list_allele_size = rep(merged_table_locus$allele[j], number_vcf)
-  
-    list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
-    list_vcf_allele = gsub('^EHv3.2.2_', '', list_vcf_allele)
-    list_vcf_allele = gsub('_x2', '', list_vcf_allele)
+  if (dim(merged_table_locus)[1] > 0){
+    list_allele_size = c()
+    list_vcf_patho_locus = c()
+    df_platekey_size = data.frame()
+    for (j in 1:length(merged_table_locus$list_samples)){
+      list_vcf_allele = strsplit(merged_table_locus$list_samples[j], ';')[[1]]
+      number_vcf = length(list_vcf_allele)
+      list_vcf_patho_locus = c(list_vcf_patho_locus,
+                               list_vcf_allele)
+      list_allele_size = rep(merged_table_locus$allele[j], number_vcf)
+      
+      list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
+      list_vcf_allele = gsub('^EHv3.2.2_', '', list_vcf_allele)
+      list_vcf_allele = gsub('_x2', '', list_vcf_allele)
+      
+      # Create dataframe with platekey-repeat-size, for the expanded genomes
+      df_platekey_size = rbind(df_platekey_size,
+                               data.frame(platekey = list_vcf_allele,
+                                          repeat_size = list_allele_size))
+      df_platekey_size$platekey = as.character(df_platekey_size$platekey)
+      df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
+    }
     
-    # Create dataframe with platekey-repeat-size, for the expanded genomes
-    df_platekey_size = rbind(df_platekey_size,
-                             data.frame(platekey = list_vcf_allele,
-                                  repeat_size = list_allele_size))
-    df_platekey_size$platekey = as.character(df_platekey_size$platekey)
-    df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
+    list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
+    list_vcf_patho_locus = gsub('^EHv3.2.2_', '', list_vcf_patho_locus)
+    list_vcf_patho_locus = gsub('_x2', '', list_vcf_patho_locus)
+    
+    # Enrich platekeys now with ancestry info
+    patho_popu = metadata %>%
+      filter(SAMPLE_NAME %in% list_vcf_patho_locus) %>%
+      select(SAMPLE_NAME, POPULATION, superpopu)
+    print(dim(patho_popu))
+    
+    # Add locus name as column
+    patho_popu$locus = rep(l_genes[i], length(patho_popu$SAMPLE_NAME))
+    
+    # merge
+    patho_merged = left_join(df_platekey_size,
+                             patho_popu,
+                             by = c("platekey" = "SAMPLE_NAME"))
+    
+    output_file_name = paste(l_genes[i], "beyond_", sep = "_")
+    output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
+    output_file_name = paste(output_file_name, as.character(l_premut_cutoff[i]), sep = "")
+    output_file_name = paste(output_file_name, "EHv322_1Kg.tsv", sep = "_")
+    write.table(patho_merged, 
+                output_file_name, 
+                sep = "\t",
+                quote = F,
+                row.names = F,
+                col.names = T)
+  }
   }
   
-  list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
-  list_vcf_patho_locus = gsub('^EHv3.2.2_', '', list_vcf_patho_locus)
-  list_vcf_patho_locus = gsub('_x2', '', list_vcf_patho_locus)
-  
-  # Enrich platekeys now with ancestry info
-  patho_popu = metadata %>%
-    filter(SAMPLE_NAME %in% list_vcf_patho_locus) %>%
-    select(SAMPLE_NAME, POPULATION, superpopu)
-  print(dim(patho_popu))
-
-  # Add locus name as column
-  patho_popu$locus = rep(l_genes[i], length(patho_popu$SAMPLE_NAME))
-  
-  # merge
-  patho_merged = left_join(df_platekey_size,
-                           patho_popu,
-                           by = c("platekey" = "SAMPLE_NAME"))
-  
-  output_file_name = paste(l_genes[i], "beyond_", sep = "_")
-  output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
-  output_file_name = paste(output_file_name, as.character(l_premut_cutoff[i]), sep = "")
-  output_file_name = paste(output_file_name, "EHv322_1Kg.tsv", sep = "_")
-  write.table(patho_merged, 
-              output_file_name, 
-              sep = "\t",
-              quote = F,
-              row.names = F,
-              col.names = T)
-}
