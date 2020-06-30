@@ -15,12 +15,12 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/1Kg/")
 
 # load data
-merged_table = read.csv("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
+merged_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/all_data/merged/merged_all_2504_genomes_1Kg_EHv3.2.2.tsv",
                         sep = "\t",
                         stringsAsFactors = F, 
                         header = T)
 dim(merged_table)
-# 8560  12
+# 1342  12
 
 # Load MAIN popu table we have so far
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
