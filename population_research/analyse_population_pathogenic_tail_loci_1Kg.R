@@ -22,21 +22,48 @@ merged_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/
 dim(merged_table)
 # 1342  12
 
-# Load MAIN popu table we have so far
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
-                      stringsAsFactors = F, 
-                      sep = ",",
-                      header = T)
-dim(popu_table)
-# 59464  36
+# Load 1Kg metadata
+metadata = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/1000G_2504_high_coverage.sequence.index.tsv",
+                    stringsAsFactors = F,
+                    sep = "\t",
+                    header = T)
+dim(metadata)
+# 2504  22
 
-# Load PILOT popu table 
-pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
-                            stringsAsFactors = F,
-                            sep = ",",
-                            header = T)
-dim(pilot_popu_table)
-# 4821  44 
+metadata = metadata %>% select(SAMPLE_NAME, POPULATION)
+dim(metadata)
+# 2504  2
+
+# Recode superpopu
+metadata = metadata %>%
+  mutate(superpopu = case_when(POPULATION == "PJL" ~ "SAS",
+                               POPULATION == "GBR" ~ "EUR",
+                               POPULATION == "CEU" ~ "EUR",
+                               POPULATION == "TSI" ~ "EUR",
+                               POPULATION == "PUR" ~ "AMR",
+                               POPULATION == "ACB" ~ "AFR",
+                               POPULATION == "GIH" ~ "SAS",
+                               POPULATION == "ASW" ~ "AFR",
+                               POPULATION == "MXL" ~ "AMR",
+                               POPULATION == "ESN" ~ "AFR",
+                               POPULATION == "LWK" ~ "AFR",
+                               POPULATION == "CHS" ~ "EAS",
+                               POPULATION == "BEB" ~ "SAS",
+                               POPULATION == "KHV" ~ "EAS",
+                               POPULATION == "CLM" ~ "AMR",
+                               POPULATION == "MSL" ~ "AFR",
+                               POPULATION == "YRI" ~ "AFR",
+                               POPULATION == "GWD" ~ "AFR",
+                               POPULATION == "FIN" ~ "EUR",
+                               POPULATION == "ITU" ~ "SAS",
+                               POPULATION == "JPT" ~ "EAS",
+                               POPULATION == "STU" ~ "SAS",
+                               POPULATION == "CHB" ~ "EAS",
+                               POPULATION == "PEL" ~ "AMR",
+                               POPULATION == "IBS" ~ "EUR"))
+
+dim(metadata)
+# 2504  3
 
 # Load clin data, `participant_ethnic_category`
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
