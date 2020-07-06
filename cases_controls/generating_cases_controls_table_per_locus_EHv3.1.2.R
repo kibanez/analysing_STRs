@@ -66,7 +66,7 @@ pheno_table = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pheno
                        sep = "\t")
 pheno_table = unique(pheno_table)
 dim(pheno_table)
-# 126  3
+# 106  3
 
 pilot_clin_data = left_join(pilot_clin_data,
                             pheno_table,
