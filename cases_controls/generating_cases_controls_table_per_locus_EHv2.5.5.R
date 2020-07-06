@@ -57,6 +57,22 @@ pilot_clin_data = left_join(pilot_clin_data,
 
 pilot_clin_data = unique(pilot_clin_data)
 dim(pilot_clin_data)
+# 4834  13
+
+# Enrich pilot clinical data with disease group and disease subgroup
+pheno_table = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/phenotyping_v140_2019-09-13_15-26-02.tsv",
+                       stringsAsFactors = F,
+                       header = T,
+                       sep = "\t")
+pheno_table = unique(pheno_table)
+dim(pheno_table)
+# 106  3
+
+pilot_clin_data = left_join(pilot_clin_data,
+                            pheno_table,
+                            by = c("panel_list" = "specific_disease"))
+pilot_clin_data = unique(pilot_clin_data)
+dim(pilot_clin_data)
 # 4834  15
 
 # Main
