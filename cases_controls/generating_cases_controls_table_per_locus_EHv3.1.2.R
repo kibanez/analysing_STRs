@@ -13,7 +13,6 @@ library(dplyr)
 setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/")
 
 # Load data
-#merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/EH_3.1.2_research_October2019/merged_genotypeUpdated/merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv",
 merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
                        sep = '\t',
                        header = T,
@@ -58,7 +57,23 @@ pilot_clin_data = left_join(pilot_clin_data,
 
 pilot_clin_data = unique(pilot_clin_data)
 dim(pilot_clin_data)
-# 4834  15
+# 4834  13
+
+# Enrich pilot clinical data with disease group and disease subgroup
+pheno_table = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/phenotyping_v140_2019-09-13_15-26-02.tsv",
+                       stringsAsFactors = F,
+                       header = T,
+                       sep = "\t")
+pheno_table = unique(pheno_table)
+dim(pheno_table)
+# 126  3
+
+pilot_clin_data = left_join(pilot_clin_data,
+                            pheno_table,
+                            by = c("panel_list" = "specific_disease"))
+pilot_clin_data = unique(pilot_clin_data)
+dim(pilot_clin_data)
+# 5354  15
 
 # Main
 clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
