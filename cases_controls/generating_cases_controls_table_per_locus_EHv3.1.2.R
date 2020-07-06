@@ -73,7 +73,7 @@ pilot_clin_data = left_join(pilot_clin_data,
                             by = c("panel_list" = "specific_disease"))
 pilot_clin_data = unique(pilot_clin_data)
 dim(pilot_clin_data)
-# 5354  15
+# 4834  15
 
 # Main
 clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
@@ -145,14 +145,12 @@ dim(clin_data)
 #  1124633   17
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
-colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported")
+colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported","diseasegroup_list", "diseasesubgroup_list")
 
 # Generate extra columns from clin data for pilot clin data
 pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$participant_id))
 pilot_clin_data$programme = rep("RD Pilot", length(pilot_clin_data$participant_id))
 pilot_clin_data$family_group_type = rep(".", length(pilot_clin_data$participant_id))
-pilot_clin_data$diseasegroup_list = rep(".", length(pilot_clin_data$participant_id))
-pilot_clin_data$diseasesubgroup_list = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$panel_list = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$hpo_list = rep(".", length(pilot_clin_data$participant_id))
 
