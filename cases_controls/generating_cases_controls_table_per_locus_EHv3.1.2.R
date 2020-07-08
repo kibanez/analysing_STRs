@@ -41,7 +41,7 @@ pilot_clin_data = left_join(pilot_clin_data,
 pilot_clin_data = pilot_clin_data[,-8]
 pilot_clin_data = unique(pilot_clin_data)
 dim(pilot_clin_data)
-# 4833  11
+# 4833  10
 
 # Let's enrich with popu data
 pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
