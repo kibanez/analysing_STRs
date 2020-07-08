@@ -14,4 +14,18 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/")
 
-# 
+# Load MAIN popu table we have so far
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      stringsAsFactors = F, 
+                      sep = ",",
+                      header = T)
+dim(popu_table)
+# 59464  36
+
+# Load PILOT popu table 
+pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
+                            stringsAsFactors = F,
+                            sep = ",",
+                            header = T)
+dim(pilot_popu_table)
+# 4821  44 
