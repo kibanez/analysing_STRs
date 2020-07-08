@@ -29,3 +29,20 @@ pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT
                             header = T)
 dim(pilot_popu_table)
 # 4821  44 
+
+# Load HTT EHv322 batch march 2020, after visual QC
+htt_table = read.csv("./list_PIDs_for_HTT_pileup.tsv",
+                    stringsAsFactors = F,
+                    sep = "\t",
+                    header = T)
+dim(htt_table)
+# 231  4
+
+l_htt = htt_table %>%
+  filter(larger.than.40.after.visual.QC. %in% "yes") %>%
+  select(PLATEKEY) %>%
+  unique() %>% 
+  pull()
+length(l_htt)
+# 51
+
