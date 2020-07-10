@@ -98,4 +98,30 @@ list_fxn_genomes = list_fxn_genomes$platekey
 length(list_fxn_genomes)
 # 1220
 
+# Let's load batch march input data
+df_genomes_b37 = read.csv("~/Documents/STRs/data/research/input/batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_13024_ouf_of_92669_genomes_GRCh37.csv",
+                          stringsAsFactors = F,
+                          header = T,
+                          sep = ",")
+dim(df_genomes_b37)
+# 13023  3
 
+df_genomes_b38 = read.csv("~/Documents/STRs/data/research/input/batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_79645_ouf_of_92669_genomes_GRCh38.csv",
+                          stringsAsFactors = F,
+                          header = T,
+                          sep = ",")
+dim(df_genomes_b38)
+# 79644  3
+
+df_path_vcf = clin_data %>%
+  filter(platekey %in% list_fxn_genomes) %>%
+  select(file_path, genome_build) %>%
+  unique()
+dim(df_path_vcf)  
+# 1183  2
+
+
+
+table(df_path_vcf$genome_build)
+#GRCh37 GRCh38 
+#129     835
