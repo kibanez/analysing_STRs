@@ -21,48 +21,174 @@ clin_data_v9 = read.csv("../clinical_data/rd_genomes_all_data_100720_V9.tsv",
                          stringsAsFactors = FALSE,
                          sep = "\t")
 dim(clin_data_v9)
-# 1180803  32
+# 1180803  31
 
 clin_data_v8 = read.csv("../clinical_data/rd_genomes_all_data_100720_V8.tsv",
                         header = TRUE,
                         stringsAsFactors = FALSE,
                         sep = "\t")
 dim(clin_data_v8)
-# 1124633  32
+# 1124633  31
 
 clin_data_v7 = read.csv("../clinical_data/rd_genomes_all_data_100720_V7.tsv",
                         header = TRUE,
                         stringsAsFactors = FALSE,
                         sep = "\t")
 dim(clin_data_v7)
-# 1021801  32
+# 1021801  31
 
 clin_data_v6 = read.csv("../clinical_data/rd_genomes_all_data_100720_V6.tsv",
                        header = TRUE,
                        stringsAsFactors = FALSE,
                        sep = "\t")
 dim(clin_data_v6)
-# 775234  32
+# 775234  31
 
 clin_data_v5 = read.csv("../clinical_data/rd_genomes_all_data_100720_V5.1.tsv",
                        header = TRUE,
                        stringsAsFactors = FALSE,
                        sep = "\t")
 dim(clin_data_v5)
-# 555656  32
+# 555656  31
 
 clin_data_v4 = read.csv("../clinical_data/rd_genomes_all_data_100720_V4.tsv",
                        header = TRUE,
                        stringsAsFactors = FALSE,
                        sep = "\t")
 dim(clin_data_v4)
-# 370296  30
+# 370296  29
 
 
 # Let's merge V5-V9 version tables
 # Check and confirm V4 has not extra genomes
 # Check and confirm V1-V3 have not extra genomes
+colnames(clin_data_v8) = colnames(clin_data_v9)
+colnames(clin_data_v7) = colnames(clin_data_v9)
+colnames(clin_data_v6) = colnames(clin_data_v9)
+colnames(clin_data_v5) = colnames(clin_data_v9)
 
+clin_data_merged = rbind(clin_data_v9,
+                         clin_data_v8)
+clin_data_merged = unique(clin_data_merged)
+dim(clin_data_merged)
+# 
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v7)
+clin_data_merged = unique(clin_data_merged)
+dim(clin_data_merged)
+#
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v6)
+clin_data_merged = unique(clin_data_merged)
+dim(clin_data_merged)
+#
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v5)
+clin_data_merged = unique(clin_data_merged)
+dim(clin_data_merged)
+#
+
+
+
+
+# Start with V9
+l_pids = clin_data_v9$participant_id
+length(l_pids)
+# 1180803
+
+# Merge with V8
+l_pids = c(l_pids,
+           setdiff(clin_data_v8$participant_id, l_pids))
+length(l_pids)
+# 1181142
+
+# Merge with V7
+l_pids = c(l_pids,
+           setdiff(clin_data_v7$participant_id, l_pids))
+length(l_pids)
+# 1182011
+
+# Merge with V6
+l_pids = c(l_pids,
+           setdiff(clin_data_v6$participant_id, l_pids))
+length(l_pids)
+# 1182282
+
+# Merge with V5
+l_pids = c(l_pids,
+           setdiff(clin_data_v5$participant_id, l_pids))
+length(l_pids)
+# 1182292
+
+# Merge with V4 
+pids_clin_data_v4 = read.csv("../clinical_data/raw/RE_clinical_data_V4/genome_file_paths_and_types_2020-07-07_10-55-46.tsv",
+                             stringsAsFactors = F,
+                             header = T,
+                             sep = "\t")
+pids_clin_data_v4 = pids_clin_data_v4$participant_id
+
+# there is 1 extra genome
+l_pids = c(l_pids,
+           setdiff(pids_clin_data_v4, l_pids))
+length(l_pids)
+# 1182293
+
+
+# Merge with V3
+pids_clin_data_v3 = read.csv("../clinical_data/raw/RE_clinical_data_V3/genome_file_paths_and_types_2020-07-07_11-17-23.tsv",
+                             stringsAsFactors = F,
+                             header = T,
+                             sep = "\t")
+pids_clin_data_v3 = pids_clin_data_v3$participant_id
+
+# No extra genomes
+l_pids = c(l_pids,
+           setdiff(pids_clin_data_v3, l_pids))
+length(l_pids)
+# 1182293
+
+# Merge with V2
+pids_clin_data_v2 = read.csv("../clinical_data/raw/RE_clinical_data_V2/participant_2020-07-07_11-23-34.tsv",
+                             stringsAsFactors = F,
+                             header = T,
+                             sep = "\t")
+pids_clin_data_v2 = pids_clin_data_v2$participant_id
+
+# 3,211 extra genomes
+l_pids = c(l_pids,
+           setdiff(pids_clin_data_v2, l_pids))
+length(l_pids)
+# 1185504
+
+# Merge with V1
+pids_clin_data_v1 = read.csv("../clinical_data/raw/RE_clinical_data_V1/genome_2020-07-07_11-27-22.tsv",
+                             stringsAsFactors = F,
+                             header = T,
+                             sep = "\t")
+pids_clin_data_v1 = pids_clin_data_v1$participant_id
+
+# 1 extra genome
+l_pids = c(l_pids,
+           setdiff(pids_clin_data_v1, l_pids))
+length(l_pids)
+# 1185505
+
+
+clin_data_merged = clin_data_v9 %>%
+  filter(participant_id %in% l_pids)
+dim(clin_data_merged)
+# 1180803  31
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v8 %>% filter(participant_id %in% l_pids, !l_pids %in% clin_data_v9$participant_id))
+  
+  
+clin_data_merged = unique(clin_data_merged)
+dim(clin_data_merged)
+# 
 
 # List of all VCF files we have generated by running EH
 l_vcf = read.table("./list_vcf_research_cohort.tsv", stringsAsFactors = F)
