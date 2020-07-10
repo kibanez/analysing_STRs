@@ -95,30 +95,46 @@ write.table(l_path_genome38, "list_38_genomeVCF_path_GRCh38.tsv", quote = F, row
 setwd("~/Documents/STRs/ANALYSIS/FXN_monoallelic/list_july/")
 list_fxn_genomes = read.table("./FXN_single_expansion_list", stringsAsFactors = F, header = T)
 list_fxn_genomes = list_fxn_genomes$platekey
+list_fxn_genomes = unique(list_fxn_genomes)
 length(list_fxn_genomes)
-# 1220
+# 1207
 
 # Let's load batch march input data
 df_genomes_b37 = read.csv("~/Documents/STRs/data/research/input/batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_13024_ouf_of_92669_genomes_GRCh37.csv",
                           stringsAsFactors = F,
-                          header = T,
+                          header = F,
                           sep = ",")
 dim(df_genomes_b37)
-# 13023  3
+# 13024  3
 
 df_genomes_b38 = read.csv("~/Documents/STRs/data/research/input/batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_79645_ouf_of_92669_genomes_GRCh38.csv",
                           stringsAsFactors = F,
-                          header = T,
+                          header = F,
                           sep = ",")
 dim(df_genomes_b38)
-# 79644  3
+# 79645  3
 
-df_path_vcf = clin_data %>%
-  filter(platekey %in% list_fxn_genomes) %>%
-  select(file_path, genome_build) %>%
+df_path_vcf1 = df_genomes_b37 %>%
+  filter(V1 %in% list_fxn_genomes) %>%
+  select(V1,V2) %>%
   unique()
-dim(df_path_vcf)  
-# 1183  2
+df_path_vcf1$genome_build = rep("GRCh37", length(df_path_vcf1$V1))
+dim(df_path_vcf1)  
+# 150  3
+
+df_path_vcf2 = df_genomes_b38 %>%
+  filter(V1 %in% list_fxn_genomes) %>%
+  select(V1,V2) %>%
+  unique()
+df_path_vcf2$genome_build = rep("GRCh38", length(df_path_vcf2$V1))
+dim(df_path_vcf2)  
+# 1057  3
+
+df_path_vcf = rbind(df_path_vcf1,
+                    df_path_vcf2)
+df_path_vcf = unique(df_path_vcf)
+dim(df_path_vcf)
+# 1207  3
 
 
 
