@@ -167,3 +167,5 @@ length(l_path_genome37)
 length(l_path_genome38)
 # 1057
 
+write.table(l_path_genome37, "list_150_genomeVCF_path_GRCh37.tsv", quote = F, row.names = F, col.names = F)
+write.table(l_path_genome38, "list_1057_genomeVCF_path_GRCh38.tsv", quote = F, row.names = F, col.names = F)
