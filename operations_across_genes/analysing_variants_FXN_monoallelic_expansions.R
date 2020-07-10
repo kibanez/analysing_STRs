@@ -136,8 +136,34 @@ df_path_vcf = unique(df_path_vcf)
 dim(df_path_vcf)
 # 1207  3
 
-
-
 table(df_path_vcf$genome_build)
 #GRCh37 GRCh38 
-#129     835
+#150     1057
+
+colnames(df_path_vcf) = c("platekey", "path", "genome_build")
+
+# Build the paths to genome vcf files
+l_path_genome38 = c()
+l_path_genome37 = c()
+for (i in 1:length(df_path_vcf$platekey)){
+  l_split = strsplit(df_path_vcf$path[i], "/")[[1]]
+  # take the part of the path we are interested in
+  l_split = l_split[c(1:6)]
+  l_split = c(l_split, "Variations")
+  l_split = c(l_split, paste(l_split[6], ".genome.vcf.gz", sep = ""))
+  new_char = paste(l_split, collapse = '/')
+  if (df_path_vcf$genome_build[i] == "GRCh37"){
+    l_path_genome37 = c(l_path_genome37,
+                        new_char)
+    
+  }else if (df_path_vcf$genome_build[i] == "GRCh38"){
+    l_path_genome38 = c(l_path_genome38,
+                        new_char)
+    
+  }
+}
+length(l_path_genome37)
+# 150
+length(l_path_genome38)
+# 1057
+
