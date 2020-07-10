@@ -87,3 +87,15 @@ length(l_path_genome37)
 
 write.table(l_path_genome37, "list_5_genomeVCF_path_GRCh37.tsv", quote = F, row.names = F, col.names = F)
 write.table(l_path_genome38, "list_38_genomeVCF_path_GRCh38.tsv", quote = F, row.names = F, col.names = F)
+
+
+# July 2020
+
+# defining working directory
+setwd("~/Documents/STRs/ANALYSIS/FXN_monoallelic/list_july/")
+list_fxn_genomes = read.table("./FXN_single_expansion_list", stringsAsFactors = F, header = T)
+list_fxn_genomes = list_fxn_genomes$platekey
+length(list_fxn_genomes)
+# 1220
+
+
