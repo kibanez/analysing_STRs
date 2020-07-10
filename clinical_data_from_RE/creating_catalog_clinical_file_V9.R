@@ -142,6 +142,6 @@ all_data = left_join(all_data,
                       popu_table %>% select(ID, best_guess_predicted_ancstry, self_reported),
                       by = c("platekey"="ID"))
 dim(all_data)
-# 1180803 32
+# 1180803 31
 
 write.table(all_data, "../../rd_genomes_all_data_100720_V9.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
