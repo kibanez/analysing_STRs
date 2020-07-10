@@ -94,7 +94,7 @@ dim(all_data)
 # 81554  15
 
 all_data = left_join(all_data, 
-                     participant_info %>% select(participant_id, participant_medical_review_qc_state_code, year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender, programme_consent_status, programme, participant_ethnic_category),
+                     participant_info %>% select(participant_id, participant_medical_review_qc_state_code, year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender, programme_consent_status, programme),
                      by = "participant_id")
 dim(all_data)                 
 # 81554  23
