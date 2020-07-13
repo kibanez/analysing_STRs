@@ -141,12 +141,6 @@ clin_data_merged = rbind(clin_data_merged,
 dim(clin_data_merged)
 # 2061409  31
 
-l_pids = c(l_pids,
-           setdiff(pids_clin_data_v4, l_pids))
-length(l_pids)
-# 1182293
-
-
 # Merge with V3
 pids_clin_data_v3 = read.csv("../clinical_data/raw/RE_clinical_data_V3/genome_file_paths_and_types_2020-07-07_11-17-23.tsv",
                              stringsAsFactors = F,
@@ -155,10 +149,9 @@ pids_clin_data_v3 = read.csv("../clinical_data/raw/RE_clinical_data_V3/genome_fi
 pids_clin_data_v3 = pids_clin_data_v3$participant_id
 
 # No extra genomes
-l_pids = c(l_pids,
-           setdiff(pids_clin_data_v3, l_pids))
-length(l_pids)
-# 1182293
+length(setdiff(pids_clin_data_v3,
+               clin_data_merged$participant_id))
+# 0
 
 # Merge with V2
 pids_clin_data_v2 = read.csv("../clinical_data/raw/RE_clinical_data_V2/participant_2020-07-07_11-23-34.tsv",
