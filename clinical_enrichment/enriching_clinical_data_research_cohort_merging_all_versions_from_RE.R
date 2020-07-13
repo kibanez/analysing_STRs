@@ -121,10 +121,25 @@ length(setdiff(pids_clin_data_v4, clin_data_merged$participant_id))
 setdiff(pids_clin_data_v4, clin_data_merged$participant_id)
 # 115002748
 
+# clin_data_v4 is missing 2 columns clin_data_merged has: `affection_status` and `genetic_vs_reported_results`
+clin_data_v4 = clin_data_v4 %>%
+  filter(participant_id %in% setdiff(pids_clin_data_v4, clin_data_merged$participant_id)) %>%
+  unique()
+clin_data_v4$affection_status = '.'
+clin_data_v4$genetic_vs_reported_results = '.'
+
+clin_data_v4 = clin_data_v4 %>%
+  select(participant_id, platekey.x, file_path, type, rare_diseases_family_id, platekey.y, biological_relationship_to_proband, participant_type,
+         normalised_specific_disease, genome_build, genetic_vs_reported_results, participant_ethnic_category, disease_group, disease_sub_group,
+         specific_disease, participant_medical_review_qc_state_code, year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender,
+         programme_consent_status, programme, family_group_type, family_medical_review_qc_state_code, panel_name, panel_version, hpo_term, hpo_id, affection_status, 
+         best_guess_predicted_ancstry, self_reported)
+colnames(clin_data_v4) = colnames(clin_data_merged)
 
 clin_data_merged = rbind(clin_data_merged,
-                         clin_data_v4 %>% filter(participant_id %in% setdiff(pids_clin_data_v4, clin_data_merged$participant_id)))
-
+                         clin_data_v4)
+dim(clin_data_merged)
+# 2061409  31
 
 l_pids = c(l_pids,
            setdiff(pids_clin_data_v4, l_pids))
