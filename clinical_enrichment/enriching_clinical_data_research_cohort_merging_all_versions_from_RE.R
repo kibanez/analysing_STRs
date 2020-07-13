@@ -158,20 +158,56 @@ pids_clin_data_v2 = read.csv("../clinical_data/raw/RE_clinical_data_V2/participa
                              stringsAsFactors = F,
                              header = T,
                              sep = "\t")
-pids_clin_data_v2 = pids_clin_data_v2$participant_id
+pids_clin_data_v2 = unique(pids_clin_data_v2$participant_id)
+length(pids_clin_data_v2)
+# 53190
 
 # 3,211 extra genomes
-l_pids = c(l_pids,
-           setdiff(pids_clin_data_v2, l_pids))
-length(l_pids)
-# 1185504
+length(setdiff(pids_clin_data_v2,
+               clin_data_merged$participant_id))
+# 3211
+
+clin_data_v2 = read.csv("../clinical_data/rd_genomes_all_data_130720_V2.tsv",
+                        header = TRUE,
+                        stringsAsFactors = FALSE,
+                        sep = "\t")
+dim(clin_data_v2)
+# 100933  26
+
+#include not existing fields
+clin_data_v2$genetic_vs_reported_results = rep('.', length(clin_data_v2$participant_id))
+clin_data_v2$panel_name = rep('.', length(clin_data_v2$participant_id))
+clin_data_v2$panel_version = rep('.', length(clin_data_v2$participant_id))
+clin_data_v2$affection_status = rep('.', length(clin_data_v2$participant_id))
+clin_data_v2$plate_key = clin_data_v2$platekey
+clin_data_v2 = clin_data_v2 %>%
+  select(participant_id, platekey, path, type, rare_diseases_family_id, plate_key, biological_relationship_to_proband, participant_type,
+         normalised_specific_disease, genome_build, genetic_vs_reported_results, participant_ethnic_category,
+         disease_group, disease_sub_group, specific_disease, participant_medical_review_qc_state_code,
+         year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender,
+         programme_consent_status, programme, family_group_type, family_medical_review_qc_state_code,
+         panel_name, panel_version, hpo_term, hpo_id, 
+         affection_status, best_guess_predicted_ancstry, self_reported)
+colnames(clin_data_v2) = colnames(clin_data_merged)
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v2)
+dim(clin_data_merged)
+# 2162342  31
+
+
+
+
 
 # Merge with V1
 pids_clin_data_v1 = read.csv("../clinical_data/raw/RE_clinical_data_V1/genome_2020-07-07_11-27-22.tsv",
                              stringsAsFactors = F,
                              header = T,
                              sep = "\t")
-pids_clin_data_v1 = pids_clin_data_v1$participant_id
+pids_clin_data_v1 = unique(pids_clin_data_v1$participant_id)
+length(pids_clin_data_v1)
+# 18446
+
 
 # 1 extra genome
 l_pids = c(l_pids,
