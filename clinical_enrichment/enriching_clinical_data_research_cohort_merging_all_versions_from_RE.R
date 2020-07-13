@@ -16,6 +16,8 @@ setwd("~/Documents/STRs/clinical_data/clinical_research_cohort/")
 # Clinical data retrieved from RE, diff versions
 # Complete until V4
 # V1,V2,V3 - take the list of genomes, and check/confirm they are all included in any of the versions from V4
+
+# NOT RUN ANYMORE -- go to line 97
 clin_data_v9 = read.csv("../clinical_data/rd_genomes_all_data_100720_V9.tsv",
                          header = TRUE,
                          stringsAsFactors = FALSE,
@@ -51,14 +53,6 @@ clin_data_v5 = read.csv("../clinical_data/rd_genomes_all_data_100720_V5.1.tsv",
 dim(clin_data_v5)
 # 555656  31
 
-clin_data_v4 = read.csv("../clinical_data/rd_genomes_all_data_100720_V4.tsv",
-                       header = TRUE,
-                       stringsAsFactors = FALSE,
-                       sep = "\t")
-dim(clin_data_v4)
-# 370296  29
-
-
 # Let's merge V5-V9 version tables
 # Check and confirm V4 has not extra genomes
 # Check and confirm V1-V3 have not extra genomes
@@ -71,59 +65,50 @@ clin_data_merged = rbind(clin_data_v9,
                          clin_data_v8)
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 
+# 1178166  31
 
 clin_data_merged = rbind(clin_data_merged,
                          clin_data_v7)
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-#
+# 1282056  31
 
 clin_data_merged = rbind(clin_data_merged,
                          clin_data_v6)
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-#
+# 1514861  31
 
 clin_data_merged = rbind(clin_data_merged,
                          clin_data_v5)
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-#
+# 2061403  31
 
+# Let's write this into file, not to re-run
+write.table(clin_data_merged,
+            "./clin_data_merged_V5:V9.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
 
-
-
-# Start with V9
-l_pids = clin_data_v9$participant_id
-length(l_pids)
-# 1180803
-
-# Merge with V8
-l_pids = c(l_pids,
-           setdiff(clin_data_v8$participant_id, l_pids))
-length(l_pids)
-# 1181142
-
-# Merge with V7
-l_pids = c(l_pids,
-           setdiff(clin_data_v7$participant_id, l_pids))
-length(l_pids)
-# 1182011
-
-# Merge with V6
-l_pids = c(l_pids,
-           setdiff(clin_data_v6$participant_id, l_pids))
-length(l_pids)
-# 1182282
-
-# Merge with V5
-l_pids = c(l_pids,
-           setdiff(clin_data_v5$participant_id, l_pids))
-length(l_pids)
-# 1182292
+# Load from the beginning all merged data
+clin_data_merged = read.csv("./clin_data_merged_V5:V9.tsv",
+                            stringsAsFactors = F,
+                            header = T,
+                            sep = "\t")
+dim(clin_data_merged)
+# 2061403  31
 
 # Merge with V4 
+clin_data_v4 = read.csv("../clinical_data/rd_genomes_all_data_100720_V4.tsv",
+                        header = TRUE,
+                        stringsAsFactors = FALSE,
+                        sep = "\t")
+dim(clin_data_v4)
+# 370296  29
+
 pids_clin_data_v4 = read.csv("../clinical_data/raw/RE_clinical_data_V4/genome_file_paths_and_types_2020-07-07_10-55-46.tsv",
                              stringsAsFactors = F,
                              header = T,
@@ -131,6 +116,16 @@ pids_clin_data_v4 = read.csv("../clinical_data/raw/RE_clinical_data_V4/genome_fi
 pids_clin_data_v4 = pids_clin_data_v4$participant_id
 
 # there is 1 extra genome
+length(setdiff(pids_clin_data_v4, clin_data_merged$participant_id))
+# 1
+setdiff(pids_clin_data_v4, clin_data_merged$participant_id)
+# 115002748
+
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v4 %>% filter(participant_id %in% setdiff(pids_clin_data_v4, clin_data_merged$participant_id)))
+
+
 l_pids = c(l_pids,
            setdiff(pids_clin_data_v4, l_pids))
 length(l_pids)
