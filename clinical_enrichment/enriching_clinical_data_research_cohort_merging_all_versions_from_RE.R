@@ -485,32 +485,32 @@ length(unique(dedup_clin_data_merged$participant_id))
 # Select fields to keep 
 #specific disease, dis group, dis subgroup, HPO, sex, year of birth, participant type, affection status, population (estimated), and self-reported ancestry
 dedup_clin_data_merged = dedup_clin_data_merged %>%
-  select(participant_id, list_norm_disease, list_disease_group, list_disease_subgroup, list_hpos, list_hpos_id, participant_phenotypic_sex,
-         year_of_birth, participant_type, affection_status, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, withdrawn, 
-         programme)
+  select(participant_id, rare_diseases_family_id, biological_relationship_to_proband, family_group_type, list_norm_disease, list_disease_group, list_disease_subgroup, list_hpos, list_hpos_id, participant_phenotypic_sex,
+         year_of_birth, participant_type, affection_status, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, programme,
+         withdrawn, programme_consent_status, )
 dedup_clin_data_merged = unique(dedup_clin_data_merged)
 dim(dedup_clin_data_merged)
-# 95735 15
+# 95892 19
 
 length(unique(dedup_clin_data_merged$participant_id))
 # 91246
 
 l_dups = unique(dedup_clin_data_merged$participant_id[which(duplicated(dedup_clin_data_merged$participant_id))])
 length(l_dups)
-# 4367
+# 4522
 
 # There are some PIDs with GRCh37 and GRCh38 genomes
 dup_table = dedup_clin_data_merged %>% 
   filter(participant_id %in% l_dups)
 dim(dup_table)
-# 8856  15
+# 9168  19
 length(unique(dup_table$participant_id))
-# 4367
+# 4522
 
 dedup_clin_data_merged = dedup_clin_data_merged %>%
   filter(!participant_id %in% l_dups)
 dim(dedup_clin_data_merged)
-# 86879  15
+# 86724  19
 
 # Select those having less NAs
 dup_table2 = data.frame()
@@ -524,21 +524,20 @@ for (i in 1:length(l_dup_pid)){
                      row_fewest_NAs)
 }
 dim(dup_table2)
-# 4367  15 
+# 4522  19
 length(unique(dup_table2$participant_id))
-# 4367
-
+# 4522
 
 dedup_clin_data_merged = rbind(dedup_clin_data_merged,
                                dup_table2)
 dedup_clin_data_merged = unique(dedup_clin_data_merged)
 dim(dedup_clin_data_merged)
-# 91246  15
+# 91246  19
 
 length(unique(dedup_clin_data_merged$participant_id))
 # 91246
 
-write.table(clin_data_merged, 
+write.table(dedup_clin_data_merged, 
             file = "clinical_data_research_cohort_91246_PIDs_merging_RE_V1toV9.tsv",
             quote = F,
             sep = "\t",
