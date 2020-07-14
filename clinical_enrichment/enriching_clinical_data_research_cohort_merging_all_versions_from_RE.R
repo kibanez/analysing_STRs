@@ -430,9 +430,44 @@ dim(clin_data_merged)
 # 265409  32
 
 # Remove duplicates
-l_dups = unique(clin_data_merged$participant_id[which(duplicated(clin_data_merged$participant_id))])
+l_all_pids = unique(clin_data_merged$participant_id)
+length(l_all_pids)
+# 93614
+
+# There are many duplicates where genetic_vs_reported have diff values - let's take the ones not NA
+dedup_clin_data_merged = filter(clin_data_merged, (!is.na(participant_medical_review_qc_state_code) & programme %in% "Rare Diseases") | programme %in% c("Pilot", "Cancer"))
+dim(dedup_clin_data_merged)
+# 265401  32
+
+length(unique(dedup_clin_data_merged$participant_id))
+# 93612
+
+# There are 2 PIDs which might be missing something - they are missing `Cancer` as programme
+aver = clin_data_merged %>% filter(participant_id %in% setdiff(l_all_pids, unique(dedup_clin_data_merged$participant_id)))
+aver$programme = rep("Cancer", length(aver$participant_id))
+
+dedup_clin_data_merged = rbind(dedup_clin_data_merged,
+                               aver)
+dim(dedup_clin_data_merged)
+# 265405  32
+
+length(unique(dedup_clin_data_merged$participant_id))
+# 93614
+
+# Let's filter out types = `cancer tumour``, `cancer somatic`, and `experimental somatic`
+dedup_clin_data_merged = dedup_clin_data_merged %>%
+  filter(!type %in% c("cancer tumour", "cancer somatic", "experimental somatic"))
+dim(dedup_clin_data_merged)
+# 235133  32
+
+length(unique(dedup_clin_data_merged$participant_id))
+# 93606
+
+
+
+l_dups = unique(dedup_clin_data_merged$participant_id[which(duplicated(dedup_clin_data_merged$participant_id))])
 length(l_dups)
-# 83596
+# 72635
 
 
 write.table(clin_data_merged, 
