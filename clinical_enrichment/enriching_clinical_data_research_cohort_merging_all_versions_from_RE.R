@@ -472,13 +472,18 @@ dim(dedup_clin_data_merged)
 length(unique(dedup_clin_data_merged$participant_id))
 # 91246
 
+# Select fields to keep 
+#specific disease, dis group, dis subgroup, HPO, sex, year of birth, participant type, affection status, population (estimated), and self-reported ancestry
+dedup_clin_data_merged = dedup_clin_data_merged %>%
+  select(participant_id, platekey, list_norm_disease, disease_group, disease_sub_group, list_hpos, list_hpos_id, participant_phenotypic_sex,
+         year_of_birth, participant_type, affection_status, best_guess_predicted_ancstry, self_reported, participant_ethnic_category)
 dedup_clin_data_merged = unique(dedup_clin_data_merged)
 dim(dedup_clin_data_merged)
-#
+# 98794 14
 
 l_dups = unique(dedup_clin_data_merged$participant_id[which(duplicated(dedup_clin_data_merged$participant_id))])
 length(l_dups)
-# 38102
+# 6951
 
 
 write.table(clin_data_merged, 
