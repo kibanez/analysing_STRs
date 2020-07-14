@@ -463,11 +463,22 @@ dim(dedup_clin_data_merged)
 length(unique(dedup_clin_data_merged$participant_id))
 # 93606
 
+# Let's filter out those not passing genetics vs re (familyPassesGvsRChecks)
+dedup_clin_data_merged = dedup_clin_data_merged %>%
+  filter((genetic_vs_reported_results %in% "familyPassesGvsRChecks" & programme %in% "Rare Diseases") | programme %in% c("Cancer", "Pilot"))
+dim(dedup_clin_data_merged)
+# 136521  32
 
+length(unique(dedup_clin_data_merged$participant_id))
+# 91246
+
+dedup_clin_data_merged = unique(dedup_clin_data_merged)
+dim(dedup_clin_data_merged)
+#
 
 l_dups = unique(dedup_clin_data_merged$participant_id[which(duplicated(dedup_clin_data_merged$participant_id))])
 length(l_dups)
-# 72635
+# 38102
 
 
 write.table(clin_data_merged, 
