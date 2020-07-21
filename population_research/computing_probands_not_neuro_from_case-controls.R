@@ -66,13 +66,34 @@ write.table(l_unrelated,
             col.names = F)
 
 # From here, with the list of unrelated MAIN and PILOT platekeys, let's compute the total number of probands, probands-neuro
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_91246_PIDs_merging_RE_V1toV9.tsv",
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V5:V9.tsv",
                      stringsAsFactors = F,
                      header = T,
                      sep = "\t")
 dim(clin_data)
-# 91246  19
+# 2061403  31 
 
+# Probands ONLY
+probands_unrelated = clin_data %>%
+  filter(plate_key %in% l_unrelated, participant_type %in% "Proband") %>%
+  select(plate_key) %>%
+  unique() %>%
+  pull()
+length(probands_unrelated)
+# 13076
 
+# there are still some relatives...let's remove them
+which_relative = clin_data %>%
+  filter(plate_key %in% probands_unrelated, participant_type %in% "Relative") %>%
+  select(plate_key) %>%
+  unique() %>%
+  pull()
+
+index_to_remove_as_relative = which(probands_unrelated %in% which_relative)
+probands_unrelated = probands_unrelated[-index_to_remove_as_relative]
+length(probands_unrelated)
+# 13036
+
+# Probands ONLY - (minus or except) NEUROLOGY
 
 
