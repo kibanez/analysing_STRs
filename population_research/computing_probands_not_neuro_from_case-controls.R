@@ -95,5 +95,36 @@ length(probands_unrelated)
 # 13036
 
 # Probands ONLY - (minus or except) NEUROLOGY
+# Remove from here participants that are not part of NEURO
+probands_not_neuro_unrelated = clin_data %>%
+  filter(!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group), plate_key %in% l_unrelated, participant_type %in% "Proband") %>%
+  select(plate_key) %>%
+  unique() %>%
+  pull()
+length(probands_not_neuro_unrelated)
+# 8299
 
+# Again, there are platekeys that are still neuro... and proband...let's filter them out
+# Ths is because there might be participants that have been recruited as Father/Mother, and eventually has been assigned as Affected 
+which_relative = clin_data %>%
+  filter(plate_key %in% probands_not_neuro_unrelated, participant_type %in% "Relative") %>%
+  select(plate_key) %>%
+  unique() %>%
+  pull()
+
+index_to_remove_as_relative = which(probands_not_neuro_unrelated %in% which_relative)
+probands_not_neuro_unrelated = probands_not_neuro_unrelated[-index_to_remove_as_relative]
+length(probands_not_neuro_unrelated)
+# 8270
+
+which_neuro = clin_data %>%
+  filter(plate_key %in% probands_not_neuro_unrelated, grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>%
+  select(plate_key) %>%
+  unique() %>%
+  pull()
+
+index_to_remove_as_neuro = which(probands_not_neuro_unrelated %in% which_neuro)
+probands_not_neuro_unrelated = probands_not_neuro_unrelated[-index_to_remove_as_neuro]
+length(probands_not_neuro_unrelated)
+# 8198
 
