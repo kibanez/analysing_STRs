@@ -128,3 +128,15 @@ probands_not_neuro_unrelated = probands_not_neuro_unrelated[-index_to_remove_as_
 length(probands_not_neuro_unrelated)
 # 8198
 
+# Write them into files
+write.table(probands_unrelated,
+            "list_probands_unrelated_13036_platekeys.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+write.table(probands_not_neuro_unrelated,
+            "list_probands_unrelated_NOT_NEURO_8198_platekeys.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
