@@ -140,3 +140,14 @@ write.table(probands_not_neuro_unrelated,
             quote = F,
             row.names = F,
             col.names = F)
+
+
+# For each locus in `summary_pileup_100Kg` we are going to check and count whether the genome having `Yes` as Visual_inspection is probands AND/OR probands and neuro
+summary_100k = read.csv("./summary_pileup_100Kg.tsv",
+                        stringsAsFactors = F,
+                        header = T,
+                        sep = "\t")
+dim(summary_100k)
+# 820  6
+
+
