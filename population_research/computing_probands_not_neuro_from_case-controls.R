@@ -11,7 +11,7 @@ R.version.string ## "R version 3.6.3 (2019-02-29)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/pileup_100Kg/")
 
 # All loci tables should have the same number of pids...probands, etc.
 # ACHTUNG! case-controls have all unique PIDs, but they might be related
@@ -64,3 +64,15 @@ write.table(l_unrelated,
             quote = F,
             row.names = F,
             col.names = F)
+
+# From here, with the list of unrelated MAIN and PILOT platekeys, let's compute the total number of probands, probands-neuro
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_91246_PIDs_merging_RE_V1toV9.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = "\t")
+dim(clin_data)
+# 91246  19
+
+
+
+
