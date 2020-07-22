@@ -151,3 +151,80 @@ dim(summary_100k)
 # 820  6
 
 
+clin_data2 = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_91246_PIDs_merging_RE_V1toV9.tsv",
+                      stringsAsFactors = F,
+                      sep = "\t",
+                      header = T)
+dim(clin_data2)
+# 91246  19
+
+# HTT
+# unrelated probands
+summary_100k %>% filter(locus %in% "HTT", Visual_inspection %in% "yes", platekey %in% probands_unrelated)  %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 10
+
+# unrelated probands NOT NEURO
+summary_100k %>% filter(locus %in% "HTT", Visual_inspection %in% "yes", platekey %in% probands_not_neuro_unrelated)   %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 6
+
+# Let's see from case-control tables
+cc_htt = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/table_STR_repeat_size_each_row_allele_EHv3.2.2_HTT_simplified.tsv",
+                  stringsAsFactors = F,
+                  header = T,
+                  sep = "\t")
+dim(cc_htt)
+# 185384  19
+
+
+l_pid_cc_htt = unique(cc_htt$participant_id)
+length(l_pid_cc_htt)
+# 90103
+
+# Keep only probands
+probands_htt_cc = clin_data2 %>%
+  filter(participant_id %in% l_pid_cc_htt, !participant_type %in% "Relative")
+
+table(probands_htt_cc$participant_type)
+#  Proband 
+#2373   34496 
+
+length(probands_htt_cc$participant_id)
+# 49916
+
+# platekeys corresponding to these pids, let's take directly from the case-control table
+l_platekey_probands_htt_cc =  cc_htt %>% filter(participant_id %in% probands_htt_cc$participant_id) %>% select(platekey) %>% unique() %>% pull() 
+length(l_platekey_probands_htt_cc)
+# 49916 
+
+# Keep only probands and NOT NEURO
+probands_notneuro_htt_cc = clin_data2 %>%
+  filter(participant_id %in% l_pid_cc_htt, !participant_type %in% "Relative", !grepl("[Nn][Ee][Uu][Rr][Oo]", list_disease_group))
+length(probands_notneuro_htt_cc$participant_id)
+# 36047
+
+l_platekey_probands_notneuro_htt_cc = cc_htt %>% filter(participant_id %in% probands_notneuro_htt_cc$participant_id) %>% select(platekey) %>% unique() %>% pull() 
+length(l_platekey_probands_notneuro_htt_cc)
+# 36047
+
+# Case-control HTT table work done by Ari
+ari_htt = read.csv("~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/list_PIDs_for_HTT_pileup.tsv",
+                   stringsAsFactors = F,
+                   sep = "\t",
+                   header = T)
+dim(ari_htt)
+# 231  5
+
+ari_htt = ari_htt %>%
+  filter(larger.than.40.after.visual.QC. %in% "yes")
+length(ari_htt$PLATEKEY)
+# 51
+
+
+# How many of these 51 are probands?
+length(intersect(ari_htt$PLATEKEY, l_platekey_probands_htt_cc))
+# 28
+
+# How many of these 51 are probands and NOT NEURO?
+length(intersect(ari_htt$PLATEKEY, l_platekey_probands_notneuro_htt_cc))
+# 19
+
