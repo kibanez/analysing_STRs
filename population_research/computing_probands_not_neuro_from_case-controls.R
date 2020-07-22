@@ -228,3 +228,13 @@ length(intersect(ari_htt$PLATEKEY, l_platekey_probands_htt_cc))
 length(intersect(ari_htt$PLATEKEY, l_platekey_probands_notneuro_htt_cc))
 # 19
 
+# AR
+# unrelated probands
+summary_100k %>% filter(locus %in% "AR", Visual_inspection %in% "yes", platekey %in% probands_unrelated)  %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 4
+
+# unrelated probands NOT NEURO
+summary_100k %>% filter(locus %in% "AR", Visual_inspection %in% "yes", platekey %in% probands_not_neuro_unrelated)   %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 2
+
+
