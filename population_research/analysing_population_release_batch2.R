@@ -14,10 +14,10 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 
 
 # Set environment
-setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
+setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/")
 
 # Load popu data with related/no related info
-popu_batch2 = read.csv("./MAIN_ANCESTRY/batch2/aggV2_bedmerge_30KSNPs_labkeyV9_08062020_update_PCsancestryrelated.tsv",
+popu_batch2 = read.csv("aggV2_bedmerge_30KSNPs_labkeyV9_08062020_update_PCsancestryrelated.tsv",
                        sep = " ",
                        stringsAsFactors = F,
                        header = T)
@@ -33,8 +33,52 @@ length(l_unrelated)
 # 55847
 
 write.table(l_unrelated,
-            "./MAIN_ANCESTRY/batch2/l_unrelated_55847_genomes_batch2.txt",
+            "l_unrelated_55847_genomes_batch2.txt",
             quote = F,
             row.names = F,
             col.names = F)
+
+# Load popu data with ancestry info
+popu_batch2 = read.csv("aggV2_M30K_60K_1KGP3_ancestry_assignment_probs_R9_08062020.tsv",
+                       sep = " ",
+                       stringsAsFactors = F,
+                       header = T)
+dim(popu_batch2)
+# 78388  33
+
+# Let's plot raw ancestry data
+raw_numbers_popus = as.data.frame(table(popu_batch2$ancestry0_8))
+colnames(raw_numbers_popus) = c("population", "Number of genomes")
+
+
+png("figures/barplot_pure_ancestry_groups_raw_numbers.png")
+ggplot(raw_numbers_popus, 
+       aes(x = reorder(population, -`Number of genomes`), y = `Number of genomes`)) + 
+  geom_bar(stat = "identity", aes(fill = population)) + 
+  geom_text(aes(label=`Number of genomes`), vjust=-0.5, size = 4, colour = "grey") +
+  ylab("Number of genomes") + 
+  xlab("Ancestry cohorts - EHv3.2.2 - 78,388 total genomes") 
+dev.off()
+
+# Load popu data with PCs
+popu_batch2_pc = read.csv("aggV2_M30K_60K_1KGP3projectionPCs_R9_08062020.tsv",
+                          sep = " ",
+                          stringsAsFactors = F,
+                          header = T)
+dim(popu_batch2_pc)
+# 78388  21
+
+
+popu_batch2 = left_join(popu_batch2,
+                        popu_batch2_pc,
+                        by = "plate_key")
+dim(popu_batch2)
+# 78388  53
+
+ggplot(data=popu_table_enriched %>% filter(!is.na(population)), 
+       aes(x=pc2, y=pc1, colour = population)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 56,176 genomes") +
+  ylab("PC1 across 56,176 genomes") +
+  guides(fill = FALSE)
 
