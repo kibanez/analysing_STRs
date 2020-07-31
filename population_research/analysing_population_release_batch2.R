@@ -75,10 +75,11 @@ popu_batch2 = left_join(popu_batch2,
 dim(popu_batch2)
 # 78388  53
 
-ggplot(data=popu_table_enriched %>% filter(!is.na(population)), 
-       aes(x=pc2, y=pc1, colour = population)) +
+png("figures/population_distribution_78388_all_ancestries.png")
+ggplot(data=popu_batch2, 
+       aes(x=PC2, y=PC1, colour = ancestry0_8)) +
   geom_hex(bins=300) +
-  xlab("PC2 across 56,176 genomes") +
-  ylab("PC1 across 56,176 genomes") +
+  xlab("PC2 across 78,388 genomes") +
+  ylab("PC1 across 78,388 genomes") +
   guides(fill = FALSE)
-
+dev.off()
