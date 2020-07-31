@@ -31,3 +31,25 @@ batch2 = read.csv("batch2/aggV2_M30K_60KupscaledPCs_R9_08062020.tsv",
                   sep = " ")
 dim(batch2)
 # 78388  21
+
+# List of unique genomes in both batch 1 and 2
+l_unique_genomes = unique(c(unique(batch1$ID),
+                     unique(batch2$plate_key)))
+length(l_unique_genomes)
+# 79849
+
+# How many extra new genomes in batch2?
+length(unique(setdiff(unique(batch2$plate_key),
+                      unique(batch1$ID))))
+# 20,385
+
+# How many genomes in batch1 that are NOT in batch2?
+length(unique(setdiff(unique(batch1$ID),
+                      unique(batch2$plate_key))))
+# 1,461
+
+write.table(l_unique_genomes,
+            "list_79849_unique_genomes_batch1_batch2.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
