@@ -14,6 +14,20 @@ library(reshape); packageDescription ("reshape", fields = "Version") #"0.8.8"
 library(scatterplot3d); packageDescription("scatterplot3d", fields = "Version") # 0.3-41
 library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 
-
 # Set environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/")
+
+# Batch1
+batch1 = read.csv("GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                  stringsAsFactors = F,
+                  header = T)
+dim(batch1)
+# 59464  36
+
+# Batch2 
+batch2 = read.csv("batch2/aggV2_M30K_60KupscaledPCs_R9_08062020.tsv",
+                  stringsAsFactors = F,
+                  header = T,
+                  sep = " ")
+dim(batch2)
+# 78388  21
