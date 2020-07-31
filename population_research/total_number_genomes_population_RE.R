@@ -53,3 +53,30 @@ write.table(l_unique_genomes,
             quote = F,
             row.names = F,
             col.names = F)
+
+# Let's create the same list but only keeping the unrelated ones
+# Load unrelated list of genomes in batch1
+l_unrelated_batch1 = read.table("./60k_HWE_30k_random_unrelated_participants.txt", 
+                                stringsAsFactors = F)
+l_unrelated_batch1 = l_unrelated_batch1$V1
+length(l_unrelated_batch1)
+# 38344
+
+# Load unrelated list of genomes in batch2
+l_unrelated_batch2 = read.table("./batch2/l_unrelated_55847_genomes_batch2.txt",
+                                stringsAsFactors = F)
+l_unrelated_batch2 = l_unrelated_batch2$V1
+length(l_unrelated_batch2)
+# 55847
+
+l_unrelated_both = unique(c(l_unrelated_batch1,
+                            l_unrelated_batch2))
+length(l_unrelated_both)
+ # 62595
+
+
+write.table(l_unrelated_both,
+            "list_62595_UNRELATED_unique_genomes_batch1_batch2.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
