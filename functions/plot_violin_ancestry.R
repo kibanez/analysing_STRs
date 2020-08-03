@@ -32,11 +32,18 @@ plot_violin_ancestry <- function(df_input, gene_name, gene_data_normal, gene_dat
   colnames(df_gene2) = c("repeat_size", "population")
   df_gene2$repeat_size = as.integer(as.character(df_gene2$repeat_size))
   df_gene2$population = as.character(df_gene2$population)
-  
-  pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")
-  pdf_name = paste(pdf_name, "joint_ancestries_violin_plot", sep = "_")
-  png_name = paste(pdf_name, "png", sep = ".")
-  pdf_name = paste(pdf_name, 'pdf', sep = ".")
+
+  if (superpopu != ""){
+    pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")  
+    pdf_name = paste(pdf_name, "joint_ancestries_violin_plot", sep = "_")
+    png_name = paste(pdf_name, 'png', sep = ".")
+    pdf_name = paste(pdf_name, 'pdf', sep = ".")
+  }else{
+    pdf_name = paste(output_folder, gene_name, sep = "/")  
+    pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
+    png_name = paste(pdf_name, 'png', sep = ".")
+    pdf_name = paste(pdf_name, 'pdf', sep = ".") 
+  }
   
   my_comparisons=list(c("AFR","AMR"), c("AFR","EUR"), c("AFR","EAS"), c("AFR","ASI"))
   #                    c("AMR","EUR"), c("AMR","EAS"), c("AMR","ASI"),
