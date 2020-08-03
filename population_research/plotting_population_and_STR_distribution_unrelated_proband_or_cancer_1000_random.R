@@ -157,3 +157,4 @@ for (i in 1:length(l_loci)){
   compute_summary_repeat_per_locus(df_all, l_loci[i], output_folder)
   
 }
+
