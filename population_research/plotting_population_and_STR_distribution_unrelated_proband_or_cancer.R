@@ -39,6 +39,7 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
+source("/Users/kibanez/git/analysing_STRs/functions/compute_summary_repeat_per_locus.R")
 
 # Load EH STR output data - merged TSV files
 # Research ~80K genomes, EH-v3.1.2- November 2019 -- but the ones that are ALSO included in the population info table
@@ -109,4 +110,8 @@ for (i in 1:length(l_loci)){
   
   # Jointly - Violing plots
   plot_violin_ancestry(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  
+  # Summary for each locus across all continental groups
+  compute_summary_repeat_per_locus(df_all, l_loci[i], output_folder)
+  
 }
