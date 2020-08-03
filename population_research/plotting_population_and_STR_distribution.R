@@ -13,6 +13,11 @@ library(reshape); packageDescription ("reshape", fields = "Version") #"0.8.8"
 library(scatterplot3d); packageDescription("scatterplot3d", fields = "Version") # 0.3-41
 library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 
+# Functions
+source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
+
 
 # Set environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
@@ -30,6 +35,13 @@ popu_table_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT
 dim(popu_table_pilot)
 # 4821  44
 
+popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
+                               header = T,
+                               sep = "\t",
+                               stringsAsFactors = F)
+dim(popu_table_enriched)
+# 59356  20
+
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
 gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
@@ -37,12 +49,6 @@ gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header
 
 gene_annotation_pathogenic = '/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
-
-
-# Functions
-source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
 
 # Let's first explore the data and see the population distribution across 59K
 popu_table_enriched = popu_table_enriched %>%
@@ -93,6 +99,20 @@ ggplot(data=popu_table_enriched %>% filter(population %in% c("AFR", "EUR", "AMR"
   ylab("PC1 across 56,176 genomes") +
   guides(fill = FALSE)
 dev.off()
+
+
+
+# Filter out `other` 
+popu_table= popu_table %>%
+  filter(!self_reported %in% "other")
+
+ggplot(data=popu_table %>% filter(!is.na(self_reported)), 
+       aes(x=PC2, y=PC1, colour = self_reported)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 56,176 genomes") +
+  ylab("PC1 across 56,176 genomes") +
+  guides(fill = FALSE)
+
 
 # Let's plot the raw numbers of each ancestry sub-cohort or sub-group
 raw_numbers_popus = as.data.frame(table(popu_table_enriched$population))
