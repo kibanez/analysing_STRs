@@ -16,11 +16,14 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
   
   if (superpopu != ""){
     pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")  
+    pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
+    png_name = paste(pdf_name, 'png', sep = ".")
+    pdf_name = paste(pdf_name, 'pdf', sep = ".")
+  }else{
+    pdf_name = paste(gene_name, "joint_ancestries", sep = "_")
+    png_name = paste(pdf_name, 'png', sep = ".")
+    pdf_name = paste(pdf_name, 'pdf', sep = ".") 
   }
-  
-  pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
-  png_name = paste(pdf_name, 'png', sep = ".")
-  pdf_name = paste(pdf_name, 'pdf', sep = ".")
   
   min_value = min(df_gene_barplot$number_repeats)
   max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
