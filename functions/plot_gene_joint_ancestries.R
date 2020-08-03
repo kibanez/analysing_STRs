@@ -14,7 +14,10 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
   population = df_gene$population
   df_gene_barplot = data.frame(number_repeats = alt_number, af = df_gene$num_samples, population = population)
   
-  pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")
+  if (superpopu != ""){
+    pdf_name = paste(output_folder, paste(superpopu, gene_name, sep = "_"), sep = "/")  
+  }
+  
   pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
   png_name = paste(pdf_name, 'png', sep = ".")
   pdf_name = paste(pdf_name, 'pdf', sep = ".")
