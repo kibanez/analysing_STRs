@@ -30,14 +30,6 @@ popu_table_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT
 dim(popu_table_pilot)
 # 4821  44
 
-
-popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
-                               header = T,
-                               sep = "\t",
-                               stringsAsFactors = F)
-dim(popu_table_enriched)
-# 59356  20
-
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
 gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
