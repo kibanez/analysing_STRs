@@ -18,6 +18,19 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
 
 # Load population data
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                      stringsAsFactors = F,
+                      header = T)
+dim(popu_table)
+# 59464  36
+
+popu_table_pilot = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
+                            stringsAsFactors = F,
+                            header = T)
+dim(popu_table_pilot)
+# 4821  44
+
+
 popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
                                header = T,
                                sep = "\t",
