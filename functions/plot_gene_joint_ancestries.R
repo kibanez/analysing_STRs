@@ -36,7 +36,8 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
     ggtitle(gene_name) + 
     geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
     geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
-    coord_cartesian(xlim = c(min_value,max_value))
+    coord_cartesian(xlim = c(min_value,max_value)) +
+    guides(alpha = FALSE)
   
   pdf(pdf_name)
   print(joint_plot)	
