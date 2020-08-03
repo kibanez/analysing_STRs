@@ -17,7 +17,7 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
-
+source("/Users/kibanez/git/analysing_STRs/functions/compute_summary_repeat_per_locus.R")
 
 # Set environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/")
@@ -299,4 +299,8 @@ for (i in 1:length(l_loci)){
   
   # Jointly - Violin plots
   plot_violin_ancestry(df_all, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  
+  # Summary for each locus across all continental groups
+  compute_summary_repeat_per_locus(df_all, l_loci[i], output_folder)
+  
 }
