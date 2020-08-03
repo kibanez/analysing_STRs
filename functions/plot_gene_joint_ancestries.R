@@ -22,8 +22,8 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
   min_value = min(df_gene_barplot$number_repeats)
   max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
   
-  joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, group = population, color = population)) + 
-    geom_point() + 
+  joint_plot = ggplot(df_gene_barplot) + 
+    geom_area(aes(x = number_repeats, y = af, group = population, fill = population, alpha = 0.3)) + 
     ylab("Allele frequency") + 
     xlab("Repeat sizes (repeat units)") + 
     ggtitle(gene_name) + 
