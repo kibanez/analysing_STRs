@@ -20,7 +20,8 @@ plot_gene_joint_ancestries <- function(df_input, gene_name, gene_data_normal, ge
     png_name = paste(pdf_name, 'png', sep = ".")
     pdf_name = paste(pdf_name, 'pdf', sep = ".")
   }else{
-    pdf_name = paste(gene_name, "joint_ancestries", sep = "_")
+    pdf_name = paste(output_folder, gene_name, sep = "/")  
+    pdf_name = paste(pdf_name, "joint_ancestries", sep = "_")
     png_name = paste(pdf_name, 'png', sep = ".")
     pdf_name = paste(pdf_name, 'pdf', sep = ".") 
   }
