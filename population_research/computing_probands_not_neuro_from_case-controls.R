@@ -237,4 +237,18 @@ summary_100k %>% filter(locus %in% "AR", Visual_inspection %in% "yes", platekey 
 summary_100k %>% filter(locus %in% "AR", Visual_inspection %in% "yes", platekey %in% probands_not_neuro_unrelated)   %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 2
 
+# cc 
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V5:V9.tsv", 
+                     sep = "\t", 
+                     stringsAsFactors = F, 
+                     header = T)
 
+list_AR = read.table("~/Downloads/list_65_yes_AR.txt", stringsAsFactors = F)
+
+# only probands
+clin_data %>% filter(platekey %in% list_AR, !participant_type %in% "Relative") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 30
+
+# only probands NOT neuro
+clin_data %>% filter(platekey %in% list_AR, !participant_type %in% "Relative",!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 17
