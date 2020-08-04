@@ -252,3 +252,29 @@ clin_data %>% filter(platekey %in% list_AR, !participant_type %in% "Relative") %
 # only probands NOT neuro
 clin_data %>% filter(platekey %in% list_AR, !participant_type %in% "Relative",!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 17
+
+# AR - split into gender
+clin_data %>% filter(platekey %in% list_AR, participant_phenotypic_sex %in% "Female") %>% select(platekey) %>% unique() %>% pull() %>% length() 
+# 39 + 1 (`LP3001661-DNA_D01`)
+
+clin_data %>% filter(platekey %in% list_AR, participant_phenotypic_sex %in% "Male") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 23 + 2 (`LP3001649-DNA_G06`, `LP3001649-DNA_D09`)
+
+l_female_AR = c(clin_data %>% filter(platekey %in% list_AR, participant_phenotypic_sex %in% "Female") %>% select(platekey) %>% unique() %>% pull(),
+             "LP3001661-DNA_D01")
+l_male_AR = c(clin_data %>% filter(platekey %in% list_AR, participant_phenotypic_sex %in% "Male") %>% select(platekey) %>% unique() %>% pull(),
+              "LP3001649-DNA_G06",
+              "LP3001649-DNA_D09")
+
+# how many of female/male are proband?
+clin_data %>% filter(platekey %in% l_female_AR, !participant_type %in% "Relative") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 13
+clin_data %>% filter(platekey %in% l_male_AR, !participant_type %in% "Relative") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 17
+
+# only probands not neuro - male/female
+clin_data %>% filter(platekey %in% l_female_AR, !participant_type %in% "Relative",!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 10
+clin_data %>% filter(platekey %in% l_male_AR, !participant_type %in% "Relative",!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 7
+
