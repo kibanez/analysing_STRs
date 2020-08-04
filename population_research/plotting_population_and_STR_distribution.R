@@ -42,6 +42,50 @@ popu_table_enriched = read.csv("./population_info_enriched_59356_by_031019.tsv",
 dim(popu_table_enriched)
 # 59356  20
 
+
+# Analysing batch2 popu table - work done by Thanos
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/aggV2_bedmerge_30KSNPs_labkeyV9_08062020_update_PCsancestryrelated.tsv", 
+                      sep = " ", 
+                      stringsAsFactors = F, 
+                      header = T)
+dim(popu_table)
+# 78388  17
+
+# Create here the maximum superpopu
+popu_table2 = popu_table
+l_col_superpopu = c("AFR", "AMR", "EAS", "EUR", "SAS")
+l_best_guess_ancestry = c()
+for (i in 1:length(popu_table2$plate_key)){
+  l_superpopus = c(popu_table2$AFR[i],
+                   popu_table2$AMR[i],
+                   popu_table2$EAS[i],
+                   popu_table2$EUR[i],
+                   popu_table2$SAS[i])
+  
+  index_max = pmatch(max(l_superpopus), l_superpopus)
+  
+  if (l_superpopus[index_max] > 0.7){
+    best_guess_ancestry = l_col_superpopu[index_max]
+  }else{
+    best_guess_ancestry= NA
+  }
+  l_best_guess_ancestry = c(l_best_guess_ancestry,
+                            best_guess_ancestry)
+}
+length(l_best_guess_ancestry)
+# 78388
+
+popu_table2$best_guess_ancestry = l_best_guess_ancestry
+
+ggplot(data=popu_table2 %>% filter(!is.na(best_guess_ancestry)), 
+       aes(x=Pc2, y=Pc1, colour = best_guess_ancestry)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 78,388 genomes") +
+  ylab("PC1 across 78,388 genomes") +
+  guides(fill = FALSE)
+
+
+
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
 gene_annotation_normal = '/Users/kibanez/git/analysing_STRs/threshold_largest_normal_reported_research.txt'
