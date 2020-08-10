@@ -1,5 +1,7 @@
-# Objective: count how many probands we do have
-# Count how many probands MINUS neuro we do have
+# Objective: 
+# Count how many genomes we do have in cc and unrelated tables
+# Count how many probands we do have in cc and unrelated tables
+# Count how many probands MINUS neuro we do have in cc and unrelated tables
 # For EHv3.2.2
 date ()
 Sys.info ()[c("nodename", "user")]
