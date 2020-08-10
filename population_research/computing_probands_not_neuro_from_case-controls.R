@@ -148,17 +148,28 @@ write.table(probands_not_neuro_unrelated,
 l_genomes_cc = c()
 l_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72", "CACNA1A", "DMPK", "HTT", "FMR1", "FXN", "TBP")
 for (locus in l_loci){
+  print(paste(paste("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/table_STR_repeat_size_each_row_allele_EHv3.2.2_", locus, sep = ""), "simplified.tsv", sep = "_"))
   cc_table = read.csv(paste(paste("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/table_STR_repeat_size_each_row_allele_EHv3.2.2_", locus, sep = ""), "simplified.tsv", sep = "_"),
   header = T, sep = "\t", stringsAsFactors = F)
   if (length(l_genomes_cc) == 0){
     l_genomes_cc = unique(cc_table$platekey)
   }else{
     l_genomes_cc = intersect(l_genomes_cc,
-                             cc_table$platekey)
+                             unique(cc_table$platekey))
   }
+  print(length(l_genomes_cc))
 }
 length(l_genomes_cc)
 # 90863
+
+# Write into a file which genomes these genomes are
+write.table(l_genomes_cc,
+            "./cc_pileup_100Kg/list_90863_unique_similar_genomes_across_13_loci.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+
 
 
 # For each locus in `summary_pileup_100Kg` we are going to check and count whether the genome having `Yes` as Visual_inspection is probands AND/OR probands and neuro
