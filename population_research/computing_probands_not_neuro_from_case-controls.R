@@ -170,6 +170,35 @@ write.table(l_genomes_cc,
             col.names = F)
 
 
+# How many of these cc genomes are probands?
+l_cc_probands = clin_data %>%
+  filter(platekey %in% l_genomes_cc, !participant_type %in% "Relative") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_cc_probands)
+# 48743
+
+write.table(l_cc_probands,
+            "./cc_pileup_100Kg/list_48743_unique_similar_genomes_PROBANDS_across_13_loci.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
+
+# How many of these cc genomes are probands and NOT NEURO?
+l_cc_probands_not_neuro = clin_data %>%
+  filter(platekey %in% l_genomes_cc, !participant_type %in% "Relative", !grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_cc_probands_not_neuro)
+# 35073
+
+write.table(l_cc_probands_not_neuro,
+            "./cc_pileup_100Kg/list_35073_unique_similar_genomes_PROBANDS_NOT_NEURO_across_13_loci.txt",
+            quote = F,
+            row.names = F,
+            col.names = F)
 
 
 # For each locus in `summary_pileup_100Kg` we are going to check and count whether the genome having `Yes` as Visual_inspection is probands AND/OR probands and neuro
