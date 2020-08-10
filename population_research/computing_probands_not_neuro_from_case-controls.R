@@ -337,3 +337,45 @@ clin_data %>% filter(platekey %in% l_female_AR, !participant_type %in% "Relative
 clin_data %>% filter(platekey %in% l_male_AR, !participant_type %in% "Relative",!grepl("[Nn][Ee][Uu][Rr][Oo]", disease_group)) %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 7
 
+## ATN1
+# cc tables
+l_yes_cc = read.csv("../carriers/cc_pileup_100Kg/list_yes_ATN1.txt",
+                    stringsAsFactors = F,
+                    header = F)
+l_yes_cc = l_yes_cc$V1
+length(l_yes_cc)
+#8
+
+# How many are withing whole list genomes cc tables?
+length(which(l_yes_cc %in% l_genomes_cc))
+# 8
+
+# How many are PROBANDS?
+length(which(l_yes_cc %in% l_cc_probands))
+# 3
+
+# How many are PROBANDS not NEURO?
+length(which(l_yes_cc %in% l_cc_probands_not_neuro))
+# 0
+
+# unrel tables
+l_yes_unrel = read.csv("../carriers/pileup_100Kg/list_yes_ATN1.txt",
+                       stringsAsFactors = F,
+                       header = F)
+l_yes_unrel = l_yes_unrel$V1
+length(l_yes_unrel)
+# 2
+
+# How many are within the whole list genomes unrel table?
+length(which(l_yes_unrel %in% l_unrelated))
+# 2
+
+# How many are PROBANDS?
+length(which(l_yes_unrel %in% probands_unrelated))
+# 0
+
+# How many are PROBANDS not NEURO?
+length(which(l_yes_unrel %in% probands_not_neuro_unrelated))
+# 0
+
+
