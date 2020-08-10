@@ -158,7 +158,7 @@ for (locus in l_loci){
   }
 }
 length(l_genomes_cc)
-#
+# 90863
 
 
 # For each locus in `summary_pileup_100Kg` we are going to check and count whether the genome having `Yes` as Visual_inspection is probands AND/OR probands and neuro
