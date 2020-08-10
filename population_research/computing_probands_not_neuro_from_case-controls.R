@@ -549,6 +549,43 @@ length(which(l_yes_unrel %in% probands_unrelated))
 length(which(l_yes_unrel %in% probands_not_neuro_unrelated))
 # 2
 
+## C9ORF72
+# cc tables
+l_yes_cc = read.csv("../carriers/cc_pileup_100Kg/list_yes_C9ORF72.txt",
+                    stringsAsFactors = F,
+                    header = F)
+l_yes_cc = l_yes_cc$V1
+length(l_yes_cc)
+# 26
+
+# How many are PROBANDS?
+length(which(l_yes_cc %in% l_cc_probands))
+# 12
+
+# How many are PROBANDS not NEURO?
+length(which(l_yes_cc %in% l_cc_probands_not_neuro))
+# 4
+
+# unrel tables
+l_yes_unrel = read.csv("../carriers/pileup_100Kg/list_to_compute_yes_or_no_C9ORF72.txt",
+                       stringsAsFactors = F,
+                       header = F)
+l_yes_unrel = l_yes_unrel$V1
+length(l_yes_unrel)
+# 5
+
+l_yes_unrel = intersect(l_yes_unrel,
+                        l_yes_cc)
+length(l_yes_unrel)
+# 5
+
+# How many are PROBANDS?
+length(which(l_yes_unrel %in% probands_unrelated))
+# 1
+
+# How many are PROBANDS not NEURO?
+length(which(l_yes_unrel %in% probands_not_neuro_unrelated))
+# 0
 
 
 
