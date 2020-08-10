@@ -13,7 +13,7 @@ R.version.string ## "R version 3.6.3 (2019-02-29)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/pileup_100Kg/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/")
 
 # All loci tables should have the same number of pids...probands, etc.
 # ACHTUNG! case-controls have all unique PIDs, but they might be related
@@ -132,20 +132,37 @@ length(probands_not_neuro_unrelated)
 
 # Write them into files
 write.table(probands_unrelated,
-            "list_probands_unrelated_13036_platekeys.txt",
+            "pileup_100Kg/list_probands_unrelated_13036_platekeys.txt",
             quote = F,
             row.names = F,
             col.names = F)
 
 write.table(probands_not_neuro_unrelated,
-            "list_probands_unrelated_NOT_NEURO_8198_platekeys.txt",
+            "pileup_100Kg/list_probands_unrelated_NOT_NEURO_8198_platekeys.txt",
             quote = F,
             row.names = F,
             col.names = F)
 
+# Compute how many genomes we do have across all cc tables (we don't have the same exact value for all of them)
+# We need to compute the lowest common number
+l_genomes_cc = c()
+l_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72", "CACNA1A", "DMPK", "HTT", "FMR1", "FXN", "TBP")
+for (locus in l_loci){
+  cc_table = read.csv(paste(paste("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/table_STR_repeat_size_each_row_allele_EHv3.2.2_", locus, sep = ""), "simplified.tsv", sep = "_"),
+  header = T, sep = "\t", stringsAsFactors = F)
+  if (length(l_genomes_cc) == 0){
+    l_genomes_cc = unique(cc_table$platekey)
+  }else{
+    l_genomes_cc = intersect(l_genomes_cc,
+                             cc_table$platekey)
+  }
+}
+length(l_genomes_cc)
+#
+
 
 # For each locus in `summary_pileup_100Kg` we are going to check and count whether the genome having `Yes` as Visual_inspection is probands AND/OR probands and neuro
-summary_100k = read.csv("./summary_pileup_100Kg.tsv",
+summary_100k = read.csv("pileup_100Kg/summary_pileup_100Kg.tsv",
                         stringsAsFactors = F,
                         header = T,
                         sep = "\t")
