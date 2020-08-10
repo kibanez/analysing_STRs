@@ -449,4 +449,37 @@ length(which(l_yes_unrel %in% probands_unrelated))
 length(which(l_yes_unrel %in% probands_not_neuro_unrelated))
 # 2
 
+## ATXN3
+# cc tables
+l_yes_cc = read.csv("../carriers/cc_pileup_100Kg/list_yes_ATXN3txt",
+                    stringsAsFactors = F,
+                    header = F)
+l_yes_cc = l_yes_cc$V1
+length(l_yes_cc)
+# 1
+
+# How many are PROBANDS?
+length(which(l_yes_cc %in% l_cc_probands))
+# 1
+
+# How many are PROBANDS not NEURO?
+length(which(l_yes_cc %in% l_cc_probands_not_neuro))
+# 0
+
+# Same unique genome in cc and unrel tables
+# unrel
+# How many are PROBANDS?
+length(which(l_yes_cc %in% probands_unrelated))
+# 1
+
+# How many are PROBANDS not NEURO?
+length(which(l_yes_cc %in% probands_not_neuro_unrelated))
+# 0
+
+
+
+
+
+
+
 
