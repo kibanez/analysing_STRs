@@ -83,24 +83,3 @@ for (i in 1:length(l_loci)){
   plot_violin_ancestry_gnomAD(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
 }
 
-
-# Plotting here joint ancestries per super-population (repeat-sizes across sub-populations)
-l_superpopus = unique(superpopulations)
-for (i in 1:length(l_loci)){
-  
- # Jointly - distribution PER EACH SUPER POPULATION
-  for (j in 1:length(l_superpopus)){
-    plot_gene_joint_ancestries(df_merged %>% filter(superpopulation %in% l_superpopus[j]), 
-                               l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, l_superpopus[j])  
-  }
-  
-  # Jointly - Violin plots PER EACH SUPER POPULATION
-  for (j in 1:length(l_superpopus)){
-    plot_violin_ancestry(df_merged %>% filter(superpopulation %in% l_superpopus[j]),
-                         l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, l_superpopus[j])  
-  }
-}
-
-
-
-
