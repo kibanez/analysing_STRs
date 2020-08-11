@@ -15,10 +15,10 @@ library(tidyverse)
 
 
 # Set environment
-setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/data/")
+setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/")
 
 # Load 1Kg population index data
-popu_info = read.csv("../GEL_sample_id_metadata__29070_samples.txt",
+popu_info = read.csv("./GEL_sample_id_metadata__29070_samples.txt",
                      sep = "\t",
                      header = T,
                      stringsAsFactors = F)
@@ -35,40 +35,16 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 
 
 # Functions
-source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_1Kg.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_gnomAD.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_1Kg.R")
-source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries.R")
+source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_gnomAD.R")
 
 # Load EHv3.2.2 STR merged data for each sub-population
 df_merged = data.frame()
-l_popus = unique(popu_info$Population)
-
-# Remove CHD from `l_popus`
-l_popus = l_popus[-19]
-
-# Define super-populations
-l_superpopu = c("AFR", "AMR", "EAS", "EUR", "SAS")
-
-# Define sub-population and super-population
-superpopulations = c("AFR","AFR","AFR","AFR","AFR","AFR","AFR", 
-                     "AMR", "AMR","AMR","AMR",
-                     "EUR","EUR","EUR","EUR","EUR", 
-                     "EAS","EAS","EAS","EAS","EAS",
-                     "SAS","SAS","SAS","SAS","SAS")
-sub_populations = c("ESN", "YRI", "GWD", "LWK", "MSL", "ACB", "ASW", 
-                    "MXL", "PUR", "PEL", "CLM",
-                    "IBS", "TSI", "GBR", "CEU", "FIN",
-                    "JPT", "CHS", "CHB", "CDX", "KHV",
-                    "PJL", "STU", "BEB", "ITU", "GIH")
-
-popu_1kg = data.frame(cbind(superpopulations, sub_populations))
-popu_1kg$superpopulations = as.character(popu_1kg$superpopulations)
-popu_1kg$sub_populations = as.character(popu_1kg$sub_populations)
+l_popus = unique(popu_info$pop)
 
 for (i in 1:length(l_popus)){
-  popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/1Kg/data/", l_popus[i] ,sep = "")
+  popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/data/", l_popus[i] ,sep = "")
   file_aux = list.files(paste(popu_aux, "merged", sep = "/"))
   file_aux = paste(paste(popu_aux, "merged", sep = "/"), file_aux, sep = "/")
   
@@ -77,20 +53,14 @@ for (i in 1:length(l_popus)){
                     stringsAsFactors = F,
                     header = T)
   
-  index_subpopu = match(l_popus[i], popu_1kg$sub_populations)
-  superpopu = popu_1kg$superpopulations[index_subpopu]
-  
-  df_aux = df_aux %>% 
-    mutate(population = l_popus[i],
-           superpopulation = superpopu)
-  
+  df_aux$superpopu = rep(l_popus[i], length(df_aux$chr))
   df_merged = rbind(df_merged,
                     df_aux)
   
 }
 
 dim(df_merged)
-# 14107  14
+# 14331  13
 
 # Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
@@ -103,14 +73,14 @@ for (i in 1:length(l_loci)){
   # Specifying sub-population  
   for (j in 1:length(l_popus)){
     # Each locus - Individually
-    plot_gene(df_merged %>% filter(population %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
+    plot_gene(df_merged %>% filter(superpopu %in% l_popus[j]), l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, "GRCh38", l_popus[j])  
   }
   
   # Jointly - distribution
-  plot_gene_joint_ancestries_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_gene_joint_ancestries_gnomAD(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
   
   # Jointly - Violin plots
-  plot_violin_ancestry_1Kg(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  plot_violin_ancestry_gnomAD(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
 }
 
 
