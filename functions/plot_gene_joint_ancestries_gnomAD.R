@@ -1,5 +1,5 @@
 # Function that plots jointly all STR distribution across all ancestries given
-plot_gene_joint_ancestries_1Kg <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder) {
+plot_gene_joint_ancestries_gnomAD <- function(df_input, gene_name, gene_data_normal, gene_data_pathogenic, output_folder) {
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   
