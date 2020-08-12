@@ -129,6 +129,14 @@ for (i in 1:length(l_loci)){
     plot_violin_ancestry(df_merged %>% filter(superpopulation %in% l_superpopus[j]),
                          l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder, l_superpopus[j])  
   }
+  
+  # Summary for each locus across all continental groups
+  for (j in 1:length(l_superpopus)){
+    compute_summary_repeat_per_locus(df_merged %>% filter(superpopulation %in% l_superpopus[j]), 
+                                     l_loci[i], 
+                                     output_folder)
+  }
+  
 }
 
 

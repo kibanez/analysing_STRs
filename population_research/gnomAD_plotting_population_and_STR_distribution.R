@@ -81,5 +81,9 @@ for (i in 1:length(l_loci)){
   
   # Jointly - Violin plots
   plot_violin_ancestry_gnomAD(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
+  
+  # Summary for each locus across all continental groups
+  compute_summary_repeat_per_locus(df_merged, l_loci[i], output_folder)
+  
 }
 
