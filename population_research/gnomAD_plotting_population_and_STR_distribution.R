@@ -70,7 +70,7 @@ l_loci = sort(unique(df_merged$gene))
 # Let's focus first on the important 4 loci
 l_loci = c("AR", "ATN1", "HTT", "FXN")
 for (i in 1:length(l_loci)){
-
+  colnames(df_merged)[13] = "superpopu"
   # Specifying sub-population  
   for (j in 1:length(l_popus)){
     # Each locus - Individually
@@ -84,6 +84,7 @@ for (i in 1:length(l_loci)){
   plot_violin_ancestry_gnomAD(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
   
   # Summary for each locus across all continental groups
+  colnames(df_merged)[13] = "population"
   compute_summary_repeat_per_locus(df_merged, l_loci[i], output_folder)
   
 }
