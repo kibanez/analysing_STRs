@@ -3,6 +3,20 @@ plot_gene_joint_ancestries_gnomAD <- function(df_input, gene_name, gene_data_nor
   threshold_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   threshold_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(threshold) %>% unlist() %>% unname()
   
+  if (length(threshold_normal) > 1){
+    df_aux_normal = gene_data_normal %>% filter(grepl(gene_name, locus)) %>% select(locus, threshold) 
+    df_aux_pathogenic = gene_data_pathogenic %>% filter(grepl(gene_name, locus)) %>% select(locus, threshold) 
+    
+    for (i in 1:length(df_aux_normal$locus)){
+      if (grepl(gene_name, df_aux_normal$locus[i])){
+        threshold_normal = df_aux_normal$threshold[i]
+        threshold_pathogenic = df_aux_pathogenic$threshold[i]
+        break
+      }
+    }
+    
+  }
+  
   df_gene = df_input %>% filter(gene %in% gene_name)
   alt_number = df_gene$allele
   superpopu = df_gene$superpopu
