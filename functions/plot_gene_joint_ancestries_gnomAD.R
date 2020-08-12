@@ -18,7 +18,7 @@ plot_gene_joint_ancestries_gnomAD <- function(df_input, gene_name, gene_data_nor
   max_value = max(threshold_pathogenic + 1, df_gene_barplot$number_repeats)
   
   
-  joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = subpopulation, color = superpopulation)) + 
+  joint_plot = ggplot(df_gene_barplot, aes(x = number_repeats, y = af, group = superpopulation, color = superpopulation)) + 
     geom_line() + 
     ylab("Allele frequency") + 
     xlab("Repeat sizes (repeat units)") + 
