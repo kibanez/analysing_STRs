@@ -38,6 +38,7 @@ gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_gnomAD.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_gnomAD.R")
+source("/Users/kibanez/git/analysing_STRs/functions/compute_summary_repeat_per_locus.R")
 
 # Load EHv3.2.2 STR merged data for each sub-population
 df_merged = data.frame()
