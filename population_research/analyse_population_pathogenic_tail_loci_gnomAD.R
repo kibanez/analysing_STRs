@@ -34,38 +34,6 @@ metadata = metadata %>% select(sample_id, pop)
 dim(metadata)
 # 29071  2
 
-# Recode superpopu
-metadata = metadata %>%
-  mutate(superpopu = case_when(POPULATION == "PJL" ~ "SAS",
-                               POPULATION == "GBR" ~ "EUR",
-                               POPULATION == "CEU" ~ "EUR",
-                               POPULATION == "TSI" ~ "EUR",
-                               POPULATION == "PUR" ~ "AMR",
-                               POPULATION == "ACB" ~ "AFR",
-                               POPULATION == "GIH" ~ "SAS",
-                               POPULATION == "ASW" ~ "AFR",
-                               POPULATION == "MXL" ~ "AMR",
-                               POPULATION == "ESN" ~ "AFR",
-                               POPULATION == "LWK" ~ "AFR",
-                               POPULATION == "CHS" ~ "EAS",
-                               POPULATION == "BEB" ~ "SAS",
-                               POPULATION == "KHV" ~ "EAS",
-                               POPULATION == "CLM" ~ "AMR",
-                               POPULATION == "MSL" ~ "AFR",
-                               POPULATION == "YRI" ~ "AFR",
-                               POPULATION == "GWD" ~ "AFR",
-                               POPULATION == "FIN" ~ "EUR",
-                               POPULATION == "ITU" ~ "SAS",
-                               POPULATION == "JPT" ~ "EAS",
-                               POPULATION == "STU" ~ "SAS",
-                               POPULATION == "CHB" ~ "EAS",
-                               POPULATION == "CDX" ~ "EAS",
-                               POPULATION == "PEL" ~ "AMR",
-                               POPULATION == "IBS" ~ "EUR"))
-
-dim(metadata)
-# 2504  3
-
 # For each locus
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
 l_premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41)
