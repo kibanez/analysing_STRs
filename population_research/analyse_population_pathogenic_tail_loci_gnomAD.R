@@ -12,27 +12,27 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
-setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/1Kg/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/gnomAD/")
 
 # load data
-merged_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/data/all_data/merged/merged_all_2504_genomes_1Kg_EHv3.2.2.tsv",
+merged_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/data/merged/merged_all_29070_genomes_gnomAD_EHv3.2.2.tsv",
                         sep = "\t",
                         stringsAsFactors = F, 
                         header = T)
 dim(merged_table)
-# 1342  12
+# 2617  12
 
 # Load 1Kg metadata
-metadata = read.csv("~/Documents/STRs/ANALYSIS/population_research/1kg/1000G_2504_high_coverage.sequence.index.tsv",
+metadata = read.csv("~/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/GEL_sample_id_metadata__29070_samples.txt",
                     stringsAsFactors = F,
                     sep = "\t",
                     header = T)
 dim(metadata)
-# 2504  22
+# 29071  3
 
-metadata = metadata %>% select(SAMPLE_NAME, POPULATION)
+metadata = metadata %>% select(sample_id, pop)
 dim(metadata)
-# 2504  2
+# 29071  2
 
 # Recode superpopu
 metadata = metadata %>%
