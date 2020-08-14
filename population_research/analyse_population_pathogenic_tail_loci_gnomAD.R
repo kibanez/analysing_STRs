@@ -24,6 +24,7 @@ dim(merged_table)
 
 # Load 1Kg metadata
 metadata = read.csv("~/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/GEL_sample_id_metadata__29070_samples.txt",
+                    colClasses=c("sample_id"="character"),
                     stringsAsFactors = F,
                     sep = "\t",
                     header = T)
@@ -54,8 +55,6 @@ for (i in 1:length(l_genes)){
                                list_vcf_allele)
       list_allele_size = rep(merged_table_locus$allele[j], number_vcf)
       
-      list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
-      list_vcf_allele = gsub('^EHv3.2.2_', '', list_vcf_allele)
       list_vcf_allele = gsub('_x2', '', list_vcf_allele)
       
       # Create dataframe with platekey-repeat-size, for the expanded genomes
@@ -66,28 +65,26 @@ for (i in 1:length(l_genes)){
       df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
     }
     
-    list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
-    list_vcf_patho_locus = gsub('^EHv3.2.2_', '', list_vcf_patho_locus)
     list_vcf_patho_locus = gsub('_x2', '', list_vcf_patho_locus)
     
     # Enrich platekeys now with ancestry info
     patho_popu = metadata %>%
-      filter(SAMPLE_NAME %in% list_vcf_patho_locus) %>%
-      select(SAMPLE_NAME, POPULATION, superpopu)
+      filter(sample_id %in% list_vcf_patho_locus) %>%
+      select(sample_id, pop)
     print(dim(patho_popu))
     
     # Add locus name as column
-    patho_popu$locus = rep(l_genes[i], length(patho_popu$SAMPLE_NAME))
+    patho_popu$locus = rep(l_genes[i], length(patho_popu$sample_id))
     
     # merge
     patho_merged = left_join(df_platekey_size,
                              patho_popu,
-                             by = c("platekey" = "SAMPLE_NAME"))
+                             by = c("platekey" = "sample_id"))
     
     output_file_name = paste(l_genes[i], "beyond_", sep = "_")
     output_file_name = paste(output_file_name, "premutation_cutoff_", sep = "_")
     output_file_name = paste(output_file_name, as.character(l_premut_cutoff[i]), sep = "")
-    output_file_name = paste(output_file_name, "EHv322_1Kg.tsv", sep = "_")
+    output_file_name = paste(output_file_name, "EHv322_gnomAD.tsv", sep = "_")
     write.table(patho_merged, 
                 output_file_name, 
                 sep = "\t",
