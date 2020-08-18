@@ -1,9 +1,9 @@
 # Objective: select genomes (better deduplicated) in order to run afterwards EH through all them
 # The idea is to merge or join all data available to us: RE batch + population aggregated gVCF (in case we have more genomes to fish) + earlier EH batches
-# RE batch (V8 last batch from November)
-# Population aggregated gVCF file
-# EHv2 batch from summer 2019
-# EHv3 batch from summer 2019
+# RE batch (V9 latest batch from April 2020) - but we do have now the UNION of all RE batches (V1:V9)
+# Population aggregated gVCF file (batch1 + batch2)
+# EHv2 batch from march 2020
+# EHv3 batch from march 2020
 
 # Workflow: we will use Population aggregated gVCF file, as well as earlier EHv2 and EHv3 batches to complete the data
 # But we will start from all genomes/platekeys sequenced so far at GEL, that have participantId info in Catalog
