@@ -94,21 +94,18 @@ for (i in 1:length(l_genes)){
   }
 }
 
-
 # we have merged in google excel all loci
-merged_expanded = read.csv("./1K_phase3_EHv322_expansions_beyond_premutation - merged.tsv",
+merged_expanded = read.csv("./gnomAD_EHv322_expansions_beyond_premutation - merged.tsv",
                            stringsAsFactors = F,
                            header = T,
                            sep = "\t")
 dim(merged_expanded)  
-# 109  5
+# 2789  4
 
 # Beyond full-mutation or pathogenic cutoff
-#l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
-l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
-#l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,49)
-l_patho_cutoff = c(38,48,44,33,60,36,20,50,200,66,40,49)
-l_list_unrelated = list.files(pattern = "1Kg.tsv$")
+l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "DMPK", "HTT", "TBP")
+l_patho_cutoff = c(38,48,44,33,60,36,20,50,40,49)
+l_list_unrelated = list.files(pattern = "gnomAD.tsv$")
 for (i in 1:length(l_genes)){
   print(l_genes[i])
   locus_table = read.csv(l_list_unrelated[i],
