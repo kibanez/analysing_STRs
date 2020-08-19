@@ -21,13 +21,26 @@ library(dplyr)
 setwd("~/Documents/STRs/data/research/input")
 
 # Load table with all genomes together with their paths
-df_all_genomes = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/upload_report.2020-08-18.txt",
+df_all_genomes = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/input/upload_report.2020-08-18.txt",
                           sep = "\t",
                           stringsAsFactors = F,
                           comment.char = "#",
                           header = F)
 dim(df_all_genomes)
-# 120711  2
+# 120711  10
+
+# Since HPC data has been moved from Pegasus to Helix, they have changed the name of the platekey
+df_all_genomes$V3 = gsub("_copied", "", df_all_genomes$V3)
+
+# Construct new column with the full absolute path to the BAM file
+df_all_genomes = df_all_genomes %>%
+  mutate(abs_path = paste(paste(paste(V6, "Assembly", sep = "/"), V3, sep = "/"), "bam", sep = "."))
+
+# Select columns
+df_all_genomes = df_all_genomes %>%
+  select(V3, abs_path, V10)
+colnames(df_all_genomes) = c("platekey", "path", "version")
+
 
 # Load all merged clinical data from RE
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V5:V9.tsv",
@@ -65,48 +78,47 @@ merged_clin_data = rbind(clin_data,
 dim(merged_clin_data)
 # 175124  4
 
+# Load list of genomes/path from March 2020
+df_march_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_13024_ouf_of_92669_genomes_GRCh37.csv",
+                        stringsAsFactors = F,
+                        header = F)
+dim(df_march_b37)
+# 13024  3
 
-# define column names
-colnames(catalog_rd_b37) = c("cohort_id", "platekey", "participant_id", "isProband", "karyo", "sex", "affection_status", "build", "programme")
-colnames(catalog_rd_b38) = c("cohort_id", "platekey", "participant_id", "isProband","sex", "affection_status", "build", "programme")
+df_march_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_79645_ouf_of_92669_genomes_GRCh38.csv",
+                        stringsAsFactors = F,
+                        header = F)
+dim(df_march_b38)
+# 79645  3
 
-# remove those cohorts having REVOKED ord DEPRECATED
-catalog_rd_b38 = catalog_rd_b38 %>% filter(!grepl("REVOKED", cohort_id))
-catalog_rd_b38 = catalog_rd_b38 %>% filter(!grepl("DEPRECATED", cohort_id))
+l_platekeys_march = c(df_march_b37$V1,
+                      df_march_b38$V1)
+length(l_platekeys_march)
+# 92669
 
-# Since we selected from Catalog info from THE LATEST COHORT DEFINED, we can ignore the cohort Id
-catalog_rd_b37 = catalog_rd_b37 %>% 
-  select(platekey, participant_id, build, programme)
-catalog_rd_b37 = unique(catalog_rd_b37)
-dim(catalog_rd_b37)
-# 99  4
+l_pid_march = merged_clin_data %>%
+  filter(platekey %in% l_platekeys_march) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+length(l_pid_march)
+# 92359
 
-catalog_rd_b38 = catalog_rd_b38 %>%
-  select(platekey, participant_id, build, programme)
-catalog_rd_b38 = unique(catalog_rd_b38)
-dim(catalog_rd_b38)
-# 76881  4
+# Load total unique genomes included in batch1 and batch2 of population analysis
+l_popu_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_79849_unique_genomes_batch1_batch2.txt",
+                            stringsAsFactors = F)
+l_popu_genomes = l_popu_genomes$V1
+length(l_popu_genomes)
+# 79849
 
-# Cancer -> we will take this from the research environemnt
+# Deduplicate `merged_clin_data`
+l_pid = unique(merged_clin_data$participant_id)
+length(l_pid)
+# 93610
 
-# Check duplicated info. Take deduplicated participantIDs together with their platekeys
-unique_pid_b37 = unique(catalog_rd_b37$participant_id)
-unique_lp_b37 = unique(catalog_rd_b37$platekey)
-
-# catalog b37 is OK, deduplicated, platekey VS participantID
-length(unique_pid_b37)
-# 99
-length(unique_lp_b37)
-# 99
-
-# catalog b38
-unique_pid_b38 = unique(catalog_rd_b38$participant_id)
-unique_lp_b38 = unique(catalog_rd_b38$platekey)
-
-length(unique_pid_b38)
-# 76874
-length(unique_lp_b38)
-# 76881
+which_pid_dup = merged_clin_data$participant_id[which(duplicated(merged_clin_data$participant_id))]
+length(which_pid_dup)
+# 81514
 
 which_pid_dup_b38 = catalog_rd_b38$participant_id[which(duplicated(catalog_rd_b38$participant_id))]
 length(which_pid_dup_b38)
