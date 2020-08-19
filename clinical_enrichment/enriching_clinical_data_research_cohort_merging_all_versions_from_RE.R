@@ -53,13 +53,34 @@ clin_data_v5 = read.csv("../clinical_data/rd_genomes_all_data_100720_V5.1.tsv",
 dim(clin_data_v5)
 # 555656  31
 
-# Let's merge V5-V9 version tables
+# Let's merge V5-V9 version tables, but keeping the info frmo latest version if PID is the same (there might be inconsistencies)
 # Check and confirm V4 has not extra genomes
 # Check and confirm V1-V3 have not extra genomes
 colnames(clin_data_v8) = colnames(clin_data_v9)
 colnames(clin_data_v7) = colnames(clin_data_v9)
 colnames(clin_data_v6) = colnames(clin_data_v9)
 colnames(clin_data_v5) = colnames(clin_data_v9)
+
+# V9 with V8
+clin_data_merged = clin_data_v9
+
+
+pids_clin_data_v8 = unique(clin_data_v8$participant_id)
+l_new_pid_v8 = setdiff(pids_clin_data_v8, clin_data_merged$participant_id)
+length(l_new_pid_v8)
+# 339
+
+clin_data_merged = rbind(clin_data_merged,
+                         clin_data_v8 %>% filter(participant_id %in% l_new_pid_v8))
+dim(clin_data_merged)
+# 1185443 31
+
+# merged with V7
+
+
+
+
+
 
 clin_data_merged = rbind(clin_data_v9,
                          clin_data_v8)
