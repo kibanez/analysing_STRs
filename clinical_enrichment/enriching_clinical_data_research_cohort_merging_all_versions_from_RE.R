@@ -64,7 +64,6 @@ colnames(clin_data_v5) = colnames(clin_data_v9)
 # V9 with V8
 clin_data_merged = clin_data_v9
 
-
 pids_clin_data_v8 = unique(clin_data_v8$participant_id)
 l_new_pid_v8 = setdiff(pids_clin_data_v8, clin_data_merged$participant_id)
 length(l_new_pid_v8)
@@ -72,39 +71,45 @@ length(l_new_pid_v8)
 
 clin_data_merged = rbind(clin_data_merged,
                          clin_data_v8 %>% filter(participant_id %in% l_new_pid_v8))
+clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1185443 31
+# 1164289 31
 
 # merged with V7
-
-
-
-
-
-
-clin_data_merged = rbind(clin_data_v9,
-                         clin_data_v8)
-clin_data_merged = unique(clin_data_merged)
-dim(clin_data_merged)
-# 1178166  31
+pids_clin_data_v7 = unique(clin_data_v7$participant_id)
+l_new_pid_v7 = setdiff(pids_clin_data_v7, clin_data_merged$participant_id)
+length(l_new_pid_v7)
+# 869 
 
 clin_data_merged = rbind(clin_data_merged,
-                         clin_data_v7)
+                         clin_data_v7 %>% filter(participant_id %in% l_new_pid_v7))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1282056  31
+# 1178119 31
+
+# merged with V6
+pids_clin_data_v6 = unique(clin_data_v6$participant_id)
+l_new_pid_v6 = setdiff(pids_clin_data_v6, clin_data_merged$participant_id)
+length(l_new_pid_v6)
+# 271 
 
 clin_data_merged = rbind(clin_data_merged,
-                         clin_data_v6)
+                         clin_data_v6 %>% filter(participant_id %in% l_new_pid_v6))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1514861  31
+# 1180612 31
+
+# merged with V5
+pids_clin_data_v5 = unique(clin_data_v5$participant_id)
+l_new_pid_v5 = setdiff(pids_clin_data_v5, clin_data_merged$participant_id)
+length(l_new_pid_v5)
+# 10 
 
 clin_data_merged = rbind(clin_data_merged,
-                         clin_data_v5)
+                         clin_data_v5 %>% filter(participant_id %in% l_new_pid_v5))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 2061403  31
+# 1180672 31
 
 # Let's write this into file, not to re-run
 write.table(clin_data_merged,
