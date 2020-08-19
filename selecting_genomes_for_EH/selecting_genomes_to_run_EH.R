@@ -41,42 +41,23 @@ df_all_genomes = df_all_genomes %>%
   select(V3, abs_path, V10)
 colnames(df_all_genomes) = c("platekey", "path", "version")
 
-# Load all merged clinical data from RE
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V5:V9.tsv",
+# Load all merged clinical data from RE, MAIN and PILOT together
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V1:V9.tsv",
                      sep = "\t",
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 2061403  31
+# 1299442  32
 
-# Let's keep only with the important information
+# Let's keep only with the important information and focus on germline genomes
 clin_data = clin_data %>%
+  filter(type %in% c("cancer germline", "experimental germline", "rare disease", "rare disease germline", "unknown")) %>%
   select(platekey, participant_id, participant_phenotypic_sex, genome_build)
 clin_data = unique(clin_data)
 dim(clin_data)
-# 170150 4
+# 94365 4
 
-pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
-                           sep = "\t",
-                           stringsAsFactors = F,
-                           header = T)
-dim(pilot_clin_data)
-# 4974  10
-
-pilot_clin_data = pilot_clin_data %>%
-  select(plateKey, gelID, sex)
-dim(pilot_clin_data)
-# 4974  3
-
-pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$plateKey))
-colnames(pilot_clin_data) = colnames(clin_data)
-
-# merge MAIN and PILOT clin data datasets
-merged_clin_data = rbind(clin_data,
-                         pilot_clin_data)
-dim(merged_clin_data)
-# 175124  4
-
+merged_clin_data = clin_data
 table(merged_clin_data$genome_build)
 #37      38  GRCh37  GRCh38 unknown 
 
@@ -87,7 +68,6 @@ merged_clin_data$genome_build[index_37] = "GRCh37"
 merged_clin_data$genome_build[index_38] = "GRCh38"
 table(merged_clin_data$genome_build)
 #GRCh37  GRCh38 unknown 
-
 
 # Load list of genomes/path from March 2020
 df_march_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_13024_ouf_of_92669_genomes_GRCh37.csv",
@@ -113,10 +93,18 @@ l_pid_march = merged_clin_data %>%
   unique() %>%
   pull()
 length(l_pid_march)
-# 92359
+# 88359
 
 # The ones we know are the latest ones, and then from PIDs, we can get the PLATEKEY and the GENDER
-final_list = l_pid_march
+# <PLATEKEY>,<PATH>,<GENDER>,<BUILD>
+df_final_list = rbind(df_march_b37,
+                      df_march_b38)
+dim(df_final_list)
+# 92669  3
+
+l_final_platekey = unique(df_final_list$V1)
+length(l_final_platekey)
+# 92669
 
 # Load total unique genomes included in batch1 and batch2 of population analysis
 l_popu_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_79849_unique_genomes_batch1_batch2.txt",
@@ -131,18 +119,101 @@ l_pid_popu = merged_clin_data %>%
   unique() %>%
   pull()
 length(l_pid_popu)
-# 79662 
+# 79541
 
 # Deduplicate  l_pid_popu
 df_popu = merged_clin_data %>%
   filter(platekey %in% l_popu_genomes)
 df_popu = unique(df_popu)
 dim(df_popu)
-#  133924  4
+# 84098  4
 
 which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
 length(which_pid_popu_dup)
-# 54262 
+# 4557
+
+# Many of them is because platekey has been sequenced in b37 and b38, let's see if removing genome_build we still have dups
+df_popu = df_popu %>%
+  select(platekey, participant_id, participant_phenotypic_sex)
+df_popu = unique(df_popu)
+dim(df_popu)
+# 79921  3
+
+which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
+length(which_pid_popu_dup)
+# 380
+
+# For all these 380 dup PIDs, we need to take the LATEST platekey == maximum or bigger number
+df_popu = df_popu %>%
+  group_by(participant_id) %>%
+  mutate(latest_platekey = max(platekey)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# let's take the max platekey as platekey
+df_popu = df_popu %>%
+  select(latest_platekey, participant_id, participant_phenotypic_sex)
+df_popu = unique(df_popu)
+dim(df_popu)
+# 79595  3
+
+# Let's see whether there are still dups
+which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
+length(which_pid_popu_dup)
+# 54
+
+table(df_popu$participant_phenotypic_sex)
+#Female Indeterminate          Male 
+#42304            27         37484 
+
+# Remove `Indeterminate` sex
+index_indeterminate = which(df_popu$participant_phenotypic_sex %in% "Indeterminate")
+df_popu = df_popu[-index_indeterminate,]
+
+# Remove NA's from sex
+df_popu = df_popu %>%
+  filter(!is.na(participant_phenotypic_sex))
+
+# Check again for dups
+which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
+length(which_pid_popu_dup)
+# 39
+
+which_platekey_popu_dup = df_popu %>%
+  filter(participant_id %in% which_pid_popu_dup) %>%
+  select(latest_platekey) %>%
+  unique() %>%
+  pull()
+length(which_platekey_popu_dup)
+# 39
+
+# Let's take the gender we used in batch march 2020
+which_pid_popu_dup_march38 = df_march_b38 %>% filter(V1 %in% which_platekey_popu_dup)
+dim(which_pid_popu_dup_march38)
+# 39  3
+
+index_to_remove = c()
+for (i in 1:length(which_pid_popu_dup_march38$V1)){
+  index_to_remove = c(index_to_remove,
+                      which(df_popu$latest_platekey %in% which_pid_popu_dup_march38$V1[i] &
+                            toupper(df_popu$participant_phenotypic_sex) != toupper(which_pid_popu_dup_march38$V3[i])))
+}
+length(index_to_remove)
+# 39
+
+df_popu = df_popu[-index_to_remove,]
+
+# Check again for duplicates
+which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
+length(which_pid_popu_dup)
+# 0
+
+df_popu$genome_build = rep("GRCh38", length(df_popu$participant_id))
+colnames(df_popu) = colnames(merged_clin_data)
+
+# Update final list of genomes
+final_list = c(final_list,
+               df_popu$participant_id)
 
 which_pid_dup_b38 = catalog_rd_b38$participant_id[which(duplicated(catalog_rd_b38$participant_id))]
 length(which_pid_dup_b38)
