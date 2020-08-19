@@ -423,9 +423,9 @@ l_vcf = gsub("./EH_", "", l_vcf)
 l_vcf = gsub(".vcf", "", l_vcf)
 
 length(intersect(l_vcf, clin_data_merged$platekey))
-# 92351
+# 92235
 length(setdiff(l_vcf, clin_data_merged$platekey))
-# 314
+# 430
 
 # I'll keep like this, only containing clinical data from RE, not including that data in Catalog
 # Let's prepare the data
@@ -472,7 +472,7 @@ drops <- c("normalised_specific_disease","panel_name","panel_version", "hpo_term
 clin_data_merged = clin_data_merged[ , !(names(clin_data_merged) %in% drops)]
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 265408  32
+# 152193  32
 
 # Remove duplicates
 l_all_pids = unique(clin_data_merged$participant_id)
@@ -482,7 +482,7 @@ length(l_all_pids)
 # There are many duplicates where genetic_vs_reported have diff values - let's take the ones not NA
 dedup_clin_data_merged = filter(clin_data_merged, (!is.na(participant_medical_review_qc_state_code) & programme %in% "Rare Diseases") | programme %in% c("Pilot", "Cancer"))
 dim(dedup_clin_data_merged)
-# 265400  32
+# 152187  32
 
 length(unique(dedup_clin_data_merged$participant_id))
 # 93612
@@ -494,7 +494,7 @@ aver$programme = rep("Cancer", length(aver$participant_id))
 dedup_clin_data_merged = rbind(dedup_clin_data_merged,
                                aver)
 dim(dedup_clin_data_merged)
-# 265404  32
+# 152191  32
 
 length(unique(dedup_clin_data_merged$participant_id))
 # 93614
@@ -503,19 +503,19 @@ length(unique(dedup_clin_data_merged$participant_id))
 dedup_clin_data_merged = dedup_clin_data_merged %>%
   filter(!type %in% c("cancer tumour", "cancer somatic", "experimental somatic"))
 dim(dedup_clin_data_merged)
-# 235132  32
+# 131769  32
 
 length(unique(dedup_clin_data_merged$participant_id))
-# 93606
+# 93491
 
 # Let's filter out those not passing genetics vs re (familyPassesGvsRChecks)
 dedup_clin_data_merged = dedup_clin_data_merged %>%
   filter((genetic_vs_reported_results %in% "familyPassesGvsRChecks" & programme %in% "Rare Diseases") | programme %in% c("Cancer", "Pilot"))
 dim(dedup_clin_data_merged)
-# 136520  32
+# 88795  32
 
 length(unique(dedup_clin_data_merged$participant_id))
-# 91246
+# 82506
 
 # Select fields to keep 
 #specific disease, dis group, dis subgroup, HPO, sex, year of birth, participant type, affection status, population (estimated), and self-reported ancestry
@@ -525,27 +525,27 @@ dedup_clin_data_merged = dedup_clin_data_merged %>%
          withdrawn, programme_consent_status, )
 dedup_clin_data_merged = unique(dedup_clin_data_merged)
 dim(dedup_clin_data_merged)
-# 95892 19
+# 85237 19
 
 length(unique(dedup_clin_data_merged$participant_id))
-# 91246
+# 82506
 
 l_dups = unique(dedup_clin_data_merged$participant_id[which(duplicated(dedup_clin_data_merged$participant_id))])
 length(l_dups)
-# 4522
+# 2676
 
 # There are some PIDs with GRCh37 and GRCh38 genomes
 dup_table = dedup_clin_data_merged %>% 
   filter(participant_id %in% l_dups)
 dim(dup_table)
-# 9168  19
+# 5407  19
 length(unique(dup_table$participant_id))
-# 4522
+# 2676
 
 dedup_clin_data_merged = dedup_clin_data_merged %>%
   filter(!participant_id %in% l_dups)
 dim(dedup_clin_data_merged)
-# 86724  19
+# 79830  19
 
 # Select those having less NAs
 dup_table2 = data.frame()
@@ -559,21 +559,21 @@ for (i in 1:length(l_dup_pid)){
                      row_fewest_NAs)
 }
 dim(dup_table2)
-# 4522  19
+# 2676  19
 length(unique(dup_table2$participant_id))
-# 4522
+# 2676
 
 dedup_clin_data_merged = rbind(dedup_clin_data_merged,
                                dup_table2)
 dedup_clin_data_merged = unique(dedup_clin_data_merged)
 dim(dedup_clin_data_merged)
-# 91246  19
+# 82506  19
 
 length(unique(dedup_clin_data_merged$participant_id))
-# 91246
+# 82506
 
 write.table(dedup_clin_data_merged, 
-            file = "clinical_data_research_cohort_91246_PIDs_merging_RE_V1toV9.tsv",
+            file = "clinical_data_research_cohort_82506_PIDs_merging_RE_V1toV9.tsv",
             quote = F,
             sep = "\t",
             row.names = F,
