@@ -44,6 +44,27 @@ clin_data = unique(clin_data)
 dim(clin_data)
 # 170150 4
 
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                           sep = "\t",
+                           stringsAsFactors = F,
+                           header = T)
+dim(pilot_clin_data)
+# 4974  10
+
+pilot_clin_data = pilot_clin_data %>%
+  select(plateKey, gelID, sex)
+dim(pilot_clin_data)
+# 4974  3
+
+pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$plateKey))
+colnames(pilot_clin_data) = colnames(clin_data)
+
+# merge MAIN and PILOT clin data datasets
+merged_clin_data = rbind(clin_data,
+                         pilot_clin_data)
+dim(merged_clin_data)
+# 175124  4
+
 
 # define column names
 colnames(catalog_rd_b37) = c("cohort_id", "platekey", "participant_id", "isProband", "karyo", "sex", "affection_status", "build", "programme")
