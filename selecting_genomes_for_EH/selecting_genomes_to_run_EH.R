@@ -41,7 +41,6 @@ df_all_genomes = df_all_genomes %>%
   select(V3, abs_path, V10)
 colnames(df_all_genomes) = c("platekey", "path", "version")
 
-
 # Load all merged clinical data from RE
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V5:V9.tsv",
                      sep = "\t",
@@ -78,6 +77,18 @@ merged_clin_data = rbind(clin_data,
 dim(merged_clin_data)
 # 175124  4
 
+table(merged_clin_data$genome_build)
+#37      38  GRCh37  GRCh38 unknown 
+
+# Put 37 and 38 into GRCh37 and GRCh38
+index_37 = which(merged_clin_data$genome_build %in% "37")
+index_38 = which(merged_clin_data$genome_build %in% "38")
+merged_clin_data$genome_build[index_37] = "GRCh37"
+merged_clin_data$genome_build[index_38] = "GRCh38"
+table(merged_clin_data$genome_build)
+#GRCh37  GRCh38 unknown 
+
+
 # Load list of genomes/path from March 2020
 df_march_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/input/list_13024_ouf_of_92669_genomes_GRCh37.csv",
                         stringsAsFactors = F,
@@ -104,6 +115,9 @@ l_pid_march = merged_clin_data %>%
 length(l_pid_march)
 # 92359
 
+# The ones we know are the latest ones, and then from PIDs, we can get the PLATEKEY and the GENDER
+final_list = l_pid_march
+
 # Load total unique genomes included in batch1 and batch2 of population analysis
 l_popu_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_79849_unique_genomes_batch1_batch2.txt",
                             stringsAsFactors = F)
@@ -111,14 +125,24 @@ l_popu_genomes = l_popu_genomes$V1
 length(l_popu_genomes)
 # 79849
 
-# Deduplicate `merged_clin_data`
-l_pid = unique(merged_clin_data$participant_id)
-length(l_pid)
-# 93610
+l_pid_popu = merged_clin_data %>%
+  filter(platekey %in% l_popu_genomes) %>%
+  select(participant_id) %>%
+  unique() %>%
+  pull()
+length(l_pid_popu)
+# 79662 
 
-which_pid_dup = merged_clin_data$participant_id[which(duplicated(merged_clin_data$participant_id))]
-length(which_pid_dup)
-# 81514
+# Deduplicate  l_pid_popu
+df_popu = merged_clin_data %>%
+  filter(platekey %in% l_popu_genomes)
+df_popu = unique(df_popu)
+dim(df_popu)
+#  133924  4
+
+which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
+length(which_pid_popu_dup)
+# 54262 
 
 which_pid_dup_b38 = catalog_rd_b38$participant_id[which(duplicated(catalog_rd_b38$participant_id))]
 length(which_pid_dup_b38)
