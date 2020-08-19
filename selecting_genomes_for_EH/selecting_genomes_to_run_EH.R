@@ -29,22 +29,21 @@ df_all_genomes = read.csv("~/Documents/STRs/data/research/input/batch_august2020
 dim(df_all_genomes)
 # 120711  2
 
-# Platekey, PID info retrieved from Catalog
-# RD b38
-catalog_rd_b38 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb38_280220.tsv",
-                          sep = "\t",
-                          stringsAsFactors = F,
-                          header = F)
-dim(catalog_rd_b38)
-# 76950  8
+# Load all merged clinical data from RE
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V5:V9.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 2061403  31
 
-# RDb37
-catalog_rd_b37 = read.csv("./batch_march2020_EHv2.5.5_and_EHv3.2.2/output_catalog_RDb37_280220.tsv",
-                          sep = "\t",
-                          stringsAsFactors = F,
-                          header = F)
-dim(catalog_rd_b37)
-# 99 9
+# Let's keep only with the important information
+clin_data = clin_data %>%
+  select(platekey, participant_id, participant_phenotypic_sex, genome_build)
+clin_data = unique(clin_data)
+dim(clin_data)
+# 170150 4
+
 
 # define column names
 colnames(catalog_rd_b37) = c("cohort_id", "platekey", "participant_id", "isProband", "karyo", "sex", "affection_status", "build", "programme")
