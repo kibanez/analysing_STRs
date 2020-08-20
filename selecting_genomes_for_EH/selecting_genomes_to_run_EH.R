@@ -304,6 +304,21 @@ dim(df_final_list)
 length(unique(df_final_list$platekey))
 # 93453
 
+# Remove 5 corrupt BAM files
+#LP3000170-DNA_A10 
+#LP3000170-DNA_D12 
+#LP3000170-DNA_C02 
+#LP3000170-DNA_D11 
+#LP3000170-DNA_D10 
+l_corrupt_bams = c("LP3000170-DNA_A10", "LP3000170-DNA_D12", "LP3000170-DNA_C02", "LP3000170-DNA_D11", "LP3000170-DNA_D10")
+
+df_final_list = df_final_list %>%
+  filter(!platekey %in% l_corrupt_bams)
+dim(df_final_list)
+# 93448  4
+length(unique(df_final_list$platekey))
+# 93448
+
 to_write_b37 = df_final_list %>% 
   filter(build %in% "GRCh37") %>% 
   select(platekey, path, gender)
@@ -317,18 +332,18 @@ to_write_b38 = df_final_list %>%
   select(platekey, path, gender)
 to_write_b38 = unique(to_write_b38)
 dim(to_write_b38)
-# 80052  3
+# 80047  3
 
 # Write b37 paths
 write.table(to_write_b37, 
-            "./batch_august2020_EHv255_and_EHv322/list_13401_ouf_of_93453_genomes_GRCh37.csv", 
+            "./batch_august2020_EHv255_and_EHv322/list_13401_ouf_of_93447_genomes_GRCh37.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
             col.names = F)
 
 write.table(to_write_b37, 
-            "./batch_august2020_EHv255_and_EHv322/list_13401_ouf_of_93453_genomes_GRCh37.tsv", 
+            "./batch_august2020_EHv255_and_EHv322/list_13401_ouf_of_93447_genomes_GRCh37.tsv", 
             sep = "\t",
             quote = F, 
             row.names = F,
@@ -337,14 +352,14 @@ write.table(to_write_b37,
 
 # Write b38 paths
 write.table(to_write_b38, 
-            "./batch_august2020_EHv255_and_EHv322/list_80052_ouf_of_93453_genomes_GRCh38.csv", 
+            "./batch_august2020_EHv255_and_EHv322/list_80047_ouf_of_93447_genomes_GRCh38.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
             col.names = F)
 
 write.table(to_write_b38, 
-            "./batch_august2020_EHv255_and_EHv322/list_80052_ouf_of_93453_genomes_GRCh38.tsv", 
+            "./batch_august2020_EHv255_and_EHv322/list_80047_ouf_of_93447_genomes_GRCh38.tsv", 
             sep = "\t",
             quote = F, 
             row.names = F,
