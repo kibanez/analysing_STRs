@@ -41,6 +41,13 @@ df_all_genomes = df_all_genomes %>%
   select(V3, abs_path, V10)
 colnames(df_all_genomes) = c("platekey", "path", "version")
 
+# Create latest or most recent sequenced platekey
+df_all_genomes = df_all_genomes %>%
+  group_by(platekey) %>%
+  mutate(latest_path = max(path)) %>%
+  ungroup() %>%
+  as.data.frame()
+
 # Load all merged clinical data from RE, MAIN and PILOT together
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V1:V9.tsv",
                      sep = "\t",
@@ -95,14 +102,20 @@ l_pid_march = merged_clin_data %>%
 length(l_pid_march)
 # 88359
 
+# Enrich with build info
+df_march_b37$build = rep("GRCh37", length(df_march_b37$V1))
+df_march_b38$build = rep("GRCh38", length(df_march_b38$V1))
+
 # The ones we know are the latest ones, and then from PIDs, we can get the PLATEKEY and the GENDER
 # <PLATEKEY>,<PATH>,<GENDER>,<BUILD>
 df_final_list = rbind(df_march_b37,
                       df_march_b38)
 dim(df_final_list)
-# 92669  3
+# 92669  4
 
-l_final_platekey = unique(df_final_list$V1)
+colnames(df_final_list) = c("platekey", "path", "gender", "build")
+
+l_final_platekey = unique(df_final_list$platekey)
 length(l_final_platekey)
 # 92669
 
@@ -113,94 +126,49 @@ l_popu_genomes = l_popu_genomes$V1
 length(l_popu_genomes)
 # 79849
 
+# Check which ones are NEW to what we had in batch march 2020
+l_popu_genomes_new = setdiff(l_popu_genomes,
+                             l_final_platekey)
+length(l_popu_genomes_new)
+# 404
+
 l_pid_popu = merged_clin_data %>%
-  filter(platekey %in% l_popu_genomes) %>%
+  filter(platekey %in% l_popu_genomes_new) %>%
   select(participant_id) %>%
   unique() %>%
   pull()
 length(l_pid_popu)
-# 79541
+# 399
 
 # Deduplicate  l_pid_popu
 df_popu = merged_clin_data %>%
-  filter(platekey %in% l_popu_genomes)
+  filter(platekey %in% l_popu_genomes_new)
 df_popu = unique(df_popu)
 dim(df_popu)
-# 84098  4
+# 470  4
 
 which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
 length(which_pid_popu_dup)
-# 4557
+# 71
 
 # Many of them is because platekey has been sequenced in b37 and b38, let's see if removing genome_build we still have dups
 df_popu = df_popu %>%
   select(platekey, participant_id, participant_phenotypic_sex)
 df_popu = unique(df_popu)
 dim(df_popu)
-# 79921  3
+# 400  3
 
 which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
 length(which_pid_popu_dup)
-# 380
+# 1
 
-# For all these 380 dup PIDs, we need to take the LATEST platekey == maximum or bigger number
-df_popu = df_popu %>%
-  group_by(participant_id) %>%
-  mutate(latest_platekey = max(platekey)) %>%
-  ungroup() %>%
-  as.data.frame()
+df_popu %>% filter(participant_id %in% which_pid_popu_dup)
+#platekey participant_id participant_phenotypic_sex
+#1 LP3000651-DNA_E02      215001136                       <NA>
+#2 LP3000651-DNA_E02      215001136                     Female
 
-# let's take the max platekey as platekey
-df_popu = df_popu %>%
-  select(latest_platekey, participant_id, participant_phenotypic_sex)
-df_popu = unique(df_popu)
-dim(df_popu)
-# 79595  3
-
-# Let's see whether there are still dups
-which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
-length(which_pid_popu_dup)
-# 54
-
-table(df_popu$participant_phenotypic_sex)
-#Female Indeterminate          Male 
-#42304            27         37484 
-
-# Remove `Indeterminate` sex
-index_indeterminate = which(df_popu$participant_phenotypic_sex %in% "Indeterminate")
-df_popu = df_popu[-index_indeterminate,]
-
-# Remove NA's from sex
-df_popu = df_popu %>%
-  filter(!is.na(participant_phenotypic_sex))
-
-# Check again for dups
-which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant_id))]
-length(which_pid_popu_dup)
-# 39
-
-which_platekey_popu_dup = df_popu %>%
-  filter(participant_id %in% which_pid_popu_dup) %>%
-  select(latest_platekey) %>%
-  unique() %>%
-  pull()
-length(which_platekey_popu_dup)
-# 39
-
-# Let's take the gender we used in batch march 2020
-which_pid_popu_dup_march38 = df_march_b38 %>% filter(V1 %in% which_platekey_popu_dup)
-dim(which_pid_popu_dup_march38)
-# 39  3
-
-index_to_remove = c()
-for (i in 1:length(which_pid_popu_dup_march38$V1)){
-  index_to_remove = c(index_to_remove,
-                      which(df_popu$latest_platekey %in% which_pid_popu_dup_march38$V1[i] &
-                            toupper(df_popu$participant_phenotypic_sex) != toupper(which_pid_popu_dup_march38$V3[i])))
-}
-length(index_to_remove)
-# 39
-
+# Let's remove the NA one
+index_to_remove = which(df_popu$participant_id %in% which_pid_popu_dup & is.na(df_popu$participant_phenotypic_sex))
 df_popu = df_popu[-index_to_remove,]
 
 # Check again for duplicates
@@ -208,12 +176,34 @@ which_pid_popu_dup = df_popu$participant_id[which(duplicated(df_popu$participant
 length(which_pid_popu_dup)
 # 0
 
-df_popu$genome_build = rep("GRCh38", length(df_popu$participant_id))
-colnames(df_popu) = colnames(merged_clin_data)
+# Number of PIDs and Platekeys
+length(unique(df_popu$platekey))
+# 399
+length(unique(df_popu$participant_id))
+# 399
 
-# Update final list of genomes
-final_list = c(final_list,
-               df_popu$participant_id)
+
+colnames(df_popu) = colnames(df_final_list)
+
+# Update final list of genomes - updating with the NEW ONES
+new_platekeys = setdiff(df_popu$platekey,
+                        df_final_list$platekey)
+length(new_platekeys)
+# 222
+
+df_final_list = rbind(df_final_list,
+                      df_popu %>% filter(platekey %in% new_platekeys))
+
+df_final_list$gender = tolower(df_final_list$gender)
+dim(df_final_list)
+# 92891  4
+df_final_list = unique(df_final_list)
+dim(df_final_list)
+# 92891  4
+
+length(unique(df_final_list$platekey))
+# 92891
+
 
 which_pid_dup_b38 = catalog_rd_b38$participant_id[which(duplicated(catalog_rd_b38$participant_id))]
 length(which_pid_dup_b38)
