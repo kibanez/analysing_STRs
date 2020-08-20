@@ -275,7 +275,7 @@ df_new_no_gender = df_new_no_gender %>%
 length(unique(df_new_no_gender$platekey))
 # 6
 
-# Select only GRCh38 sequence
+# They are in both b37 and b38 --> let's take b38
 df_new_no_gender = df_new_no_gender %>%
   filter(build %in% "GRCh38")
 length(unique(df_new_no_gender$platekey))
@@ -304,51 +304,31 @@ dim(df_final_list)
 length(unique(df_final_list$platekey))
 # 93453
 
-
-# They are in both b37 and b38 --> let's take b38
-df_new_no_gender = df_new_no_gender %>%
-  filter(build %in% "GRCh38")
-length(unique(df_new_no_gender$platekey))
-# 6
-
-
-
-# Merge
-df_final_list = rbind(df_final_list,
-                      df_new_no_gender)
-df_final_list = unique(df_final_list)
-dim(df_final_list)
-# 93482  4
-
-length(unique(df_final_list$platekey))
-# 93453
-
-
-to_write_b37 = to_write %>% 
-  filter(Delivery.Version %in% "GRCh37") %>% 
-  select(platekey, latest_path, gender)
+to_write_b37 = df_final_list %>% 
+  filter(build %in% "GRCh37") %>% 
+  select(platekey, path, gender)
 to_write_b37 = unique(to_write_b37)
 dim(to_write_b37)
-# 13024  3
+# 13401  3
 
 # GRCh38
-to_write_b38 = to_write %>% 
-  filter(Delivery.Version %in% "GRCh38") %>% 
-  select(platekey, latest_path, gender)
+to_write_b38 = df_final_list %>% 
+  filter(build %in% "GRCh38") %>% 
+  select(platekey, path, gender)
 to_write_b38 = unique(to_write_b38)
 dim(to_write_b38)
-# 79645  3
+# 80052  3
 
 # Write b37 paths
 write.table(to_write_b37, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_13024_ouf_of_92669_genomes_GRCh37.csv", 
+            "./batch_august2020_EHv255_and_EHv322/list_13401_ouf_of_93453_genomes_GRCh37.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
             col.names = F)
 
 write.table(to_write_b37, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_13024_ouf_of_92669_genomes_GRCh37.tsv", 
+            "./batch_august2020_EHv255_and_EHv322/list_13401_ouf_of_93453_genomes_GRCh37.tsv", 
             sep = "\t",
             quote = F, 
             row.names = F,
@@ -357,14 +337,14 @@ write.table(to_write_b37,
 
 # Write b38 paths
 write.table(to_write_b38, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_79645_ouf_of_92669_genomes_GRCh38.csv", 
+            "./batch_august2020_EHv255_and_EHv322/list_80052_ouf_of_93453_genomes_GRCh38.csv", 
             sep = ",",
             quote = F, 
             row.names = F,
             col.names = F)
 
 write.table(to_write_b38, 
-            "./batch_march2020_EHv2.5.5_and_EHv3.2.2/list_79645_ouf_of_92669_genomes_GRCh38.tsv", 
+            "./batch_august2020_EHv255_and_EHv322/list_80052_ouf_of_93453_genomes_GRCh38.tsv", 
             sep = "\t",
             quote = F, 
             row.names = F,
