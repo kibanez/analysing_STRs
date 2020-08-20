@@ -214,6 +214,116 @@ dim(df_final_list)
 length(unique(df_final_list$platekey))
 # 93068
 
+# Check whether the list of genomes in popu are included
+list_extra_popu_genomes = read.table("~/Documents/STRs/data/research/input/list_644_genomes_not_included_in_batch_march2020_but_popu.tsv",
+                                     stringsAsFactors = F,
+                                     header = F)
+list_extra_popu_genomes = list_extra_popu_genomes$V1
+length(list_extra_popu_genomes)
+# 644
+
+length(intersect(list_extra_popu_genomes, 
+                 df_final_list$platekey))
+# 259
+
+which_new = setdiff(list_extra_popu_genomes,
+                    df_final_list$platekey)
+length(which_new)
+# 385
+
+# Are these somatic??
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clin_data_merged_V1:V9.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 1299442  32
+
+clin_data %>% filter(platekey %in% which_new) %>% select(type) %>% table()
+# Pilot
+
+# They are 385 new platekeys that have no clinical information, let's assign them "female" even though they are not
+df_new_no_gender = df_all_genomes %>% filter(platekey %in% which_new)
+length(unique(df_new_no_gender$platekey))
+# 385
+
+# Recode version to GRCh37/GRCh38
+df_new_no_gender = df_new_no_gender %>%
+  mutate(build = case_when(version == "V2" ~ "GRCh37",
+                           version == "V1" ~ "GRCh37",
+                           version == "V4" ~ "GRCh38"))
+
+# Assign female to all, even though is not true - but we don't have info
+df_new_no_gender$gender = rep("female", length(df_new_no_gender$platekey))
+# Order 
+df_new_no_gender = df_new_no_gender %>%
+  select(platekey, latest_path, gender, build)
+df_new_no_gender = unique(df_new_no_gender)
+dim(df_new_no_gender)
+# 391  4
+
+# Remove duplicates of having b37 and b38 genome builds
+l_dups = df_new_no_gender$platekey[which(duplicated(df_new_no_gender$platekey))]
+length(l_dups)
+# 6
+
+final_df_new_no_gender = df_new_no_gender %>%
+  filter(!platekey %in% l_dups)
+
+df_new_no_gender = df_new_no_gender %>%
+  filter(platekey %in% l_dups)
+length(unique(df_new_no_gender$platekey))
+# 6
+
+# Select only GRCh38 sequence
+df_new_no_gender = df_new_no_gender %>%
+  filter(build %in% "GRCh38")
+length(unique(df_new_no_gender$platekey))
+# 6
+
+# merge them after dedup
+final_df_new_no_gender = rbind(final_df_new_no_gender,
+                               df_new_no_gender)
+final_df_new_no_gender = unique(final_df_new_no_gender)
+dim(final_df_new_no_gender)
+# 385  4
+
+length(unique(final_df_new_no_gender$platekey))
+# 385
+
+# Reorder columns
+colnames(final_df_new_no_gender) = colnames(df_final_list)
+
+# Merge all
+df_final_list = rbind(df_final_list,
+                      final_df_new_no_gender)
+df_final_list = unique(df_final_list)
+dim(df_final_list)
+# 93453  4
+
+length(unique(df_final_list$platekey))
+# 93453
+
+
+# They are in both b37 and b38 --> let's take b38
+df_new_no_gender = df_new_no_gender %>%
+  filter(build %in% "GRCh38")
+length(unique(df_new_no_gender$platekey))
+# 6
+
+
+
+# Merge
+df_final_list = rbind(df_final_list,
+                      df_new_no_gender)
+df_final_list = unique(df_final_list)
+dim(df_final_list)
+# 93482  4
+
+length(unique(df_final_list$platekey))
+# 93453
+
+
 to_write_b37 = to_write %>% 
   filter(Delivery.Version %in% "GRCh37") %>% 
   select(platekey, latest_path, gender)
