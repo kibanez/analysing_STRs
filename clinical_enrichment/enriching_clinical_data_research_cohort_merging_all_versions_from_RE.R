@@ -81,31 +81,31 @@ clin_data_merged = rbind(clin_data_merged,
                          clin_data_v9 %>% filter(participant_id %in% l_new_pid_v9))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-#
+# 1168468  31
 
 # V9 with V8
 pids_clin_data_v8 = unique(clin_data_v8$participant_id)
 l_new_pid_v8 = setdiff(pids_clin_data_v8, clin_data_merged$participant_id)
 length(l_new_pid_v8)
-# 339
+# 331
 
 clin_data_merged = rbind(clin_data_merged,
                          clin_data_v8 %>% filter(participant_id %in% l_new_pid_v8))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1164289 31
+# 1172993 31
 
 # merged with V7
 pids_clin_data_v7 = unique(clin_data_v7$participant_id)
 l_new_pid_v7 = setdiff(pids_clin_data_v7, clin_data_merged$participant_id)
 length(l_new_pid_v7)
-# 869 
+# 865
 
 clin_data_merged = rbind(clin_data_merged,
                          clin_data_v7 %>% filter(participant_id %in% l_new_pid_v7))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1178119 31
+# 1186715 31
 
 # merged with V6
 pids_clin_data_v6 = unique(clin_data_v6$participant_id)
@@ -117,7 +117,7 @@ clin_data_merged = rbind(clin_data_merged,
                          clin_data_v6 %>% filter(participant_id %in% l_new_pid_v6))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1180612 31
+# 1189208 31
 
 # merged with V5
 pids_clin_data_v5 = unique(clin_data_v5$participant_id)
@@ -129,23 +129,23 @@ clin_data_merged = rbind(clin_data_merged,
                          clin_data_v5 %>% filter(participant_id %in% l_new_pid_v5))
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 1180672 31
+# 1189268 31
 
 # Let's write this into file, not to re-run
 write.table(clin_data_merged,
-            "./clin_data_merged_V5:V9.tsv",
+            "./clin_data_merged_V5:V10.tsv",
             quote = F,
             row.names = F,
             col.names = T,
             sep = "\t")
 
 # Load from the beginning all merged data
-clin_data_merged = read.csv("./clin_data_merged_V5:V9.tsv",
+clin_data_merged = read.csv("./clin_data_merged_V5:V10.tsv",
                             stringsAsFactors = F,
                             header = T,
                             sep = "\t")
 dim(clin_data_merged)
-# 1180672 31
+# 1189268 31
 
 # Merge with V4 
 clin_data_v4 = read.csv("../clinical_data/rd_genomes_all_data_100720_V4.tsv",
