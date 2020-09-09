@@ -17,7 +17,7 @@ setwd("~/Documents/STRs/clinical_data/clinical_research_cohort/")
 # Complete until V4
 # V1,V2,V3 - take the list of genomes, and check/confirm they are all included in any of the versions from V4
 
-# NOT RUN ANYMORE -- go to line 97
+# NOT RUN ANYMORE -- go to line 143
 clin_data_v10 = read.csv("../clinical_data/rd_genomes_all_data_080920_V10.tsv",
                         header = TRUE,
                         stringsAsFactors = FALSE,
