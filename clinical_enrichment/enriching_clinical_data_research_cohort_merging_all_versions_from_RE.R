@@ -17,7 +17,7 @@ setwd("~/Documents/STRs/clinical_data/clinical_research_cohort/")
 # Complete until V4
 # V1,V2,V3 - take the list of genomes, and check/confirm they are all included in any of the versions from V4
 
-# NOT RUN ANYMORE -- go to line 143
+# NOT RUN ANYMORE -- go to line 424
 clin_data_v10 = read.csv("../clinical_data/rd_genomes_all_data_080920_V10.tsv",
                         header = TRUE,
                         stringsAsFactors = FALSE,
@@ -512,12 +512,21 @@ drops <- c("normalised_specific_disease","panel_name","panel_version", "hpo_term
 clin_data_merged = clin_data_merged[ , !(names(clin_data_merged) %in% drops)]
 clin_data_merged = unique(clin_data_merged)
 dim(clin_data_merged)
-# 152337  23
+# 152337  32
 
 # Remove duplicates
 l_all_pids = unique(clin_data_merged$participant_id)
 length(l_all_pids)
 # 93614
+
+# Write all raw data 
+write.table(clin_data_merged, 
+            file = "clinical_data_research_cohort_93614_PIDs_merging_RE_V1toV10.tsv",
+            quote = F,
+            sep = "\t",
+            row.names = F,
+            col.names = T)
+
 
 # There are many duplicates where genetic_vs_reported have diff values - let's take the ones not NA
 dedup_clin_data_merged = filter(clin_data_merged, (!is.na(participant_medical_review_qc_state_code) & programme %in% "Rare Diseases") | programme %in% c("Pilot", "Cancer"))
