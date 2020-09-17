@@ -145,7 +145,7 @@ dim(clin_data)
 #  1124633   17
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
-colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported","diseasegroup_list", "diseasesubgroup_list")
+colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported", "diseasesubgroup_list", "diseasegroup_list")
 
 # Generate extra columns from clin data for pilot clin data
 pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$participant_id))
