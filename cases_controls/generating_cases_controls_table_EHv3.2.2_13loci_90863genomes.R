@@ -1,4 +1,6 @@
 # Objective: create a single table including all 13 loci, and 90,863 genomes for which we have repeat-size for all these genes
+# Enrich with relatedness (`Yes` or `No`)
+# Enrich with population (batch1 AND batch2)
 # For EHv3.2.2
 date ()
 Sys.info ()[c("nodename", "user")]
