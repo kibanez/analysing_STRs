@@ -107,5 +107,9 @@ popu_merged = unique(popu_merged)
 dim(popu_merged)
 # 79849 2
 
-# Union batch1 and batch2
-# Since batch1 has been created from a random forest and is better curated, 
+write.table(popu_merged,
+            "popu_merged_batch1_batch2_79849_genomes.tsv",
+            quote = F,
+            row.names = F,
+            col.names = F,
+            sep = "\t")
