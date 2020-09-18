@@ -42,3 +42,70 @@ l_unrelated_batch2 = l_unrelated_batch2$V1
 length(l_unrelated_batch2)
 # 55847
 
+# Check quality of batch2 comparing to batch1
+l_intersected_genomes_b1_b2 = intersect(popu_batch1$ID, popu_batch2$plate_key)
+length(l_intersected_genomes_b1_b2)
+# 58,003
+
+# are the predicted ancestry same?
+# let's recode batch1
+popu_batch1 = popu_batch1 %>%
+  mutate(superpopu = case_when(best_guess_predicted_ancstry == "PJL" ~ "SAS",
+                               best_guess_predicted_ancstry == "GBR" ~ "EUR",
+                               best_guess_predicted_ancstry == "CEU" ~ "EUR",
+                               best_guess_predicted_ancstry == "TSI" ~ "EUR",
+                               best_guess_predicted_ancstry == "PUR" ~ "AMR",
+                               best_guess_predicted_ancstry == "ACB" ~ "AFR",
+                               best_guess_predicted_ancstry == "GIH" ~ "SAS",
+                               best_guess_predicted_ancstry == "ASW" ~ "AFR",
+                               best_guess_predicted_ancstry == "MXL" ~ "AMR",
+                               best_guess_predicted_ancstry == "ESN" ~ "AFR",
+                               best_guess_predicted_ancstry == "LWK" ~ "AFR",
+                               best_guess_predicted_ancstry == "CHS" ~ "EAS",
+                               best_guess_predicted_ancstry == "BEB" ~ "SAS",
+                               best_guess_predicted_ancstry == "KHV" ~ "EAS",
+                               best_guess_predicted_ancstry == "CLM" ~ "AMR",
+                               best_guess_predicted_ancstry == "MSL" ~ "AFR",
+                               best_guess_predicted_ancstry == "YRI" ~ "AFR",
+                               best_guess_predicted_ancstry == "GWD" ~ "AFR",
+                               best_guess_predicted_ancstry == "FIN" ~ "EUR",
+                               best_guess_predicted_ancstry == "ITU" ~ "SAS",
+                               best_guess_predicted_ancstry == "JPT" ~ "EAS",
+                               best_guess_predicted_ancstry == "STU" ~ "SAS",
+                               best_guess_predicted_ancstry == "CHB" ~ "EAS",
+                               best_guess_predicted_ancstry == "CDX" ~ "EAS",
+                               best_guess_predicted_ancstry == "PEL" ~ "AMR",
+                               best_guess_predicted_ancstry == "IBS" ~ "EUR"))
+
+# Do intersected genomes the same superpopu label in b1 and b2?
+checking_intersected = left_join(popu_batch1 %>% filter(ID %in% l_intersected_genomes_b1_b2) %>% select(ID, best_guess_predicted_ancstry, self_reported, superpopu),
+                                 popu_batch2 %>% filter(plate_key %in% l_intersected_genomes_b1_b2) %>% select(plate_key, ancestry0_8),
+                                 by = c("ID" = "plate_key"))
+dim(checking_intersected)
+# 58003  5
+
+checking_intersected = checking_intersected %>%
+  mutate(are_equals = superpopu == ancestry0_8)
+table(checking_intersected$are_equals)
+#FALSE  TRUE 
+#3979 54024
+
+View(checking_intersected %>% filter(!are_equals))
+# They are all FALSE == `unassigned` in batch2
+
+l_not_consider_b2 = checking_intersected %>% filter(!are_equals) %>% select(ID) %>% pull() %>% unique()
+length(l_not_consider_b2)
+# 3979
+
+# So, we can take ALL b1 + setidff(b2, l_not_consider_b2)
+popu_merged = popu_batch1 %>% select(ID, superpopu)
+aux_popu_batch2 = popu_batch2 %>% filter(!plate_key %in% l_not_consider_b2) %>% select(plate_key, ancestry0_8)
+colnames(aux_popu_batch2) = c("ID", "superpopu")
+
+popu_merged = rbind(popu_merged, aux_popu_batch2)
+popu_merged = unique(popu_merged)
+dim(popu_merged)
+# 79849 2
+
+# Union batch1 and batch2
+# Since batch1 has been created from a random forest and is better curated, 
