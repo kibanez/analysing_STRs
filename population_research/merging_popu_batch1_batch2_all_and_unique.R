@@ -15,4 +15,15 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.3.0
 # Set environment
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/")
 
-# 
+# For batch1, we are using Matthias' last work, with fine grained info
+popu_batch1 = read.csv("./GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+                       stringsAsFactors = F,
+                       header = T)
+dim(popu_batch1)
+# 59464  36
+
+l_unrelated_batch1 = read.table("./60k_HWE_30k_random_unrelated_participants.txt", 
+                                stringsAsFactors = F)
+l_unrelated_batch1 = l_unrelated_batch1$V1
+length(l_unrelated_batch1)
+# 38344
