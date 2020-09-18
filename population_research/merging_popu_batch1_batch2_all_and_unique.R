@@ -27,3 +27,18 @@ l_unrelated_batch1 = read.table("./60k_HWE_30k_random_unrelated_participants.txt
 l_unrelated_batch1 = l_unrelated_batch1$V1
 length(l_unrelated_batch1)
 # 38344
+
+# For batch2, we are using Thanos' work, and aggregated data in LK (latest release on RE, 3rd Sept)
+popu_batch2 = read.csv("./batch2/aggV2_M30K_60K_1KGP3_ancestry_assignment_probs_R9_08062020.tsv",
+                       stringsAsFactors = F,
+                       header = T,
+                       sep = " ")
+dim(popu_batch2)
+# 78388  33
+
+l_unrelated_batch2 = read.table("./batch2/l_unrelated_55847_genomes_batch2.txt",
+                                stringsAsFactors = F)
+l_unrelated_batch2 = l_unrelated_batch2$V1
+length(l_unrelated_batch2)
+# 55847
+
