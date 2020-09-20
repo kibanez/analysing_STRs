@@ -236,7 +236,25 @@ dim(clin_data_selected)
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
 for (i in 1:length(l_genomes_across_selected_loci)){
-  locus_data = merged_data %>% filter(gene %in% l_genes[i])
+  locus_data = merged_data %>% filter(grepl(l_genomes_across_selected_loci[i], list_samples),
+                                      gene %in% l_genes) %>%
+    select(allele, gene, list_samples)
+  
+  # We need to keep specifically with the sample_id, in order to know whether it's x2 or not
+  for (num_allele in 1:length(locus_data$allele)){
+    l_samples = strsplit(locus_data$list_samples[num_allele], ";")[[1]]
+    index_sample = which(grepl(l_genomes_across_selected_loci[i], l_samples))
+    if (grepl("x2", l_samples[index_sample])){
+      locus_data = rbind(locus_data,
+                         locus_data[num_allele,])
+    }
+  }
+  
+  # Remove `list_samples` from locus_data
+  locus_data = locus_data %>% select(allele, gene)
+  
+  l_samples = strsplit(locus_data$list_samples[1], ";")[[1]]
+  
   locus_data_new = data.frame()
   
   if (dim(locus_data)[1] >0){
