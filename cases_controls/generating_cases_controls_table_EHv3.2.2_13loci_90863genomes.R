@@ -189,15 +189,30 @@ dim(clin_data)
 popu_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv",
                        sep = "\t",
                        stringsAsFactors = F,
-                       header = T)
+                       header = F)
 dim(popu_merged)
-# 79848  2
+# 79849  2
+colnames(popu_merged) = c("platekey", "superpopu")
 
 l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_62595_UNRELATED_unique_genomes_batch1_batch2.txt",
                                 stringsAsFactors = F)
 l_unrelated_genomes = l_unrelated_genomes$V1
 length(l_unrelated_genomes)
 # 62595
+
+# Let's enrich clin data with this
+clin_data$unrelated = rep("No", length(clin_data$platekey))
+clin_data$unrelated[which(clin_data$platekey %in% l_unrelated_genomes)] = "Yes"
+dim(clin_data)
+# 1189564 18
+
+# Let's enrich with merged b1&b2 popu data
+clin_data = left_join(clin_data,
+                      popu_merged,
+                      by ="platekey")
+clin_data = unique(clin_data)
+dim(clin_data)
+# 1189564  19
 
 l_genes = sort(unique(merged_data$gene))
 
