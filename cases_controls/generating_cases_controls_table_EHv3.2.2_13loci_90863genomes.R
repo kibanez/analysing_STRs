@@ -317,7 +317,7 @@ for (i in 1:length(l_genomes_across_selected_loci)){
   if (dim(clin_data_genome)[1] <= 0){
     to_include = rep('.', dim(clin_data_genome)[2])
     to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-    colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry", "unrelated", "superpopu_merged")
+    colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry", "unrelated", "superpopu")
   }else{
     to_include = clin_data_genome
   }
