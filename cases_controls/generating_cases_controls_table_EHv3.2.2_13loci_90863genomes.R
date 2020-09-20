@@ -252,11 +252,52 @@ for (i in 1:length(l_genomes_across_selected_loci)){
   
   # Remove `list_samples` from locus_data
   locus_data = locus_data %>% select(allele, gene)
+  locus_data$platekey = rep(l_genomes_across_selected_loci[i], length(locus_data$allele))
   
-  l_samples = strsplit(locus_data$list_samples[1], ";")[[1]]
+  # Reformat df
+  ar_alleles = locus_data %>% filter(gene %in% "AR") %>% t() %>% as.data.frame() 
+  atn1_alleles = locus_data %>% filter(gene %in% "ATN1") %>% t() %>% as.data.frame() 
+  atxn1_alleles = locus_data %>% filter(gene %in% "ATXN1") %>% t() %>% as.data.frame() 
+  atxn2_alleles = locus_data %>% filter(gene %in% "ATXN2") %>% t() %>% as.data.frame() 
+  atxn3_alleles = locus_data %>% filter(gene %in% "ATXN3") %>% t() %>% as.data.frame() 
+  atxn7_alleles = locus_data %>% filter(gene %in% "ATXN7") %>% t() %>% as.data.frame() 
+  cacna1a_alleles = locus_data %>% filter(gene %in% "CACNA1A") %>% t() %>% as.data.frame() 
+  c9orf72_alleles = locus_data %>% filter(gene %in% "C9ORF72") %>% t() %>% as.data.frame() 
+  dmpk_alleles = locus_data %>% filter(gene %in% "DMPK") %>% t() %>% as.data.frame() 
+  fmr1_alleles = locus_data %>% filter(gene %in% "FMR1") %>% t() %>% as.data.frame() 
+  fxn_alleles = locus_data %>% filter(gene %in% "FXN") %>% t() %>% as.data.frame() 
+  htt_alleles = locus_data %>% filter(gene %in% "HTT") %>% t() %>% as.data.frame() 
+  tbp_alleles = locus_data %>% filter(gene %in% "TBP") %>% t() %>% as.data.frame() 
   
-  locus_data_new = data.frame()
+  all_alleles = cbind(ar_alleles[1,], 
+                      atn1_alleles[1,],
+                      atxn1_alleles[1,],
+                      atxn2_alleles[1,],
+                      atxn3_alleles[1,],
+                      atxn7_alleles[1,],
+                      cacna1a_alleles[1,],
+                      c9orf72_alleles[1,],
+                      dmpk_alleles[1,],
+                      fmr1_alleles[1,],
+                      fxn_alleles[1,],
+                      htt_alleles[1,],
+                      tbp_alleles[1,])
+  colnames(all_alleles) = c("AR_a1", "AR_a2",
+                            "ATN1_a1", "ATN1_a2",
+                            "ATXN1_a1", "ATXN1_a2",
+                            "ATXN2_a1", "ATXN2_a2",
+                            "ATXN3_a1", "ATXN3_a2",
+                            "ATXN7_a1", "ATXN7_a2",
+                            "CACNA1A_a1", "CACNA1A_a2",
+                            "C9ORF72_a1", "C9ORF72_a2",
+                            "DMPK_a1", "DMPK_a2",
+                            "FMR1_a1", "FMR1_a2",
+                            "FXN_a1", "FXN_a2",
+                            "HTT_a1", "HTT_a2",
+                            "TBP_a1", "TBP_a2")
+  all_alleles$platekey = rep(l_genomes_across_selected_loci[i], length(all_alleles$AR_a1))
   
+  # Let's enrich now with clinical data for this genome
   if (dim(locus_data)[1] >0){
     # For each row, we need to split/separate in many rows as alleles
     for (j in 1:length(locus_data$chr)){
