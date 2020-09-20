@@ -235,7 +235,9 @@ dim(clin_data_selected)
 #l_genes = sort(unique(merged_data$gene))
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
-for (i in 1:length(l_genomes_across_selected_loci)){
+locus_data_new = c()
+#for (i in 1:length(l_genomes_across_selected_loci)){
+for (i in 1:5){
   locus_data = merged_data %>% filter(grepl(l_genomes_across_selected_loci[i], list_samples),
                                       gene %in% l_genes) %>%
     select(allele, gene, list_samples)
@@ -248,7 +250,7 @@ for (i in 1:length(l_genomes_across_selected_loci)){
       locus_data = rbind(locus_data,
                          locus_data[num_allele,])
     }
-  }
+  }# num_alelle
   
   # Remove `list_samples` from locus_data
   locus_data = locus_data %>% select(allele, gene)
@@ -256,6 +258,11 @@ for (i in 1:length(l_genomes_across_selected_loci)){
   
   # Reformat df
   ar_alleles = locus_data %>% filter(gene %in% "AR") %>% t() %>% as.data.frame() 
+  # chrX: if there is only one allele
+  if (dim(ar_alleles)[2] < 2){
+    ar_alleles = cbind(ar_alleles, rbind(NA, "AR", l_genomes_across_selected_loci[i]))
+  }
+  
   atn1_alleles = locus_data %>% filter(gene %in% "ATN1") %>% t() %>% as.data.frame() 
   atxn1_alleles = locus_data %>% filter(gene %in% "ATXN1") %>% t() %>% as.data.frame() 
   atxn2_alleles = locus_data %>% filter(gene %in% "ATXN2") %>% t() %>% as.data.frame() 
@@ -265,6 +272,11 @@ for (i in 1:length(l_genomes_across_selected_loci)){
   c9orf72_alleles = locus_data %>% filter(gene %in% "C9ORF72") %>% t() %>% as.data.frame() 
   dmpk_alleles = locus_data %>% filter(gene %in% "DMPK") %>% t() %>% as.data.frame() 
   fmr1_alleles = locus_data %>% filter(gene %in% "FMR1") %>% t() %>% as.data.frame() 
+  # chrX: if there is only one allele
+  if (dim(fmr1_alleles)[2] < 2){
+    fmr1_alleles = cbind(fmr1_alleles, rbind(NA, "FMR1", l_genomes_across_selected_loci[i]))
+  }
+  
   fxn_alleles = locus_data %>% filter(gene %in% "FXN") %>% t() %>% as.data.frame() 
   htt_alleles = locus_data %>% filter(gene %in% "HTT") %>% t() %>% as.data.frame() 
   tbp_alleles = locus_data %>% filter(gene %in% "TBP") %>% t() %>% as.data.frame() 
@@ -298,60 +310,39 @@ for (i in 1:length(l_genomes_across_selected_loci)){
   all_alleles$platekey = rep(l_genomes_across_selected_loci[i], length(all_alleles$AR_a1))
   
   # Let's enrich now with clinical data for this genome
-  if (dim(locus_data)[1] >0){
-    # For each row, we need to split/separate in many rows as alleles
-    for (j in 1:length(locus_data$chr)){
-      # number of samples in which a STR-expansion has been detected
-      number_samp = strsplit(locus_data$list_samples[j],";")[[1]]
-      
-      # Clean the name of the VCF files -- removing the full path from them, and keeping only the VCF name
-      number_samp = sub("^EH_", "", number_samp)
-      number_samp = sub(".vcf", "", number_samp)
-      
-      l_which_homo = which(grepl("x2",number_samp))
-      
-      for (k in 1:length(number_samp)){
-        # we write for each LP/sample/participant the same line/row, but also enriching with clinical data
-        new_line = locus_data[j,c(1:10)]
-        number_samp[k] = gsub("_x2", "", number_samp[k])
-        new_line$list_vcf_affected = number_samp[k]
-        
-        to_include = clin_data %>% 
-          filter(platekey %in% number_samp[k]) %>% 
-          select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry, unrelated, superpopu) %>%
-          unique()
-        
-        if (dim(to_include)[1] <= 0){
-          to_include = rep('.', dim(to_include)[2])
-          to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry", "unrelated", "superpopu_merged")
-        }
-        new_line = cbind(new_line, to_include)
-        locus_data_new = rbind(locus_data_new, new_line)
-        
-        # If it's an alt homo (1/1) we need to repeat the line
-        if (k %in% l_which_homo){
-          locus_data_new = rbind(locus_data_new, new_line)
-        }
-      }# k
-    }#j
-  }# dim(locus_data) > 0
+  clin_data_genome = clin_data_selected %>% 
+    filter(platekey %in% l_genomes_across_selected_loci[i]) %>%
+    select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry, unrelated, superpopu) %>%
+    unique()
   
-  # Write all `locus_data_new` output into a file
-  output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
-  output_file = paste(output_file, ".tsv" , sep = ".")
-  write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
+  if (dim(clin_data_genome)[1] <= 0){
+    to_include = rep('.', dim(clin_data_genome)[2])
+    to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
+    colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry", "unrelated", "superpopu_merged")
+  }else{
+    to_include = clin_data_genome
+  }
   
-  # Select interested columns
-  locus_data_new = locus_data_new %>%
-    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry)
-  
-  # Adapt column names (for better understanding)
-  colnames(locus_data_new)[3] = "platekey"
-  colnames(locus_data_new)[6] = "repeat_size"
-  output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
-  output_file = paste(output_file, "_simplified.tsv" , sep = "")
-  write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
+  new_line = cbind(all_alleles, to_include)
+  locus_data_new = rbind(locus_data_new, new_line)
+    
+}# length(l_genomes_13)
+
+# Write all `locus_data_new` output into a file
+output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
+output_file = paste(output_file, ".tsv" , sep = ".")
+write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
+
+# Select interested columns
+locus_data_new = locus_data_new %>%
+  select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry)
+
+# Adapt column names (for better understanding)
+colnames(locus_data_new)[3] = "platekey"
+colnames(locus_data_new)[6] = "repeat_size"
+output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
+output_file = paste(output_file, "_simplified.tsv" , sep = "")
+write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
   
 }
 
