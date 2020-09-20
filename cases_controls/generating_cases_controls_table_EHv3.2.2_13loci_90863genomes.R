@@ -236,8 +236,7 @@ dim(clin_data_selected)
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
 locus_data_new = c()
-#for (i in 1:length(l_genomes_across_selected_loci)){
-for (i in 1:5){
+for (i in 1:length(l_genomes_across_selected_loci)){
   locus_data = merged_data %>% filter(grepl(l_genomes_across_selected_loci[i], list_samples),
                                       gene %in% l_genes) %>%
     select(allele, gene, list_samples)
@@ -329,23 +328,5 @@ for (i in 1:5){
 }# length(l_genomes_13)
 
 # Write all `locus_data_new` output into a file
-output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
-output_file = paste(output_file, ".tsv" , sep = ".")
+output_file = paste("table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2", ".tsv" , sep = "")
 write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
-
-# Select interested columns
-locus_data_new = locus_data_new %>%
-  select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry)
-
-# Adapt column names (for better understanding)
-colnames(locus_data_new)[3] = "platekey"
-colnames(locus_data_new)[6] = "repeat_size"
-output_file = paste("table_STR_repeat_size_each_row_allele_EHv3.2.2", l_genes[i], sep = "_")
-output_file = paste(output_file, "_simplified.tsv" , sep = "")
-write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
-  
-}
-
-
-
-
