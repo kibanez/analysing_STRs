@@ -206,17 +206,36 @@ clin_data$unrelated[which(clin_data$platekey %in% l_unrelated_genomes)] = "Yes"
 dim(clin_data)
 # 1189564 18
 
+clin_data = unique(clin_data)
+dim(clin_data)
+# 111312  18
+
 # Let's enrich with merged b1&b2 popu data
 clin_data = left_join(clin_data,
                       popu_merged,
                       by ="platekey")
 clin_data = unique(clin_data)
 dim(clin_data)
-# 1189564  19
+# 111312  19
 
-l_genes = sort(unique(merged_data$gene))
+# We now want to have info for 13 loci
+# and intersected 
 
-for (i in 1:length(l_genes)){
+l_genomes_across_selected_loci = read.table("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/list_90863_unique_similar_genomes_across_13_loci.txt",
+                            stringsAsFactors = F)
+l_genomes_across_selected_loci = l_genomes_across_selected_loci$V1
+length(l_genomes_across_selected_loci)
+# 90863
+
+clin_data_selected = clin_data %>%
+  filter(platekey %in% l_genomes_across_selected_loci)
+dim(clin_data_selected)
+# 89821  19
+
+#l_genes = sort(unique(merged_data$gene))
+l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
+
+for (i in 1:length(l_genomes_across_selected_loci)){
   locus_data = merged_data %>% filter(gene %in% l_genes[i])
   locus_data_new = data.frame()
   
@@ -240,14 +259,13 @@ for (i in 1:length(l_genes)){
         
         to_include = clin_data %>% 
           filter(platekey %in% number_samp[k]) %>% 
-          select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry) %>%
+          select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry, unrelated, superpopu) %>%
           unique()
         
         if (dim(to_include)[1] <= 0){
           to_include = rep('.', dim(to_include)[2])
           to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry")
-          
+          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry", "unrelated", "superpopu_merged")
         }
         new_line = cbind(new_line, to_include)
         locus_data_new = rbind(locus_data_new, new_line)
