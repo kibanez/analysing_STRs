@@ -165,7 +165,7 @@ pilot_clin_data = pilot_clin_data %>%
 clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
-# 1129467  17
+# 1189564  17
 
 
 # As output
@@ -182,7 +182,22 @@ dim(clin_data)
 # Age at recruitment
 # Age of onset
 # no of family participants
-# ethnic 
+# ethnic or popu
+# unrelated (`yes` or `no`)
+
+# Now in sep'20, we do have latest merged batch1 and batch2 data for population
+popu_merged = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv",
+                       sep = "\t",
+                       stringsAsFactors = F,
+                       header = T)
+dim(popu_merged)
+# 79848  2
+
+l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_62595_UNRELATED_unique_genomes_batch1_batch2.txt",
+                                stringsAsFactors = F)
+l_unrelated_genomes = l_unrelated_genomes$V1
+length(l_unrelated_genomes)
+# 62595
 
 l_genes = sort(unique(merged_data$gene))
 
