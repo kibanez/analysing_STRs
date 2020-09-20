@@ -78,73 +78,72 @@ dim(pilot_clin_data)
 # 4834  15
 
 # Main
-clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_080920_V10.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(clin_data)  
-# 1124633  31
-
+# 1184730  31
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
-# 87395  2
+# 87028  2
 
 # Let´s put all HPO terms into 1 single string splitted by ','
 list_hpos = clin_data %>% group_by(participant_id) %>% summarise(hpo_list = toString(unique(hpo_term))) %>% ungroup() %>% as.data.frame()
 dim(list_hpos)
-# 87395  2
+# 87028  2
 
 # Let's put all specific diseases into 1 single string splitted by ','
 list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_list = toString(unique(normalised_specific_disease))) %>% ungroup() %>% as.data.frame()
 dim(list_diseases)
-# 87395  2
+# 87028  2
 
 list_disease_group = clin_data %>% group_by(participant_id) %>% summarise(diseasegroup_list = toString(unique(disease_group))) %>% ungroup() %>% as.data.frame()
 dim(list_disease_group)
-# 87395  2
+# 87028  2
 
 list_disease_subgroup = clin_data %>% group_by(participant_id) %>% summarise(diseasesubgroup_list = toString(unique(disease_sub_group))) %>% ungroup() %>% as.data.frame()
 dim(list_disease_subgroup)
-# 87395  2
+# 87028  2
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
   select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genome_build, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
 dim(clin_data)
-# 1124633  12
+# 1184730  12
 
 clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  13
+# 1184730  13
 
 clin_data = left_join(clin_data,
                       list_disease_group,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  14
+# 1184730  14
 
 clin_data = left_join(clin_data,
                       list_disease_subgroup,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  15
+# 1184730  15
 
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  16
+# 1184730  16
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-#  1124633   17
+# 1184730   17
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
 colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported", "diseasesubgroup_list", "diseasegroup_list")
