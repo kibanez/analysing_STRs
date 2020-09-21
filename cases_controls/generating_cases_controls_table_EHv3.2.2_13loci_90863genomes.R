@@ -193,11 +193,11 @@ dim(popu_merged)
 # 79849  2
 colnames(popu_merged) = c("platekey", "superpopu")
 
-l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_62595_UNRELATED_unique_genomes_batch1_batch2.txt",
+l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_63702_UNRELATED_unique_genomes_batch1_batch2.txt",
                                 stringsAsFactors = F)
 l_unrelated_genomes = l_unrelated_genomes$V1
 length(l_unrelated_genomes)
-# 62595
+# 63702
 
 # Let's enrich clin data with this
 clin_data$unrelated = rep("No", length(clin_data$platekey))
@@ -217,9 +217,24 @@ clin_data = unique(clin_data)
 dim(clin_data)
 # 111312  19
 
+# clin_data contains population for merged (superpopu) and batch1 (best_guess_predicted_ancstry and self_reported) data
+# let's enrich it with batch2 popu data
+popu_batch2 = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/aggV2_M30K_60K_1KGP3_ancestry_assignment_probs_R9_08062020.tsv",
+                       stringsAsFactors = F,
+                       sep = " ",
+                       header = T)
+dim(popu_batch2)
+# 78388  33
+
+clin_data = left_join(clin_data,
+                      popu_batch2 %>% select(plate_key, ancestry0_8),
+                      by = c("platekey" = "plate_key"))
+clin_data = unique(clin_data)
+dim(clin_data)
+# 111312  20
+
 # We now want to have info for 13 loci
 # and intersected 
-
 l_genomes_across_selected_loci = read.table("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/list_90863_unique_similar_genomes_across_13_loci.txt",
                             stringsAsFactors = F)
 l_genomes_across_selected_loci = l_genomes_across_selected_loci$V1
@@ -234,18 +249,8 @@ dim(clin_data_selected)
 #l_genes = sort(unique(merged_data$gene))
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
-l_genomes_across_selected_loci_p1 = l_genomes_across_selected_loci[c(1:10000)]
-l_genomes_across_selected_loci_p2 = l_genomes_across_selected_loci[c(10001:20000)]
-l_genomes_across_selected_loci_p3 = l_genomes_across_selected_loci[c(20001:30000)]
-l_genomes_across_selected_loci_p4 = l_genomes_across_selected_loci[c(30001:40000)]
-l_genomes_across_selected_loci_p5 = l_genomes_across_selected_loci[c(40001:50000)]
-l_genomes_across_selected_loci_p6 = l_genomes_across_selected_loci[c(50001:60000)]
-l_genomes_across_selected_loci_p7 = l_genomes_across_selected_loci[c(60001:70000)]
-l_genomes_across_selected_loci_p8 = l_genomes_across_selected_loci[c(70001:80000)]
-l_genomes_across_selected_loci_p9 = l_genomes_across_selected_loci[c(80001:length(l_genomes_across_selected_loci))]
-
-locus_data_new = c()
-for (i in 1:length(l_genomes_across_selected_loci_p1)){
+locus_data_genomic = c()
+for (i in 1:length(l_genomes_across_selected_loci)){
   locus_data = merged_data %>% filter(grepl(l_genomes_across_selected_loci[i], list_samples),
                                       gene %in% l_genes) %>%
     select(allele, gene, list_samples)
@@ -316,6 +321,17 @@ for (i in 1:length(l_genomes_across_selected_loci_p1)){
                             "HTT_a1", "HTT_a2",
                             "TBP_a1", "TBP_a2")
   all_alleles$platekey = rep(l_genomes_across_selected_loci[i], length(all_alleles$AR_a1))
+  
+  locus_data_genomic = c(locus_data_genomic, all_alleles)
+}
+
+# Now that we have genomic (STR) data for this 90,863 genomes, let's merge them with clinical data
+locus_data_new = left_join(locus_data_genomic,
+                           clin_data_selected,
+                           by = "platekey")
+locus_data_new = unique(locus_data_new)
+dim(locus_data_new)
+#
   
   # Let's enrich now with clinical data for this genome
   clin_data_genome = clin_data_selected %>% 
