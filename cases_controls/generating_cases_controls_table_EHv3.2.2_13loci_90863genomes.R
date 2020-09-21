@@ -322,7 +322,7 @@ for (i in 1:length(l_genomes_across_selected_loci)){
                             "TBP_a1", "TBP_a2")
   all_alleles$platekey = rep(l_genomes_across_selected_loci[i], length(all_alleles$AR_a1))
   
-  locus_data_genomic = c(locus_data_genomic, all_alleles)
+  locus_data_genomic = rbind(locus_data_genomic, all_alleles)
 }
 
 # Now that we have genomic (STR) data for this 90,863 genomes, let's merge them with clinical data
