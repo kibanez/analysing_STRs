@@ -42,6 +42,15 @@ l_unrelated_batch2 = l_unrelated_batch2$V1
 length(l_unrelated_batch2)
 # 55847
 
+# Let's load aggregated data
+agg_data_batch2 = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/RE_clinical_data_V10/aggregate_gvcf_sample_stats_2020-09-11_11-49-49.tsv",
+                           stringsAsFactors = F,
+                           sep = "\t",
+                           header = T)
+dim(agg_data_batch2)
+# 78195  67
+
+
 # Check quality of batch2 comparing to batch1
 l_intersected_genomes_b1_b2 = intersect(popu_batch1$ID, popu_batch2$plate_key)
 length(l_intersected_genomes_b1_b2)
