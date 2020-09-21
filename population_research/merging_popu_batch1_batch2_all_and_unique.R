@@ -36,12 +36,6 @@ popu_batch2 = read.csv("./batch2/aggV2_M30K_60K_1KGP3_ancestry_assignment_probs_
 dim(popu_batch2)
 # 78388  33
 
-l_unrelated_batch2 = read.table("./batch2/l_unrelated_55847_genomes_batch2.txt",
-                                stringsAsFactors = F)
-l_unrelated_batch2 = l_unrelated_batch2$V1
-length(l_unrelated_batch2)
-# 55847
-
 # Let's load aggregated data
 agg_data_batch2 = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/RE_clinical_data_V10/aggregate_gvcf_sample_stats_2020-09-11_11-49-49.tsv",
                            stringsAsFactors = F,
@@ -50,6 +44,18 @@ agg_data_batch2 = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/RE_
 dim(agg_data_batch2)
 # 78195  67
 
+l_unrelated_batch2_agg = agg_data_batch2 %>%
+  filter(set_of_unrelated_individuals == 1) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_unrelated_batch2_agg)
+# 55603
+
+write.table(l_unrelated_batch2_agg,
+            "./batch2/l_unrelated_55603_genomes_batch2.txt",
+            quote = F,
+            row.names = F, col.names = F)
 
 # Check quality of batch2 comparing to batch1
 l_intersected_genomes_b1_b2 = intersect(popu_batch1$ID, popu_batch2$plate_key)
