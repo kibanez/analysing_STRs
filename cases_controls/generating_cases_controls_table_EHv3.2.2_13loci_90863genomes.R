@@ -167,9 +167,8 @@ clin_data = rbind(clin_data,
 dim(clin_data)
 # 1189564  17
 
-
 # As output
-# We want to the following output - NOTE each row is an allele (!!!)
+# We want to the following output - NOTE each row is a participant (!!!)
 # Family ID
 # Patient ID
 # LP number
@@ -235,8 +234,18 @@ dim(clin_data_selected)
 #l_genes = sort(unique(merged_data$gene))
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
+l_genomes_across_selected_loci_p1 = l_genomes_across_selected_loci[c(1:10000)]
+l_genomes_across_selected_loci_p2 = l_genomes_across_selected_loci[c(10001:20000)]
+l_genomes_across_selected_loci_p3 = l_genomes_across_selected_loci[c(20001:30000)]
+l_genomes_across_selected_loci_p4 = l_genomes_across_selected_loci[c(30001:40000)]
+l_genomes_across_selected_loci_p5 = l_genomes_across_selected_loci[c(40001:50000)]
+l_genomes_across_selected_loci_p6 = l_genomes_across_selected_loci[c(50001:60000)]
+l_genomes_across_selected_loci_p7 = l_genomes_across_selected_loci[c(60001:70000)]
+l_genomes_across_selected_loci_p8 = l_genomes_across_selected_loci[c(70001:80000)]
+l_genomes_across_selected_loci_p9 = l_genomes_across_selected_loci[c(80001:length(l_genomes_across_selected_loci))]
+
 locus_data_new = c()
-for (i in 1:length(l_genomes_across_selected_loci)){
+for (i in 1:length(l_genomes_across_selected_loci_p1)){
   locus_data = merged_data %>% filter(grepl(l_genomes_across_selected_loci[i], list_samples),
                                       gene %in% l_genes) %>%
     select(allele, gene, list_samples)
@@ -328,5 +337,5 @@ for (i in 1:length(l_genomes_across_selected_loci)){
 }# length(l_genomes_13)
 
 # Write all `locus_data_new` output into a file
-output_file = paste("table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2", ".tsv" , sep = "")
+output_file = paste("table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2_p1", ".tsv" , sep = "")
 write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
