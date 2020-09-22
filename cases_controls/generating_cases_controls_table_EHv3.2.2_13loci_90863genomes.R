@@ -325,6 +325,8 @@ for (i in 1:length(l_genomes_across_selected_loci)){
   locus_data_genomic = rbind(locus_data_genomic, all_alleles)
 }
 
+dena = locus_data_genomic
+
 # Now that we have genomic (STR) data for this 90,863 genomes, let's merge them with clinical data
 locus_data_new = left_join(locus_data_genomic,
                            clin_data_selected,
@@ -350,7 +352,7 @@ dim(locus_data_new)
   new_line = cbind(all_alleles, to_include)
   locus_data_new = rbind(locus_data_new, new_line)
     
-}# length(l_genomes_13)
+
 
 # Write all `locus_data_new` output into a file
 output_file = paste("table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2_p1", ".tsv" , sep = "")
