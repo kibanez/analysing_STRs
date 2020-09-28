@@ -193,11 +193,11 @@ dim(popu_merged)
 # 79849  2
 colnames(popu_merged) = c("platekey", "superpopu")
 
-l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/list_63702_UNRELATED_unique_genomes_batch1_batch2.txt",
+l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
                                 stringsAsFactors = F)
 l_unrelated_genomes = l_unrelated_genomes$V1
 length(l_unrelated_genomes)
-# 63702
+# 55603
 
 # Let's enrich clin data with this
 clin_data$unrelated = rep("No", length(clin_data$platekey))
@@ -333,27 +333,6 @@ locus_data_new = left_join(locus_data_genomic,
                            by = "platekey")
 locus_data_new = unique(locus_data_new)
 dim(locus_data_new)
-#
-  
-  # Let's enrich now with clinical data for this genome
-  clin_data_genome = clin_data_selected %>% 
-    filter(platekey %in% l_genomes_across_selected_loci[i]) %>%
-    select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry, unrelated, superpopu) %>%
-    unique()
-  
-  if (dim(clin_data_genome)[1] <= 0){
-    to_include = rep('.', dim(clin_data_genome)[2])
-    to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-    colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry", "unrelated", "superpopu")
-  }else{
-    to_include = clin_data_genome
-  }
-  
-  new_line = cbind(all_alleles, to_include)
-  locus_data_new = rbind(locus_data_new, new_line)
-    
+# 91857  47
 
-
-# Write all `locus_data_new` output into a file
-output_file = paste("table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2_p1", ".tsv" , sep = "")
-write.table(locus_data_new, output_file, sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(locus_data_new, "table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2_90863platekeys_88827pids.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
