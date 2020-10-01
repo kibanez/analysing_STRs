@@ -234,3 +234,18 @@ clin_data = clin_data %>%
 
 dim(clin_data)
 # 89821  68
+
+#select genomes from the cases_control table that are only probands in Rare disease or cancer (=N/A in main, Proband in Pilot, all cancer germline)
+clin_data_RD_probands_and_cancer = clin_data %>% 
+  filter(biological_relationship_to_proband %in% "N/A" | 
+           biological_relationship_to_proband %in% "Proband" | 
+           is.na(biological_relationship_to_proband) | 
+           programme %in% "Cancer")
+dim(clin_data_RD_probands_and_cancer)
+# 49774  68
+
+
+
+
+
+
