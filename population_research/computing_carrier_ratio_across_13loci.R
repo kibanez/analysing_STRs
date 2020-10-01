@@ -31,7 +31,7 @@ table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection.tsv",
                           header = T,
                           sep = "\t")
 dim(table_100cc_QC)
-# 1878  13
+# 1783  13
 
 # count unique PID included in the cases_controls (i.e. what is the total number of genomes that we have data on)
 total_number_of_participants_analysed <- length(unique(clin_data$participant_id))
@@ -98,3 +98,139 @@ clin_data = clin_data %>%
   mutate(TBP_before_VI = if_else(TBP_a1 >= 49 | TBP_a2 >= 49, TRUE, FALSE))
 
 
+# Now let's annotate or enrich with after visual inspection data
+# AR
+l_platekeys_AR_true_after = table_100cc_QC %>% filter(locus %in% "AR", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_AR_true_after)
+# 69
+
+# ATN1
+l_platekeys_ATN1_true_after = table_100cc_QC %>% filter(locus %in% "ATN1", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_ATN1_true_after)
+# 8
+
+# ATXN1
+l_platekeys_ATXN1_true_after = table_100cc_QC %>% filter(locus %in% "ATXN1", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_ATXN1_true_after)
+# 17
+
+# ATXN2
+l_platekeys_ATXN2_true_after = table_100cc_QC %>% filter(locus %in% "ATXN2", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_ATXN2_true_after)
+# 38
+
+# ATXN3
+l_platekeys_ATXN3_true_after = table_100cc_QC %>% filter(locus %in% "ATXN3", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_ATXN3_true_after)
+# 1
+
+# ATXN7
+l_platekeys_ATXN7_true_after = table_100cc_QC %>% filter(locus %in% "ATXN7", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_ATXN7_true_after)
+# 10 
+
+# CACNA1A
+l_platekeys_CACNA1A_true_after = table_100cc_QC %>% filter(locus %in% "CACNA1A", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_CACNA1A_true_after)
+# 23
+
+# C9ORF72
+l_platekeys_C9ORF72_true_after = table_100cc_QC %>% filter(locus %in% "C9ORF72", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_C9ORF72_true_after)
+# 26 
+
+# DMPK
+l_platekeys_DMPK_true_after = table_100cc_QC %>% filter(locus %in% "DMPK", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_DMPK_true_after)
+# 63
+
+# FXN
+l_platekeys_FXN_true_after = table_100cc_QC %>% filter(locus %in% "FXN", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_FXN_true_after)
+# 1165
+
+# TBP
+l_platekeys_TBP_true_after = table_100cc_QC %>% filter(locus %in% "TBP", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_TBP_true_after)
+# 2
+
+# Include new columns after visual inspection
+# AR
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(AR_after_VI = ifelse(platekey %in% l_platekeys_AR_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# ATN1
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(ATN1_after_VI = ifelse(platekey %in% l_platekeys_ATN1_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# ATXN1
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(ATXN1_after_VI = ifelse(platekey %in% l_platekeys_ATXN1_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# ATXN2
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(ATXN2_after_VI = ifelse(platekey %in% l_platekeys_ATXN2_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# ATXN3
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(ATXN3_after_VI = ifelse(platekey %in% l_platekeys_ATXN3_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# ATXN7
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(ATXN7_after_VI = ifelse(platekey %in% l_platekeys_ATXN7_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# CACNA1A
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(CACNA1A_after_VI = ifelse(platekey %in% l_platekeys_CACNA1A_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# C9ORF72
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(C9ORF72_after_VI = ifelse(platekey %in% l_platekeys_C9ORF72_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# DMPK
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(DMPK_after_VI = ifelse(platekey %in% l_platekeys_DMPK_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# FXN
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(FXN_after_VI = ifelse(platekey %in% l_platekeys_FXN_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# TBP
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(TBP_after_VI = ifelse(platekey %in% l_platekeys_TBP_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+dim(clin_data)
+# 89821  68
