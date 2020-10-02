@@ -26,7 +26,7 @@ dim(clin_data)
 # 89821  46
 
 # Load list of platekeys from GenQA
-l_platekeys_genQA = read.table("/Users/kibanez/Documents/STRs/VALIDATION/genQA/genQA/list_platekeys_b1_b3_merged_genQA.txt",
+l_platekeys_genQA = read.table("/Users/kibanez/Documents/STRs/VALIDATION/genQA/genQA/list_platekeys_b1_total_RD_probands_and_cancer_expanded_after_QC_locus_merged_genQA.txt",
                              stringsAsFactors = F,
                              header = F)
 l_platekeys_genQA = unique(l_platekeys_genQA$V1)
@@ -38,7 +38,7 @@ clin_data = clin_data %>%
   group_by(platekey) %>%
   mutate(genQA = ifelse(platekey %in% l_platekeys_genQA, TRUE, FALSE))
 table(clin_data$genQA)
-# ALL FALSE
+# ALL FALSE, Good, we don't want to include them as part of 100K cohort
 
 # Load the whole table for 100kGP - case-controls 
 table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection.tsv",
@@ -53,8 +53,9 @@ total_number_of_participants_analysed <- length(unique(clin_data$participant_id)
 # 88826
 
 # For each locus, add a new column to `clin_data` if the repeat size of each locus is larger than path threshold
-l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
-l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,66,49)
+#l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
+l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FXN","TBP")
+#l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,66,49)
 
 # AR
 # First thing, for FMR1 and AR, we need to transform NA values in a1|a2 to 0
@@ -279,41 +280,33 @@ clin_data_RD_probands_and_cancer = clin_data %>%
            is.na(biological_relationship_to_proband) | 
            programme %in% "Cancer")
 dim(clin_data_RD_probands_and_cancer)
-# 49774  68
+# 49774  69
 
 #count unique PID included in the probands rd and cancer table (i.e. how many people are RD or cancer probands)
 total_number_of_pids_RD_probands_and_cancer_analysed = length(unique(clin_data_RD_probands_and_cancer$participant_id))
 # 49447
 
-# Compute carrier ratio
+# Compute carrier ratio for each locus
 # select ONLY genomes that have an expansion that passed visual QC in the RD and cancer probands
-cc_RD_probands_and_cancer_expanded_after_QC = clin_data_RD_probands_and_cancer %>% 
-  filter(AR_after_VI |
-           ATN1_after_VI |
-           ATXN1_after_VI | 
-           ATXN2_after_VI | 
-           ATXN3_after_VI | 
-           ATXN7_after_VI | 
-           CACNA1A_after_VI | 
-           C9ORF72_after_VI | 
-           DMPK_after_VI | 
-           FXN_after_VI | 
-           TBP_after_VI)
-
-#count and print  how many people have an expansion in HTT that passed visual QC
-total_RD_cancer_expansion_after_QC <- length(unique(cc_RD_probands_and_cancer_expanded_after_QC$participant_id))
-# 768
-
-dataset_expansions_probands_rd_cancer <- "total number of visually corrected expansions in probands with RD and cancer = "     
-print(paste(dataset_expansions_probands_rd_cancer, total_RD_cancer_expansion_after_QC))  
-
-#count repeat expansion carrier frequency and print 
-c <- "the carrier frequency of expansions in probands rd and cancer is 1 /"
-d <- total_number_of_RD_probans_and_cancer_analysed / total_RD_cancer_expansion_after_QC
-print(paste(c,d))
-
-
-
-
-
-
+# Create a df for PROBANDS (cancer and rd)
+df_probands = data.frame()
+for (i in 1:length(l_locus)){
+  locus_after_VI = paste(l_locus[i], "after_VI", sep = "_")
+  total_RD_probands_and_cancer_expanded_after_QC_locus = clin_data_RD_probands_and_cancer %>% 
+    filter(eval(parse(text=locus_after_VI)) == TRUE) %>%
+    select(participant_id) %>%
+    unique() %>%
+    pull() %>%
+    length()
+  
+  freq_carrier = round(total_number_of_pids_RD_probands_and_cancer_analysed / total_RD_probands_and_cancer_expanded_after_QC_locus,digits = 2)
+  ratio_freq_carrier = paste("1 in", as.character(freq_carrier), sep = " ")
+  
+  ci_max = round(total_number_of_pids_RD_probands_and_cancer_analysed/(total_number_of_pids_RD_probands_and_cancer_analysed*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)-1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)/total_number_of_pids_RD_probands_and_cancer_analysed))), digits = 2)
+  ci_min = round(total_number_of_pids_RD_probands_and_cancer_analysed/(total_number_of_pids_RD_probands_and_cancer_analysed*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)+1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)/total_number_of_pids_RD_probands_and_cancer_analysed))), digits = 2)
+  
+  ci_ratio= as.character(paste(as.character(ci_min), as.character(ci_max), sep = "-"))
+  
+  df_probands = rbind(df_probands,
+                      cbind(l_locus[i], total_RD_probands_and_cancer_expanded_after_QC_locus, total_number_of_pids_RD_probands_and_cancer_analysed, ratio_freq_carrier, ci_ratio))
+}
