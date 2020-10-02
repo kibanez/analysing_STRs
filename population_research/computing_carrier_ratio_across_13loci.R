@@ -474,3 +474,43 @@ write.table(df_unrel,
             quote = F,
             row.names = F,
             col.names = T)
+
+# Now the same, but focusing on EUR genomes
+total_genomes_unrelated_EUR = clin_data_unrel %>% filter(superpopu %in% "EUR") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 45802
+# Compute carrier ratio for each locus
+# select ONLY genomes that have an expansion that passed visual QC in the RD and cancer probands
+# Create a df for UNRELATED EUR
+df_unrel_eur = data.frame()
+for (i in 1:length(l_locus)){
+  locus_after_VI = paste(l_locus[i], "after_VI", sep = "_")
+  total_RD_probands_and_cancer_expanded_after_QC_locus = clin_data_unrel %>% 
+    filter(eval(parse(text=locus_after_VI)) == TRUE,
+           superpopu %in% "EUR") %>%
+    select(participant_id) %>%
+    unique() %>%
+    pull() %>%
+    length()
+  
+  freq_carrier = round(total_genomes_unrelated_EUR / total_RD_probands_and_cancer_expanded_after_QC_locus,digits = 2)
+  ratio_freq_carrier = paste("1 in", as.character(freq_carrier), sep = " ")
+  
+  ci_max = round(total_genomes_unrelated_EUR/(total_genomes_unrelated_EUR*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated_EUR)-1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated_EUR)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated_EUR)/total_genomes_unrelated_EUR))), digits = 2)
+  ci_min = round(total_genomes_unrelated_EUR/(total_genomes_unrelated_EUR*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated_EUR)+1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated_EUR)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated_EUR)/total_genomes_unrelated_EUR))), digits = 2)
+  
+  ci_ratio= as.character(paste(as.character(ci_min), as.character(ci_max), sep = "-"))
+  
+  df_unrel_eur = rbind(df_unrel_eur,
+                       cbind(l_locus[i], total_RD_probands_and_cancer_expanded_after_QC_locus, total_genomes_unrelated_EUR, ratio_freq_carrier, ci_ratio))
+}
+# write into a table
+write.table(df_unrel_eur,
+            "total_numbers_and_ratio_UNRELATED_EUR.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+
+
+
