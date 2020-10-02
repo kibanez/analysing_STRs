@@ -468,3 +468,9 @@ for (i in 1:length(l_locus)){
                    cbind(l_locus[i], total_RD_probands_and_cancer_expanded_after_QC_locus, total_genomes_unrelated, ratio_freq_carrier, ci_ratio))
 }
 # write into a table
+write.table(df_unrel,
+            "total_numbers_and_ratio_UNRELATED.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
