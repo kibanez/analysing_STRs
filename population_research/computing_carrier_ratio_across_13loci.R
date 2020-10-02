@@ -25,6 +25,15 @@ clin_data  = clin_data %>% filter(participant_id != ".")
 dim(clin_data)
 # 89821  46
 
+# Load list of platekeys from GenQA
+l_platekeys_genQA = read.table("/Users/kibanez/Documents/STRs/VALIDATION/genQA/genQA/list_platekeys_b1_b3_merged_genQA.txt",
+                             stringsAsFactors = F,
+                             header = F)
+l_platekeys_genQA = unique(l_platekeys_genQA$V1)
+length(l_platekeys_genQA)
+# 51
+
+
 # Load the whole table for 100kGP - case-controls 
 table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection.tsv",
                           stringsAsFactors = F,
@@ -147,12 +156,12 @@ length(l_platekeys_DMPK_true_after)
 # FXN
 l_platekeys_FXN_true_after = table_100cc_QC %>% filter(locus %in% "FXN", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_FXN_true_after)
-# 1165
+# 1165 (1 genQA or more - check)
 
 # TBP
 l_platekeys_TBP_true_after = table_100cc_QC %>% filter(locus %in% "TBP", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_TBP_true_after)
-# 2
+# 2 (1 in GenQA)
 
 # Include new columns after visual inspection
 # AR
@@ -161,6 +170,8 @@ clin_data = clin_data %>%
   mutate(AR_after_VI = ifelse(platekey %in% l_platekeys_AR_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(AR_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 64
 
 # ATN1
 clin_data = clin_data %>%
@@ -168,6 +179,8 @@ clin_data = clin_data %>%
   mutate(ATN1_after_VI = ifelse(platekey %in% l_platekeys_ATN1_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(ATN1_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 5
 
 # ATXN1
 clin_data = clin_data %>%
@@ -175,6 +188,8 @@ clin_data = clin_data %>%
   mutate(ATXN1_after_VI = ifelse(platekey %in% l_platekeys_ATXN1_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(ATXN1_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 17
 
 # ATXN2
 clin_data = clin_data %>%
@@ -182,6 +197,8 @@ clin_data = clin_data %>%
   mutate(ATXN2_after_VI = ifelse(platekey %in% l_platekeys_ATXN2_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(ATXN2_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 38
 
 # ATXN3
 clin_data = clin_data %>%
@@ -189,6 +206,8 @@ clin_data = clin_data %>%
   mutate(ATXN3_after_VI = ifelse(platekey %in% l_platekeys_ATXN3_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(ATXN3_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 1
 
 # ATXN7
 clin_data = clin_data %>%
@@ -196,6 +215,8 @@ clin_data = clin_data %>%
   mutate(ATXN7_after_VI = ifelse(platekey %in% l_platekeys_ATXN7_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(ATXN7_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 9
 
 # CACNA1A
 clin_data = clin_data %>%
@@ -203,6 +224,8 @@ clin_data = clin_data %>%
   mutate(CACNA1A_after_VI = ifelse(platekey %in% l_platekeys_CACNA1A_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(CACNA1A_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 22
 
 # C9ORF72
 clin_data = clin_data %>%
@@ -210,6 +233,8 @@ clin_data = clin_data %>%
   mutate(C9ORF72_after_VI = ifelse(platekey %in% l_platekeys_C9ORF72_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(C9ORF72_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 25
 
 # DMPK
 clin_data = clin_data %>%
@@ -217,6 +242,8 @@ clin_data = clin_data %>%
   mutate(DMPK_after_VI = ifelse(platekey %in% l_platekeys_DMPK_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(DMPK_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 59
 
 # FXN
 clin_data = clin_data %>%
@@ -224,6 +251,8 @@ clin_data = clin_data %>%
   mutate(FXN_after_VI = ifelse(platekey %in% l_platekeys_FXN_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(FXN_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 1120
 
 # TBP
 clin_data = clin_data %>%
@@ -231,6 +260,8 @@ clin_data = clin_data %>%
   mutate(TBP_after_VI = ifelse(platekey %in% l_platekeys_TBP_true_after, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame()
+clin_data %>% filter(TBP_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 1
 
 dim(clin_data)
 # 89821  68
@@ -243,6 +274,37 @@ clin_data_RD_probands_and_cancer = clin_data %>%
            programme %in% "Cancer")
 dim(clin_data_RD_probands_and_cancer)
 # 49774  68
+
+#count unique PID included in the probands rd and cancer table (i.e. how many people are RD or cancer probands)
+total_number_of_pids_RD_probands_and_cancer_analysed = length(unique(clin_data_RD_probands_and_cancer$participant_id))
+# 49447
+
+# Compute carrier ratio
+# select ONLY genomes that have an expansion that passed visual QC in the RD and cancer probands
+cc_RD_probands_and_cancer_expanded_after_QC = clin_data_RD_probands_and_cancer %>% 
+  filter(AR_after_VI |
+           ATN1_after_VI |
+           ATXN1_after_VI | 
+           ATXN2_after_VI | 
+           ATXN3_after_VI | 
+           ATXN7_after_VI | 
+           CACNA1A_after_VI | 
+           C9ORF72_after_VI | 
+           DMPK_after_VI | 
+           FXN_after_VI | 
+           TBP_after_VI)
+
+#count and print  how many people have an expansion in HTT that passed visual QC
+total_RD_cancer_expansion_after_QC <- length(unique(cc_RD_probands_and_cancer_expanded_after_QC$participant_id))
+# 768
+
+dataset_expansions_probands_rd_cancer <- "total number of visually corrected expansions in probands with RD and cancer = "     
+print(paste(dataset_expansions_probands_rd_cancer, total_RD_cancer_expansion_after_QC))  
+
+#count repeat expansion carrier frequency and print 
+c <- "the carrier frequency of expansions in probands rd and cancer is 1 /"
+d <- total_number_of_RD_probans_and_cancer_analysed / total_RD_cancer_expansion_after_QC
+print(paste(c,d))
 
 
 
