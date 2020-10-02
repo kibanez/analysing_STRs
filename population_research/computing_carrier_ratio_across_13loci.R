@@ -310,3 +310,40 @@ for (i in 1:length(l_locus)){
   df_probands = rbind(df_probands,
                       cbind(l_locus[i], total_RD_probands_and_cancer_expanded_after_QC_locus, total_number_of_pids_RD_probands_and_cancer_analysed, ratio_freq_carrier, ci_ratio))
 }
+# write into a table
+write.table(df_probands,
+            "total_numbers_and_ratio_PROBANDS_in_RD_or_Cancer.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+# Now the same, but focusing on EUR genomes
+df_probands_eur = data.frame()
+for (i in 1:length(l_locus)){
+  locus_after_VI = paste(l_locus[i], "after_VI", sep = "_")
+  total_RD_probands_and_cancer_expanded_after_QC_locus = clin_data_RD_probands_and_cancer %>% 
+    filter(eval(parse(text=locus_after_VI)) == TRUE, superpopu %in% "EUR") %>%
+    select(participant_id) %>%
+    unique() %>%
+    pull() %>%
+    length()
+  
+  freq_carrier = round(total_number_of_pids_RD_probands_and_cancer_analysed / total_RD_probands_and_cancer_expanded_after_QC_locus,digits = 2)
+  ratio_freq_carrier = paste("1 in", as.character(freq_carrier), sep = " ")
+  
+  ci_max = round(total_number_of_pids_RD_probands_and_cancer_analysed/(total_number_of_pids_RD_probands_and_cancer_analysed*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)-1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)/total_number_of_pids_RD_probands_and_cancer_analysed))), digits = 2)
+  ci_min = round(total_number_of_pids_RD_probands_and_cancer_analysed/(total_number_of_pids_RD_probands_and_cancer_analysed*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)+1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_number_of_pids_RD_probands_and_cancer_analysed)/total_number_of_pids_RD_probands_and_cancer_analysed))), digits = 2)
+  
+  ci_ratio= as.character(paste(as.character(ci_min), as.character(ci_max), sep = "-"))
+  
+  df_probands_eur = rbind(df_probands_eur,
+                      cbind(l_locus[i], total_RD_probands_and_cancer_expanded_after_QC_locus, total_number_of_pids_RD_probands_and_cancer_analysed, ratio_freq_carrier, ci_ratio))
+}
+# write into a table
+write.table(df_probands_eur,
+            "total_numbers_and_ratio_PROBANDS_in_RD_or_Cancer_EUR.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
