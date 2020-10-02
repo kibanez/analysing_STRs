@@ -26,7 +26,7 @@ dim(clin_data)
 # 89821  46
 
 # Load list of platekeys from GenQA
-l_platekeys_genQA = read.table("/Users/kibanez/Documents/STRs/VALIDATION/genQA/genQA/list_platekeys_b1_total_RD_probands_and_cancer_expanded_after_QC_locus_merged_genQA.txt",
+l_platekeys_genQA = read.table("/Users/kibanez/Documents/STRs/VALIDATION/genQA/genQA/list_platekeys_b1_b3_merged_genQA.txt",
                              stringsAsFactors = F,
                              header = F)
 l_platekeys_genQA = unique(l_platekeys_genQA$V1)
@@ -426,3 +426,45 @@ write.table(df_probands_notNeuro_eur,
             row.names = F,
             col.names = T)
 
+# 3 - UNRELATED genomes
+# Select only unrelated genomes from `clin_data`
+# We are using as relatedness source batch2
+l_unrelated_genomes= read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
+                                stringsAsFactors = F)
+l_unrelated_genomes = l_unrelated_genomes$V1
+length(l_unrelated_genomes)
+# 55603
+
+clin_data_unrel = clin_data %>%
+  filter(platekey %in% l_unrelated_genomes)
+dim(clin_data_unrel)
+# 55014  47
+
+total_genomes_unrelated = length(unique(clin_data_unrel$participant_id))
+# 54492
+
+# Compute carrier ratio for each locus
+# select ONLY genomes that have an expansion that passed visual QC in the RD and cancer probands
+# Create a df for UNRELATED
+df_unrel = data.frame()
+for (i in 1:length(l_locus)){
+  locus_after_VI = paste(l_locus[i], "after_VI", sep = "_")
+  total_RD_probands_and_cancer_expanded_after_QC_locus = clin_data_unrel %>% 
+    filter(eval(parse(text=locus_after_VI)) == TRUE) %>%
+    select(participant_id) %>%
+    unique() %>%
+    pull() %>%
+    length()
+  
+  freq_carrier = round(total_genomes_unrelated / total_RD_probands_and_cancer_expanded_after_QC_locus,digits = 2)
+  ratio_freq_carrier = paste("1 in", as.character(freq_carrier), sep = " ")
+  
+  ci_max = round(total_genomes_unrelated/(total_genomes_unrelated*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated)-1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated)/total_genomes_unrelated))), digits = 2)
+  ci_min = round(total_genomes_unrelated/(total_genomes_unrelated*((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated)+1.96*sqrt((total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated)*(1-total_RD_probands_and_cancer_expanded_after_QC_locus/total_genomes_unrelated)/total_genomes_unrelated))), digits = 2)
+  
+  ci_ratio= as.character(paste(as.character(ci_min), as.character(ci_max), sep = "-"))
+  
+  df_unrel = rbind(df_unrel,
+                   cbind(l_locus[i], total_RD_probands_and_cancer_expanded_after_QC_locus, total_genomes_unrelated, ratio_freq_carrier, ci_ratio))
+}
+# write into a table
