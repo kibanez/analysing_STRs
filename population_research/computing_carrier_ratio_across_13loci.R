@@ -33,6 +33,12 @@ l_platekeys_genQA = unique(l_platekeys_genQA$V1)
 length(l_platekeys_genQA)
 # 51
 
+# Include new column called `genQA` as boolean
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(genQA = ifelse(platekey %in% l_platekeys_genQA, TRUE, FALSE))
+table(clin_data$genQA)
+# ALL FALSE
 
 # Load the whole table for 100kGP - case-controls 
 table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection.tsv",
