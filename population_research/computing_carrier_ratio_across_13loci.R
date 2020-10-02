@@ -273,6 +273,7 @@ clin_data %>% filter(TBP_after_VI) %>% select(platekey) %>% unique() %>% pull() 
 dim(clin_data)
 # 89821  68
 
+# 1 - PROBANDS in RD or Cancer
 #select genomes from the cases_control table that are only probands in Rare disease or cancer (=N/A in main, Proband in Pilot, all cancer germline)
 clin_data_RD_probands_and_cancer = clin_data %>% 
   filter(biological_relationship_to_proband %in% "N/A" | 
@@ -347,3 +348,14 @@ write.table(df_probands_eur,
             quote = F,
             row.names = F,
             col.names = T)
+
+# 2 - PROBANDS in RD or Cancer - BUT NOT NEURO!!!
+# Select those genomes/participants that have NOT been recruited in Neurological disorders
+clin_data_RD_probands_and_cancer_notNeuro = clin_data_RD_probands_and_cancer %>% 
+  filter(!grepl("neuro", diseasegroup_list, ignore.case = TRUE))
+dim(clin_data_RD_probands_and_cancer_notNeuro)
+# 35636  69
+
+total_number_of_pids_RD_probands_and_cancer_notNeuro_analysed = length(unique(clin_data_RD_probands_and_cancer_notNeuro$participant_id))
+# 35450
+# 
