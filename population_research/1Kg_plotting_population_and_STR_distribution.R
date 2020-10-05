@@ -98,7 +98,7 @@ output_folder = "./figures/"
 
 l_loci = sort(unique(df_merged$gene))
 # Let's focus first on the important 4 loci
-l_loci = c("AR", "ATN1", "HTT", "FXN")
+l_loci = c("AR", "ATN1", "HTT", "TBP")
 for (i in 1:length(l_loci)){
 
   # Specifying sub-population  
