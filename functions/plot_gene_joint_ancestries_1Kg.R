@@ -24,8 +24,8 @@ plot_gene_joint_ancestries_1Kg <- function(df_input, gene_name, gene_data_normal
     ylab("Allele frequency") + 
     xlab("Repeat sizes (repeat units)") + 
     ggtitle(gene_name) + 
-    geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
-    geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
+    #geom_vline(xintercept = threshold_normal, colour = 'blue', lty = 2) + 
+    #geom_vline(xintercept = threshold_pathogenic, colour = 'red', lty = 2) + 
     coord_cartesian(xlim = c(min_value,max_value))
   
   pdf(pdf_name)
