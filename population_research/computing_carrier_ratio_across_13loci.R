@@ -48,6 +48,14 @@ table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection.tsv",
 dim(table_100cc_QC)
 # 1783  13
 
+# Load the table corresponding to HTT (work done by Arianna/Matteo)
+table_HTT_QC = read.csv("~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/list_PIDs_for_HTT_pileup.tsv",
+                        stringsAsFactors = F,
+                        header = T,
+                        sep = "\t")
+dim(table_HTT_QC)
+#
+
 # count unique PID included in the cases_controls (i.e. what is the total number of genomes that we have data on)
 total_number_of_participants_analysed <- length(unique(clin_data$participant_id))
 # 88826
