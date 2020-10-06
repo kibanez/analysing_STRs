@@ -54,7 +54,12 @@ table_HTT_QC = read.csv("~/Documents/STRs/ANALYSIS/population_research/100K/carr
                         header = T,
                         sep = "\t")
 dim(table_HTT_QC)
-#
+# 231  5
+
+table_HTT_QC$locus= rep("HTT", length(table_HTT_QC$PLATEKEY))
+colnames(table_HTT_QC) = c("platekey", "a1_after_QC", "a2_after_QC", "Final.Decision", "empty", "locus")
+
+table_HTT_QC = table_HTT_QC %>% select(platekey, locus, Final.Decision)
 
 # count unique PID included in the cases_controls (i.e. what is the total number of genomes that we have data on)
 total_number_of_participants_analysed <- length(unique(clin_data$participant_id))
@@ -172,6 +177,11 @@ length(l_platekeys_DMPK_true_after)
 l_platekeys_FXN_true_after = table_100cc_QC %>% filter(locus %in% "FXN", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_FXN_true_after)
 # 1165 (1 genQA or more - check)
+
+# HTT
+l_platekeys_HTT_true_after = table_HTT_QC %>% filter(Final.Decision %in% "yes") %>% select(platekey) %>% unique() %>% pull()
+length(l_platekeys_HTT_true_after)
+# 51
 
 # TBP
 l_platekeys_TBP_true_after = table_100cc_QC %>% filter(locus %in% "TBP", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
