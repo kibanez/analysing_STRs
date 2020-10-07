@@ -1,5 +1,5 @@
 # Objective: creating tables for each locus, in order to play with cases/controls and see possible existing signals
-# For EHv3.1.2
+# For EHv3
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
