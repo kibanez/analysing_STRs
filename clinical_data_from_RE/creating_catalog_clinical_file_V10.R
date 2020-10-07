@@ -1,4 +1,5 @@
 # Objective: create rd genomes and cancer germline info from the latest RE clinical data batch
+# Update on 07/10/20: including some fields from `clinic_sample` and `gmc_exit_questionnaire` tables
 # This time V10 - 2020/09/03
 date()
 Sys.info()[c("nodename", "user")]
@@ -80,6 +81,21 @@ path = read.csv("./genome_file_paths_and_types_2020-09-08_09-36-43.tsv",
                 stringsAsFactors = F)
 dim(path)
 # 518456  12
+
+clinic_sample = read.csv("./clinic_sample_2020-10-07_12-09-30.tsv",
+                         sep = "\t",
+                         stringsAsFactors = F,
+                         header = T)
+dim(clinic_sample)
+# 190647  55
+
+gmc_exit = read.csv("./gmc_exit_questionnaire_2020-10-07_13-07-38.tsv",
+                    sep = "\t",
+                    stringsAsFactors = F, 
+                    header = T)
+dim(gmc_exit)
+# 28757  23
+
 
 path_subset = path %>% filter(file_sub_type %in% "BAM") %>% select(participant_id, platekey, type, file_path)
 
