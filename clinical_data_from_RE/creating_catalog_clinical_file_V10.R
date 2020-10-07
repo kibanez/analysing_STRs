@@ -96,7 +96,6 @@ gmc_exit = read.csv("./gmc_exit_questionnaire_2020-10-07_13-07-38.tsv",
 dim(gmc_exit)
 # 28757  23
 
-
 path_subset = path %>% filter(file_sub_type %in% "BAM") %>% select(participant_id, platekey, type, file_path)
 
 # Let's focus on the REAL genomes we do have
@@ -146,18 +145,31 @@ all_data = left_join(all_data,
 dim(all_data)
 # 1184730  29
 
-# population data
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
-                      sep = ",",
+all_data = left_join(all_data,
+                     clinic_sample %>% select(participant_id, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust),
+                     by = "participant_id")
+dim(all_data)
+# 2399541  31
+    
+all_data = left_join(all_data,
+                     gmc_exit %>% select(participant_id, case_solved_family),
+                     by = "participant_id")
+dim(all_data)
+# 3474081  32
+
+# population data - let's enrich with merged (batch1 and batch2) population info
+popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv",
+                      sep = "\t",
                       stringsAsFactors = F,
-                      header = T)
+                      header = F)
 dim(popu_table)
-# 59464  36
+# 79849  2
+colnames(popu_table) = c("platekey", "superpopu")
 
 all_data = left_join(all_data,
-                      popu_table %>% select(ID, best_guess_predicted_ancstry, self_reported),
-                      by = c("platekey"="ID"))
+                      popu_table,
+                      by = "platekey")
 dim(all_data)
-# 1184730 31
+# 3474081 33
 
-write.table(all_data, "../../rd_genomes_all_data_080920_V10.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(all_data, "../../rd_genomes_all_data_071020_V10.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
