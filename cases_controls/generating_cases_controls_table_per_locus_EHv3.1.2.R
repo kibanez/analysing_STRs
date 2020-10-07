@@ -10,15 +10,15 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/")
+setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_august/EHv322/")
 
 # Load data
-merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
+merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
                        sep = '\t',
                        header = T,
                        stringsAsFactors = F)
 dim(merged_data)
-# 8560  12
+# 27238 12
 
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
 # Pilot
@@ -165,6 +165,17 @@ clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
 # 1129467  17
+
+# Check genQA cases
+df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch3_STRs.tsv",
+                   stringsAsFactors = F, 
+                   header = T,
+                   sep = "\t")
+dim(df_genQA)
+# 52  17
+
+which(df_genQA$Platekey %in% clin_data$platekey)
+# there have not been included genQA cases in the batch - good!
 
 
 # As output
