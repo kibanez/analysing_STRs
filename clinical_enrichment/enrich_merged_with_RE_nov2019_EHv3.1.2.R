@@ -3,20 +3,20 @@
 # We need to split the merge TSV file by loci
 
 # libraries
-library(Rlabkey)
-library(dplyr)
-library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.1
+library(Rlabkey); packageDescription ("Rlabkey", fields = "Version") # "2.5.0
+library(dplyr) ; packageDescription ("dplyr", fields = "Version") # "0.8.5
+library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.3.0
 
-setwd("/Users/KristinaIbanez/Documents/STRs/GEL_STR/summer_2019/EH_3.1.2_research_October2019/EH_output_v3.1.2_October2019_vcfs/merged/")
+setwd("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/")
 
-# Research 80K analysis - November 2019
-merged_vcf = read.table("./merged_loci_82565_research_genomes_EHv3.1.2_october2019.tsv",
+# Research 93K analysis - August 2020
+merged_vcf = read.table("merged_93446_genomes_EHv322_batch_august2020.tsv",
                         stringsAsFactors = F, 
                         header = T, 
                         sep = "\t")
 
 dim(merged_vcf)                        
-# 4495  12
+# 27238  12
 
 # Change colnames to make everything easier
 colnames(merged_vcf) = c("chr", "start", "end", "repeat-size", "gene", "ref", "alt", "repeat-motif", "num_samples", "AF", "LC", "list_samples")
