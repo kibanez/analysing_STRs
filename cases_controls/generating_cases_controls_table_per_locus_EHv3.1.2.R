@@ -178,8 +178,37 @@ df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch
 dim(df_genQA)
 # 52  17
 
-which(df_genQA$Platekey %in% clin_data$platekey)
-# there have not been included genQA cases in the batch - good!
+# Include genQA data in clin_data
+df_genQA$programme = rep("genQA", length(df_genQA$Platekey))
+df_genQA$biological_relationship_to_proband = rep("genQA", length(df_genQA$Platekey))
+df_genQA$genetic_vs_reported_results = rep("genQA", length(df_genQA$Platekey))
+df_genQA$participant_ethnic_category = rep("genQA", length(df_genQA$Platekey))
+df_genQA$genome_build = rep("genQA", length(df_genQA$Platekey))
+df_genQA$year_of_birth = rep("genQA", length(df_genQA$Platekey))
+df_genQA$participant_phenotypic_sex = rep("genQA", length(df_genQA$Platekey))
+df_genQA$family_group_type = rep("genQA", length(df_genQA$Platekey))
+df_genQA$affection_status = rep("genQA", length(df_genQA$Platekey))
+df_genQA$superpopu = rep("genQA", length(df_genQA$Platekey))
+df_genQA$clinic_sample_collected_at_gmc = rep("genQA", length(df_genQA$Platekey))
+df_genQA$clinic_sample_collected_at_gmc_trust = rep("genQA", length(df_genQA$Platekey))
+df_genQA$case_solved_family = rep("genQA", length(df_genQA$Platekey))
+df_genQA$diseases_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$diseasegroup_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$diseasesubgroup_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$panel_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$hpo_list = rep("genQA", length(df_genQA$Platekey))
+
+df_genQA = df_genQA %>%
+  select(PID, Platekey, familyID, biological_relationship_to_proband,
+         genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth,
+         participant_phenotypic_sex, programme, family_group_type, affection_status,
+         superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list,
+         hpo_list)
+colnames(df_genQA) = colnames(clin_data)
+
+clin_data = rbind(clin_data,
+                  df_genQA)
 
 # As output
 # We want to the following output - NOTE each row is an allele (!!!)
@@ -223,13 +252,13 @@ for (i in 1:length(l_genes)){
         
         to_include = clin_data %>% 
           filter(platekey %in% number_samp[k]) %>% 
-          select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry) %>%
+          select(participant_id, platekey, rare_diseases_family_id, genetic_vs_reported_results, participant_ethnic_category, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family) %>%
           unique()
         
         if (dim(to_include)[1] <= 0){
           to_include = rep('.', dim(to_include)[2])
           to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry")
+          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "genetic_vs_reported_results", "participant_ethnic_category", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "superpopu", "clinic_sample_collected_at_gmc", "clinic_sample_collected_at_gmc_trust", "case_solved_family")
           
         }
         new_line = cbind(new_line, to_include)
@@ -250,7 +279,7 @@ for (i in 1:length(l_genes)){
   
   # Select interested columns
   locus_data_new = locus_data_new %>%
-    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry)
+    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, superpopu, genetic_vs_reported_results, participant_ethnic_category, clinic_sample_collected_at_gmc_trust, clinic_sample_collected_at_gmc, case_solved_family)
   
   # Adapt column names (for better understanding)
   colnames(locus_data_new)[3] = "platekey"
