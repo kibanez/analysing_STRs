@@ -67,7 +67,7 @@ total_number_of_participants_analysed <- length(unique(clin_data$participant_id)
 
 # For each locus, add a new column to `clin_data` if the repeat size of each locus is larger than path threshold
 #l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FMR1", "FXN", "HTT", "TBP")
-l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FXN","TBP")
+l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FXN", "HTT","TBP")
 #l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,66,49)
 
 # AR
@@ -278,6 +278,15 @@ clin_data = clin_data %>%
   as.data.frame()
 clin_data %>% filter(FXN_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 1120
+
+# HTT
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(HTT_after_VI = ifelse(platekey %in% l_platekeys_HTT_true_after, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+clin_data %>% filter(HTT_after_VI) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 41
 
 # TBP
 clin_data = clin_data %>%
