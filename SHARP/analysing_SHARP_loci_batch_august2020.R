@@ -92,7 +92,6 @@ sharp_merged_data = merged_data_simpl %>%
 dim(sharp_merged_data)
 # 3367  4
 
-sharp_boxplot = data.frame()
 l_genes = unique(sharp_merged_data$gene)
 for(i in 1:length(l_genes)){
   sharp_boxplot = data.frame()
@@ -154,11 +153,16 @@ for(i in 1:length(l_genes)){
           axis.ticks.y=element_blank())
   
   # Combining histo and boxplots
-  cowplot::plot_grid(gene_histo,
-            gene_boxplot, 
-            ncol = 1, 
-            rel_heights = c(2, 1),
-            align = 'v', axis = 'lr')
+  together_plot_locus = cowplot::plot_grid(gene_histo,
+                                           gene_boxplot, 
+                                           ncol = 1, 
+                                           rel_heights = c(2, 1),
+                                           align = 'v',
+                                           axis = 'lr')
+  png(png_name)
+  print(together_plot_locus)
+  dev.off()
+  
 }
 #
 
