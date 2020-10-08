@@ -12,6 +12,10 @@ library(grid); packageDescription ("grid", fields = "Version") #"3.6.1"
 library(gridExtra); packageDescription ("gridExtra", fields = "Version") #"2.3"
 library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
+library(magick); packageDescription ("magick", fields = "Version") #"2.4.0"
+library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
+library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
+
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/")
@@ -81,4 +85,80 @@ dir.create(output_folder)
 for (i in 1:length(l_sharp)){
   plot_gene_mergingAssemblies(merged_data_simpl, l_sharp[i], output_folder)
 }
+
+# Plot boxplots across all loci
+sharp_merged_data = merged_data_simpl %>%
+  filter(gene %in% l_sharp)
+dim(sharp_merged_data)
+# 3367  4
+
+sharp_boxplot = data.frame()
+l_genes = unique(sharp_merged_data$gene)
+for(i in 1:length(l_genes)){
+  sharp_boxplot = data.frame()
+  aux_df = sharp_merged_data %>% 
+    filter(gene %in% l_genes[i])
+  for(j in 1:length(aux_df$allele)){
+    allele = aux_df$allele[j]
+    repeat_size = aux_df$total_num_samples[j]
+    new_line = c(l_genes[i], allele)
+    sharp_boxplot = rbind(sharp_boxplot,
+                          as.data.frame(do.call("rbind", replicate(repeat_size, new_line, simplify = FALSE))))
+  }
+  
+  # Create histogram for the gene
+  l_gene_repeat_size = aux_df$allele
+  sharp_barplot = data.frame(number_repeats = l_gene_repeat_size, af = aux_df$total_num_samples)
+  
+  # order by 'number of repetition'
+  sharp_barplot = unique(sharp_barplot[order(sharp_barplot[,1]),])
+  
+  rownames(sharp_barplot) = sharp_barplot$number_repeats
+  
+  sharp_barplot$number_repeats = as.numeric(sharp_barplot$number_repeats)
+  
+  png_name = paste(l_genes[i], 'png', sep = ".")
+  png_name = paste(output_folder, png_name, sep = "/")
+  
+  min_value = min(sharp_barplot$number_repeats)
+  max_value = max(sharp_barplot$number_repeats)
+  
+  gene_histo = ggplot(unique(sharp_barplot), aes(x = number_repeats, y = af)) + 
+    scale_x_continuous(limits=c(min_value, max_value)) +
+    geom_bar(stat = "identity") + 
+    geom_text(aes(label=af), vjust=0, size = 4, colour = "grey") +
+    theme(legend.position = "none") +
+    theme(axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.ticks.y=element_blank())
+    #ylab("Allele frequency") + 
+    #xlab("Repeat sizes (repeat units)") + 
+    #ggtitle(l_genes[i]) 
+    #coord_cartesian(xlim = c(min_value,max_value))
+  
+  # Create boxplot for the gene
+  colnames(sharp_boxplot) = c("gene", "repeat_size")
+  sharp_boxplot$gene = as.character(sharp_boxplot$gene)
+  sharp_boxplot$repeat_size = as.integer(as.character(sharp_boxplot$repeat_size))
+  gene_boxplot = ggplot(sharp_boxplot, aes(x = repeat_size, y = l_genes[i], fill = gene)) +
+    #scale_y_discrete(limits=c(min_value, max_value)) +
+    geom_violin() +
+    xlab("Repeat size") +
+    #coord_cartesian(xlim = c(min_value,max_value)) +
+    geom_boxplot(width=0.1) +
+    theme(legend.position = "none") +
+    theme(axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.ticks.y=element_blank())
+  
+  # Combining histo and boxplots
+  cowplot::plot_grid(gene_histo,
+            gene_boxplot, 
+            ncol = 1, 
+            rel_heights = c(2, 1),
+            align = 'v', axis = 'lr')
+}
+#
 
