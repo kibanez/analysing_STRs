@@ -145,14 +145,24 @@ output_folder = 'EHv322_batch_august2020'
 l_genes = unique(sharp_merged_data$gene)
 for(i in 1:length(l_genes)){
   # Let's create 2 df: sharp_merged_data for ONLY PROBANDS and for ONLY PROBANDS NOT NEURO (from the list of platekeys) 
-  
   sharp_merged_data_locus = sharp_merged_data %>%
     filter(gene %in% l_genes[i])
+  
+  # merge chr and 
+  sharp_merged_data_locus = sharp_merged_data_locus %>%
+    group_by(chr, gene, allele) %>%
+    summarise(list_samples_merged = paste(list_samples, collapse=";")) %>%
+    ungroup() %>%
+    as.data.frame() 
+  
+  sharp_merged_data_locus = sharp_merged_data_locus %>%
+    select(gene, allele, list_samples_merged)
+  sharp_merged_data_locus = unique(sharp_merged_data_locus)
   
   sharp_merged_data_probands = data.frame()
   sharp_merged_data_probands_notNeuro = data.frame()
   for(z in 1:length(sharp_merged_data_locus$allele)){
-    list_samples = strsplit(sharp_merged_data_locus$list_samples[z], ";")[[1]]
+    list_samples = strsplit(sharp_merged_data_locus$list_samples_merged[z], ";")[[1]]
     list_samples = gsub("^EH_", "", list_samples)
     list_samples = gsub(".vcf", "", list_samples)
     list_samples = gsub(" ", "", list_samples)
@@ -171,12 +181,12 @@ for(i in 1:length(l_genes)){
                                                 new_line_probands_notNeuro)
     
   }
-  colnames(sharp_merged_data_probands) = c("gene", "repeat-size", "total_num_samples")
-  colnames(sharp_merged_data_probands_notNeuro) = c("gene", "repeat-size", "total_num_samples")
+  colnames(sharp_merged_data_probands) = c("gene", "repeat_size", "total_num_samples")
+  colnames(sharp_merged_data_probands_notNeuro) = c("gene", "repeat_size", "total_num_samples")
   
   sharp_boxplot_probands = data.frame()
   for(j in 1:length(sharp_merged_data_probands$gene)){
-    allele = sharp_merged_data_probands$`repeat-size`[j]
+    allele = sharp_merged_data_probands$repeat_size[j]
     repeat_size_probands = sharp_merged_data_probands$total_num_samples[j]
     new_line = c(l_genes[i], allele)
     sharp_boxplot_probands = rbind(sharp_boxplot_probands,
@@ -186,7 +196,7 @@ for(i in 1:length(l_genes)){
   
   sharp_boxplot_probands_notNeuro = data.frame()
   for(j in 1:length(sharp_merged_data_probands_notNeuro$gene)){
-    allele = sharp_merged_data_probands_notNeuro$`repeat-size`[j]
+    allele = sharp_merged_data_probands_notNeuro$repeat_size[j]
     repeat_size_probands = sharp_merged_data_probands_notNeuro$total_num_samples[j]
     new_line = c(l_genes[i], allele)
     sharp_boxplot_probands_notNeuro = rbind(sharp_boxplot_probands_notNeuro,
@@ -194,20 +204,50 @@ for(i in 1:length(l_genes)){
   }
   sharp_boxplot_probands_notNeuro$cohort = rep("only probands not neurology", length(sharp_boxplot_probands_notNeuro$V1))
   
-  colnames(sharp_boxplot_probands) = c("gene", "repeat-size", "cohort")
-  colnames(sharp_boxplot_probands_notNeuro) = c("gene", "repeat-size", "cohort")
+  colnames(sharp_boxplot_probands) = c("gene", "repeat_size", "cohort")
+  colnames(sharp_boxplot_probands_notNeuro) = c("gene", "repeat_size", "cohort")
   
   merged_sharp_boxplot = rbind(sharp_boxplot_probands,
                                sharp_boxplot_probands_notNeuro)
   
+  # Create boxplots for PROBANDS only and PROBANDS NOT IN NEURO for each gene
+  merged_sharp_boxplot$gene = as.character(merged_sharp_boxplot$gene)
+  merged_sharp_boxplot$repeat_size = as.integer(as.character(merged_sharp_boxplot$repeat_size))
+  merged_sharp_boxplot$cohort = as.character(merged_sharp_boxplot$cohort)
+  gene_boxplot = ggplot(merged_sharp_boxplot, aes(x = repeat_size, y = l_genes[i], fill = cohort)) +
+    geom_violin() +
+    xlab("Repeat size") +
+    geom_boxplot(width=0.1) +
+    theme(legend.position = "none") +
+    theme(axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.ticks.y=element_blank())
+  
+  merged_sharp_boxplot %>% 
+    ggplot(aes(x=repeat_size,y=cohort, fill=cohort)) +
+    geom_boxplot() + geom_jitter(width=0.1,alpha=0.2) +
+    theme(legend.position = "none") +
+    theme(axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.ticks.y=element_blank())
+  
   # Create histogram for the gene
-  l_gene_repeat_size = aux_df$allele
-  sharp_barplot = data.frame(number_repeats = l_gene_repeat_size, af = aux_df$total_num_samples)
+  l_gene_repeat_size_probands = sharp_merged_data_probands$`repeat-size`
+  l_gene_repeat_size_probands_notNeuro = sharp_merged_data_probands_notNeuro$`repeat-size`
+  sharp_barplot_probands = data.frame(number_repeats = l_gene_repeat_size_probands,
+                                      probands_af = sharp_merged_data_probands$total_num_samples)
+
+  sharp_barplot_probands_notNeuro = data.frame(number_repeats = l_gene_repeat_size_probands_notNeuro,
+                                      probands_notNeuro_af = sharp_merged_data_probands_notNeuro$total_num_samples)
   
   # order by 'number of repetition'
-  sharp_barplot = unique(sharp_barplot[order(sharp_barplot[,1]),])
+  sharp_barplot_probands = unique(sharp_barplot_probands[order(sharp_barplot_probands[,1]),])
+  sharp_barplot_probands_notNeuro = unique(sharp_barplot_probands_notNeuro[order(sharp_barplot_probands_notNeuro[,1]),])
   
-  rownames(sharp_barplot) = sharp_barplot$number_repeats
+  rownames(sharp_barplot_probands) = sharp_barplot_probands$number_repeats
+  rownames(sharp_barplot_probands_notNeuro) = sharp_barplot_probands_notNeuro$number_repeats
   
   sharp_barplot$number_repeats = as.numeric(sharp_barplot$number_repeats)
   
@@ -230,22 +270,6 @@ for(i in 1:length(l_genes)){
     #xlab("Repeat sizes (repeat units)") + 
     #ggtitle(l_genes[i]) 
     #coord_cartesian(xlim = c(min_value,max_value))
-  
-  # Create boxplots for PROBANDS only and PROBANDS NOT IN NEURO for each gene
-  merged_sharp_boxplot$gene = as.character(merged_sharp_boxplot$gene)
-  merged_sharp_boxplot$`repeat-size` = as.integer(as.character(merged_sharp_boxplot$`repeat-size`))
-  merged_sharp_boxplot$cohort = as.character(merged_sharp_boxplot$cohort)
-  gene_boxplot = ggplot(merged_sharp_boxplot, aes(x = `repeat-size`, y = l_genes[i], fill = cohort)) +
-    #scale_y_discrete(limits=c(min_value, max_value)) +
-    geom_violin() +
-    xlab("Repeat size") +
-    #coord_cartesian(xlim = c(min_value,max_value)) +
-    geom_boxplot(width=0.1) +
-    theme(legend.position = "none") +
-    theme(axis.title.x=element_blank(),
-          axis.title.y=element_blank(),
-          axis.ticks.x=element_blank(),
-          axis.ticks.y=element_blank())
   
   # Combining histo and boxplots
   together_plot_locus = cowplot::plot_grid(gene_histo,
