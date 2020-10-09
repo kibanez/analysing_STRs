@@ -80,20 +80,20 @@ length(l_platekeys_probands_notNeuro)
 # 37701
 
 # There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_unique = c()
-for (i in 1:length(l_platekeys_probands)){
-  if (grepl(',',l_platekeys_probands[i])){
-    list_platekeys = strsplit(l_platekeys_probands[i], ",")[[1]]
+l_platekeys_probands_notNeuro_unique = c()
+for (i in 1:length(l_platekeys_probands_notNeuro)){
+  if (grepl(',',l_platekeys_probands_notNeuro[i])){
+    list_platekeys = strsplit(l_platekeys_probands_notNeuro[i], ",")[[1]]
     list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
-                                    max(list_platekeys))
+    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
+                                             max(list_platekeys))
   }else{
-    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
-                                    l_platekeys_probands[i])
+    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
+                                             l_platekeys_probands_notNeuro[i])
   }
 }
-length(l_platekeys_probands_unique)
-#
+length(l_platekeys_probands_notNeuro_unique)
+# 
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
