@@ -93,7 +93,7 @@ for (i in 1:length(l_platekeys_probands_notNeuro)){
   }
 }
 length(l_platekeys_probands_notNeuro_unique)
-# 
+# 37701
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
@@ -122,18 +122,8 @@ merged_data$chr = recode(merged_data$chr,
                          "21" = "chr21",
                          "22" = "chr22",
                          "X" = "chrX")
-merged_data = merged_data %>%
-  group_by(chr, gene, allele) %>%
-  mutate(total_num_samples = sum(num_samples)) %>%
-  ungroup() %>%
-  as.data.frame() 
 
-merged_data_simpl = merged_data %>% 
-  select(chr, gene, allele, total_num_samples)
-merged_data_simpl = unique(merged_data_simpl)
-dim(merged_data_simpl)
-# 21013  4
-
+# Let's focus on SHARP genes
 l_genes = unique(merged_data$gene)
 length(l_genes)
 # 329
@@ -143,28 +133,70 @@ l_sharp = l_genes[which(grepl("SHARP", l_genes, ignore.case = TRUE))]
 length(l_sharp)
 # 55
 
+sharp_merged_data = merged_data %>%
+  filter(gene %in% l_sharp)
+dim(sharp_merged_data)
+# 5974  12
+
 # Output folder
 output_folder = 'EHv322_batch_august2020'
 #dir.create(output_folder)
 
-# Plot boxplots across all loci
-sharp_merged_data = merged_data_simpl %>%
-  filter(gene %in% l_sharp)
-dim(sharp_merged_data)
-# 3367  4
-
 l_genes = unique(sharp_merged_data$gene)
 for(i in 1:length(l_genes)){
-  sharp_boxplot = data.frame()
-  aux_df = sharp_merged_data %>% 
+  # Let's create 2 df: sharp_merged_data for ONLY PROBANDS and for ONLY PROBANDS NOT NEURO (from the list of platekeys) 
+  
+  sharp_merged_data_locus = sharp_merged_data %>%
     filter(gene %in% l_genes[i])
-  for(j in 1:length(aux_df$allele)){
-    allele = aux_df$allele[j]
-    repeat_size = aux_df$total_num_samples[j]
-    new_line = c(l_genes[i], allele)
-    sharp_boxplot = rbind(sharp_boxplot,
-                          as.data.frame(do.call("rbind", replicate(repeat_size, new_line, simplify = FALSE))))
+  
+  sharp_merged_data_probands = data.frame()
+  sharp_merged_data_probands_notNeuro = data.frame()
+  for(z in 1:length(sharp_merged_data_locus$allele)){
+    list_samples = strsplit(sharp_merged_data_locus$list_samples[z], ";")[[1]]
+    list_samples = gsub("^EH_", "", list_samples)
+    list_samples = gsub(".vcf", "", list_samples)
+    list_samples = gsub(" ", "", list_samples)
+    
+    # Keep only in Probands and ProbandsNotNeuro
+    list_samples_probands = intersect(list_samples, l_platekeys_probands_unique)
+    list_samples_probands_notNeuro = intersect(list_samples, l_platekeys_probands_notNeuro_unique)
+    
+    new_line_probands = cbind(sharp_merged_data_locus$gene[z], sharp_merged_data_locus$allele[z], length(unique(list_samples_probands)))
+    new_line_probands_notNeuro = cbind(sharp_merged_data_locus$gene[z], sharp_merged_data_locus$allele[z], length(unique(list_samples_probands_notNeuro)))
+    
+    sharp_merged_data_probands = rbind(sharp_merged_data_probands,
+                                       new_line_probands)
+    
+    sharp_merged_data_probands_notNeuro = rbind(sharp_merged_data_probands_notNeuro,
+                                                new_line_probands_notNeuro)
+    
   }
+  colnames(sharp_merged_data_probands) = c("gene", "repeat-size", "total_num_samples")
+  colnames(sharp_merged_data_probands_notNeuro) = c("gene", "repeat-size", "total_num_samples")
+  
+  sharp_boxplot_probands = data.frame()
+  for(j in 1:length(sharp_merged_data_probands$gene)){
+    allele = sharp_merged_data_probands$`repeat-size`[j]
+    repeat_size_probands = sharp_merged_data_probands$total_num_samples[j]
+    new_line = c(l_genes[i], allele)
+    sharp_boxplot_probands = rbind(sharp_boxplot_probands,
+                                   as.data.frame(do.call("rbind", replicate(repeat_size_probands, new_line, simplify = FALSE))))
+  }
+  
+  sharp_boxplot_probands_notNeuro = data.frame()
+  for(j in 1:length(sharp_merged_data_probands_notNeuro$gene)){
+    allele = sharp_merged_data_probands_notNeuro$`repeat-size`[j]
+    repeat_size_probands = sharp_merged_data_probands_notNeuro$total_num_samples[j]
+    new_line = c(l_genes[i], allele)
+    sharp_boxplot_probands_notNeuro = rbind(sharp_boxplot_probands_notNeuro,
+                                            as.data.frame(do.call("rbind", replicate(repeat_size_probands, new_line, simplify = FALSE))))
+  }
+  
+  colnames(sharp_boxplot_probands) = c("gene", "repeat-size")
+  colnames(sharp_boxplot_probands_notNeuro) = c("gene", "repeat-size")
+  
+  merged_sharp_boxplot = rbind(sharp_boxplot_probands,
+                               sharp_boxplot_probands_notNeuro)
   
   # Create histogram for the gene
   l_gene_repeat_size = aux_df$allele
@@ -226,4 +258,19 @@ for(i in 1:length(l_genes)){
   
 }
 #
+merged_data = merged_data %>%
+  group_by(chr, gene, allele) %>%
+  mutate(total_num_samples = sum(num_samples)) %>%
+  ungroup() %>%
+  as.data.frame() 
+
+
+
+
+
+merged_data_simpl = merged_data %>% 
+  select(chr, gene, allele, total_num_samples)
+merged_data_simpl = unique(merged_data_simpl)
+dim(merged_data_simpl)
+# 21013  4
 
