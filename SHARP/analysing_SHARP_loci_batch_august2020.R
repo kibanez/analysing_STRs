@@ -182,6 +182,7 @@ for(i in 1:length(l_genes)){
     sharp_boxplot_probands = rbind(sharp_boxplot_probands,
                                    as.data.frame(do.call("rbind", replicate(repeat_size_probands, new_line, simplify = FALSE))))
   }
+  sharp_boxplot_probands$cohort = rep("only probands", length(sharp_boxplot_probands$V1))
   
   sharp_boxplot_probands_notNeuro = data.frame()
   for(j in 1:length(sharp_merged_data_probands_notNeuro$gene)){
@@ -191,9 +192,10 @@ for(i in 1:length(l_genes)){
     sharp_boxplot_probands_notNeuro = rbind(sharp_boxplot_probands_notNeuro,
                                             as.data.frame(do.call("rbind", replicate(repeat_size_probands, new_line, simplify = FALSE))))
   }
+  sharp_boxplot_probands_notNeuro$cohort = rep("only probands not neurology", length(sharp_boxplot_probands_notNeuro$V1))
   
-  colnames(sharp_boxplot_probands) = c("gene", "repeat-size")
-  colnames(sharp_boxplot_probands_notNeuro) = c("gene", "repeat-size")
+  colnames(sharp_boxplot_probands) = c("gene", "repeat-size", "cohort")
+  colnames(sharp_boxplot_probands_notNeuro) = c("gene", "repeat-size", "cohort")
   
   merged_sharp_boxplot = rbind(sharp_boxplot_probands,
                                sharp_boxplot_probands_notNeuro)
@@ -229,11 +231,11 @@ for(i in 1:length(l_genes)){
     #ggtitle(l_genes[i]) 
     #coord_cartesian(xlim = c(min_value,max_value))
   
-  # Create boxplot for the gene
-  colnames(sharp_boxplot) = c("gene", "repeat_size")
-  sharp_boxplot$gene = as.character(sharp_boxplot$gene)
-  sharp_boxplot$repeat_size = as.integer(as.character(sharp_boxplot$repeat_size))
-  gene_boxplot = ggplot(sharp_boxplot, aes(x = repeat_size, y = l_genes[i], fill = gene)) +
+  # Create boxplots for PROBANDS only and PROBANDS NOT IN NEURO for each gene
+  merged_sharp_boxplot$gene = as.character(merged_sharp_boxplot$gene)
+  merged_sharp_boxplot$`repeat-size` = as.integer(as.character(merged_sharp_boxplot$`repeat-size`))
+  merged_sharp_boxplot$cohort = as.character(merged_sharp_boxplot$cohort)
+  gene_boxplot = ggplot(merged_sharp_boxplot, aes(x = `repeat-size`, y = l_genes[i], fill = cohort)) +
     #scale_y_discrete(limits=c(min_value, max_value)) +
     geom_violin() +
     xlab("Repeat size") +
