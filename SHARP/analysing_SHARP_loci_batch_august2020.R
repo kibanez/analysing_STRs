@@ -28,12 +28,72 @@ dim(merged_data)
 # 27238  12
 
 # load clinical data
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_071020_V10.tsv",
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_93614_PIDs_merging_RE_V1toV10.tsv",
                      sep = "\t",
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 3474081      33
+# 152337  32
+
+# List of platekeys corresponding to ONLY PROBANDS
+df_only_probands = clin_data %>%
+  filter(is.na(biological_relationship_to_proband) |
+           biological_relationship_to_proband %in% "N/A" | 
+           biological_relationship_to_proband %in% "Proband" |
+           programme %in% "Cancer")
+
+l_platekeys_probands = df_only_probands %>%
+  select(list_platekeys1) %>%
+  unique() %>%
+  pull()
+length(l_platekeys_probands)
+# 52191
+
+# There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
+l_platekeys_probands_unique = c()
+for (i in 1:length(l_platekeys_probands)){
+  if (grepl(',',l_platekeys_probands[i])){
+    list_platekeys = strsplit(l_platekeys_probands[i], ",")[[1]]
+    list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
+    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
+                                    max(list_platekeys))
+  }else{
+    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
+                                    l_platekeys_probands[i])
+  }
+}
+length(l_platekeys_probands_unique)
+# 52191
+
+# List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
+df_only_probands_notNeuro = clin_data %>%
+  filter(is.na(biological_relationship_to_proband) |
+           biological_relationship_to_proband %in% "N/A" | 
+           biological_relationship_to_proband %in% "Proband" |
+           programme %in% "Cancer")
+
+l_platekeys_probands = df_only_probands %>%
+  select(list_platekeys1) %>%
+  unique() %>%
+  pull()
+length(l_platekeys_probands)
+# 52191
+
+# There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
+l_platekeys_probands_unique = c()
+for (i in 1:length(l_platekeys_probands)){
+  if (grepl(',',l_platekeys_probands[i])){
+    list_platekeys = strsplit(l_platekeys_probands[i], ",")[[1]]
+    list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
+    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
+                                    max(list_platekeys))
+  }else{
+    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
+                                    l_platekeys_probands[i])
+  }
+}
+length(l_platekeys_probands_unique)
+#
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
