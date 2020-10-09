@@ -66,18 +66,18 @@ length(l_platekeys_probands_unique)
 # 52191
 
 # List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
-df_only_probands_notNeuro = clin_data %>%
-  filter(is.na(biological_relationship_to_proband) |
-           biological_relationship_to_proband %in% "N/A" | 
-           biological_relationship_to_proband %in% "Proband" |
-           programme %in% "Cancer")
+# First probands
+df_only_probands_notNeuro = df_only_probands %>%
+  filter(!grepl("neuro", list_disease_group, ignore.case = TRUE))
+dim(df_only_probands_notNeuro)
+# 63266 32
 
-l_platekeys_probands = df_only_probands %>%
+l_platekeys_probands_notNeuro = df_only_probands_notNeuro %>%
   select(list_platekeys1) %>%
   unique() %>%
   pull()
-length(l_platekeys_probands)
-# 52191
+length(l_platekeys_probands_notNeuro)
+# 37701
 
 # There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
 l_platekeys_probands_unique = c()
