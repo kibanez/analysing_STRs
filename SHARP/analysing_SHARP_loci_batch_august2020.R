@@ -16,7 +16,6 @@ library(magick); packageDescription ("magick", fields = "Version") #"2.4.0"
 library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
 
-
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/")
 
@@ -27,6 +26,14 @@ merged_data = read.csv("~/Documents/STRs/data/research/batch_august2020/output_E
                        header = T)
 dim(merged_data)
 # 27238  12
+
+# load clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_071020_V10.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(clin_data)
+# 
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
