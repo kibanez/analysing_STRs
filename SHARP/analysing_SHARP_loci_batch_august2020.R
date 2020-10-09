@@ -20,9 +20,6 @@ library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/")
 
-# Function
-source("~/git/analysing_STRs/functions/plot_gene_mergingAssemblies.R")
-
 # load merged august data
 merged_data = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
                        stringsAsFactors = F,
@@ -33,6 +30,7 @@ dim(merged_data)
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
+# In SHARP everything should be GRCh38, because Andy sent us coordinates only in GRCh38
 merged_data$chr = recode(merged_data$chr,
                          "1" = "chr1",
                          "2" = "chr2",
@@ -69,22 +67,18 @@ merged_data_simpl = unique(merged_data_simpl)
 dim(merged_data_simpl)
 # 21013  4
 
-# Let's focus on NIH loci - the ones starting by `^chr`
 l_genes = unique(merged_data$gene)
 length(l_genes)
 # 329
 
+# Let's focus only on SHARP genes
 l_sharp = l_genes[which(grepl("SHARP", l_genes, ignore.case = TRUE))]
 length(l_sharp)
-# 192
+# 55
 
 # Output folder
 output_folder = 'EHv322_batch_august2020'
-dir.create(output_folder)
-
-for (i in 1:length(l_sharp)){
-  plot_gene_mergingAssemblies(merged_data_simpl, l_sharp[i], output_folder)
-}
+#dir.create(output_folder)
 
 # Plot boxplots across all loci
 sharp_merged_data = merged_data_simpl %>%
