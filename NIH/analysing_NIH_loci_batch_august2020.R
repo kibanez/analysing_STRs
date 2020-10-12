@@ -156,7 +156,6 @@ output_folder = 'EHv322_batch_august2020'
 #dir.create(output_folder)
 
 for(i in 1:length(l_nih)){
-  # Let's create 2 df: sharp_merged_data for ONLY PROBANDS and for ONLY PROBANDS NOT NEURO (from the list of platekeys) 
   plot_together_histo_boxplot(df_input = nih_merged_data,
                               gene_name = l_nih[i],
                               output_folder = output_folder)
