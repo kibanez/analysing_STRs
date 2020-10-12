@@ -280,9 +280,6 @@ for(i in 1:length(l_genes)){
   min_value = min(sharp_barplot_probands$number_repeats, sharp_barplot_probands_notNeuro$number_repeats)
   max_value = max(sharp_barplot_probands$number_repeats, sharp_barplot_probands_notNeuro$number_repeats)
   
-  ggplot(vegLengths, aes(length, fill = veg)) + geom_density(alpha = 0.2)
-  
-  
   gene_histo = ggplot(unique(sharp_barplot_merged), aes(x = number_repeats, y = af, fill = cohort)) + 
     scale_x_continuous(limits=c(min_value, max_value)) +
     geom_bar(stat = "identity") + 
