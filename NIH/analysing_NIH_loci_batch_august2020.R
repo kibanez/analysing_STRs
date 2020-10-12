@@ -162,3 +162,7 @@ for(i in 1:length(l_nih)){
                               output_folder = output_folder)
   
 }  
+
+# Summarise report with quantiles for all genes in NIH
+df_percentiles = computing_percentiles(nih_merged_data)
+write.table(df_percentiles,"./EHv322_batch_august2020/summary_stats_quantiles_192_NIH_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
