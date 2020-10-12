@@ -21,6 +21,7 @@ setwd("~/Documents/STRs/ANALYSIS/SHARP/")
 
 # Functions
 source("~/git/analysing_STRs/functions/plot_together_histo_boxplot.R")
+source("~/git/analysing_STRs/functions/computing_percentiles.R")
 
 # load merged august data
 merged_data = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
@@ -150,6 +151,7 @@ for(i in 1:length(l_genes)){
   plot_together_histo_boxplot(df_input = sharp_merged_data,
                               gene_name = l_sharp[i],
                               output_folder = output_folder)
+  compute_percentiles()
 }
 #
 merged_data = merged_data %>%
