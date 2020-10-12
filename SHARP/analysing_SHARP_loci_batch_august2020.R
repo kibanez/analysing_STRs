@@ -19,6 +19,9 @@ library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/")
 
+# Functions
+source("~/git/analysing_STRs/functions/plot_together_histo_boxplot.R")
+
 # load merged august data
 merged_data = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
                        stringsAsFactors = F,
