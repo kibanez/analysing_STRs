@@ -146,7 +146,7 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder) {
                                            rel_heights = c(2, 1),
                                            align = 'v',
                                            axis = 'lr')
-  png(png_name)
+  png(png_name, units="in", width=5, height=5, res=300)
   print(together_plot_locus)
   dev.off()
 }
