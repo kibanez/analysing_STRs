@@ -147,7 +147,6 @@ output_folder = 'EHv322_batch_august2020'
 #dir.create(output_folder)
 
 l_genes = unique(sharp_merged_data$gene)
-df_percentiles = data.frame()
 for(i in 1:length(l_genes)){
   plot_together_histo_boxplot(df_input = sharp_merged_data,
                               gene_name = l_sharp[i],
