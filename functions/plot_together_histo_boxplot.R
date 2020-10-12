@@ -97,8 +97,8 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder) {
           axis.ticks.y=element_blank())
   
   # Create histogram for the gene
-  l_gene_repeat_size_probands = df_probands$repeat_size
-  l_gene_repeat_size_probands_notNeuro = df_probands_notNeuro$repeat_size
+  l_gene_repeat_size_probands = as.integer(as.character(df_probands$repeat_size))
+  l_gene_repeat_size_probands_notNeuro = as.integer(as.character(df_probands_notNeuro$repeat_size))
   genes_barplot_probands = data.frame(number_repeats = l_gene_repeat_size_probands,
                                       af = df_probands$total_num_samples)
   
