@@ -147,26 +147,13 @@ output_folder = 'EHv322_batch_august2020'
 #dir.create(output_folder)
 
 l_genes = unique(sharp_merged_data$gene)
+df_percentiles = data.frame()
 for(i in 1:length(l_genes)){
   plot_together_histo_boxplot(df_input = sharp_merged_data,
                               gene_name = l_sharp[i],
                               output_folder = output_folder)
-  compute_percentiles()
 }
-#
-merged_data = merged_data %>%
-  group_by(chr, gene, allele) %>%
-  mutate(total_num_samples = sum(num_samples)) %>%
-  ungroup() %>%
-  as.data.frame() 
 
-
-
-
-
-merged_data_simpl = merged_data %>% 
-  select(chr, gene, allele, total_num_samples)
-merged_data_simpl = unique(merged_data_simpl)
-dim(merged_data_simpl)
-# 21013  4
-
+# Summarise report with quantiles for all genes in SHARP
+df_percentiles = computing_percentiles(sharp_merged_data)
+write.table(df_percentiles,"./EHv322_batch_august2020/summary_stats_quantiles_55_SHARP_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
