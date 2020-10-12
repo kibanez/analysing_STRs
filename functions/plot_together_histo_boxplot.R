@@ -46,6 +46,13 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder) {
   colnames(df_probands) = c("gene", "repeat_size", "total_num_samples")
   colnames(df_probands_notNeuro) = c("gene", "repeat_size", "total_num_samples")
   
+  # Filter out those repeat-sizes for which `total_num_samples` == 0 (after filtering out by probands and probands not neuro)
+  df_probands = df_probands %>%
+    filter(total_num_samples != 0)
+
+  df_probands_notNeuro = df_probands_notNeuro %>%
+    filter(total_num_samples != 0)
+  
   df_boxplot_probands = data.frame()
   for(j in 1:length(df_probands$gene)){
     allele = as.integer(as.character(df_probands$repeat_size[j]))
