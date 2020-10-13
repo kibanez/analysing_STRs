@@ -4,6 +4,16 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder, l_pl
   df_locus = df_input %>%
     filter(gene %in% gene_name)
   
+  df_all_genomes = df_locus
+  # Since chr are being merged, we need to compute total_num_samples
+  df_all_genomes = df_all_genomes %>%
+    group_by(allele) %>%
+    mutate(total_num_samples = sum(num_samples)) %>%
+    ungroup() %>%
+    select(allele, total_num_samples) %>%
+    as.data.frame() %>%
+    unique()
+  
   # merge chr and 
   df_locus = df_locus %>%
     group_by(chr, gene, allele) %>%
@@ -136,15 +146,35 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder, l_pl
   min_value = min(genes_barplot_probands$number_repeats, genes_barplot_probands_notNeuro$number_repeats)
   max_value = max(genes_barplot_probands$number_repeats, genes_barplot_probands_notNeuro$number_repeats)
   
-  gene_histo = ggplot(unique(sharp_barplot_merged), aes(x = number_repeats, y = af, fill = cohort)) + 
+  # Histogram with 93k genomes (all genomes, not distinguising them between probands neuro, probands not in neuro, etc.)
+  df_all_genomes_barplot = data.frame(number_repeats = df_all_genomes$allele, 
+                                      af = df_all_genomes$total_num_samples)
+  
+  # order by 'number of repetition'
+  df_all_genomes_barplot = unique(df_all_genomes[order(df_all_genomes_barplot[,1]),])
+  rownames(df_all_genomes_barplot) = df_all_genomes_barplot$number_repeats
+  min_value = min(df_all_genomes_barplot$allele)
+  max_value = max(df_all_genomes_barplot$allele)
+  
+  gene_histo = ggplot(df_all_genomes_barplot, aes(x = allele, y = total_num_samples)) + 
     scale_x_continuous(limits=c(min_value, max_value)) +
     geom_bar(stat = "identity") + 
-    geom_text(aes(label=af), vjust=0, size = 4, colour = "grey") +
+    geom_text(aes(label=total_num_samples), vjust=0, size = 4, colour = "grey") +
     theme(legend.position = "none") +
     theme(axis.title.x=element_blank(),
           axis.title.y=element_blank(),
           axis.ticks.x=element_blank(),
           axis.ticks.y=element_blank())
+  
+    #gene_histo = ggplot(unique(sharp_barplot_merged), aes(x = number_repeats, y = af, fill = cohort)) + 
+  #  scale_x_continuous(limits=c(min_value, max_value)) +
+  #  geom_bar(stat = "identity") + 
+  #  geom_text(aes(label=af), vjust=0, size = 4, colour = "grey") +
+  #  theme(legend.position = "none") +
+  #  theme(axis.title.x=element_blank(),
+  #        axis.title.y=element_blank(),
+  #        axis.ticks.x=element_blank(),
+  #        axis.ticks.y=element_blank())
   
   # Combining histo and boxplots
   together_plot_locus = cowplot::plot_grid(gene_histo,
