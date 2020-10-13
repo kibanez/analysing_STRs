@@ -77,27 +77,27 @@ df_only_probands_notNeuro = df_only_probands %>%
 dim(df_only_probands_notNeuro)
 # 63266 32
 
-l_platekeys_probands_neuro_notNeuro = df_only_probands_notNeuro %>%
+l_platekeys_probands_notNeuro = df_only_probands_notNeuro %>%
   select(list_platekeys1) %>%
   unique() %>%
   pull()
-length(l_platekeys_probands_neuro_notNeuro)
+length(l_platekeys_probands_notNeuro)
 # 37701
 
 # There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_neuro_notNeuro_unique = c()
-for (i in 1:length(l_platekeys_probands_neuro_notNeuro)){
-  if (grepl(',',l_platekeys_probands_neuro_notNeuro[i])){
-    list_platekeys = strsplit(l_platekeys_probands_neuro_notNeuro[i], ",")[[1]]
+l_platekeys_probands_notNeuro_unique = c()
+for (i in 1:length(l_platekeys_probands_notNeuro)){
+  if (grepl(',',l_platekeys_probands_notNeuro[i])){
+    list_platekeys = strsplit(l_platekeys_probands_notNeuro[i], ",")[[1]]
     list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_neuro_notNeuro_unique = c(l_platekeys_probands_neuro_notNeuro_unique,
+    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
                                              max(list_platekeys))
   }else{
-    l_platekeys_probands_neuro_notNeuro_unique = c(l_platekeys_probands_neuro_notNeuro_unique,
-                                             l_platekeys_probands_neuro_notNeuro[i])
+    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
+                                             l_platekeys_probands_notNeuro[i])
   }
 }
-length(l_platekeys_probands_neuro_notNeuro_unique)
+length(l_platekeys_probands_notNeuro_unique)
 # 37701
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
@@ -151,7 +151,9 @@ l_genes = unique(sharp_merged_data$gene)
 for(i in 1:length(l_genes)){
   plot_together_histo_boxplot(df_input = sharp_merged_data,
                               gene_name = l_sharp[i],
-                              output_folder = output_folder)
+                              output_folder = output_folder,
+                              l_platekeys_probands_neuro_unique,
+                              l_platekeys_probands_notNeuro_unique)
 }
 
 # Summarise report with quantiles for all genes in SHARP
