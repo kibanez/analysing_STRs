@@ -1,5 +1,5 @@
 # Function that plots histogram together with boxplot
-plot_together_histo_boxplot <- function(df_input, gene_name, output_folder) {
+plot_together_histo_boxplot <- function(df_input, gene_name, output_folder, l_platekeys_probands_neuro_unique, l_platekeys_probands_neuro_notNeuro_unique) {
   # Let's create 2 df: sharp_merged_data for ONLY PROBANDS and for ONLY PROBANDS NOT NEURO (from the list of platekeys) 
   df_locus = df_input %>%
     filter(gene %in% gene_name)
@@ -27,10 +27,10 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder) {
     list_samples = gsub(" ", "", list_samples)
     
     # Keep only in Probands and ProbandsNotNeuro
-    list_samples_probands = unique(intersect(list_samples, l_platekeys_probands_unique))
+    list_samples_probands = unique(intersect(list_samples, l_platekeys_probands_neuro_unique))
     list_samples_probands_notNeuro = unique(intersect(list_samples, l_platekeys_probands_notNeuro_unique))
     
-    list_samples_probands_x2 = intersect(list_samples[index_x2], l_platekeys_probands_unique)
+    list_samples_probands_x2 = intersect(list_samples[index_x2], l_platekeys_probands_neuro_unique)
     list_samples_probands_notNeuro_x2 = intersect(list_samples[index_x2], l_platekeys_probands_notNeuro_unique)
     
     new_line_probands = cbind(df_locus$gene[z], df_locus$allele[z], length(c(list_samples_probands, list_samples_probands_x2)))
