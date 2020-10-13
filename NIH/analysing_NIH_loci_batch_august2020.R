@@ -15,7 +15,7 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 library(magick); packageDescription ("magick", fields = "Version") #"2.4.0"
 library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
-
+library(purrr); packageDescription ("purrr", fields = "Version") #"0.3.3"
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/NIH/")
@@ -47,28 +47,29 @@ df_only_probands = clin_data %>%
            biological_relationship_to_proband %in% "Proband" |
            programme %in% "Cancer")
 
-l_platekeys_probands = df_only_probands %>%
+l_platekeys_probands_neuro = df_only_probands %>%
+  filter(grepl("neuro", list_disease_group, ignore.case = TRUE)) %>%
   select(list_platekeys1) %>%
   unique() %>%
   pull()
-length(l_platekeys_probands)
-# 52191
+length(l_platekeys_probands_neuro)
+# 14490
 
 # There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_unique = c()
-for (i in 1:length(l_platekeys_probands)){
-  if (grepl(',',l_platekeys_probands[i])){
-    list_platekeys = strsplit(l_platekeys_probands[i], ",")[[1]]
+l_platekeys_probands_neuro_unique = c()
+for (i in 1:length(l_platekeys_probands_neuro)){
+  if (grepl(',',l_platekeys_probands_neuro[i])){
+    list_platekeys = strsplit(l_platekeys_probands_neuro[i], ",")[[1]]
     list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
+    l_platekeys_probands_neuro_unique = c(l_platekeys_probands_neuro_unique,
                                     max(list_platekeys))
   }else{
-    l_platekeys_probands_unique = c(l_platekeys_probands_unique,
-                                    l_platekeys_probands[i])
+    l_platekeys_probands_neuro_unique = c(l_platekeys_probands_neuro_unique,
+                                    l_platekeys_probands_neuro[i])
   }
 }
-length(l_platekeys_probands_unique)
-# 52191
+length(l_platekeys_probands_neuro_unique)
+# 14490
 
 # List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
 # First probands
@@ -167,7 +168,7 @@ for(i in 1:length(l_nih)){
 df_percentiles = computing_percentiles(nih_merged_data)
 # Write down first a line with total number of probands in neuro and probands in not neuro
 to_write = cbind("93446",
-                 length(l_platekeys_probands_neuro_unique),
+                 length(l_platekeys_probands_neuro_neuro_unique),
                  length(l_platekeys_probands_notNeuro_unique))
 to_write = rbind(c("Total number of genomes","Total number of probands recruited under Neurological disorders", "Total number of probands NOT recruited under Neurological disorders"),
                  to_write,
