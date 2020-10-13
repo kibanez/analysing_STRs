@@ -143,7 +143,7 @@ dim(clin_data)
 # 3474081   21
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
-colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "participant_ethnic_category", "diseasesubgroup_list", "diseasegroup_list")
+colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "genetic_vs_reported_results", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "participant_ethnic_category", "diseasesubgroup_list", "diseasegroup_list")
 
 # Generate extra columns from clin data for pilot clin data
 pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$participant_id))
@@ -151,7 +151,6 @@ pilot_clin_data$programme = rep("RD Pilot", length(pilot_clin_data$participant_i
 pilot_clin_data$family_group_type = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$panel_list = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$hpo_list = rep(".", length(pilot_clin_data$participant_id))
-pilot_clin_data$genetic_vs_reported_results = rep("Passed", length(pilot_clin_data$participant_id))
 pilot_clin_data$clinic_sample_collected_at_gmc = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$clinic_sample_collected_at_gmc_trust = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$case_solved_family = rep(".", length(pilot_clin_data$participant_id))
