@@ -61,7 +61,7 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder) {
     df_boxplot_probands = rbind(df_boxplot_probands,
                                    as.data.frame(do.call("rbind", replicate(repeat_size_probands, new_line, simplify = FALSE))))
   }
-  df_boxplot_probands$cohort = rep("only probands", length(df_boxplot_probands$V1))
+  df_boxplot_probands$cohort = rep("only probands in neurology", length(df_boxplot_probands$V1))
   
   df_boxplot_probands_notNeuro = data.frame()
   for(j in 1:length(df_probands_notNeuro$gene)){
