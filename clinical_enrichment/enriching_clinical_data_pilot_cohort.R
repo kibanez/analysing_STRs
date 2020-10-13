@@ -10,10 +10,6 @@ library(dplyr)
 
 # setwd
 setwd("~/Documents/STRs/clinical_data/pilot_clinical_data/")
-# PILOT clinical data retrieved from frozen pilot cohort (as we have done for the research cohort)
-#plate_key.x	participant_id	programme	genome_build	programme_consent_status	rare_diseases_family_id	biological_relationship_to_proband	affection_status	participant_phenotypic_sex	year_of_birth	normalised_specific_disease	disease_sub_group	disease_group	panel_list
-#LP2000950-DNA_H05	111000000	Rare Diseases	GRCh37	Consenting	111000000	Proband	Affected	Female	2005	Intellectual disability	Neurodevelopmental disorders	Neurology and neurodevelopmental disorders	Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Congenital hearing impairment (profound/severe), Intellectual disability, Intellectual disability, Intellectual disability, Intellectual disability, Intellectual disability, Intellectual disability, Intellectual disability, Intellectual disability, Mitochondrial disorders, Mitochondrial disorders, Mitochondrial disorders, Mitochondrial disorders, Mitochondrial disorders, Mitochondrial disorders, Mitochondrial disorders, Mitochondrial disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders, Undiagnosed metabolic disorders
-#LP2000913-DNA_C05	111000001	Rare Diseases	GRCh37	Consenting	111000000	Father	Unaffected	Male	1967	N/A	NA	NA	Congenital hearing impairment (profound/severe), Intellectual disability, Mitochondrial disorders, Undiagnosed metabolic disorders
 
 # Load Pilot clinical data
 data_platekeys = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/data_freeze_Pilot_LK_RESEARCH/samples.csv",
@@ -54,13 +50,6 @@ dim(consent_info)
 # 17258  34
 
 consent_info = consent_info %>% select(gelId, affectionStatus, review_outcome, qc_state, programmeConsent, consent_opinion)
-
-# Load additional information table, for genetic vs reported check info --> `qc_state`
-add_info = read.csv("./data_freeze_Pilot_LK_RESEARCH/additionalInformation.csv",
-                    stringsAsFactors = F,
-                    header = T)
-dim(add_info)
-# 17258  12
 
 ## OUTPUT FILE
 # First let's put all panel names as a list separated by ','
