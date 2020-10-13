@@ -165,4 +165,25 @@ for(i in 1:length(l_nih)){
 
 # Summarise report with quantiles for all genes in NIH
 df_percentiles = computing_percentiles(nih_merged_data)
+# Write down first a line with total number of probands in neuro and probands in not neuro
+to_write = cbind("93446",
+                 length(l_platekeys_probands_neuro_unique),
+                 length(l_platekeys_probands_notNeuro_unique))
+to_write = rbind(c("Total number of genomes","Total number of probands recruited under Neurological disorders", "Total number of probands NOT recruited under Neurological disorders"),
+                 to_write,
+                 cbind("", "", ""))
+write.table(to_write, 
+            "./EHv322_batch_august2020/summary_stats_quantiles_192_NIH_genes.tsv", 
+            sep='\t', 
+            quote = F,
+            row.names=F, 
+            col.names=F)
+write.table(df_percentiles,
+            "./EHv322_batch_august2020/summary_stats_quantiles_192_NIH_genes.tsv", 
+            append = T, 
+            sep = "\t", 
+            quote = F,
+            row.names = F,
+            col.names = T)
+
 write.table(df_percentiles,"./EHv322_batch_august2020/summary_stats_quantiles_192_NIH_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
