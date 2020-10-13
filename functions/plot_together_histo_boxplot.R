@@ -159,7 +159,7 @@ plot_together_histo_boxplot <- function(df_input, gene_name, output_folder, l_pl
   gene_histo = ggplot(df_all_genomes_barplot, aes(x = allele, y = total_num_samples)) + 
     scale_x_continuous(limits=c(min_value, max_value)) +
     geom_bar(stat = "identity") + 
-    geom_text(aes(label=total_num_samples), vjust=0, size = 4, colour = "grey") +
+    #geom_text(aes(label=total_num_samples), vjust=0, size = 4, colour = "grey") +
     theme(legend.position = "none") +
     theme(axis.title.x=element_blank(),
           axis.title.y=element_blank(),
