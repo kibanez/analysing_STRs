@@ -15,6 +15,7 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 library(magick); packageDescription ("magick", fields = "Version") #"2.4.0"
 library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
+library(purrr); packageDescription ("purrr", fields = "Version") #"0.3.3"
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/")
@@ -147,8 +148,7 @@ dim(sharp_merged_data)
 output_folder = 'EHv322_batch_august2020'
 #dir.create(output_folder)
 
-l_genes = unique(sharp_merged_data$gene)
-for(i in 1:length(l_genes)){
+for(i in 1:length(l_sharp)){
   plot_together_histo_boxplot(df_input = sharp_merged_data,
                               gene_name = l_sharp[i],
                               output_folder = output_folder,
@@ -157,5 +157,26 @@ for(i in 1:length(l_genes)){
 }
 
 # Summarise report with quantiles for all genes in SHARP
+# Based on 93k genomes
 df_percentiles = computing_percentiles(sharp_merged_data)
-write.table(df_percentiles,"./EHv322_batch_august2020/summary_stats_quantiles_55_SHARP_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+
+# Write down first a line with total number of probands in neuro and probands in not neuro
+to_write = cbind("93446",
+                 length(l_platekeys_probands_neuro_unique),
+                 length(l_platekeys_probands_notNeuro_unique))
+to_write = rbind(c("Total number of genomes","Total number of probands recruited under Neurological disorders", "Total number of probands NOT recruited under Neurological disorders"),
+                 to_write,
+                 cbind("", "", ""))
+write.table(to_write, 
+            "./EHv322_batch_august2020/summary_stats_quantiles_55_SHARP_genes.tsv", 
+            sep='\t', 
+            quote = F,
+            row.names=F, 
+            col.names=F)
+write.table(df_percentiles,
+            "./EHv322_batch_august2020/summary_stats_quantiles_55_SHARP_genes.tsv", 
+            append = T, 
+            sep = "\t", 
+            quote = F,
+            row.names = F,
+            col.names = T)
