@@ -40,6 +40,18 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
 dim(clin_data)
 # 3474081  33
 
+# Let's keep only germline genomes
+clin_data = clin_data %>%
+  filter(grepl("germline", type))
+dim(clin_data)
+# 3416282 33
+
+# Checking which genomes we have
+table(clin_data$type)
+#cancer germline experimental germline rare disease germline 
+#50305                   211               3365766 
+
+
 # List of platekeys corresponding to ONLY PROBANDS
 df_only_probands = clin_data %>%
   filter(is.na(biological_relationship_to_proband) |
@@ -69,7 +81,7 @@ for (i in 1:length(l_platekeys_probands_neuro)){
   }
 }
 length(l_platekeys_probands_neuro_unique)
-# 14490
+# 13840
 
 # List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
 # First probands
