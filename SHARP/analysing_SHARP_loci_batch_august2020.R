@@ -32,13 +32,13 @@ merged_data = read.csv("~/Documents/STRs/data/research/batch_august2020/output_E
 dim(merged_data)
 # 27238  12
 
-# load clinical data
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_research_cohort/clinical_data_research_cohort_93614_PIDs_merging_RE_V1toV10.tsv",
+# load clinical data - changing to RE V10 (since we are sharing with external groups)
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_071020_V10.tsv",
                      sep = "\t",
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 152337  32
+# 3474081  33
 
 # List of platekeys corresponding to ONLY PROBANDS in Neuro
 df_only_probands = clin_data %>%
