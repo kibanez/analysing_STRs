@@ -48,12 +48,12 @@ df_only_probands = clin_data %>%
            programme %in% "Cancer")
 
 l_platekeys_probands_neuro = df_only_probands %>%
-  filter(grepl("neuro", list_disease_group, ignore.case = TRUE)) %>%
-  select(list_platekeys1) %>%
+  filter(grepl("neuro", disease_group, ignore.case = TRUE)) %>%
+  select(platekey) %>%
   unique() %>%
   pull()
 length(l_platekeys_probands_neuro)
-# 14490
+# 13840
 
 # There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
 l_platekeys_probands_neuro_unique = c()
