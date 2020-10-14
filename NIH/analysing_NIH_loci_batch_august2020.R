@@ -160,7 +160,9 @@ output_folder = 'EHv322_batch_august2020'
 for(i in 1:length(l_nih)){
   plot_together_histo_boxplot(df_input = nih_merged_data,
                               gene_name = l_nih[i],
-                              output_folder = output_folder)
+                              output_folder = output_folder,
+                              l_platekeys_probands_neuro_unique = l_platekeys_probands_neuro_unique,
+                              l_platekeys_probands_neuro_notNeuro_unique = l_platekeys_probands_notNeuro_unique)
   
 }  
 
