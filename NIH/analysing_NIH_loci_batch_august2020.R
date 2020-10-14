@@ -86,16 +86,16 @@ length(l_platekeys_probands_neuro_unique)
 # List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
 # First probands
 df_only_probands_notNeuro = df_only_probands %>%
-  filter(!grepl("neuro", list_disease_group, ignore.case = TRUE))
+  filter(!grepl("neuro", disease_group, ignore.case = TRUE))
 dim(df_only_probands_notNeuro)
-# 63266 32
+# 1012732  33
 
 l_platekeys_probands_notNeuro = df_only_probands_notNeuro %>%
-  select(list_platekeys1) %>%
+  select(platekey) %>%
   unique() %>%
   pull()
 length(l_platekeys_probands_notNeuro)
-# 37701
+# 35510
 
 # There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
 l_platekeys_probands_notNeuro_unique = c()
@@ -111,7 +111,7 @@ for (i in 1:length(l_platekeys_probands_notNeuro)){
   }
 }
 length(l_platekeys_probands_notNeuro_unique)
-# 37701
+# 35510
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
