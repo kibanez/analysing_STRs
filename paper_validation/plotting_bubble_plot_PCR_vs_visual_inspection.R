@@ -28,10 +28,6 @@ dim(val_data)
 
 output_folder = "./figures/"
 
-group.colors = c("AR" = "#1B9E77", "ATN1" = "#D95F02", "ATXN1" ="#7570B3", "ATXN2" = "#E7298A", "ATXN3" = "#66A61E", 
-                 "ATXN7" = "#E6AB02", "CACNA1A" = "#A6761D", "FXN" = "#666666", "HTT" ="#E41A1C", "TBP" = "#FF7F00", 
-                 "C9orf72" = "#FFFF33", "FMR1" = "#F781BF", "PPP2R2B" = "black")
-
 # Mike's suggestion - 1
 # Truth short and truth long alleles in X axis
 # minEhv3 and maxEHv3 in Y axis
@@ -121,6 +117,10 @@ max_value = max(df_data_with_freq_v2$eh_alleles,
 
 df_strategy2 = df_data_with_freq_v2
 
+group.colors = c("AR" = "#1B9E77", "ATN1" = "#D95F02", "ATXN1" ="#7570B3", "ATXN2" = "#E7298A", "ATXN3" = "#66A61E", 
+                 "ATXN7" = "#E6AB02", "CACNA1A" = "#A6761D", "FXN" = "#666666", "HTT" ="#E41A1C", "TBP" = "#FF7F00", 
+                 "C9orf72" = "#FFFF33", "FMR1" = "#F781BF", "PPP2R2B" = "black")
+
 group.colors.gray = c("AR" = "#DCDCDC", "ATN1" = "#D3D3D3", "ATXN1" ="#C0C0C0", "ATXN2" = "#A9A9A9", "ATXN3" = "#808080", 
                  "ATXN7" = "#696969", "CACNA1A" = "#778899", "FXN" = "#708090", "HTT" ="#2F4F4F", "TBP" = "#AAAAAA", 
                  "C9orf72" = "#BBBBBB", "FMR1" = "#CCCCCC", "PPP2R2B" = "black")
@@ -143,20 +143,37 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/Figure2B_before_vs_after_visualQC_LANCET_filter_ATN1_ATXN3_from_NCL_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_600dpi.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
-ggsave(file="./figures/Figure2B_before_vs_after_visualQC_LANCET_600dpi.svg", plot=tontz, dpi = 600)
-
+ggsave(file="./figures/FigureS3_418PCRtests_filtering_out_NCL_600dpi.svg", plot=tontz, dpi = 600)
 
 # breakdown by locus
-geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
-  geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
-  
+# First enrich `val_data` with premutation cut-offs
+df_cutoffs = data.frame(locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP"),
+                        premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41),
+                        stringsAsFactors = F)
+
+val_data = left_join(val_data,
+                     df_cutoffs,
+                     by = "locus")
+df_strategy1 = left_join(df_strategy1,
+                         df_cutoffs,
+                         by = "locus")
+df_strategy2 = left_join(df_strategy2,
+                         df_cutoffs,
+                         by = "locus")
+
+df_strategy1$locus = as.factor(df_strategy1$locus)
+df_strategy2$locus = as.factor(df_strategy2$locus)
+
 breakdown_by_locus = ggplot(df_strategy1) +
   geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+  geom_vline(data = df_strategy1, aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+  geom_hline(data = df_strategy1, aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+  
   xlim(5,max_value) +
   ylim(5,max_value) +
   geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
@@ -167,11 +184,12 @@ breakdown_by_locus = ggplot(df_strategy1) +
   scale_fill_manual(values=group.colors) +  
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) +
-  guides(size = FALSE) +
-  facet_wrap(locus~ .)
+  guides(size = FALSE, color = FALSE) +
+  facet_wrap(locus~ .) 
+  
 
-png("./figures/FigureS3_before_vs_after_visualQC_breakdown_LANCET_filter_ATN1_ATXN3_from_NCL_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_600dpi.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
 
-ggsave(file="./figures/Figure2_before_vs_after_visualQC_breakdown_LANCET_600dpi.svg", plot=breakdown_by_locus, dpi = 600)
+ggsave(file="./figures/Figure2B_LANCET_filter_all_NCL_600dpi.svg", plot=breakdown_by_locus, dpi = 600)
