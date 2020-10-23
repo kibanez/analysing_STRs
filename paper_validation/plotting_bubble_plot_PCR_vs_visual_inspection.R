@@ -19,15 +19,12 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
 # Load golden validation table - EHv2.5.5
-#val_data = read.csv("./GEL_accuracy_final_not_NCL.tsv",
-val_data = read.csv("./GEL_accuracy_final_not_NCL_filtering_ATN1_ATXN3.tsv",                    
+val_data = read.csv("./GEL_accuracy_final_not_NCL.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 616  11
 # 418  11 - no NCL
-# 568 11 - no ATN1/ATXN3 from NCL
 
 # 1 - Define min and max alleles for both PCR and EH 
 val_data = val_data %>% 
@@ -270,7 +267,7 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/Figure2B_before_vs_after_visualQC_LANCET_filter_ALL_NCL_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_before_vs_after_visualQC_LANCET_filter_ATN1_ATXN3_from_NCL_600dpi.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -278,6 +275,9 @@ ggsave(file="./figures/Figure2B_before_vs_after_visualQC_LANCET_600dpi.svg", plo
 
 
 # breakdown by locus
+geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+  geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
+  
 breakdown_by_locus = ggplot(df_strategy1) +
   geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
@@ -294,7 +294,7 @@ breakdown_by_locus = ggplot(df_strategy1) +
   guides(size = FALSE) +
   facet_wrap(locus~ .)
 
-png("./figures/FigureS3_before_vs_after_visualQC_breakdown_LANCET_filter_ALL_NCL_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_before_vs_after_visualQC_breakdown_LANCET_filter_ATN1_ATXN3_from_NCL_600dpi.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
 
