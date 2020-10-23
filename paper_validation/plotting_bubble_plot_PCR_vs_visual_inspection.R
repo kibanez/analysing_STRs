@@ -76,26 +76,6 @@ max_value = max(df_data_with_freq_v2$eh_alleles,
                 na.rm = TRUE) + 5
 df_strategy1 = df_data_with_freq_v2
 
-
-joint_plot_mike1 = ggplot(df_data_with_freq_v2, 
-                    aes(x = exp_alleles, y = eh_alleles, colour = factor(locus))) + 
-  geom_point(aes(fill = factor(locus), size = number_of_alleles), alpha = 0.3) + 
-  xlim(5,max_value) + 
-  ylim(5,max_value) + 
-  #labs(title = "", 
-  #     y = "Repeat sizes for each allele \n EHv3 calls (X & Y columns)", 
-  #     x = "Repeat sizes for each allele \n Truth short/large alleles (AI & AJ columns)") + 
-  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
-  coord_equal() +
-  scale_fill_manual(values=group.colors) +  
-  theme(legend.title = element_blank(),
-        axis.text.x.top = element_text()) + 
-  guides(size = FALSE) 
-
-png("figures/joint_bubble_plot_Truth_shortLarg_alleles_vs_EHv3_calls.png", units="in", width=5, height=5, res=300)
-print(joint_plot_mike1)
-dev.off()
-
 # Mike's suggestion - 2
 # min and max PCR sizes in X axis
 # minEhv3 and maxEHv3 in Y axis
@@ -144,26 +124,6 @@ df_strategy2 = df_data_with_freq_v2
 group.colors.gray = c("AR" = "#DCDCDC", "ATN1" = "#D3D3D3", "ATXN1" ="#C0C0C0", "ATXN2" = "#A9A9A9", "ATXN3" = "#808080", 
                  "ATXN7" = "#696969", "CACNA1A" = "#778899", "FXN" = "#708090", "HTT" ="#2F4F4F", "TBP" = "#AAAAAA", 
                  "C9orf72" = "#BBBBBB", "FMR1" = "#CCCCCC", "PPP2R2B" = "black")
-
-joint_plot_mike2 = ggplot(df_data_with_freq_v2, 
-                          aes(x = exp_alleles, y = eh_alleles)) + 
-  geom_point(aes(size = number_of_alleles)) + 
-  xlim(5,max_value) + 
-  ylim(5,max_value) + 
-  #labs(title = "", 
-  #     y = "Repeat sizes for each allele \n EHv3 calls (X & Y columns)", 
-  #     x = "Repeat sizes for each allele \n PCR sizes (I & J columns)") + 
-  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
-  coord_equal() +
-  scale_fill_grey() +
-  theme(legend.title = element_blank(),
-        axis.text.x.top = element_text()) + 
-  guides(size = FALSE) 
-
-png("figures/joint_bubble_plot_PCRsizes_vs_EHv3_calls.png", units="in", width=5, height=5, res=300)
-print(joint_plot_mike2)
-dev.off()
-
 
 # Combining joint_plot_mike1 and joint_plot_mike2 into a single one
 tontz = ggplot() +
