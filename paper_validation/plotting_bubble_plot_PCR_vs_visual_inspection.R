@@ -19,16 +19,19 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
 # Load golden validation table - EHv2.5.5
-val_data = read.csv("./GEL_accuracy_final.tsv",
+#val_data = read.csv("./GEL_accuracy_final_not_NCL.tsv",
+val_data = read.csv("./GEL_accuracy_final_not_NCL_filtering_ATN1_ATXN3.tsv",                    
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
 # 616  11
+# 418  11 - no NCL
+# 568 11 - no ATN1/ATXN3 from NCL
 
 # 1 - Define min and max alleles for both PCR and EH 
 val_data = val_data %>% 
-  group_by(LP_number, locus) %>%
+  group_by(validation_id, locus) %>%
   mutate(min_PCR = min(exp_PCR_a1, exp_PCR_a2),
          max_PCR = max(exp_PCR_a1, exp_PCR_a2),
          min_EH = min(Truth.Short.Allele, Truth.Long.Allele),
@@ -37,6 +40,7 @@ val_data = val_data %>%
   as.data.frame()
 dim(val_data)
 # 616  15
+# 418 16
 
 # Let's take the important meat: experimentally validated data and EH estimations
 exp_alleles_v2 = c(as.integer(val_data$min_PCR), as.integer(val_data$max_PCR))
@@ -266,10 +270,11 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/Figure2B_before_vs_after_visualQC_ryanFormat.png",units="in", width=5, height=5, res=300)
+png("./figures/Figure2B_before_vs_after_visualQC_LANCET_filter_ALL_NCL_600dpi.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
+ggsave(file="./figures/Figure2B_before_vs_after_visualQC_LANCET_600dpi.svg", plot=tontz, dpi = 600)
 
 
 # breakdown by locus
@@ -289,8 +294,8 @@ breakdown_by_locus = ggplot(df_strategy1) +
   guides(size = FALSE) +
   facet_wrap(locus~ .)
 
-png("./figures/FigureS3_before_vs_after_visualQC_breakdown_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_before_vs_after_visualQC_breakdown_LANCET_filter_ALL_NCL_600dpi.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
 
-
+ggsave(file="./figures/Figure2_before_vs_after_visualQC_breakdown_LANCET_600dpi.svg", plot=breakdown_by_locus, dpi = 600)
