@@ -24,7 +24,7 @@ val_data = read.csv("./GEL_accuracy_final_not_NCL.tsv",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 418  11 - no NCL
+# 418  15 - no NCL
 
 output_folder = "./figures/"
 
@@ -147,7 +147,7 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi_301020.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
