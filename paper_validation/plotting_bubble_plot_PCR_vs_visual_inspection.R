@@ -18,23 +18,24 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
-# Load golden validation table - EHv2.5.5
-val_data = read.csv("./GEL_accuracy_final_not_NCL.tsv",
+# Load golden validation table - 418 PCR tests with `repeat.sizing`
+val_data = read.csv("./GEL_accuracy_final_not_UCL_november.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
+
 dim(val_data)
-# 418  15 - no NCL
+# 418  11
 
 output_folder = "./figures/"
 
 # Mike's suggestion - 1
 # PCR alleles in X axis
-# ruth short and truth long alleles in Y axis
+# EHv3 after visual inspection (changing 5 FP and 1 FN values)
 
 # Let's take the important meat
-exp_alleles_v2 = c(as.integer(val_data$Truth.Short.Allele), as.integer(val_data$Truth.Long.Allele))
-eh_alleles_v2 = c(as.integer(val_data$min.EHv312.a1), as.integer(val_data$max.EHv312.a2))
+exp_alleles_v2 = c(as.integer(val_data$exp_PCR_a1), as.integer(val_data$exp_PCR_a2))
+eh_alleles_v2 = c(as.integer(val_data$EHv312_a1_avg_after_visualQC), as.integer(val_data$EHv312_a2_avg_after_visualQC))
 locus_v2 = c(val_data$locus, val_data$locus)
 
 # Remove NAs
@@ -55,8 +56,8 @@ for(i in 1:length(l_locus)){
   
   #aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
   #aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max.EHv312.a2) %>% pull() %>% as.integer() 
-  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(Truth.Short.Allele) %>% pull() %>% as.integer() 
-  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(Truth.Long.Allele) %>% pull() %>% as.integer() 
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a1_avg_after_visualQC) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a2_avg_after_visualQC) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
@@ -78,11 +79,11 @@ df_strategy1 = df_data_with_freq_v2
 
 # Mike's suggestion - 2
 # min and max PCR sizes in X axis
-# minEhv3 and maxEHv3 in Y axis
+# minEhv3 and maxEHv3 before visual QC in Y axis
 
 # Let's take the important meat
 exp_alleles_v2 = c(as.integer(val_data$exp_PCR_a1), as.integer(val_data$exp_PCR_a2))
-eh_alleles_v2 = c(as.integer(val_data$min.EHv312.a1), as.integer(val_data$max.EHv312.a2))
+eh_alleles_v2 = c(as.integer(val_data$EHv312_a1_avg), as.integer(val_data$EHv312_a2_avg))
 locus_v2 = c(val_data$locus, val_data$locus)
 
 # Remove NAs
@@ -99,8 +100,8 @@ for(i in 1:length(l_locus)){
   aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(exp_PCR_a2) %>% pull() %>% as.integer() 
   aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
   
-  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
-  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max.EHv312.a2) %>% pull() %>% as.integer() 
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a1_avg) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a2_avg) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
   data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
@@ -147,11 +148,9 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi_301020.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi_051120.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
-
-ggsave(file="./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi.svg", plot=tontz, dpi = 600)
 
 # breakdown by locus
 # First enrich `val_data` with premutation cut-offs
@@ -173,7 +172,7 @@ df_strategy1$locus = as.factor(df_strategy1$locus)
 df_strategy2$locus = as.factor(df_strategy2$locus)
 
 breakdown_by_locus = ggplot(df_strategy1) +
-#  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
+  geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
   geom_vline(data = df_strategy1, aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
   geom_hline(data = df_strategy1, aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
@@ -192,8 +191,6 @@ breakdown_by_locus = ggplot(df_strategy1) +
   facet_wrap(locus~ .) 
   
 
-png("./figures/Figure2B_LANCET_filter_all_NCL_600dpi.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_600dpi_051120.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
-
-ggsave(file="./figures/Figure2B_LANCET_filter_all_NCL_600dpi.svg", plot=breakdown_by_locus, dpi = 600)
