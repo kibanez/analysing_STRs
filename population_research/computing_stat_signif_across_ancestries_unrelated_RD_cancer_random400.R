@@ -97,6 +97,20 @@ for (i in 1:length(l_loci)){
                        eas_table,
                        eur_table)
   
+not_afr = rbind(amr_table, asi_table, eas_table, eur_table)
+not_amr = rbind(afr_table, asi_table, eas_table, eur_table)
+not_asi = rbind(afr_table, amr_table, eas_table, eur_table)
+not_eas = rbind(afr_table, amr_table, asi_table, eur_table)
+not_eur = rbind(afr_table, amr_table, asi_table, eas_table)
+
+wilcox.test(afr_table$repeat_size, not_afr$repeat_size, p.adjust.methods = "bonferroni", alternative = "less")
+wilcox.test(amr_table$repeat_size, not_amr$repeat_size, p.adjust.methods = "bonferroni", alternative = "less")
+wilcox.test(eas_table$repeat_size, not_eas$repeat_size, p.adjust.methods = "bonferroni", alternative = "less")
+wilcox.test(eur_table$repeat_size, not_eur$repeat_size, p.adjust.methods = "bonferroni", alternative = "less")
+wilcox.test(asi_table$repeat_size, not_asi$repeat_size, p.adjust.methods = "bonferroni", alternative = "less")
+
+
+  
   # Both the Mann-Whitney and the Kolmogorov-Smirnov tests are nonparametric tests to compare two unpaired groups of data. 
   # Both compute P values that test the null hypothesis that the two groups have the same distribution. But they work very differently:
   
