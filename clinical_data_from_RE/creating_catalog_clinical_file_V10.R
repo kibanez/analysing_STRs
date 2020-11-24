@@ -1,5 +1,6 @@
 # Objective: create rd genomes and cancer germline info from the latest RE clinical data batch
 # Update on 07/10/20: including some fields from `clinic_sample` and `gmc_exit_questionnaire` tables
+# Update on 24/11/20: include 
 # This time V10 - 2020/09/03
 date()
 Sys.info()[c("nodename", "user")]
@@ -61,13 +62,6 @@ year_birth = read.csv("./rare_diseases_pedigree_member_2020-09-08_09-36-18.tsv",
 dim(year_birth)
 # 217473  35
 
-platekeys = read.csv("./plated_sample_2020-09-08_09-38-35.tsv",
-                     sep = "\t",
-                     header = TRUE,
-                     stringsAsFactors = F)
-dim(platekeys)
-# 112028  14
-
 path = read.csv("./genome_file_paths_and_types_2020-09-08_09-36-43.tsv",
                 sep = "\t",
                 header = TRUE,
@@ -90,11 +84,13 @@ dim(gmc_exit)
 # 28757  23
 
 path_subset = path %>% filter(file_sub_type %in% "BAM") %>% select(participant_id, platekey, type, file_path)
+rm(path)
 
 # Let's focus on the REAL genomes we do have
 all_data = path_subset %>% select(participant_id, platekey, file_path, type)
 dim(all_data)
 # 107540  4
+rm(path_subset)
 
 all_data = left_join(all_data,
                      rd_analysis %>% select(participant_id, rare_diseases_family_id, plate_key, biological_relationship_to_proband, participant_type, normalised_specific_disease, genome_build, genetic_vs_reported_results, participant_ethnic_category),
@@ -143,19 +139,21 @@ all_data = left_join(all_data,
                      by = "participant_id")
 dim(all_data)
 # 1184730  30
+rm(year_birth)
 
 all_data = left_join(all_data,
                      clinic_sample %>% select(participant_id, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust),
                      by = "participant_id")
 dim(all_data)
 # 2399541  32
-    
+rm(clinic_sample)    
+
 all_data = left_join(all_data,
                      gmc_exit %>% select(participant_id, case_solved_family),
                      by = "participant_id")
 dim(all_data)
 # 3474081  33
-
+rm(gmc_exit)
 
 # New RESCTY and POSTDIST info for each PID
 hpc = read.csv("./hes_op_2020-11-24_09-11-57_pid_postdist_rescty.tsv",
@@ -165,11 +163,17 @@ hpc = read.csv("./hes_op_2020-11-24_09-11-57_pid_postdist_rescty.tsv",
 dim(hpc)
 # 5628380  3
 
+hpc = hpc %>% 
+  filter(participant_id %in% unique(all_data$participant_id))
+dim(hpc)
+#
+
 all_data = left_join(all_data,
                      hpc %>% filter(participant_id %in% unique(all_data$participant_id)),
                      by = "participant_id")
 dim(all_data)
 #  35
+rm(hpc)
 
 # population data - let's enrich with merged (batch1 and batch2) population info
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv",
