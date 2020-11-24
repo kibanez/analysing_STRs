@@ -98,6 +98,14 @@ dim(gmc_exit)
 
 path_subset = path %>% filter(file_sub_type %in% "BAM") %>% select(participant_id, platekey, type, file_path)
 
+# New RESCTY and POSTDIST info for each PID
+hpc = read.csv("./hes_op_2020-11-24_09-11-57_pid_rescty_postdist.tsv",
+               sep = "\t",
+               stringsAsFactors = F,
+               header = T)
+dim(hpc)
+# 5628380  3
+
 # Let's focus on the REAL genomes we do have
 all_data = path_subset %>% select(participant_id, platekey, file_path, type)
 dim(all_data)
@@ -116,22 +124,22 @@ dim(all_data)
 # 113538  15
 
 all_data = left_join(all_data, 
-                     participant_info %>% select(participant_id, participant_medical_review_qc_state_code, year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender, programme_consent_status, programme),
+                     participant_info %>% select(participant_id, registered_at_gmc_trust, participant_medical_review_qc_state_code, year_of_birth, participant_phenotypic_sex, participant_karyotypic_sex, participant_stated_gender, programme_consent_status, programme),
                      by = "participant_id")
 dim(all_data)                 
-# 113538  22
+# 113538  23
 
 all_data = left_join(all_data,
                      rd_family %>% select(rare_diseases_family_id, family_group_type, family_medical_review_qc_state_code),
                      by = "rare_diseases_family_id")
 dim(all_data)
-# 113538  24
+# 113538  25
 
 all_data = left_join(all_data,
                      panels_info %>% select(participant_id, panel_name, panel_version),
                      by = "participant_id")
 dim(all_data)
-# 272617  26
+# 272617  27
 
 all_data = left_join(all_data,
                      rd_participant %>% filter(hpo_present %in% "Yes") %>% select(participant_id, hpo_term, hpo_id),
