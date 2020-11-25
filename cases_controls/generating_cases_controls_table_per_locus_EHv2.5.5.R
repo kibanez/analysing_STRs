@@ -108,7 +108,9 @@ dim(list_disease_subgroup)
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
-  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genome_build, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, best_guess_predicted_ancstry, self_reported)
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth, 
+         participant_phenotypic_sex, programme, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         registered_at_gmc_trust, rescty, postdist)
 dim(clin_data)
 # 1124633  12
 
@@ -152,18 +154,72 @@ pilot_clin_data$programme = rep("RD Pilot", length(pilot_clin_data$participant_i
 pilot_clin_data$family_group_type = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$panel_list = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$hpo_list = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$clinic_sample_collected_at_gmc = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$clinic_sample_collected_at_gmc_trust = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$case_solved_family = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$registered_at_gmc_trust = rep("Pilot", length(pilot_clin_data$participant_id))
+pilot_clin_data$rescty = rep("Pilot", length(pilot_clin_data$participant_id))
+pilot_clin_data$postdist = rep("Pilot", length(pilot_clin_data$participant_id))
+
 
 # Select columns
 pilot_clin_data = pilot_clin_data %>%
   select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband,
-         genome_build, year_of_birth, participant_phenotypic_sex, programme,
-         family_group_type, affection_status, best_guess_predicted_ancstry, self_reported,
+         genetic_vs_reported_results, participant_ethnic_category ,genome_build, year_of_birth, 
+         participant_phenotypic_sex, programme,family_group_type, affection_status, 
+         bestGUESS_super_pop, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         registered_at_gmc_trust, rescty, postdist,
          diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list, hpo_list)
+colnames(pilot_clin_data) = colnames(clin_data)
 
 clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
 # 1129467  17
+
+# Check genQA cases
+df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch3_STRs.tsv",
+                    stringsAsFactors = F, 
+                    header = T,
+                    sep = "\t")
+dim(df_genQA)
+# 52  17
+
+# Include genQA data in clin_data
+df_genQA$programme = rep("genQA", length(df_genQA$Platekey))
+df_genQA$biological_relationship_to_proband = rep("genQA", length(df_genQA$Platekey))
+df_genQA$genetic_vs_reported_results = rep("genQA", length(df_genQA$Platekey))
+df_genQA$participant_ethnic_category = rep("genQA", length(df_genQA$Platekey))
+df_genQA$genome_build = rep("genQA", length(df_genQA$Platekey))
+df_genQA$year_of_birth = rep("genQA", length(df_genQA$Platekey))
+df_genQA$participant_phenotypic_sex = rep("genQA", length(df_genQA$Platekey))
+df_genQA$family_group_type = rep("genQA", length(df_genQA$Platekey))
+df_genQA$affection_status = rep("genQA", length(df_genQA$Platekey))
+df_genQA$superpopu = rep("genQA", length(df_genQA$Platekey))
+df_genQA$clinic_sample_collected_at_gmc = rep("genQA", length(df_genQA$Platekey))
+df_genQA$clinic_sample_collected_at_gmc_trust = rep("genQA", length(df_genQA$Platekey))
+df_genQA$case_solved_family = rep("genQA", length(df_genQA$Platekey))
+df_genQA$diseases_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$diseasegroup_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$diseasesubgroup_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$panel_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$hpo_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$registered_at_gmc_trust = rep("genQA", length(df_genQA$Platekey))
+df_genQA$rescty = rep("genQA", length(df_genQA$Platekey))
+df_genQA$postdist = rep("genQA", length(df_genQA$Platekey))
+
+df_genQA = df_genQA %>%
+  select(PID, Platekey, familyID, biological_relationship_to_proband,
+         genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth,
+         participant_phenotypic_sex, programme, family_group_type, affection_status,
+         superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         registered_at_gmc_trust, rescty, postdist,
+         diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list,
+         hpo_list)
+colnames(df_genQA) = colnames(clin_data)
+
+clin_data = rbind(clin_data,
+                  df_genQA)
 
 
 # As output
