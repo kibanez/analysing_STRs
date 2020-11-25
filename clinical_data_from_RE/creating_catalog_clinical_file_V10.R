@@ -163,8 +163,6 @@ hpc = read.csv("./hes_op_2020-11-24_09-11-57_pid_postdist_rescty.tsv",
 dim(hpc)
 # 5628380  3
 
-hpc = hpc %>% 
-  filter(participant_id %in% unique(all_data$participant_id))
 hpc = unique(hpc)
 dim(hpc)
 # 143021  3
