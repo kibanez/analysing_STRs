@@ -76,7 +76,7 @@ dim(pilot_clin_data)
 # 4834  15
 
 # Main
-clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
+clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_251120_V10.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
                        header = TRUE)
