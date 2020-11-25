@@ -81,7 +81,7 @@ clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(clin_data)  
-# 3474081 33
+# 2096500 36
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
@@ -108,39 +108,41 @@ dim(list_disease_subgroup)
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
-  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth, participant_phenotypic_sex, programme, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family)
+  select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth, 
+         participant_phenotypic_sex, programme, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         registered_at_gmc_trust, rescty, postdist)
 dim(clin_data)
-# 3474081  16
+# 2096500  19
 
 clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
-# 3474081  17
+# 2096500  20
 
 clin_data = left_join(clin_data,
                       list_disease_group,
                       by = "participant_id")
 dim(clin_data)
-# 3474081  18
+# 2096500 21
 
 clin_data = left_join(clin_data,
                       list_disease_subgroup,
                       by = "participant_id")
 dim(clin_data)
-# 3474081  19
+# 2096500 22
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 3474081  20
+# 2096500 23
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-# 3474081   21
+# 2096500 24
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
 colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "genetic_vs_reported_results", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "participant_ethnic_category", "diseasesubgroup_list", "diseasegroup_list")
@@ -154,6 +156,9 @@ pilot_clin_data$hpo_list = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$clinic_sample_collected_at_gmc = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$clinic_sample_collected_at_gmc_trust = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$case_solved_family = rep(".", length(pilot_clin_data$participant_id))
+pilot_clin_data$registered_at_gmc_trust = rep("Pilot", length(pilot_clin_data$participant_id))
+pilot_clin_data$rescty = rep("Pilot", length(pilot_clin_data$participant_id))
+pilot_clin_data$postdist = rep("Pilot", length(pilot_clin_data$participant_id))
 
 # Select columns
 pilot_clin_data = pilot_clin_data %>%
@@ -161,13 +166,14 @@ pilot_clin_data = pilot_clin_data %>%
          genetic_vs_reported_results, participant_ethnic_category ,genome_build, year_of_birth, 
          participant_phenotypic_sex, programme,family_group_type, affection_status, 
          bestGUESS_super_pop, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         registered_at_gmc_trust, rescty, postdist,
          diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list, hpo_list)
 colnames(pilot_clin_data) = colnames(clin_data)
 
 clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
-# 3478915  21
+# 2101334  24
 
 # Check genQA cases
 df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch3_STRs.tsv",
@@ -196,12 +202,16 @@ df_genQA$diseasegroup_list = rep("genQA", length(df_genQA$Platekey))
 df_genQA$diseasesubgroup_list = rep("genQA", length(df_genQA$Platekey))
 df_genQA$panel_list = rep("genQA", length(df_genQA$Platekey))
 df_genQA$hpo_list = rep("genQA", length(df_genQA$Platekey))
+df_genQA$registered_at_gmc_trust = rep("genQA", length(df_genQA$Platekey))
+df_genQA$rescty = rep("genQA", length(df_genQA$Platekey))
+df_genQA$postdist = rep("genQA", length(df_genQA$Platekey))
 
 df_genQA = df_genQA %>%
   select(PID, Platekey, familyID, biological_relationship_to_proband,
          genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth,
          participant_phenotypic_sex, programme, family_group_type, affection_status,
          superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         registered_at_gmc_trust, rescty, postdist,
          diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list,
          hpo_list)
 colnames(df_genQA) = colnames(clin_data)
