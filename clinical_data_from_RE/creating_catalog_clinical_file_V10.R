@@ -1,6 +1,6 @@
 # Objective: create rd genomes and cancer germline info from the latest RE clinical data batch
 # Update on 07/10/20: including some fields from `clinic_sample` and `gmc_exit_questionnaire` tables
-# Update on 24/11/20: include 
+# Update on 24/11/20: include secondary information from HPC
 # This time V10 - 2020/09/03
 date()
 Sys.info()[c("nodename", "user")]
@@ -165,14 +165,15 @@ dim(hpc)
 
 hpc = hpc %>% 
   filter(participant_id %in% unique(all_data$participant_id))
+hpc = unique(hpc)
 dim(hpc)
-#
+# 143021  3
 
 all_data = left_join(all_data,
-                     hpc %>% filter(participant_id %in% unique(all_data$participant_id)),
+                     hpc,
                      by = "participant_id")
 dim(all_data)
-#  35
+# 6544650  35
 rm(hpc)
 
 # population data - let's enrich with merged (batch1 and batch2) population info
