@@ -10,10 +10,10 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv255")
+setwd("~/Documents/STRs/ANALYSIS/cases_controls/batch_august/EHv255")
 
 # Load data
-merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_march2020/output_EHv2.5.5_vcfs/merged/merged_loci_92665_research_genomes_EHv2.5.5_batch_march2020.tsv",
+merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_august2020/output_EHv2.5.5_vcfs/merged/merged_93446_genomes_EHv255_batch_august2020.tsv",
                        sep = '\t',
                        header = T,
                        stringsAsFactors = F)
