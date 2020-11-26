@@ -18,7 +18,7 @@ merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_august
                        header = T,
                        stringsAsFactors = F)
 dim(merged_data)
-# 7857  11
+# 32703  11
 
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
 # Pilot
@@ -81,30 +81,30 @@ clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(clin_data)  
-# 1124633  31
+# 2096500  36
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
-# 87395  2
+# 87028  2
 
 # Let´s put all HPO terms into 1 single string splitted by ','
 list_hpos = clin_data %>% group_by(participant_id) %>% summarise(hpo_list = toString(unique(hpo_term))) %>% ungroup() %>% as.data.frame()
 dim(list_hpos)
-# 87395  2
+# 87028  2
 
 # Let's put all specific diseases into 1 single string splitted by ','
 list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_list = toString(unique(normalised_specific_disease))) %>% ungroup() %>% as.data.frame()
 dim(list_diseases)
-# 87395  2
+# 87028  2
 
 list_disease_group = clin_data %>% group_by(participant_id) %>% summarise(diseasegroup_list = toString(unique(disease_group))) %>% ungroup() %>% as.data.frame()
 dim(list_disease_group)
-# 87395  2
+# 87028  2
 
 list_disease_subgroup = clin_data %>% group_by(participant_id) %>% summarise(diseasesubgroup_list = toString(unique(disease_sub_group))) %>% ungroup() %>% as.data.frame()
 dim(list_disease_subgroup)
-# 87395  2
+# 87028  2
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
@@ -112,41 +112,42 @@ clin_data = clin_data %>%
          participant_phenotypic_sex, programme, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
          registered_at_gmc_trust, rescty, postdist)
 dim(clin_data)
-# 1124633  12
+# 2096500  19
 
 clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  13
+# 2096500  20
 
 clin_data = left_join(clin_data,
                       list_disease_group,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  14
+# 2096500  21
 
 clin_data = left_join(clin_data,
                       list_disease_subgroup,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  15
-
+# 2096500  22
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 1124633  16
+# 2096500  23
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-#  1124633   17
+#  2096500   24
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
-colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", "ageOfOnset", "qc_state", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "self_reported", "diseasesubgroup_list", "diseasegroup_list")
+colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", 
+                              "ageOfOnset", "genetic_vs_reported_results", "diseases_list", "best_guess_predicted_ancstry", "bestGUESS_super_pop", "participant_ethnic_category", 
+                              "diseasesubgroup_list", "diseasegroup_list")
 
 # Generate extra columns from clin data for pilot clin data
 pilot_clin_data$genome_build = rep("GRCh37", length(pilot_clin_data$participant_id))
@@ -161,11 +162,10 @@ pilot_clin_data$registered_at_gmc_trust = rep("Pilot", length(pilot_clin_data$pa
 pilot_clin_data$rescty = rep("Pilot", length(pilot_clin_data$participant_id))
 pilot_clin_data$postdist = rep("Pilot", length(pilot_clin_data$participant_id))
 
-
 # Select columns
 pilot_clin_data = pilot_clin_data %>%
   select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband,
-         genetic_vs_reported_results, participant_ethnic_category ,genome_build, year_of_birth, 
+         genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth, 
          participant_phenotypic_sex, programme,family_group_type, affection_status, 
          bestGUESS_super_pop, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
          registered_at_gmc_trust, rescty, postdist,
@@ -175,7 +175,7 @@ colnames(pilot_clin_data) = colnames(clin_data)
 clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
-# 1129467  17
+# 2101334  24
 
 # Check genQA cases
 df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch3_STRs.tsv",
@@ -221,7 +221,6 @@ colnames(df_genQA) = colnames(clin_data)
 clin_data = rbind(clin_data,
                   df_genQA)
 
-
 # As output
 # We want to the following output - NOTE each row is an allele (!!!)
 # Family ID
@@ -264,14 +263,18 @@ for (i in 1:length(l_genes)){
         
         to_include = clin_data %>% 
           filter(platekey %in% number_samp[k]) %>% 
-          select(participant_id, platekey, rare_diseases_family_id, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry) %>%
+          select(participant_id, platekey, rare_diseases_family_id, genetic_vs_reported_results, participant_ethnic_category, diseases_list, diseasegroup_list, diseasesubgroup_list, 
+                 year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, superpopu, 
+                 clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family, registered_at_gmc_trust, rescty, postdist) %>%
           unique()
         
         if (dim(to_include)[1] <= 0){
           to_include = rep('.', dim(to_include)[2])
           to_include = as.data.frame(t(as.data.frame(to_include)), stringsAsFactors = F)
-          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "best_guess_predicted_ancstry")
-          
+          colnames(to_include) = c("participant_id", "platekey", "rare_diseases_family_id", "genetic_vs_reported_results", "participant_ethnic_category", 
+                                   "diseases_list", "diseasegroup_list", "diseasesubgroup_list", "year_of_birth", "participant_phenotypic_sex", "biological_relationship_to_proband", 
+                                   "affection_status", "family_group_type", "hpo_list", "panel_list", "programme", "genome_build", "superpopu", "clinic_sample_collected_at_gmc", 
+                                   "clinic_sample_collected_at_gmc_trust", "case_solved_family", "registered_at_gmc_trust", "rescty", "postdist")
         }
         new_line = cbind(new_line, to_include)
         locus_data_new = rbind(locus_data_new, new_line)
@@ -291,7 +294,10 @@ for (i in 1:length(l_genes)){
   
   # Select interested columns
   locus_data_new = locus_data_new %>%
-    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, best_guess_predicted_ancstry)
+    select(rare_diseases_family_id, participant_id, list_vcf_affected, gene, Repeat_Motif, allele, diseases_list, diseasegroup_list, diseasesubgroup_list, year_of_birth, 
+           participant_phenotypic_sex, biological_relationship_to_proband, affection_status, family_group_type, hpo_list, panel_list, programme, genome_build, superpopu, 
+           genetic_vs_reported_results, participant_ethnic_category, clinic_sample_collected_at_gmc_trust, clinic_sample_collected_at_gmc, case_solved_family,
+           registered_at_gmc_trust, rescty, postdist)
   
   # Adapt column names (for better understanding)
   colnames(locus_data_new)[3] = "platekey"
