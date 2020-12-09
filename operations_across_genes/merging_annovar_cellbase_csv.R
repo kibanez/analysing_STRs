@@ -29,15 +29,18 @@ cellbase_table$chr = paste('chr', cellbase_table$chr, sep = '')
 annovar_table = read.csv(annovar_output,
                          header = T,
                          stringsAsFactors = F,
-                         sep = "\t")
+                         sep = ",")
 dim(annovar_table)
 # 18636  104
 
+# Change first 4 column names
+colnames(cellbase_table)[c(1:4)] = colnames(annovar_table)[c(1:4)]
 # Merge annovar and cellbase tables
-merged_table = merge(cellbase_table,
+merged_table = full_join(cellbase_table,
                      annovar_table,
-                     by.x = c("chr", "start", "ref", "alt"),
-                     by.y = c("Chr", "Start", "Ref", "Alt"))
+                     by = c("chr", "pos", "ref", "alt"))
+#                     by.x = c("chr", "start", "ref", "alt"),
+#                     by.y = c("chr", "pos", "ref", "alt"))
 
 dim(merged_table)
 # 206 135
