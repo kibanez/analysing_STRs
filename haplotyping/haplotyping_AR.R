@@ -43,3 +43,29 @@ haplo_genomes = rbind(haplo_genomes,
 dim(haplo_genomes)
 # 42  5 
 
+# Create 2 groups: Females and Males
+haplo_genomes_female = haplo_genomes %>%
+  filter(participant_phenotypic_sex %in% "Female")
+  
+haplo_genomes_male = haplo_genomes %>%
+  filter(participant_phenotypic_sex %in% "Male")
+
+
+length(unique(haplo_genomes_female$platekey))
+# 18
+length(unique(haplo_genomes_male$platekey))
+# 20
+
+write.table(haplo_genomes_female,
+            "./table_18genomes_female.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+write.table(haplo_genomes_male,
+            "./table_20genomes_male.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
