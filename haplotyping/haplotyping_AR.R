@@ -108,14 +108,61 @@ set.seed(91837)
 l_random_20_family_female = sample(female_controls$rare_diseases_family_id, 20)
 l_random_20_family_male = sample(male_controls$rare_diseases_family_id, 20)
 
-
 random_20_female = female_controls %>%
   filter(rare_diseases_family_id %in% l_random_20_family_female) %>%
   select(platekey, genome_build, participant_phenotypic_sex, population)
-
 
 random_20_male = male_controls %>%
   filter(rare_diseases_family_id %in% l_random_20_family_male) %>%
   select(platekey, genome_build, participant_phenotypic_sex, population)
 
+# Enrich with the path to the gVCF
+upload_report = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/input/upload_report.2020-08-18.txt",
+                         stringsAsFactors = F,
+                         sep = "\t",
+                         comment.char = "#",
+                         header = F)
+# Remove `_copied` from V3
+upload_report$V3 = gsub("_copied", "", upload_report$V3)
 
+random_20_female = left_join(random_20_female,
+                             upload_report %>% select(V3,V6),
+                             by = c("platekey" = "V3"))
+
+random_20_female$V6 = gsub("_copied", "/Variations/", random_20_female$V6)
+random_20_female = random_20_female %>%
+  group_by(platekey) %>%
+  mutate(V6 = paste(V6, paste(platekey, ".genome.vcf.gz", sep = ""), sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+random_20_female = unique(random_20_female)
+dim(random_20_female)
+# 21 5
+
+random_20_male = left_join(random_20_male,
+                           upload_report %>% select(V3,V6),
+                           by = c("platekey" = "V3"))
+random_20_male$V6 = gsub("_copied", "/Variations/", random_20_male$V6)
+random_20_male = random_20_male %>%
+  group_by(platekey) %>%
+  mutate(V6 = paste(V6, paste(platekey, ".genome.vcf.gz", sep = ""), sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+random_20_male = unique(random_20_male)
+dim(random_20_male)
+# 22 5
+
+# Write them into files
+write.table(random_20_female,
+            "./table_20genomes_CONTROL_female.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
+
+write.table(random_20_male,
+            "./table_20genomes_CONTROL_male.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
