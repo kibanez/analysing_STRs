@@ -100,21 +100,20 @@ male_controls = table_ehv2 %>%
 dim(male_controls)
 # 7379  19
 
-set.seed(91837)
+set.seed(5)
 
 # Take random 20 genomes per each male and female control groups
 # Taking unrelated ones (by FamilyId)
-
 l_random_20_family_female = sample(female_controls$rare_diseases_family_id, 20)
 l_random_20_family_male = sample(male_controls$rare_diseases_family_id, 20)
 
 random_20_female = female_controls %>%
   filter(rare_diseases_family_id %in% l_random_20_family_female) %>%
-  select(platekey, genome_build, participant_phenotypic_sex, population)
+  select(rare_diseases_family_id, platekey, genome_build, participant_phenotypic_sex, population)
 
 random_20_male = male_controls %>%
   filter(rare_diseases_family_id %in% l_random_20_family_male) %>%
-  select(platekey, genome_build, participant_phenotypic_sex, population)
+  select(rare_diseases_family_id, platekey, genome_build, participant_phenotypic_sex, population)
 
 # Enrich with the path to the gVCF
 upload_report = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/input/upload_report.2020-08-18.txt",
@@ -137,7 +136,7 @@ random_20_female = random_20_female %>%
   as.data.frame()
 random_20_female = unique(random_20_female)
 dim(random_20_female)
-# 21 5
+# 22 6
 
 random_20_male = left_join(random_20_male,
                            upload_report %>% select(V3,V6),
@@ -150,7 +149,7 @@ random_20_male = random_20_male %>%
   as.data.frame()
 random_20_male = unique(random_20_male)
 dim(random_20_male)
-# 22 5
+# 22 6
 
 # Write them into files
 write.table(random_20_female,
