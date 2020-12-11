@@ -100,3 +100,22 @@ male_controls = table_ehv2 %>%
 dim(male_controls)
 # 7379  19
 
+set.seed(91837)
+
+# Take random 20 genomes per each male and female control groups
+# Taking unrelated ones (by FamilyId)
+
+l_random_20_family_female = sample(female_controls$rare_diseases_family_id, 20)
+l_random_20_family_male = sample(male_controls$rare_diseases_family_id, 20)
+
+
+random_20_female = female_controls %>%
+  filter(rare_diseases_family_id %in% l_random_20_family_female) %>%
+  select(platekey, genome_build, participant_phenotypic_sex, population)
+
+
+random_20_male = male_controls %>%
+  filter(rare_diseases_family_id %in% l_random_20_family_male) %>%
+  select(platekey, genome_build, participant_phenotypic_sex, population)
+
+
