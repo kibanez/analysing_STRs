@@ -24,7 +24,7 @@ val_data = read.csv("./merged_batch1_batch3_STRs.tsv",
                     header = T,
                     stringsAsFactors = F)
 dim(val_data)
-# 52  17
+# 51  17
 
 # 1 - Define min and max alleles for both PCR and EH 
 # Don't work for AR, FMR1 - when we do have NA values
@@ -131,7 +131,7 @@ dev.off()
 # Breakdown by locus and cutoff
 # For each locus
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP", "PPP2R2B")
-l_premut_cutoff = c(34,34,35,31,17,17,30,50,35,55,44,41,51)
+l_premut_cutoff = c(34,34,35,31,17,17,30,49,35,55,44,41,51)
 
 for(i in 1:length(l_genes)){
   
@@ -177,7 +177,7 @@ df_classi = data.frame()
 for (i in 1:length(l_genes)){
   aux = df_data_with_freq_v2 %>% filter(locus %in% l_genes[i])
   
-  aux_classi = ifelse(aux$exp_alleles > l_premut_cutoff[i], "TP", "TN")
+  aux_classi = ifelse(aux$exp_alleles >= l_premut_cutoff[i], "TP", "TN")
   
   aux$classi = aux_classi
   df_classi = rbind(df_classi,
@@ -220,7 +220,7 @@ for(i in 1:length(l_genes)){
       geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
     
     
-    png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi_FXN", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
+    png(paste(paste("./figures/genQA_PCR_vs_EH_individual_with_classi", l_genes[i], sep = "_"), "" , sep = ".png"),units="in", width=5, height=5, res=300)
     print(joint_plot_individual)
     dev.off()
     
