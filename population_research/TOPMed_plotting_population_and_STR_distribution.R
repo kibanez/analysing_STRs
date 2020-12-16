@@ -32,7 +32,8 @@ source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_g
 source("/Users/kibanez/git/analysing_STRs/functions/compute_summary_repeat_per_locus.R")
 
 # Load total number of genomes per ancestry
-total_num_genomes = read.csv("./number_genomes_per_ancestry.tsv",
+#total_num_genomes = read.csv("./number_genomes_per_ancestry.tsv",
+total_num_genomes = read.csv("./number_genomes_per_ancestry_filtered.tsv",
                              stringsAsFactors = F, 
                              header = T,
                              sep = "\t")
@@ -41,8 +42,8 @@ total_num_genomes = read.csv("./number_genomes_per_ancestry.tsv",
 l_popus = c("AFR", "AMR", "EAS", "EUR", "SAS")
 df_merged = data.frame()
 for (i in 1:length(l_popus)){
-  popu_aux = paste(l_popus[i],"13LociAlleleFreq_WOSampleIds.tsv" ,sep = "_")
-  #popu_aux = paste(l_popus[i],"SampleFiltered_13LociAlleleFreq_WOSampleIds.tsv" ,sep = "_")
+  #popu_aux = paste(l_popus[i],"13LociAlleleFreq_WOSampleIds.tsv" ,sep = "_")
+  popu_aux = paste(l_popus[i],"SampleFiltered_13LociAlleleFreq_WOSampleIds.tsv" ,sep = "_")
   
   num_genomes_ancestry = total_num_genomes %>%
     filter(superpopu %in% l_popus[i]) %>%
