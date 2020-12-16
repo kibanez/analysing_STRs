@@ -1,4 +1,4 @@
-# Objective: analyse the repeat-sizes across sub-population and super-population within gnomAD version 3 - EHv322
+# Objective: analyse the repeat-sizes across sub-population and super-population within TOPMed
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
@@ -13,17 +13,9 @@ library(scatterplot3d); packageDescription("scatterplot3d", fields = "Version") 
 library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 library(tidyverse)
 
-
 # Set environment
-setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/")
-
-# Load 1Kg population index data
-popu_info = read.csv("./GEL_sample_id_metadata__29070_samples.txt",
-                     sep = "\t",
-                     header = T,
-                     stringsAsFactors = F)
-dim(popu_info)
-# 29071  3
+setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/TOPMed/AlleleFrequency_UKGroup_13Loci/AllUnrelatedSamples/")
+setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/TOPMed/AlleleFrequency_UKGroup_13Loci/NuroExcludedUnrelatedSamples/")
 
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
@@ -33,44 +25,51 @@ gene_data_normal = read.table(gene_annotation_normal, stringsAsFactors=F, header
 gene_annotation_pathogenic = '/Users/kibanez/git/analysing_STRs/threshold_smallest_pathogenic_reported_research.txt'
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
-
 # Functions
 source("/Users/kibanez/git/analysing_STRs/functions/plot_violin_ancestry_gnomAD.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene.R")
 source("/Users/kibanez/git/analysing_STRs/functions/plot_gene_joint_ancestries_gnomAD.R")
 source("/Users/kibanez/git/analysing_STRs/functions/compute_summary_repeat_per_locus.R")
 
-# Load EHv3.2.2 STR merged data for each sub-population
-df_merged = data.frame()
-l_popus = unique(popu_info$pop)
+# Load total number of genomes per ancestry
+total_num_genomes = read.csv("./number_genomes_per_ancestry.tsv",
+                             stringsAsFactors = F, 
+                             header = T,
+                             sep = "\t")
 
+# Load EHv3.2.2 STR merged data for each sub-population
+l_popus = c("AFR", "AMR", "EAS", "EUR", "SAS")
+df_merged = data.frame()
 for (i in 1:length(l_popus)){
-  popu_aux = paste("~/Documents/STRs/ANALYSIS/population_research/gnomAD/EHv322/data/", l_popus[i] ,sep = "")
-  file_aux = list.files(paste(popu_aux, "merged", sep = "/"))
-  file_aux = paste(paste(popu_aux, "merged", sep = "/"), file_aux, sep = "/")
+  popu_aux = paste(l_popus[i],"13LociAlleleFreq_WOSampleIds.tsv" ,sep = "_")
+  #popu_aux = paste(l_popus[i],"SampleFiltered_13LociAlleleFreq_WOSampleIds.tsv" ,sep = "_")
   
-  df_aux = read.csv(file_aux,
-                    sep  = "\t",
-                    stringsAsFactors = F,
-                    header = T)
+  num_genomes_ancestry = total_num_genomes %>%
+    filter(superpopu %in% l_popus[i]) %>%
+    select(list_vcf) %>%
+    pull()
   
+  df_aux = read.csv(popu_aux,
+                    stringsAsFactors = F, 
+                    header = T,
+                    sep = "\t")
   df_aux$superpopu = rep(l_popus[i], length(df_aux$chr))
+  
+  df_aux$AF = df_aux$num_samples / (2*num_genomes_ancestry)
+
   df_merged = rbind(df_merged,
                     df_aux)
-  
 }
 
 dim(df_merged)
-# 14331  13
+# 2322  12
 
 # Population enriched genomes are only GRCh38, we will ignore then GRCh37
 output_folder = "./figures/"
 
 l_loci = sort(unique(df_merged$gene))
-# Let's focus first on the important 4 loci
-l_loci = c("AR", "ATN1", "HTT", "FXN")
 for (i in 1:length(l_loci)){
-  colnames(df_merged)[13] = "superpopu"
+  colnames(df_merged)[12] = "superpopu"
   # Specifying sub-population  
   for (j in 1:length(l_popus)){
     # Each locus - Individually
@@ -84,8 +83,7 @@ for (i in 1:length(l_loci)){
   plot_violin_ancestry_gnomAD(df_merged, l_loci[i], gene_data_normal, gene_data_pathogenic, output_folder)
   
   # Summary for each locus across all continental groups
-  colnames(df_merged)[13] = "population"
+  colnames(df_merged)[12] = "population"
   compute_summary_repeat_per_locus(df_merged, l_loci[i], output_folder)
-  
 }
 
