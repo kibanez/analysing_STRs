@@ -37,7 +37,7 @@ val_data = val_data %>%
   ungroup() %>%
   as.data.frame()
 dim(val_data)
-# 52  21
+# 51  21
 
 # Create dataframe with exp, eh, freq for each locus
 df_data_with_freq_v2 = data.frame()
@@ -71,7 +71,7 @@ for(i in 1:length(l_locus)){
 }
 
 dim(df_data_with_freq_v2)
-# 82  4
+# 80  4
 
 output_folder = "./figures/"
 
@@ -184,7 +184,7 @@ for (i in 1:length(l_genes)){
                     aux)
 }
 dim(df_classi)
-# 82  5
+# 80  5
 
 group.colors.classi = c("TN" = "red", "TP" = "green", "FN" = "blue")
 
@@ -204,7 +204,10 @@ for(i in 1:length(l_genes)){
                                    aes(x = exp_alleles, y = eh_alleles, colour = classi)) +
       geom_point(aes(fill = classi, size = number_of_alleles)) +
       coord_equal() +
-      scale_fill_manual(values=c("blue","green", "red")) +  
+      scale_fill_manual(values=c("green", "blue")) +  
+      scale_colour_manual(values=c("green","blue")) +
+      #scale_fill_manual(values=c("green", "red", "blue")) +  
+      #scale_colour_manual(values=c("green","red", "blue")) +
       labs(title = l_genes[i], 
            y = "EH repeat sizes", 
            x = "PCR repeat sizes") + 
@@ -213,8 +216,8 @@ for(i in 1:length(l_genes)){
             text = element_text(size=13),
             axis.text.x.top = element_text()) +
       guides(size = FALSE) + 
-      xlim(5,max_value_indiv) +
-      ylim(5,max_value_indiv) +
+      xlim(0,max_value_indiv) +
+      ylim(0,max_value_indiv) +
       geom_vline(xintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
       geom_hline(yintercept = l_premut_cutoff[i], colour = 'red', lty = 2) + 
       geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") 
