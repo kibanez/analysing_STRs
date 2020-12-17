@@ -30,3 +30,27 @@ pheno_data = read.csv("./femalePhenotypeFile.txt",
                       sep = " ")
 dim(pheno_data)
 # 38  3
+
+# Enrich with `gender` and `affection status` each genome
+ped_data = left_join(ped_data,
+                     pheno_data,
+                     by = c("V2" = "IID"))
+
+# In this case specify 5th column as `female`
+ped_data$V5 = rep(2, length(ped_data$V1))
+
+# Specify affection status
+ped_data$V6 = ped_data$CaseControl
+
+# Select columns, by filtering out FID and CaseControl columns
+ped_data = ped_data[, !(colnames(ped_data) %in% c("FID", "CaseControl"))]
+dim(ped_data)
+# 36  135
+
+# Write final PED file into a file
+write.table(ped_data,
+            "./female_cc_AF3.ped",
+            quote = F,
+            row.names = F,
+            col.names = F,
+            sep = "\t")
