@@ -48,8 +48,27 @@ dim(ped_data)
 # 36  135
 
 # Write final PED file into a file
-write.table(ped_data,
-            "./female_cc_AF3.ped",
+# The first 6 columns are TAB separated
+# The genotypes are space and TAB separated (<allele1 allele2>\t<allele1 allele2>)
+write.table(ped_data %>% select(V1,V2,V3,V4,V5,V6),
+            "./female_cc_AF3_header.ped",
+            quote = F,
+            row.names = F,
+            col.names = F,
+            sep = "\t")
+
+# Merge `female_cc_AF3_header.ped` and `chrX_67495316-67595385_genotypes.ped`
+only_genotypes = read.csv("./chrX_67495316-67595385_genotypes.ped",
+                          sep = "\t",
+                          stringsAsFactors = F,
+                          header = F)
+dim(only_genotypes)
+# 36 129
+
+merged_final_ped = cbind(ped_data %>% select(V1,V2,V3,V4,V5,V6),
+                         only_genotypes)
+write.table(merged_final_ped,
+            "./chrX_67495316-67595385_complete.ped",
             quote = F,
             row.names = F,
             col.names = F,
