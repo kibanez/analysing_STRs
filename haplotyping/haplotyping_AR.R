@@ -73,7 +73,7 @@ write.table(haplo_genomes_male,
 # selecting genomes for CONTROL cohort
 #  genome_build %in% GRCh38 , affection_status %in% unaffected, repeat_size < 37, and population %in% EUR since the majority of genomes in the cases cohort correspond to Europeans. 
 # Unrelated, belonging to different families each of them.
-
+# reported vs genetic checks PASS
 table_ehv2 = read.csv("~/Documents/STRs/ANALYSIS/haplotyping/AR/HaploView/Matteo_Ari/table_STR_repeat_size_each_row_allele_EHv2.5.5_AR_CAG_simplified_dedup_050220.tsv",
                       stringsAsFactors = F,
                       header = T,
@@ -89,16 +89,23 @@ list_expanded = table_ehv2 %>%
 length(list_expanded)
 # 90
 
+table_ehv2 = left_join(table_ehv2,
+                       clin_data %>% select(platekey, family_medical_review_qc_state_code),
+                       by = "platekey")
 
 female_controls = table_ehv2 %>%
-  filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded, participant_phenotypic_sex %in% "Female")
+  filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded, 
+         participant_phenotypic_sex %in% "Female", family_medical_review_qc_state_code %in% "Passed medical review - for interpretation")
+female_controls = unique(female_controls)
 dim(female_controls)
-# 19249  19 
+# 18068  20
 
 male_controls = table_ehv2 %>%
-  filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded, participant_phenotypic_sex %in% "Male")
+  filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded,
+         participant_phenotypic_sex %in% "Male", family_medical_review_qc_state_code %in% "Passed medical review - for interpretation")
+male_controls = unique(male_controls)
 dim(male_controls)
-# 7379  19
+# 7333  20
 
 set.seed(5)
 
@@ -136,7 +143,7 @@ random_20_female = random_20_female %>%
   as.data.frame()
 random_20_female = unique(random_20_female)
 dim(random_20_female)
-# 22 6
+# 23 6
 
 random_20_male = left_join(random_20_male,
                            upload_report %>% select(V3,V6),
@@ -149,7 +156,7 @@ random_20_male = random_20_male %>%
   as.data.frame()
 random_20_male = unique(random_20_male)
 dim(random_20_male)
-# 22 6
+# 20 6
 
 # Write them into files
 write.table(random_20_female,
