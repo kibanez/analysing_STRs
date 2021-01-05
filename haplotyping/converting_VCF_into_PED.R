@@ -14,7 +14,7 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 library(tidyverse)
 
 # Set environment
-setwd("~/Documents/STRs/ANALYSIS/haplotyping/AR/HaploView/2021/females/")
+setwd("~/Documents/STRs/ANALYSIS/haplotyping/AR/HaploView/2021/together_female_male/")
 
 # Load data
 ped_data = read.csv("./chrX_67495316-67595385.ped",
@@ -22,36 +22,31 @@ ped_data = read.csv("./chrX_67495316-67595385.ped",
                     header = F,
                     sep = "\t")
 dim(ped_data)
-# 36  11
+# 71 11
 
-pheno_data = read.csv("./femalePhenotypeFile.txt",
+pheno_data = read.csv("./female_and_male_PhenotypeFile.txt",
                       stringsAsFactors = F,
                       header = T,
                       sep = " ")
 dim(pheno_data)
-# 38  3
+# 75  4
 
 # Enrich with `gender` and `affection status` each genome
 ped_data = left_join(ped_data,
-                     pheno_data,
+                     pheno_data %>% select(IID, sex, CaseControl),
                      by = c("V2" = "IID"))
 
-# In this case specify 5th column as `female`
-ped_data$V5 = rep(2, length(ped_data$V1))
-
+# In this case specify 5th column as sex
+ped_data$V5 = ped_data$sex
 # Specify affection status
 ped_data$V6 = ped_data$CaseControl
 
-# Select columns, by filtering out FID and CaseControl columns
-ped_data = ped_data[, !(colnames(ped_data) %in% c("FID", "CaseControl"))]
-dim(ped_data)
-# 36  12
 
 # Write final PED file into a file
 # The first 6 columns are TAB separated
 # The genotypes are space and TAB separated (<allele1 allele2>\t<allele1 allele2>)
 write.table(ped_data %>% select(V1,V2,V3,V4,V5,V6),
-            "./female_cc_AF3_header.ped",
+            "./together_female_male_cc_header.ped",
             quote = F,
             row.names = F,
             col.names = F,
@@ -63,7 +58,7 @@ only_genotypes = read.csv("./chrX_67495316-67595385_genotypes.ped",
                           stringsAsFactors = F,
                           header = F)
 dim(only_genotypes)
-# 36 5
+# 71  5
 
 merged_final_ped = cbind(ped_data %>% select(V1,V2,V3,V4,V5,V6),
                          only_genotypes)
