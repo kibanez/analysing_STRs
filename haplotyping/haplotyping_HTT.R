@@ -1,4 +1,4 @@
-,# Objective: analyse haplotyping blocks within HTT
+# Objective: analyse haplotyping blocks within HTT
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
