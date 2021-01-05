@@ -14,7 +14,7 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 library(tidyverse)
 
 # Set environment
-setwd("~/Documents/STRs/ANALYSIS/haplotyping/AR/HaploView/females/")
+setwd("~/Documents/STRs/ANALYSIS/haplotyping/AR/HaploView/2021/females/")
 
 # Load data
 ped_data = read.csv("./chrX_67495316-67595385.ped",
@@ -22,7 +22,7 @@ ped_data = read.csv("./chrX_67495316-67595385.ped",
                     header = F,
                     sep = "\t")
 dim(ped_data)
-# 36  135
+# 36  11
 
 pheno_data = read.csv("./femalePhenotypeFile.txt",
                       stringsAsFactors = F,
@@ -45,7 +45,7 @@ ped_data$V6 = ped_data$CaseControl
 # Select columns, by filtering out FID and CaseControl columns
 ped_data = ped_data[, !(colnames(ped_data) %in% c("FID", "CaseControl"))]
 dim(ped_data)
-# 36  135
+# 36  12
 
 # Write final PED file into a file
 # The first 6 columns are TAB separated
@@ -63,7 +63,7 @@ only_genotypes = read.csv("./chrX_67495316-67595385_genotypes.ped",
                           stringsAsFactors = F,
                           header = F)
 dim(only_genotypes)
-# 36 129
+# 36 5
 
 merged_final_ped = cbind(ped_data %>% select(V1,V2,V3,V4,V5,V6),
                          only_genotypes)
