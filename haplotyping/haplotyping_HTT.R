@@ -24,3 +24,22 @@ l_exp_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/100K/c
 l_exp_genomes = l_exp_genomes$V1
 length(l_exp_genomes)
 # 29
+
+# Retrieve genme build, sex, popu for these genomes
+haplo_genomes = clin_data %>%
+  filter(platekey %in% l_exp_genomes) %>%
+  select(platekey, genome_build, participant_ethnic_category, participant_phenotypic_sex, superpopu, programme, file_path)
+haplo_genomes = unique(haplo_genomes)
+dim(haplo_genomes)
+# 29  7
+
+length(unique(haplo_genomes$platekey))
+# 29
+
+# write them into a file
+write.table(haplo_genomes,
+            "./table_29genomes_expanded_unrelated_HTT.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
