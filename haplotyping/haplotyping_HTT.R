@@ -18,3 +18,9 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
                      header = T)
 dim(clin_data)
 # 2096500  36
+
+# Load 29 expanded genomes after visual inspection and unrelated
+l_exp_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/list_29_expanded_after_QC_unrelated.tsv", stringsAsFactors = F)
+l_exp_genomes = l_exp_genomes$V1
+length(l_exp_genomes)
+# 29
