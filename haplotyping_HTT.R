@@ -18,3 +18,4 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_al
                      header = T)
 dim(clin_data)
 # 2096500  36
+
