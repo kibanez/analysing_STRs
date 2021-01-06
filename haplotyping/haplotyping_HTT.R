@@ -48,3 +48,21 @@ write.table(haplo_genomes,
 #  genome_build %in% GRCh38 , affection_status %in% unaffected, repeat_size < 40, and population %in% EUR since the majority of genomes in the cases cohort correspond to Europeans. 
 # Unrelated, belonging to different families each of them.
 # reported vs genetic checks PASS
+table_ehv3 = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/batch_august/EHv322/table_STR_repeat_size_each_row_allele_EHv3.2.2_HTT_simplified.tsv",
+                      stringsAsFactors = F,
+                      header = T,
+                      sep = "\t")
+dim(table_ehv3)
+# 310228  27
+
+# Retrieve all expanded genomes for HTT (>=40)
+list_expanded = table_ehv3 %>% 
+  filter(repeat_size >=40) %>%
+  select(platekey) %>%
+  pull() %>%
+  unique()
+length(list_expanded)
+# 61
+
+
+
