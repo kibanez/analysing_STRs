@@ -88,4 +88,19 @@ random_30_control = df_controls %>%
 dim(random_30_control)
 # 54  5
 
+# Enrich them with the path to the gVCF
+upload_report = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/input/upload_report.2020-08-18.txt",
+                         stringsAsFactors = F,
+                         sep = "\t",
+                         comment.char = "#",
+                         header = F)
+# Remove `_copied` from V3
+upload_report$V3 = gsub("_copied", "", upload_report$V3)
+upload_report$V6 = gsub("_copied", "", upload_report$V6)
+
+random_30_control = left_join(random_30_control,
+                              upload_report %>% select(V3,V6),
+                              by = c("platekey" = "V3"))
+
+
 
