@@ -36,6 +36,10 @@ dim(haplo_genomes)
 length(unique(haplo_genomes$platekey))
 # 29
 
+# Adapt or change path to the BAM file, to path to the gVCF file
+haplo_genomes$file_path = gsub("Assembly","Variations", haplo_genomes$file_path)
+haplo_genomes$file_path = gsub("bam","genome.vcf.gz", haplo_genomes$file_path)
+
 # write them into a file
 write.table(haplo_genomes,
             "./table_29genomes_expanded_unrelated_HTT.tsv",
