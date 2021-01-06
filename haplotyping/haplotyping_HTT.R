@@ -43,3 +43,8 @@ write.table(haplo_genomes,
             quote = F,
             row.names = F,
             col.names = T)
+
+# selecting genomes for CONTROL cohort
+#  genome_build %in% GRCh38 , affection_status %in% unaffected, repeat_size < 40, and population %in% EUR since the majority of genomes in the cases cohort correspond to Europeans. 
+# Unrelated, belonging to different families each of them.
+# reported vs genetic checks PASS
