@@ -96,11 +96,30 @@ upload_report = read.csv("~/Documents/STRs/data/research/input/batch_august2020_
                          header = F)
 # Remove `_copied` from V3
 upload_report$V3 = gsub("_copied", "", upload_report$V3)
-upload_report$V6 = gsub("_copied", "", upload_report$V6)
 
 random_30_control = left_join(random_30_control,
                               upload_report %>% select(V3,V6),
                               by = c("platekey" = "V3"))
+# Let's finish absolute path of the genome VCF 
+random_30_control$V6 = gsub("_copied", "/Variations/", random_30_control$V6)
+
+random_30_control = random_30_control %>%
+  group_by(platekey) %>%
+  mutate(V6 = paste(V6, paste(platekey, ".genome.vcf.gz", sep = ""), sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+random_30_control = unique(random_30_control)
+dim(random_30_control)
+# 54 6
+
+# Write them into files
+write.table(random_30_control,
+            "./table_30genomes_CONTROL_unrelated_HTT.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
+
 
 
 
