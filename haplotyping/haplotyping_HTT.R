@@ -75,4 +75,17 @@ df_controls = table_ehv3 %>%
 dim(df_controls)
 # 562208  28
 
+# Random selection of 30 genomes
+set.seed(5)
+
+# Taking unrelated ones (by FamilyId)
+l_random_30_family = sample(df_controls$rare_diseases_family_id, 30)
+
+random_30_control = df_controls %>%
+  filter(rare_diseases_family_id %in% l_random_30_family) %>%
+  select(rare_diseases_family_id, platekey, genome_build, participant_phenotypic_sex, superpopu) %>%
+  unique()
+dim(random_30_control)
+# 54  5
+
 
