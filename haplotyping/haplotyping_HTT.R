@@ -64,5 +64,15 @@ list_expanded = table_ehv3 %>%
 length(list_expanded)
 # 61
 
+table_ehv3 = left_join(table_ehv3,
+                       clin_data %>% select(platekey, family_medical_review_qc_state_code),
+                       by = "platekey")
+
+df_controls = table_ehv3 %>%
+  filter(!platekey %in% list_expanded, genome_build %in% "GRCh38",
+         affection_status %in% "Unaffected",superpopu %in% "EUR",
+         family_medical_review_qc_state_code %in% "Passed medical review - for interpretation")
+dim(df_controls)
+# 562208  28
 
 
