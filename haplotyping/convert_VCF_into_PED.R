@@ -28,3 +28,5 @@ if (!file.exists(input_ped)){
 if (!file.exists(phenotype_file)){
   write("convert_VCF_into_PED R function: Phenotypes (gender and affection status) for all genomes are missing", stderr())
 }
+
+
