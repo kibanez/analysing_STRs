@@ -107,6 +107,7 @@ male_controls = unique(male_controls)
 dim(male_controls)
 # 7333  20
 
+# defining a specific seed, so every time we run this script, we end up selecting the "same random" genomes
 set.seed(5)
 
 # Take random 20 genomes per each male and female control groups
