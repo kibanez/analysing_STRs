@@ -19,13 +19,13 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
 # Load golden validation table - 418 PCR tests with `repeat.sizing`
-val_data = read.csv("./GEL_accuracy_final_not_UCL_november.tsv",
+val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_readLength.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 
 dim(val_data)
-# 418  11
+# 418  8
 
 val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength.tsv",
                     sep = "\t",
@@ -158,7 +158,7 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi_120121.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_140121.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -201,6 +201,6 @@ breakdown_by_locus = ggplot(df_strategy1) +
   facet_wrap(locus~ .) 
   
 
-png("./figures/Figure2B_LANCET_filter_all_NCL_600dpi_120121.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_140121.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
