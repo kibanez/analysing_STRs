@@ -27,6 +27,14 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_november.tsv",
 dim(val_data)
 # 418  11
 
+val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength.tsv",
+                    sep = "\t",
+                    header = T,
+                    stringsAsFactors = F)
+
+dim(val_data)
+# 793  14
+
 output_folder = "./figures/"
 
 # Mike's suggestion - 1
@@ -60,7 +68,8 @@ for(i in 1:length(l_locus)){
   aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a2_avg_after_visualQC) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
-  data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
+  data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
+                     aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
   
   df_data_aux = data.frame(eh_alleles = data_aux$y,
                            exp_alleles = data_aux$x,
@@ -104,7 +113,8 @@ for(i in 1:length(l_locus)){
   aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a2_avg) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
-  data_aux = xyTable(aux_exp_alleles_v2, aux_eh_alleles_v2)
+  data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
+                     aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
   
   df_data_aux = data.frame(eh_alleles = data_aux$y,
                            exp_alleles = data_aux$x,
@@ -148,7 +158,7 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi_051120.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_LANCET_600dpi_120121.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -191,6 +201,6 @@ breakdown_by_locus = ggplot(df_strategy1) +
   facet_wrap(locus~ .) 
   
 
-png("./figures/Figure2B_LANCET_filter_all_NCL_600dpi_051120.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_600dpi_120121.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
