@@ -33,7 +33,7 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_rea
                     stringsAsFactors = F)
 
 dim(val_data)
-# 793  14
+# 465  11
 
 output_folder = "./figures/"
 
@@ -158,7 +158,8 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_140121.png",units="in", width=5, height=5, res=600)
+#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_140121.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_140121.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -201,6 +202,7 @@ breakdown_by_locus = ggplot(df_strategy1) +
   facet_wrap(locus~ .) 
   
 
-png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_140121.png",units="in", width=5, height=5, res=600)
+#png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_140121.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_largerThanReadLength_600dpi_140121.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
