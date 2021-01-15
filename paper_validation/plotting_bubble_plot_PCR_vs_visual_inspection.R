@@ -166,7 +166,7 @@ dev.off()
 # breakdown by locus
 # First enrich `val_data` with premutation cut-offs
 df_cutoffs = data.frame(locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP"),
-                        premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41),
+                        premut_cutoff = c(34,34,35,31,43,34,17,30,50,35,55,44,41),
                         stringsAsFactors = F)
 
 val_data = left_join(val_data,
