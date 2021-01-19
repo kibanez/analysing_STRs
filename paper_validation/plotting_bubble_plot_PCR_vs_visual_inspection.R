@@ -158,8 +158,8 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_190121.png",units="in", width=5, height=5, res=600)
-#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_190121.png",units="in", width=5, height=5, res=600)
+#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_190121.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_190121.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -203,7 +203,78 @@ breakdown_by_locus = ggplot(df_strategy1) +
   facet_wrap(locus~ .) 
   
 
-png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_190121.png",units="in", width=5, height=5, res=600)
-#png("./figures/Figure2B_LANCET_filter_all_NCL_largerThanReadLength_600dpi_190121.png",units="in", width=5, height=5, res=600)
+#png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_190121_withDMPK.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_largerThanReadLength_600dpi_190121.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
+
+
+# For repeats larger than the read-length
+# Let's split in two, before 150 and after
+all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
+
+for (locus_name in 13:length(all_loci)){
+  # Define first max_value
+  max_value_df1 = max(df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
+                      df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
+                  na.rm = TRUE) + 5
+  
+  max_value_df2 = max(df_strategy2 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
+                      df_strategy2 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
+                      na.rm = TRUE) + 5
+  
+  max_value = max(max_value_df1,
+                  max_value_df2)
+  
+  breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <= 150)) +
+    geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
+    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    
+    xlim(5,max_value) +
+    ylim(5,max_value) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+    coord_equal() +
+    labs(title = "", 
+         y = "EH repeat sizes", 
+         x = "PCR repeat sizes") + 
+    scale_fill_manual(values=group.colors) +  
+    theme(legend.title = element_blank(),
+          axis.text.x.top = element_text()) +
+    guides(size = FALSE, color = FALSE) +
+    facet_wrap(locus~ .) 
+  
+  breakdown_by_locus_larger = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles > 150)) +
+    geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
+    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    
+    xlim(5,max_value) +
+    ylim(5,max_value) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+    coord_equal() +
+    labs(title = "", 
+         y = "EH repeat sizes", 
+         x = "PCR repeat sizes") + 
+    scale_fill_manual(values=group.colors) +  
+    theme(legend.title = element_blank(),
+          axis.text.x.top = element_text()) +
+    guides(size = FALSE, color = FALSE) +
+    facet_wrap(locus~ .) 
+  
+  file_name = all_loci[locus_name]
+  file_name = paste("./figures/", file_name, sep = "")
+  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_190121.png", sep = "_") 
+  file_name_large = paste(file_name, "largerThanReadLength_600dpi_190121.png", sep = "_") 
+  
+  png(file_name_short,units="in", width=5, height=5, res=600)
+  print(breakdown_by_locus_shorter)
+  dev.off()
+  
+  png(file_name_large,units="in", width=5, height=5, res=600)
+  print(breakdown_by_locus_larger)
+  dev.off()
+  
+}
