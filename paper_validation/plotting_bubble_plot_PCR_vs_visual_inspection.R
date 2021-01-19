@@ -25,7 +25,7 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_re
                     stringsAsFactors = F)
 
 dim(val_data)
-# 418  8
+# 452  8
 
 val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength.tsv",
                     sep = "\t",
@@ -33,7 +33,7 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_rea
                     stringsAsFactors = F)
 
 dim(val_data)
-# 465  11
+# 467  8
 
 output_folder = "./figures/"
 
