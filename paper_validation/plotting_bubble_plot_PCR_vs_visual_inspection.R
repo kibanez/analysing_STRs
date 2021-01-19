@@ -158,8 +158,8 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE)
 
-#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_140121.png",units="in", width=5, height=5, res=600)
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_140121.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_190121.png",units="in", width=5, height=5, res=600)
+#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_190121.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -182,6 +182,7 @@ df_strategy2 = left_join(df_strategy2,
 df_strategy1$locus = as.factor(df_strategy1$locus)
 df_strategy2$locus = as.factor(df_strategy2$locus)
 
+all_except_DMPK = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9orf72", "HTT", "FMR1", "FXN", "TBP")
 breakdown_by_locus = ggplot(df_strategy1) +
   geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
@@ -202,7 +203,7 @@ breakdown_by_locus = ggplot(df_strategy1) +
   facet_wrap(locus~ .) 
   
 
-#png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_140121.png",units="in", width=5, height=5, res=600)
-png("./figures/Figure2B_LANCET_filter_all_NCL_largerThanReadLength_600dpi_140121.png",units="in", width=5, height=5, res=600)
+png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_190121.png",units="in", width=5, height=5, res=600)
+#png("./figures/Figure2B_LANCET_filter_all_NCL_largerThanReadLength_600dpi_190121.png",units="in", width=5, height=5, res=600)
 print(breakdown_by_locus)
 dev.off()
