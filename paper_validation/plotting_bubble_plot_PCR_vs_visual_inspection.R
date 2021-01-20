@@ -213,7 +213,7 @@ dev.off()
 # Let's split in two, before 150 and after
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
 
-for (locus_name in 13:length(all_loci)){
+for (locus_name in 1:length(all_loci)){
   # Define first max_value
   max_value_df1 = max(df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
                       df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
@@ -231,6 +231,25 @@ for (locus_name in 13:length(all_loci)){
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
     geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    
+    xlim(5,max_value) +
+    ylim(5,max_value) +
+    geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+    coord_equal() +
+    labs(title = "", 
+         y = "EH repeat sizes", 
+         x = "PCR repeat sizes") + 
+    scale_fill_manual(values=group.colors) +  
+    theme(legend.title = element_blank(),
+          axis.text.x.top = element_text()) +
+    guides(size = FALSE, color = FALSE) +
+    facet_wrap(locus~ .) 
+
+  breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name])) +
+    geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
+    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     
     xlim(5,max_value) +
     ylim(5,max_value) +
