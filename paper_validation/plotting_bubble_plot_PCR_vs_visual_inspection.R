@@ -194,7 +194,8 @@ breakdown_by_locus = ggplot(df_strategy1) +
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) +
   guides(size = FALSE, color = FALSE) +
-  facet_wrap(locus~ .) 
+  facet_wrap(locus~ ., scales = "free") 
+ 
   
 
 #png("./figures/Figure2B_LANCET_filter_all_NCL_shorterThanReadLength_600dpi_190121_withDMPK.png",units="in", width=5, height=5, res=600)
@@ -224,23 +225,24 @@ for (locus_name in 1:length(all_loci)){
   max_value = max(max_value_df1,
                   max_value_df2)
   
+  
+  
   breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <= 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
     geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
-    
     xlim(5,max_value) +
     ylim(5,max_value) +
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
     coord_equal() +
     labs(title = "", 
-         y = "EH repeat sizes", 
-         x = "PCR repeat sizes") + 
+         y = "", 
+         x = "") + 
 #    scale_color_manual(values=colour_locus) +
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
-    guides(size = FALSE, color = FALSE) +
+    guides(size = FALSE, color = FALSE) 
     facet_wrap(locus~ .) 
 
   breakdown_by_locus_shorter_merged = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name])) +
@@ -254,8 +256,8 @@ for (locus_name in 1:length(all_loci)){
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
     coord_equal() +
     labs(title = "", 
-         y = "EH repeat sizes", 
-         x = "PCR repeat sizes") + 
+         y = "", 
+         x = "") + 
     #scale_color_manual(values=group.colors) +
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
@@ -285,8 +287,8 @@ for (locus_name in 1:length(all_loci)){
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
     coord_equal() +
     labs(title = "", 
-         y = "EH repeat sizes", 
-         x = "PCR repeat sizes") + 
+         y = "", 
+         x = "") + 
     #scale_color_manual(values=group.colors) +  
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
