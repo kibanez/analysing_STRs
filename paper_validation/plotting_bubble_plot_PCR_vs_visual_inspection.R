@@ -190,7 +190,7 @@ breakdown_by_locus = ggplot(df_strategy1) +
   labs(title = "", 
        y = "EH repeat sizes", 
        x = "PCR repeat sizes") + 
-  scale_fill_manual(values=group.colors) +  
+  scale_color_manual(values=group.colors) +
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) +
   guides(size = FALSE, color = FALSE) +
@@ -209,12 +209,8 @@ dev.off()
 # load colour per locus
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "DMPK","C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
 
-for (locus_name in 3:length(all_loci)){
-  colour_locus = df_colour %>% 
-    filter(locus %in% all_loci[locus_name]) %>% 
-    select(color) %>% 
-    pull() %>% 
-    unique()
+for (locus_name in 1:length(all_loci)){
+  colour_locus = group.colors[locus_name]
   
   # Define first max_value
   max_value_df1 = max(df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
@@ -230,7 +226,7 @@ for (locus_name in 3:length(all_loci)){
   
   breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <= 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
-    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
+    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
     geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     
@@ -241,7 +237,7 @@ for (locus_name in 3:length(all_loci)){
     labs(title = "", 
          y = "EH repeat sizes", 
          x = "PCR repeat sizes") + 
-    #scale_fill_manual(values=group.colors) +  
+    scale_color_manual(values=group.colors) +
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
     guides(size = FALSE, color = FALSE) +
@@ -249,7 +245,7 @@ for (locus_name in 3:length(all_loci)){
 
   breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name])) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
-    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
     geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     
@@ -260,7 +256,7 @@ for (locus_name in 3:length(all_loci)){
     labs(title = "", 
          y = "EH repeat sizes", 
          x = "PCR repeat sizes") + 
-    scale_fill_manual(values=group.colors) +  
+    scale_color_manual(values=group.colors) +
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
     guides(size = FALSE, color = FALSE) +
@@ -268,7 +264,7 @@ for (locus_name in 3:length(all_loci)){
   
   breakdown_by_locus_larger = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles > 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
-    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+    geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
     geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
     
@@ -279,7 +275,7 @@ for (locus_name in 3:length(all_loci)){
     labs(title = "", 
          y = "EH repeat sizes", 
          x = "PCR repeat sizes") + 
-    scale_fill_manual(values=group.colors) +  
+    scale_color_manual(values=group.colors) +  
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
     guides(size = FALSE, color = FALSE) +
