@@ -194,7 +194,7 @@ breakdown_by_locus = ggplot(df_strategy1) +
   theme(legend.title = element_blank(),
         axis.text.x.top = element_text()) +
   guides(size = FALSE, color = FALSE) +
-  facet_wrap(locus~ ., scales = "free") 
+  facet_wrap(locus~ .) 
  
   
 
