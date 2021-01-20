@@ -207,8 +207,6 @@ dev.off()
 # loading the 2nd `val_data`
 # Let's split in two, before 150 and after
 # load colour per locus
-df_colour = read.csv("./locus_color.tsv", stringsAsFactors = F, header = T, sep = "\t")
-
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "DMPK","C9orf72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
 
 for (locus_name in 3:length(all_loci)){
