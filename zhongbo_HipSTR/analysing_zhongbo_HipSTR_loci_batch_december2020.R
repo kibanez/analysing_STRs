@@ -32,6 +32,9 @@ merged_data = read.csv("./merged_93430_genomes_EHv322_batch_december2020.tsv",
 dim(merged_data)
 # 6612  12
 
+# Some genes have `/` and R can interpret as part of a path within the system
+merged_data$gene = gsub("/", "_", merged_data$gene)
+
 # load clinical data - changing to RE V11 (since we are sharing with external groups)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_301220_V11.tsv",
                      sep = "\t",
