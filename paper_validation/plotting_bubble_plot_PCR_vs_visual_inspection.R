@@ -18,14 +18,14 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
-# Load golden validation table - 418 PCR tests with `repeat.sizing`
-val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_readLength.tsv",
+# Load golden validation table - 509 PCR tests with AT LEAST one allele with exact PCR sizes
+val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_readLength_270121.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 
 dim(val_data)
-# 452  8
+# 485  10
 
 val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength.tsv",
                     sep = "\t",
@@ -48,6 +48,9 @@ locus_v2 = c(val_data$locus, val_data$locus)
 
 # Remove NAs
 index_NA = which(is.na(exp_alleles_v2))
+# Remove EXP,NORM,PREMUT,FULL EXP
+index_EXP = which(grepl("EXP",exp_alleles_v2))
+
 exp_alleles_v2 = exp_alleles_v2[-index_NA]
 eh_alleles_v2 = eh_alleles_v2[-index_NA]
 locus_v2 = locus_v2[-index_NA]
@@ -68,8 +71,11 @@ for(i in 1:length(l_locus)){
   aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a2_avg_after_visualQC) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
-  data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
-                     aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
+  # Since we are keeping alleles for which sometimes an allele has EXP/NORMAL/PREMUT and not the other, we need to remove the same index
+  index_na = which(is.na(aux_exp_alleles_v2))
+  
+  data_aux = xyTable(aux_exp_alleles_v2[-index_na], 
+                     aux_eh_alleles_v2[-index_na])
   
   df_data_aux = data.frame(eh_alleles = data_aux$y,
                            exp_alleles = data_aux$x,
