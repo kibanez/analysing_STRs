@@ -27,13 +27,13 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_re
 dim(val_data)
 # 485  10
 
-val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength.tsv",
+val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength_270121.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 
 dim(val_data)
-# 467  8
+# 509  10
 
 output_folder = "./figures/"
 
@@ -74,13 +74,20 @@ for(i in 1:length(l_locus)){
   # Since we are keeping alleles for which sometimes an allele has EXP/NORMAL/PREMUT and not the other, we need to remove the same index
   index_na = which(is.na(aux_exp_alleles_v2))
   
-  data_aux = xyTable(aux_exp_alleles_v2[-index_na], 
-                     aux_eh_alleles_v2[-index_na])
+  if (length(index_na) > 0){
+    data_aux = xyTable(aux_exp_alleles_v2[-index_na], 
+                       aux_eh_alleles_v2[-index_na])
+  }else{
+    data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
+                       aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
+  }
   
   df_data_aux = data.frame(eh_alleles = data_aux$y,
                            exp_alleles = data_aux$x,
                            number_of_alleles = data_aux$number,
                            locus = rep(l_locus[i], length(data_aux$x)))
+  
+  
   # Concat info per locus
   df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
                                df_data_aux)
@@ -119,8 +126,15 @@ for(i in 1:length(l_locus)){
   aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(EHv312_a2_avg) %>% pull() %>% as.integer() 
   aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
   
-  data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
-                     aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
+  index_na = which(is.na(aux_exp_alleles_v2))
+  
+  if (length(index_na) >0){
+    data_aux = xyTable(aux_exp_alleles_v2[-index_na], 
+                       aux_eh_alleles_v2[-index_na])
+  }else{
+    data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
+                       aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
+  }
   
   df_data_aux = data.frame(eh_alleles = data_aux$y,
                            exp_alleles = data_aux$x,
@@ -158,8 +172,8 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE) 
 
-#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_200121.png",units="in", width=5, height=5, res=600)
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_200121.png",units="in", width=5, height=5, res=600)
+#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_270121.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_270121.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
