@@ -259,7 +259,8 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
 #    scale_color_manual(values=colour_locus) +
     theme(legend.title = element_blank(),
-          axis.text.x.top = element_text()) +
+          axis.text.x.top = element_text(),
+          axis.title.x = element_blank()) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
@@ -290,7 +291,8 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
     #scale_color_manual(values=group.colors) +
     theme(legend.title = element_blank(),
-          axis.text.x.top = element_text()) +
+          axis.text.x.top = element_text(),
+          axis.title.x = element_blank()) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
@@ -309,7 +311,8 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
     #scale_color_manual(values=group.colors) +  
     theme(legend.title = element_blank(),
-          axis.text.x.top = element_text()) +
+          axis.text.x.top = element_text(),
+          axis.title.x = element_blank()) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
