@@ -330,8 +330,8 @@ for (locus_name in 1:length(all_loci)){
   print(breakdown_by_locus_shorter_merged)
   dev.off()
   
-#  png(file_name_large,units="in", width=5, height=5, res=600)
-#  print(breakdown_by_locus_larger)
-#  dev.off()
+  png(file_name_large,units="in", width=5, height=5, res=600)
+  print(breakdown_by_locus_larger)
+  dev.off()
   
 }
