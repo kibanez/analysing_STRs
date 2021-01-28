@@ -245,8 +245,6 @@ for (locus_name in 1:length(all_loci)){
   max_value = max(max_value_df1,
                   max_value_df2)
   
-  
-  
   breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <= 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
@@ -262,9 +260,21 @@ for (locus_name in 1:length(all_loci)){
 #    scale_color_manual(values=colour_locus) +
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text()) +
-    guides(size = FALSE, color = FALSE) 
+    guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
-
+  
+  # Define first max_value
+  max_value_df1 = max(df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
+                      df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
+                      na.rm = TRUE) + 5
+  
+  max_value_df2 = max(df_strategy2 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
+                      df_strategy2 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
+                      na.rm = TRUE) + 5
+  
+  max_value = max(max_value_df1,
+                  max_value_df2)
+  
   breakdown_by_locus_shorter_merged = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name])) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
@@ -283,18 +293,6 @@ for (locus_name in 1:length(all_loci)){
           axis.text.x.top = element_text()) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
-  
-  # Define first max_value
-  max_value_df1 = max(df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
-                      df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
-                      na.rm = TRUE) + 5
-  
-  max_value_df2 = max(df_strategy2 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
-                      df_strategy2 %>% filter(locus %in% all_loci[locus_name]) %>% select(exp_alleles) %>% pull(),
-                      na.rm = TRUE) + 5
-  
-  max_value = max(max_value_df1,
-                  max_value_df2)
   
   breakdown_by_locus_larger = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles > 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
@@ -317,9 +315,9 @@ for (locus_name in 1:length(all_loci)){
   
   file_name = all_loci[locus_name]
   file_name = paste("./figures/", file_name, sep = "")
-  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_200121.png", sep = "_") 
-  file_name_large = paste(file_name, "largerThanReadLength_600dpi_200121.png", sep = "_") 
-  file_name_merged = paste(file_name, "merged_600dpi_200121.png", sep = "_") 
+  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_270121.png", sep = "_") 
+  file_name_large = paste(file_name, "largerThanReadLength_600dpi_270121.png", sep = "_") 
+  file_name_merged = paste(file_name, "merged_600dpi_270121.png", sep = "_") 
   
   png(file_name_short,units="in", width=5, height=5, res=600)
   print(breakdown_by_locus_shorter)
