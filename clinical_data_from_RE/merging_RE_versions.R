@@ -24,6 +24,29 @@ rd_v1 = read.csv("RE_clinical_data_V1/registration_2020-07-13_13-14-36.tsv",
 dim(rd_v1)
 # 18446  3
 
+# V3
+rd_v3 = read.csv("./RE_clinical_data_V3/rare_disease_analysis_2020-07-07_11-16-47.tsv",
+                 stringsAsFactors = F,
+                 header = T,
+                 sep = "\t")
+dim(rd_v3)
+# 51079  12
+
+rd_v3 = rd_v3 %>% select(participant_id, rare_diseases_family_id)
+
+platekey_v3 = read.csv("./RE_clinical_data_V3/genome_file_paths_and_types_2020-07-07_11-17-23.tsv",
+                       stringsAsFactors = F,
+                       header = T,
+                       sep = "\t")
+
+rd_v3 = left_join(rd_v3,
+                  platekey_v3 %>% select(participant_id, platekey),
+                  by = "participant_id")
+rd_v3 = rd_v3 %>% select(participant_id, platekey, rare_diseases_family_id)
+rd_v3$re_version = rep("RE_V3", length(rd_v3$participant_id))
+rd_v3 = unique(rd_v3)
+dim(rd_v3)
+# 50497  4
 
 # V4
 rd_v4 = read.csv("./RE_clinical_data_V4/rare_disease_analysis_2020-07-07_10-55-22.tsv",
