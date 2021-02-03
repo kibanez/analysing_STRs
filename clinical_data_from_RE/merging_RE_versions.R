@@ -177,3 +177,16 @@ rd_v11$re_version = rep("RE_V11", length(rd_v11$participant_id))
 rd_v11 = unique(rd_v11)
 dim(rd_v11)
 # 71720  4
+
+# Include here Pilot data
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                           stringsAsFactors = F,
+                           sep = "\t",
+                           header = T)
+dim(pilot_clin_data)
+# 4974  10
+
+pilot_clin_data = pilot_clin_data %>% 
+  select(gelID, plateKey, gelFamilyId.x)
+pilot_clin_data$re_version = rep("Pilot", length(pilot_clin_data$gelID))
+colnames(pilot_clin_data) = colnames(rd_v11)
