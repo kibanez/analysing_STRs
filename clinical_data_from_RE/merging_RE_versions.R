@@ -213,3 +213,29 @@ clin_data = rbind(rd_v2,
                   pilot_clin_data)
 dim(clin_data)
 # 621704  4
+
+# Put as `,` separated the versions as pids are the same in several RE releases
+list_releases = clin_data %>% 
+  group_by(platekey) %>% 
+  summarise(list_re_versions = toString(re_version)) %>% 
+  ungroup() %>% 
+  as.data.frame()
+dim(list_releases)
+# 83457  2
+
+clin_data = left_join(clin_data,
+                      list_releases,
+                      by = "platekey")
+
+# Remove the individual `re_version`
+clin_data = clin_data[,-4]
+
+# Write into a file
+write.table(clin_data,
+            "~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_PID_FID_platekey.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+
