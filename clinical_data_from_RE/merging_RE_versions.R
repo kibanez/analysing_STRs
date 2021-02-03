@@ -15,15 +15,7 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 # set the working directory
 setwd("~/Documents/STRs/clinical_data/clinical_data/raw/")
 
-# Load data from every release
-# V1
-rd_v1 = read.csv("RE_clinical_data_V1/registration_2020-07-13_13-14-36.tsv",
-                 stringsAsFactors = F, 
-                 header = T,
-                 sep = "\t")
-dim(rd_v1)
-# 18446  3
-
+# Load data from every release from V2
 # V2
 rd_v2 = read.csv("./RE_clinical_data_V2/sequencing_report_2020-07-07_11-23-59.tsv",
                  stringsAsFactors = F,
