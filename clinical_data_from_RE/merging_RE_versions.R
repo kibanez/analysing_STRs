@@ -15,4 +15,40 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 # set the working directory
 setwd("~/Documents/STRs/clinical_data/clinical_data/raw/")
 
-# 
+# Load data from every release
+# V1
+rd_v1 = read.csv("RE_clinical_data_V1/registration_2020-07-13_13-14-36.tsv",
+                 stringsAsFactors = F, 
+                 header = T,
+                 sep = "\t")
+dim(rd_v1)
+# 18446  3
+
+
+# V4
+rd_v4 = read.csv("./RE_clinical_data_V4/rare_disease_analysis_2020-07-07_10-55-22.tsv",
+                 stringsAsFactors = F,
+                 header = T,
+                 sep = "\t")
+dim(rd_v4)
+# 31972  12
+
+rd_v4 = rd_v4 %>% select(participant_id, platekey, rare_diseases_family_id)
+rd_v4$re_version = rep("RE_V4", length(rd_v4$participant_id))
+rd_v4 = unique(rd_v4)
+dim(rd_v4)
+# 31397  4
+
+# V5
+rd_v5 = read.csv("./RE_clinical_data_V5.1/rare_disease_analysis_2020-07-07_10-47-57.tsv",
+                 stringsAsFactors = F,
+                 header = T,
+                 sep = "\t")
+dim(rd_v5)
+# 68517  17
+
+rd_v5 = rd_v5 %>% select(participant_id, platekey, rare_diseases_family_id)
+rd_v5$re_version = rep("RE_V5", length(rd_v5$participant_id))
+rd_v5 = unique(rd_v5)
+dim(rd_v5)
+# 68003  4
