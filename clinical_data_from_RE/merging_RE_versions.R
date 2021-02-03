@@ -98,3 +98,17 @@ rd_v5$re_version = rep("RE_V5", length(rd_v5$participant_id))
 rd_v5 = unique(rd_v5)
 dim(rd_v5)
 # 68003  4
+
+# V6
+rd_v6 = read.csv("./RE_clinical_data_V6/rare_disease_analysis_2020-07-06_16-36-31.tsv",
+                 stringsAsFactors = F,
+                 header = T,
+                 sep = "\t")
+dim(rd_v6)
+# 75708  17
+
+rd_v6 = rd_v6 %>% select(participant_id, platekey, rare_diseases_family_id)
+rd_v6$re_version = rep("RE_V6", length(rd_v6$participant_id))
+rd_v6 = unique(rd_v6)
+dim(rd_v6)
+# 74283  4
