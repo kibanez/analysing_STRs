@@ -136,6 +136,8 @@ rd_v8 = unique(rd_v8)
 dim(rd_v8)
 # 72029  4
 
+colnames(rd_v8) = colnames(rd_v7)
+
 # V9
 rd_v9 = read.csv("./RE_clinical_data_V9/rare_disease_analysis_2020-07-06_15-26-22.tsv",
                  stringsAsFactors = F,
@@ -149,6 +151,8 @@ rd_v9$re_version = rep("RE_V9", length(rd_v9$participant_id))
 rd_v9 = unique(rd_v9)
 dim(rd_v9)
 # 71949  4
+
+colnames(rd_v9) = colnames(rd_v7)
 
 # V10
 rd_v10 = read.csv("./RE_clinical_data_V10/rare_disease_analysis_2020-09-08_09-28-42.tsv",
@@ -164,6 +168,8 @@ rd_v10 = unique(rd_v10)
 dim(rd_v10)
 # 71837  4
 
+colnames(rd_v10) = colnames(rd_v7)
+
 # V11
 rd_v11 = read.csv("./RE_clinical_data_V11/rare_disease_analysis_2020-12-30_11-25-53.tsv",
                   stringsAsFactors = F,
@@ -178,6 +184,8 @@ rd_v11 = unique(rd_v11)
 dim(rd_v11)
 # 71720  4
 
+colnames(rd_v11) = colnames(rd_v7)
+
 # Include here Pilot data
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
                            stringsAsFactors = F,
@@ -189,4 +197,19 @@ dim(pilot_clin_data)
 pilot_clin_data = pilot_clin_data %>% 
   select(gelID, plateKey, gelFamilyId.x)
 pilot_clin_data$re_version = rep("Pilot", length(pilot_clin_data$gelID))
-colnames(pilot_clin_data) = colnames(rd_v11)
+colnames(pilot_clin_data) = colnames(rd_v7)
+
+# Merge MAIN and PILOT programmes
+clin_data = rbind(rd_v2,
+                  rd_v3,
+                  rd_v4,
+                  rd_v5,
+                  rd_v6,
+                  rd_v7,
+                  rd_v8,
+                  rd_v9,
+                  rd_v10,
+                  rd_v11,
+                  pilot_clin_data)
+dim(clin_data)
+# 621704  4
