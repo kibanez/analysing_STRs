@@ -125,4 +125,23 @@ rd_v7 = rd_v7 %>% select(participant_id, plate_key, rare_diseases_family_id)
 rd_v7$re_version = rep("RE_V7", length(rd_v7$participant_id))
 rd_v7 = unique(rd_v7)
 dim(rd_v7)
-# 
+# 73001  4 
+
+# Change plate_key into platekey
+colnames(rd_v7) = colnames(rd_v6)
+
+# V8
+rd_v8 = read.csv("./RE_clinical_data_V8/rare_disease_analysis_2019-12-04_15-03-51.tsv",
+                 stringsAsFactors = F,
+                 header = T,
+                 sep = "\t")
+dim(rd_v8)
+# 74310  16
+
+rd_v8 = rd_v8 %>% select(participant_id, plate_key, rare_diseases_family_id)
+rd_v8$re_version = rep("RE_V8", length(rd_v8$participant_id))
+rd_v8 = unique(rd_v8)
+dim(rd_v8)
+# 72029  4
+
+
