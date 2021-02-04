@@ -230,11 +230,11 @@ dev.off()
 # load colour per locus
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
-all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK - repeats > read-length", "FMR1", "FXN - repeats > read-length", "HTT", "TBP")
-df_strategy1$locus = gsub("DMPK", "DMPK - repeats > read-length", df_strategy1$locus)
-df_strategy2$locus = gsub("DMPK", "DMPK - repeats > read-length", df_strategy2$locus)
-df_strategy1$locus = gsub("FXN", "FXN - repeats > read-length", df_strategy1$locus)
-df_strategy2$locus = gsub("FXN", "FXN - repeats > read-length", df_strategy2$locus)
+all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK - repeats ≤ read-length", "FMR1", "FXN - repeats ≤ read-length", "HTT", "TBP")
+df_strategy1$locus = gsub("DMPK - repeats > read-length", "DMPK - repeats ≤ read-length", df_strategy1$locus)
+df_strategy2$locus = gsub("DMPK - repeats > read-length", "DMPK - repeats ≤ read-length", df_strategy2$locus)
+df_strategy1$locus = gsub("FXN - repeats > read-length", "FXN - repeats ≤ read-length", df_strategy1$locus)
+df_strategy2$locus = gsub("FXN - repeats > read-length", "FXN - repeats ≤ read-length", df_strategy2$locus)
 
 for (locus_name in 1:length(all_loci)){
   colour_locus = group.colors[locus_name]
@@ -265,11 +265,12 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
 #    scale_color_manual(values=colour_locus) +
     theme(legend.title = element_blank(),
-          axis.text.x.top = element_text(),
+          #axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey23"),
-          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey23"),
-          text=element_text(size=35)) +
+          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey50"),
+          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey50")) +
+          #text=element_text(size=35),
+          #strip.text = element_text(size=18)) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
@@ -302,8 +303,8 @@ for (locus_name in 1:length(all_loci)){
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey23"),
-          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey23"),
+          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey50"),
+          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey50"),
           text=element_text(size=35)) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
@@ -324,8 +325,8 @@ for (locus_name in 1:length(all_loci)){
     #scale_color_manual(values=group.colors) +  
     theme(legend.title = element_blank(),
           axis.title.x = element_blank(),
-          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey23"),
-          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey23"),
+          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey50"),
+          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey50"),
           #axis.text.x.top = element_text(size=30),
           strip.text = element_text(size=20)) +
           #axis.title=element_text(size=30)) +
@@ -347,8 +348,8 @@ for (locus_name in 1:length(all_loci)){
   print(breakdown_by_locus_shorter_merged)
   dev.off()
   
-  #png(file_name_large,units="in", width=9, height=6, res=600)
-  #print(breakdown_by_locus_larger)
-  #dev.off()
+  png(file_name_large,units="in", width=9, height=6, res=600)
+  print(breakdown_by_locus_larger)
+  dev.off()
 }
 
