@@ -172,8 +172,8 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE) 
 
-#png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_270121.png",units="in", width=5, height=5, res=600)
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_270121.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_040221.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_040221.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
@@ -230,6 +230,12 @@ dev.off()
 # load colour per locus
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
+all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK - repeats > read-length", "FMR1", "FXN - repeats > read-length", "HTT", "TBP")
+df_strategy1$locus = gsub("DMPK", "DMPK - repeats > read-length", df_strategy1$locus)
+df_strategy2$locus = gsub("DMPK", "DMPK - repeats > read-length", df_strategy2$locus)
+df_strategy1$locus = gsub("FXN", "FXN - repeats > read-length", df_strategy1$locus)
+df_strategy2$locus = gsub("FXN", "FXN - repeats > read-length", df_strategy2$locus)
+
 for (locus_name in 1:length(all_loci)){
   colour_locus = group.colors[locus_name]
   
@@ -261,7 +267,9 @@ for (locus_name in 1:length(all_loci)){
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          text=element_text(size=23)) +
+          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey23"),
+          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey23"),
+          text=element_text(size=35)) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
@@ -294,7 +302,9 @@ for (locus_name in 1:length(all_loci)){
     theme(legend.title = element_blank(),
           axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          text=element_text(size=23)) +
+          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey23"),
+          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey23"),
+          text=element_text(size=35)) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
@@ -313,16 +323,20 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
     #scale_color_manual(values=group.colors) +  
     theme(legend.title = element_blank(),
-          axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          text=element_text(size=23)) +
+          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey23"),
+          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey23"),
+          #axis.text.x.top = element_text(size=30),
+          strip.text = element_text(size=20)) +
+          #axis.title=element_text(size=30)) +
+          #text=element_text(size=30)) +
     guides(size = FALSE, color = FALSE) +
     facet_wrap(locus~ .) 
   
   file_name = all_loci[locus_name]
   file_name = paste("./figures/", file_name, sep = "")
-  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_270121.png", sep = "_") 
-  file_name_large = paste(file_name, "largerThanReadLength_600dpi_270121.png", sep = "_") 
+  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_040221.png", sep = "_") 
+  file_name_large = paste(file_name, "largerThanReadLength_600dpi_040221.png", sep = "_") 
   file_name_merged = paste(file_name, "merged_600dpi_270121.png", sep = "_") 
   
   png(file_name_short,units="in", width=5, height=5, res=600)
@@ -333,8 +347,8 @@ for (locus_name in 1:length(all_loci)){
   print(breakdown_by_locus_shorter_merged)
   dev.off()
   
-  png(file_name_large,units="in", width=5, height=5, res=600)
-  print(breakdown_by_locus_larger)
-  dev.off()
-  
+  #png(file_name_large,units="in", width=9, height=6, res=600)
+  #print(breakdown_by_locus_larger)
+  #dev.off()
 }
+
