@@ -209,4 +209,19 @@ colnames(df_genQA) = colnames(clin_data)
 
 clin_data = rbind(clin_data,
                   df_genQA)
+dim(clin_data)
+#2101385  24
+
+# Write into a file
+write.table(clin_data,
+            "Main_RE_V10_and_Pilot_programmes.tsv",
+            sep = "\t",
+            quote = F,
+            row.names = F,
+            col.names = T)
+
+
+
+
+
 
