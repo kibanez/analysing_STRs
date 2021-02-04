@@ -267,12 +267,12 @@ for (locus_name in 1:length(all_loci)){
     theme(legend.title = element_blank(),
           #axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey50"),
-          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey50")) +
+          axis.text.x = element_text(size=25, angle = 45, vjust=1, hjust = 1),
+          axis.text.y = element_text(size=25, angle = 45, vjust=0, hjust = 1)) +
           #text=element_text(size=35),
           #strip.text = element_text(size=18)) +
-    guides(size = FALSE, color = FALSE) +
-    facet_wrap(locus~ .) 
+    guides(size = FALSE, color = FALSE) 
+    #facet_wrap(locus~ .) 
   
   # Define first max_value
   max_value_df1 = max(df_strategy1 %>% filter(locus %in% all_loci[locus_name]) %>% select(eh_alleles) %>% pull(), 
@@ -301,13 +301,11 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
     #scale_color_manual(values=group.colors) +
     theme(legend.title = element_blank(),
-          axis.text.x.top = element_text(),
+          #axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey50"),
-          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey50"),
-          text=element_text(size=35)) +
-    guides(size = FALSE, color = FALSE) +
-    facet_wrap(locus~ .) 
+          axis.text.x = element_text(size=25, angle = 45, vjust=1, hjust = 1),
+          axis.text.y = element_text(size=25, angle = 45, vjust=0, hjust = 1)) +
+    guides(size = FALSE, color = FALSE) 
   
   breakdown_by_locus_larger = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles > 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
@@ -324,21 +322,17 @@ for (locus_name in 1:length(all_loci)){
          x = "") + 
     #scale_color_manual(values=group.colors) +  
     theme(legend.title = element_blank(),
+          #axis.text.x.top = element_text(),
           axis.title.x = element_blank(),
-          axis.text.x = element_text(size=35, angle = 45, vjust=1, hjust = 1, colour = "grey50"),
-          axis.text.y = element_text(size=35, angle = 45, vjust=0, hjust = 1, colour = "grey50"),
-          #axis.text.x.top = element_text(size=30),
-          strip.text = element_text(size=20)) +
-          #axis.title=element_text(size=30)) +
-          #text=element_text(size=30)) +
-    guides(size = FALSE, color = FALSE) +
-    facet_wrap(locus~ .) 
+          axis.text.x = element_text(size=25, angle = 45, vjust=1, hjust = 1),
+          axis.text.y = element_text(size=25, angle = 45, vjust=0, hjust = 1)) +
+    guides(size = FALSE, color = FALSE) 
   
   file_name = all_loci[locus_name]
   file_name = paste("./figures/", file_name, sep = "")
   file_name_short = paste(file_name, "shorterThanReadLength_600dpi_040221.png", sep = "_") 
   file_name_large = paste(file_name, "largerThanReadLength_600dpi_040221.png", sep = "_") 
-  file_name_merged = paste(file_name, "merged_600dpi_270121.png", sep = "_") 
+  file_name_merged = paste(file_name, "merged_600dpi_04020121.png", sep = "_") 
   
   png(file_name_short,units="in", width=5, height=5, res=600)
   print(breakdown_by_locus_shorter)
