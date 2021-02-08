@@ -199,7 +199,7 @@ write.table(selected_individuals,
 # ID, IID, sex, CaseControl
 pheno_controls = selected_individuals %>% 
   select(platekey, participant_phenotypic_sex)
-pheno_controls$ID = seq(1,length(pheno_controls$platekey), 1)
+pheno_controls$ID = seq(from = length(pheno_cases$ID) + 1, to = length(pheno_cases$ID) + length(pheno_controls$platekey), 1)
 pheno_controls$ID = paste("FAM", pheno_controls$ID, sep = '_')
 pheno_controls$CaseControl = rep("1", length(pheno_controls$platekey))
 
