@@ -211,6 +211,6 @@ pheno_controls$participant_phenotypic_sex = gsub("Male", "1", pheno_controls$par
 pheno_controls = pheno_controls %>%
   select(ID, platekey, participant_phenotypic_sex, CaseControl)
 colnames(pheno_controls) = c("ID", "IID", "sex", "CaseControl")
-write.table(pheno_controls, "list_phenotypes_cases.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
+write.table(pheno_controls, "list_phenotypes_controls.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
 
 
