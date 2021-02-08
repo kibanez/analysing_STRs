@@ -180,10 +180,29 @@ write.table(random_100_control,
 selected_individuals = random_100_control %>%
   filter(platekey %in% l_selected) 
 
+# In selected individuals select the ones that have not been included as Benchmarking
+selected_individuals = selected_individuals %>%
+  filter(!grepl("BE", V6))
+
 write.table(selected_individuals,
-            "./table_100genomes_CONTROL_unrelated_HTT.tsv",
+            "./table_99genomes_CONTROL_unrelated_HTT.tsv",
             quote = F,
             row.names = F,
             col.names = T,
             sep = "\t")
+
+# Also write here, the phenotype-part for CONTROLs for later
+# ID, IID, sex, CaseControl
+pheno_controls = selected_individuals %>% 
+  select(platekey, participant_phenotypic_sex)
+pheno_controls$ID = seq(1,length(pheno_controls$platekey), 1)
+pheno_controls$ID = paste("FAM", pheno_controls$ID, sep = '_')
+pheno_controls$CaseControl = rep("1", length(pheno_controls$platekey))
+
+# Reorder columns and rename them
+pheno_controls = pheno_controls %>%
+  select(ID, platekey, participant_phenotypic_sex, CaseControl)
+colnames(pheno_controls) = c("ID", "IID", "sex", "CaseControl")
+write.table(pheno_controls, "list_phenotypes_cases.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
+
 
