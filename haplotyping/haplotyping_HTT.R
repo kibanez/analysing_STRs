@@ -56,6 +56,10 @@ pheno_cases$ID = seq(1,length(pheno_cases$platekey), 1)
 pheno_cases$ID = paste("FAM", pheno_cases$ID, sep = '_')
 pheno_cases$CaseControl = rep("2", length(pheno_cases$platekey))
 
+# format females as `2` and males as `1`
+pheno_cases$participant_phenotypic_sex = gsub("Female", "2", pheno_cases$participant_phenotypic_sex)
+pheno_cases$participant_phenotypic_sex = gsub("Male", "1", pheno_cases$participant_phenotypic_sex)
+
 # Reorder columns and rename them
 pheno_cases = pheno_cases %>%
   select(ID, platekey, participant_phenotypic_sex, CaseControl)
@@ -198,6 +202,10 @@ pheno_controls = selected_individuals %>%
 pheno_controls$ID = seq(1,length(pheno_controls$platekey), 1)
 pheno_controls$ID = paste("FAM", pheno_controls$ID, sep = '_')
 pheno_controls$CaseControl = rep("1", length(pheno_controls$platekey))
+
+# format females as `2` and males as `1`
+pheno_controls$participant_phenotypic_sex = gsub("Female", "2", pheno_controls$participant_phenotypic_sex)
+pheno_controls$participant_phenotypic_sex = gsub("Male", "1", pheno_controls$participant_phenotypic_sex)
 
 # Reorder columns and rename them
 pheno_controls = pheno_controls %>%
