@@ -48,6 +48,20 @@ write.table(haplo_genomes,
             row.names = F,
             col.names = T)
 
+# Also write here, the phenotype-part for CASES for later
+# ID, IID, sex, CaseControl
+pheno_cases = haplo_genomes %>% 
+  select(platekey, participant_phenotypic_sex)
+pheno_cases$ID = seq(1,length(pheno_cases$platekey), 1)
+pheno_cases$ID = paste("FAM", pheno_cases$ID, sep = '_')
+pheno_cases$CaseControl = rep("2", length(pheno_cases$platekey))
+
+# Reorder columns and rename them
+pheno_cases = pheno_cases %>%
+  select(ID, platekey, participant_phenotypic_sex, CaseControl)
+colnames(pheno_cases) = c("ID", "IID", "sex", "CaseControl")
+write.table(pheno_cases, "list_phenotypes_cases.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
+
 # selecting genomes for CONTROL cohort
 #  genome_build %in% GRCh38 , affection_status %in% unaffected, repeat_size < 40, and population %in% EUR since the majority of genomes in the cases cohort correspond to Europeans. 
 # Unrelated, belonging to different families each of them.
