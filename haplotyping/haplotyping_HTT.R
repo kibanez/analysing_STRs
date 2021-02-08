@@ -80,7 +80,7 @@ dim(df_controls)
 # 562208  28
 
 # Random selection of 30 genomes
-set.seed(5)
+set.seed(983823)
 
 # Taking unrelated ones (by FamilyId)
 l_random_30_family = sample(df_controls$rare_diseases_family_id, 30)
@@ -98,7 +98,7 @@ random_100_control = df_controls %>%
   select(rare_diseases_family_id, platekey, genome_build, participant_phenotypic_sex, superpopu) %>%
   unique()
 dim(random_100_control)
-# 171  5
+# 181  5
 
 # Enrich them with the path to the gVCF
 upload_report = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/input/upload_report.2020-08-18.txt",
@@ -136,7 +136,7 @@ random_100_control = random_100_control %>%
   as.data.frame()
 random_100_control = unique(random_100_control)
 dim(random_100_control)
-# 184  6
+# 195  6
 
 # Write them into files
 write.table(random_30_control,
@@ -146,12 +146,19 @@ write.table(random_30_control,
             col.names = T,
             sep = "\t")
 
+# We only need 1 genome from each family
+# Creating a new column `elegido` which is a random value from different platekeys from the same family ID
+random_100_control = random_100_control %>%
+  group_by(rare_diseases_family_id) %>%
+  mutate(elegido = sample(platekey, 1)) %>%
+  ungroup() %>%
+  as.data.frame()
+
 write.table(random_100_control,
             "./table_100genomes_CONTROL_unrelated_HTT.tsv",
             quote = F,
             row.names = F,
             col.names = T,
             sep = "\t")
-
 
 
