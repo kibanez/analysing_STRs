@@ -9,7 +9,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/haplotyping/HTT/")
+setwd("~/Documents/STRs/ANALYSIS/haplotyping/HTT/feb2021/")
 
 # Load clinical data
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_251120_V10.tsv",
@@ -25,7 +25,7 @@ l_exp_genomes = l_exp_genomes$V1
 length(l_exp_genomes)
 # 29
 
-# Retrieve genme build, sex, popu for these genomes
+# Retrieve genome build, sex, popu for these genomes
 haplo_genomes = clin_data %>%
   filter(platekey %in% l_exp_genomes) %>%
   select(platekey, genome_build, participant_ethnic_category, participant_phenotypic_sex, superpopu, programme, file_path)
@@ -84,6 +84,7 @@ set.seed(5)
 
 # Taking unrelated ones (by FamilyId)
 l_random_30_family = sample(df_controls$rare_diseases_family_id, 30)
+l_random_100_family = sample(df_controls$rare_diseases_family_id, 100)
 
 random_30_control = df_controls %>%
   filter(rare_diseases_family_id %in% l_random_30_family) %>%
@@ -91,6 +92,13 @@ random_30_control = df_controls %>%
   unique()
 dim(random_30_control)
 # 54  5
+
+random_100_control = df_controls %>%
+  filter(rare_diseases_family_id %in% l_random_100_family) %>%
+  select(rare_diseases_family_id, platekey, genome_build, participant_phenotypic_sex, superpopu) %>%
+  unique()
+dim(random_100_control)
+# 171  5
 
 # Enrich them with the path to the gVCF
 upload_report = read.csv("~/Documents/STRs/data/research/input/batch_august2020_EHv255_and_EHv322/input/upload_report.2020-08-18.txt",
@@ -104,8 +112,13 @@ upload_report$V3 = gsub("_copied", "", upload_report$V3)
 random_30_control = left_join(random_30_control,
                               upload_report %>% select(V3,V6),
                               by = c("platekey" = "V3"))
+random_100_control = left_join(random_100_control,
+                              upload_report %>% select(V3,V6),
+                              by = c("platekey" = "V3"))
+
 # Let's finish absolute path of the genome VCF 
 random_30_control$V6 = gsub("_copied", "/Variations/", random_30_control$V6)
+random_100_control$V6 = gsub("_copied", "/Variations/", random_100_control$V6)
 
 random_30_control = random_30_control %>%
   group_by(platekey) %>%
@@ -116,6 +129,15 @@ random_30_control = unique(random_30_control)
 dim(random_30_control)
 # 54 6
 
+random_100_control = random_100_control %>%
+  group_by(platekey) %>%
+  mutate(V6 = paste(V6, paste(platekey, ".genome.vcf.gz", sep = ""), sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+random_100_control = unique(random_100_control)
+dim(random_100_control)
+# 184  6
+
 # Write them into files
 write.table(random_30_control,
             "./table_30genomes_CONTROL_unrelated_HTT.tsv",
@@ -124,6 +146,12 @@ write.table(random_30_control,
             col.names = T,
             sep = "\t")
 
+write.table(random_100_control,
+            "./table_100genomes_CONTROL_unrelated_HTT.tsv",
+            quote = F,
+            row.names = F,
+            col.names = T,
+            sep = "\t")
 
 
 
