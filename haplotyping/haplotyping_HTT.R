@@ -154,6 +154,8 @@ random_100_control = random_100_control %>%
   ungroup() %>%
   as.data.frame()
 
+l_selected = unique(random_100_control$elegido)
+
 write.table(random_100_control,
             "./table_100genomes_CONTROL_unrelated_HTT.tsv",
             quote = F,
@@ -161,4 +163,6 @@ write.table(random_100_control,
             col.names = T,
             sep = "\t")
 
+selected_individuals = random_100_control %>%
+  filter(platekey %in% ) 
 
