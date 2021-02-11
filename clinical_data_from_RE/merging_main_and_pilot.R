@@ -219,9 +219,3 @@ write.table(clin_data,
             quote = F,
             row.names = F,
             col.names = T)
-
-
-
-
-
-
