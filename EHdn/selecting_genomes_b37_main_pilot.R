@@ -62,13 +62,13 @@ controls_pilot = clin_data %>%
   filter(programme %in% "RD Pilot", !grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list))
 
 controls_main = clin_data %>%
-  filter(programme %in% "Rare Diseases", !grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list), !platekey %in% l_platekeys_cases)
+  filter(programme %in% "Rare Diseases", !grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list), !platekey %in% l_platekeys_cases, genome_build %in% "GRCh37")
 
 merged_controls = unique(rbind(controls_pilot,
                                controls_main))
 dim(merged_controls)
-# 104881  24
+# 18173  24
 
 l_platekeys_controls = unique(merged_controls$platekey)
 length(l_platekeys_controls)
-# 60720 
+# 12374
