@@ -77,3 +77,51 @@ length(l_platekeys_controls)
 # Check whether there are not genomes recruited as `cases` in `controls`
 length(intersect(l_platekeys_cases, l_platekeys_controls))
 # 0
+
+# select the path to the BAM files for all case-control genomes
+# 
+df_path = read.csv("../upload_report.2020-08-18.txt",
+                   stringsAsFactors = F,
+                   header = T,
+                   sep = "\t")
+dim(df_path)
+# 120711 10
+
+df_path$Platekey = gsub("_copied", "",  df_path$Platekey)
+df_path$Path = gsub("_copied", "",df_path$Path)
+
+df_path = df_path %>%
+  group_by(Platekey) %>%
+  mutate(full_path = paste(paste(paste(Path, "Assembly", sep = "/"), Platekey, sep = "/"), ".bam", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Some genomes have been sequenced twice, because they might not have enough good quality
+# We will take the latest one
+df_path = df_path %>%
+  group_by(Platekey) %>%
+  mutate(latest_path = max(full_path)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Retrieve path to BAM for cases
+df_path_cases = df_path %>% 
+  filter(Platekey %in% l_platekeys_cases, !grepl("BE", full_path)) %>%
+  select(Platekey, latest_path) %>%
+  unique()
+dim(df_path_cases)
+# 471 2
+
+df_path_controls = df_path %>% 
+  filter(Platekey %in% l_platekeys_controls, !grepl("BE", full_path)) %>%
+  select(Platekey, latest_path) %>%
+  unique() 
+dim(df_path_controls)
+# 12351  2
+
+write.table(df_path_cases, "list_471_genomes_CASES_Pilot_Main_GRCh37.csv", quote = F, row.names = F, col.names = F, sep = ",")
+write.table(df_path_controls, "list_12351_genomes_CONTROLS_Pilot_Main_GRCh37.csv", quote = F, row.names = F, col.names = F, sep = ",")
+
+
+
+
