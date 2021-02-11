@@ -59,7 +59,7 @@ length(l_platekeys_cases)
 #check that the genomes considered as cases are not within this group
 #for main dataset - select only GRCh37 genomes
 controls_pilot = clin_data %>%
-  filter(programme %in% "RD Pilot", !grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list))
+  filter(programme %in% "RD Pilot", !grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list), !platekey %in% l_platekeys_cases)
 
 controls_main = clin_data %>%
   filter(programme %in% "Rare Diseases", !grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list), !platekey %in% l_platekeys_cases, genome_build %in% "GRCh37")
@@ -67,8 +67,13 @@ controls_main = clin_data %>%
 merged_controls = unique(rbind(controls_pilot,
                                controls_main))
 dim(merged_controls)
-# 18173  24
+# 18150  24
 
 l_platekeys_controls = unique(merged_controls$platekey)
 length(l_platekeys_controls)
-# 12374
+# 12351
+
+# Quality Control
+# Check whether there are not genomes recruited as `cases` in `controls`
+length(intersect(l_platekeys_cases, l_platekeys_controls))
+# 0
