@@ -10,7 +10,10 @@ cc_100 = cc_100 %>% mutate(is_unrel = ifelse(platekey %in% l_unrel, "Yes", "No")
 #write.table(cc_100, "~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/summary_cc_pileup_100Kg_30sept_VGD_KI_unrel.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
 
 
-popu_info = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv", stringsAsFactors = F, header = F, sep = "\t")
+popu_info = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv", 
+                     stringsAsFactors = F, 
+                     header = F, 
+                     sep = "\t")
 
 cc_100 = left_join(cc_100, popu_info, by = c("platekey" = "V1"))
 
@@ -55,6 +58,10 @@ unrel_htt = clin_data %>%
 unrel_htt = unique(unrel_htt)
 dim(unrel_htt)
 # 29  3
+
+unrel_htt = left_join(unrel_htt,
+                      popu_info,
+                      by = c("platekey" = "V1"))
 
 # Write into a table
 write.table(unrel_htt,
