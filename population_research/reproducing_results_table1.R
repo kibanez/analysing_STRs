@@ -54,4 +54,12 @@ unrel_htt = clin_data %>%
   filter(platekey %in% l_htt)
 unrel_htt = unique(unrel_htt)
 dim(unrel_htt)
-# 1560  36
+# 29  3
+
+# Write into a table
+write.table(unrel_htt,
+            "~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/table_29_unrel_expanded_HTT_enriched_popu_diseasegroup.tsv",
+            quote = F,
+            row.names = F,
+            col.names  = T,
+            sep = "\t")
