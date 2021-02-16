@@ -1,5 +1,5 @@
 # Objective: from the work we have done by inspecting visually all pileups, compute the carrier ratio for each locus
-# unrelated, probands unrelated, probands not neuro
+# unrelated, unrelated not neuro
 date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
@@ -128,54 +128,54 @@ clin_data = clin_data %>%
 
 # Now let's annotate or enrich with after visual inspection data
 # AR
-l_platekeys_AR_true_after = table_100cc_QC %>% filter(locus %in% "AR", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_AR_true_after = table_100cc_QC %>% filter(locus %in% "AR", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_AR_true_after)
-# 69
+# 33
 
 # ATN1
-l_platekeys_ATN1_true_after = table_100cc_QC %>% filter(locus %in% "ATN1", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_ATN1_true_after = table_100cc_QC %>% filter(locus %in% "ATN1", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_ATN1_true_after)
-# 8
+# 3
 
 # ATXN1
-l_platekeys_ATXN1_true_after = table_100cc_QC %>% filter(locus %in% "ATXN1", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_ATXN1_true_after = table_100cc_QC %>% filter(locus %in% "ATXN1", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_ATXN1_true_after)
-# 17
+# 11
 
 # ATXN2
-l_platekeys_ATXN2_true_after = table_100cc_QC %>% filter(locus %in% "ATXN2", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_ATXN2_true_after = table_100cc_QC %>% filter(locus %in% "ATXN2", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_ATXN2_true_after)
-# 38
+# 24
 
 # ATXN3
-l_platekeys_ATXN3_true_after = table_100cc_QC %>% filter(locus %in% "ATXN3", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_ATXN3_true_after = table_100cc_QC %>% filter(locus %in% "ATXN3", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_ATXN3_true_after)
 # 1
 
 # ATXN7
-l_platekeys_ATXN7_true_after = table_100cc_QC %>% filter(locus %in% "ATXN7", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_ATXN7_true_after = table_100cc_QC %>% filter(locus %in% "ATXN7", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_ATXN7_true_after)
-# 10 
+# 5
 
 # CACNA1A
-l_platekeys_CACNA1A_true_after = table_100cc_QC %>% filter(locus %in% "CACNA1A", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_CACNA1A_true_after = table_100cc_QC %>% filter(locus %in% "CACNA1A", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_CACNA1A_true_after)
-# 23
+# 13
 
 # C9ORF72
-l_platekeys_C9ORF72_true_after = table_100cc_QC %>% filter(locus %in% "C9ORF72", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_C9ORF72_true_after = table_100cc_QC %>% filter(locus %in% "C9ORF72", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_C9ORF72_true_after)
-# 26 
+# 9
 
 # DMPK
-l_platekeys_DMPK_true_after = table_100cc_QC %>% filter(locus %in% "DMPK", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_DMPK_true_after = table_100cc_QC %>% filter(locus %in% "DMPK", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_DMPK_true_after)
-# 63
+# 38
 
 # FXN
-l_platekeys_FXN_true_after = table_100cc_QC %>% filter(locus %in% "FXN", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_FXN_true_after = table_100cc_QC %>% filter(locus %in% "FXN", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_FXN_true_after)
-# 1165 (1 genQA or more - check)
+# 714
 
 # HTT
 l_platekeys_HTT_true_after = table_HTT_QC %>% filter(Final.Decision %in% "yes") %>% select(platekey) %>% unique() %>% pull()
@@ -183,9 +183,9 @@ length(l_platekeys_HTT_true_after)
 # 51
 
 # TBP
-l_platekeys_TBP_true_after = table_100cc_QC %>% filter(locus %in% "TBP", Final.decision %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
+l_platekeys_TBP_true_after = table_100cc_QC %>% filter(locus %in% "TBP", Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>% select(platekey) %>% unique() %>% pull()
 length(l_platekeys_TBP_true_after)
-# 2 (1 in GenQA)
+# 1
 
 # Include new columns after visual inspection
 # AR
