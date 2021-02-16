@@ -12,13 +12,12 @@ library(dplyr)
 # Set working directory
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/")
 
-# Load clinical data for 90,863 genomes for which we do have EHv3 estimations across 13 loci
-clin_data = read.csv("~/Documents/STRs/ANALYSIS/cases_controls/batch_march/EHv322/table_13_loci_across_90863_genomes_each_row_allele_EHv3.2.2_90863platekeys_88827pids.tsv",
-                     stringsAsFactors = F,
-                     header = T,
-                     sep = "\t")
-dim(clin_data)
-# 91857  46
+# Load list of unrelated genomes (batch2)
+l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
+                     stringsAsFactors = F)
+l_unrel = l_unrel$V1
+length(l_unrel)
+# 55603
 
 # remove platekeys that have no PIDs
 clin_data  = clin_data %>% filter(participant_id != ".")
