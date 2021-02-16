@@ -8,6 +8,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 
 # libraries
 library(dplyr)
+library(tidyverse)
 
 # Set working directory
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/")
@@ -19,34 +20,26 @@ clin_data = read.csv("../table_55603_unrel_genomes_enriched_popu_diseasegroup.ts
                      sep = "\t")
 dim(clin_data)
 # 55603  5
+
 colnames(clin_data) = c("platekey", "famID", "disease_group", "is_neuro", "popu")
 
-# Load list of unrelated genomes (batch2)
-l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
-                     stringsAsFactors = F)
-l_unrel = l_unrel$V1
-length(l_unrel)
+# summarise here total number of unrel genomes
+# summarise here total number of unrel genomes for each enthnicity
+total_unrel = length(unique(clin_data$platekey))
 # 55603
+total_unrel_AFR = clin_data %>% filter(popu %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_AMR = clin_data %>% filter(popu %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EAS = clin_data %>% filter(popu %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EUR = clin_data %>% filter(popu %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_SAS = clin_data %>% filter(popu %in% "SAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
-# remove platekeys that have no PIDs
-clin_data  = clin_data %>% filter(participant_id != ".")
-dim(clin_data)
-# 89821  46
-
-# Load list of platekeys from GenQA
-l_platekeys_genQA = read.table("/Users/kibanez/Documents/STRs/VALIDATION/genQA/genQA/list_platekeys_b1_b3_merged_genQA.txt",
-                             stringsAsFactors = F,
-                             header = F)
-l_platekeys_genQA = unique(l_platekeys_genQA$V1)
-length(l_platekeys_genQA)
-# 51
-
-# Include new column called `genQA` as boolean
-clin_data = clin_data %>%
-  group_by(platekey) %>%
-  mutate(genQA = ifelse(platekey %in% l_platekeys_genQA, TRUE, FALSE))
-table(clin_data$genQA)
-# ALL FALSE, Good, we don't want to include them as part of 100K cohort
+total_unrel_notNeuro = clin_data %>% filter(is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 37888
+total_unrel_AFR_notNeuro = clin_data %>% filter(popu %in% "AFR", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_AMR_notNeuro = clin_data %>% filter(popu %in% "AMR", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EAS_notNeuro = clin_data %>% filter(popu %in% "EAS", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EUR_notNeuro = clin_data %>% filter(popu %in% "EUR", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
 # Load the whole table for 100kGP - case-controls 
 table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection_16feb21.tsv",
@@ -68,10 +61,6 @@ table_HTT_QC$locus= rep("HTT", length(table_HTT_QC$PLATEKEY))
 colnames(table_HTT_QC) = c("platekey", "a1_after_QC", "a2_after_QC", "Final.Decision", "empty", "locus")
 
 table_HTT_QC = table_HTT_QC %>% select(platekey, locus, Final.Decision)
-
-# count unique PID included in the cases_controls (i.e. what is the total number of genomes that we have data on)
-total_number_of_participants_analysed <- length(unique(clin_data$participant_id))
-# 88826
 
 # For each locus, add a new column to `clin_data` if the repeat size of each locus is larger than path threshold
 l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FXN", "HTT","TBP")
