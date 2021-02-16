@@ -158,10 +158,11 @@ for(i in 1:length(l_locus)){
   
   df_unrel_notNeuro = rbind(df_unrel_notNeuro,
                             cbind(l_locus[i], total_exp_after_VI_locus_notNeuro, total_unrel_popu_notNeuro[j], ratio_freq_carrier_notNeuro, ci_ratio_notNeuro))
-  }
+
   # Write into files  - per popu
   output_file = paste(paste("table_carrier_ratio_with_ci_unrel_genomes", l_popu[j], sep = "_"), ".tsv", sep = "")
   write.table(df_unrel, output_file, quote = F, row.names = F, col.names = T, sep = "\t")
   output_file = paste(paste("table_carrier_ratio_with_ci_unrel__NotNeuro_genomes", l_popu[j], sep = "_"), ".tsv", sep = "")
   write.table(df_unrel_notNeuro, output_file, quote = F, row.names = F, col.names = T, sep = "\t")
+  }
 }
