@@ -12,6 +12,15 @@ library(dplyr)
 # Set working directory
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/")
 
+# Load unrel 55603 clin data
+clin_data = read.csv("../table_55603_unrel_genomes_enriched_popu_diseasegroup.tsv",
+                     stringsAsFactors = F,
+                     header = F,
+                     sep = "\t")
+dim(clin_data)
+# 55603  5
+colnames(clin_data) = c("platekey", "famID", "disease_group", "is_neuro", "popu")
+
 # Load list of unrelated genomes (batch2)
 l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
                      stringsAsFactors = F)
