@@ -110,21 +110,3 @@ write.table(df_unrel_notNeuro,
             col.names = T,
             row.names = F,
             sep = "\t")
-
-# Load the table corresponding to HTT (work done by Arianna/Matteo)
-table_HTT_QC = read.csv("~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/list_PIDs_for_HTT_pileup.tsv",
-                        stringsAsFactors = F,
-                        header = T,
-                        sep = "\t")
-dim(table_HTT_QC)
-# 231  5
-
-table_HTT_QC$locus= rep("HTT", length(table_HTT_QC$PLATEKEY))
-colnames(table_HTT_QC) = c("platekey", "a1_after_QC", "a2_after_QC", "Final.Decision", "empty", "locus")
-
-table_HTT_QC = table_HTT_QC %>% select(platekey, locus, Final.Decision)
-
-# For each locus, add a new column to `clin_data` if the repeat size of each locus is larger than path threshold
-l_locus = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "FXN", "HTT","TBP")
-#l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,66,49)
-
