@@ -66,6 +66,9 @@ clin_data %>% filter(platekey %in% l_unrel, is_neuro %in% "Neuro") %>% select(pl
 # Create an unrel (with 55603 genomes) clin_data table
 unrel_disease_group = clin_data %>%
   filter(platekey %in% l_unrel)
+unrel_disease_group = unique(unrel_disease_group)
+dim(unrel_disease_group)
+# 55603  4
 
 # Enrich with popu
 unrel_disease_group = left_join(unrel_disease_group, batch2_genomes, by = c("platekey" = "V1"))
