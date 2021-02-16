@@ -2,14 +2,12 @@
 cc_100 = read.csv("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/summary_cc_pileup_100Kg_30sept_VGD_KI.tsv", stringsAsFactors = F, header = T, sep = "\t")
 dim(cc_100)
 
+# Enrich with `is_unrel` data
 l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt", stringsAsFactors = F)
 
 cc_100 = cc_100 %>% mutate(is_unrel = ifelse(platekey %in% l_unrel, "Yes", "No"))
 
-
-#write.table(cc_100, "~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/summary_cc_pileup_100Kg_30sept_VGD_KI_unrel.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
-
-
+# Enrich with popu data
 popu_info = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv", 
                      stringsAsFactors = F, 
                      header = F, 
@@ -17,7 +15,6 @@ popu_info = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTR
 
 cc_100 = left_join(cc_100, popu_info, by = c("platekey" = "V1"))
 
-#write.table(cc_100, "~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/summary_cc_pileup_100Kg_30sept_VGD_KI_unrel.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
 
 batch2_genomes = popu_info %>% filter(V1 %in% l_unrel)
 
