@@ -1,6 +1,14 @@
+# Objective: compute total number of unrel genomes, unrel not neuro genomes
+# also, by ethnicity
+date ()
+Sys.info ()[c("nodename", "user")]
+commandArgs ()
+rm (list = ls ())
+R.version.string ## "R version 3.6.1 (2019-07-05)"
 
 cc_100 = read.csv("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/summary_cc_pileup_100Kg_30sept_VGD_KI.tsv", stringsAsFactors = F, header = T, sep = "\t")
 dim(cc_100)
+# 1783  13
 
 # Enrich with `is_unrel` data
 l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt", stringsAsFactors = F)
