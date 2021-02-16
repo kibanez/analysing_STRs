@@ -50,8 +50,10 @@ cc_100 = left_join(cc_100,
 write.table(cc_100, "~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/summary_cc_pileup_100Kg_30sept_VGD_KI_unrel.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
 
 # How many unrel genomes NOT NEURO do we have?
-unrel_disease_group = clin_data %>% 
-  filter(platekey %in% l_unrel, is_neuro %in% "NotNeuro")
+clin_data %>% filter(platekey %in% l_unrel, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 37888
+clin_data %>% filter(platekey %in% l_unrel, is_neuro %in% "Neuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 17715
 
 unrel_disease_group = left_join(unrel_disease_group, batch2_genomes, by = c("platekey" = "V1"))
 length(unique(unrel_disease_group$platekey))
