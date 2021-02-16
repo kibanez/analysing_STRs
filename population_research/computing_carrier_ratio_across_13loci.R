@@ -118,6 +118,8 @@ total_unrel_popu_notNeuro = c(total_unrel_AFR_notNeuro, total_unrel_AMR_notNeuro
 df_unrel = data.frame()
 df_unrel_notNeuro = data.frame()
 for(j in 1:length(l_popu)){
+  df_unrel = data.frame()
+  df_unrel_notNeuro = data.frame()
   for(i in 1:length(l_locus)){
   # Unrel
   # Compute number of expanded genomes per locus (after visual inspection)
