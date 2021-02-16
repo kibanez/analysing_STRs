@@ -117,8 +117,8 @@ total_unrel_popu = c(total_unrel_AFR, total_unrel_AMR, total_unrel_EAS, total_un
 total_unrel_popu_notNeuro = c(total_unrel_AFR_notNeuro, total_unrel_AMR_notNeuro, total_unrel_EAS_notNeuro, total_unrel_EUR_notNeuro, total_unrel_SAS_notNeuro)
 df_unrel = data.frame()
 df_unrel_notNeuro = data.frame()
-for(i in 1:length(l_locus)){
-  for(j in 1:length(l_popu)){
+for(j in 1:length(l_popu)){
+  for(i in 1:length(l_locus)){
   # Unrel
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus = table_100cc_QC %>%
@@ -159,10 +159,10 @@ for(i in 1:length(l_locus)){
   df_unrel_notNeuro = rbind(df_unrel_notNeuro,
                             cbind(l_locus[i], total_exp_after_VI_locus_notNeuro, total_unrel_popu_notNeuro[j], ratio_freq_carrier_notNeuro, ci_ratio_notNeuro))
 
+  }
   # Write into files  - per popu
   output_file = paste(paste("table_carrier_ratio_with_ci_unrel_genomes", l_popu[j], sep = "_"), ".tsv", sep = "")
   write.table(df_unrel, output_file, quote = F, row.names = F, col.names = T, sep = "\t")
   output_file = paste(paste("table_carrier_ratio_with_ci_unrel__NotNeuro_genomes", l_popu[j], sep = "_"), ".tsv", sep = "")
   write.table(df_unrel_notNeuro, output_file, quote = F, row.names = F, col.names = T, sep = "\t")
-  }
 }
