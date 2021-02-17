@@ -13,3 +13,20 @@ library(scatterplot3d); packageDescription("scatterplot3d", fields = "Version") 
 library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 library(tidyverse)
 
+# Set working dir
+setwd("~/Documents/STRs/ANALYSIS/population_research/")
+
+# load raw data re total number of unrel genomes
+total_unrel_genomes = read.csv("./number_genomes_per_superpopu_100k_1k_TOPMed.tsv",
+                               stringsAsFactors = F, 
+                               header = T,
+                               sep = "\t")
+dim(total_unrel_genomes)
+# 15  3
+
+barplot_all = ggplot(total_unrel_genomes, aes(x = population, y = number_genomes, fill = cohort)) +
+  geom_bar(stat = "identity", position=position_dodge()) 
+
+png("barplot_number_genomes_per_cohort_1kGP3_100kGP_TOPMed.png")
+print(barplot_all)
+dev.off()
