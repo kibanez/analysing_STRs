@@ -14,8 +14,7 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 library(tidyverse)
 
 # Set environment
-setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/TOPMed/AlleleFrequency_UKGroup_13Loci/AllUnrelatedSamples/")
-setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/TOPMed/AlleleFrequency_UKGroup_13Loci/NuroExcludedUnrelatedSamples/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/After_QC/AllUnrelatedSamples/")
 
 # Load thresholds
 # STR annotation, threshold including the largest normal and the smallest pathogenic sizes reported
