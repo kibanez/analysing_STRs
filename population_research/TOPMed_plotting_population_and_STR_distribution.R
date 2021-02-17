@@ -3,7 +3,7 @@ date ()
 Sys.info ()[c("nodename", "user")]
 commandArgs ()
 rm (list = ls ())
-R.version.string ## "R version 3.6.1 (2019-07-05)"
+R.version.string ## "R version 3.6.3 2020-02-29)"
 
 # libraries
 library(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
