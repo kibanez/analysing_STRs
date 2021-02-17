@@ -64,9 +64,9 @@ dim(df_merged)
 
 output_folder = "./figures/"
 
+colnames(df_merged)[12] = "superpopu"
 l_loci = sort(unique(df_merged$gene))
 for (i in 1:length(l_loci)){
-  colnames(df_merged)[12] = "superpopu"
   # Specifying sub-population  
   for (j in 1:length(l_popus)){
     # Each locus - Individually
