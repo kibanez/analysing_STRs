@@ -19,6 +19,12 @@ topmed_unrel = read.csv("./table_unrel_and_unrel_notNeuro.tsv", stringsAsFactors
 dim(topmed_unrel)
 # 13  3
 
+# per popu
+topmed_unrel = read.csv("./table_unrel_and_unrel_notNeuro_SAS.tsv", stringsAsFactors = F, header = T, sep = "\t")
+total_unrel = 340
+total_unrel_notNeuro = 331
+
+
 l_locus = unique(topmed_unrel$locus)
 df_unrel = data.frame()
 df_unrel_notNeuro = data.frame()
@@ -65,14 +71,14 @@ for(i in 1:length(l_locus)){
 
 # write them into files
 write.table(df_unrel,
-            "table_carrier_ratio_with_ci_unrel_genomes_TOPMed.tsv",
+            "table_carrier_ratio_with_ci_unrel_genomes_TOPMed_SAS.tsv",
             quote = F,
             col.names = T,
             row.names = F,
             sep = "\t")
 
 write.table(df_unrel_notNeuro,
-            "table_carrier_ratio_with_ci_unrel_NotNeuro_genomes_TOPMed.tsv",
+            "table_carrier_ratio_with_ci_unrel_NotNeuro_genomes_TOPMed_SAS.tsv",
             quote = F,
             col.names = T,
             row.names = F,
