@@ -15,67 +15,28 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/")
 
 # load data
-merged_table = read.csv("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
+merged_table = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
                         sep = "\t",
                         stringsAsFactors = F, 
                         header = T)
 dim(merged_table)
-# 8560  12
+# 27238  12
 
-# Load MAIN popu table we have so far
-popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
+# Load clinical data (Main and Pilot) - even though we will keep with unrel genomes
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
                       stringsAsFactors = F, 
-                      sep = ",",
+                      sep = "\t",
                       header = T)
-dim(popu_table)
-# 59464  36
-
-# Load PILOT popu table 
-pilot_popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/PILOT_ANCESTRY/FINE_GRAINED_RF_classifications_incl_superPOP_prediction_final20191216.csv",
-                            stringsAsFactors = F,
-                            sep = ",",
-                            header = T)
-dim(pilot_popu_table)
-# 4821  44 
-
-# Load clin data, `participant_ethnic_category`
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_300320.tsv",
-                     sep = "\t",
-                     stringsAsFactors = F,
-                     header = T)
 dim(clin_data)
-# 1124633  31
+# 2101385  24
 
-# Pilot clin data
-pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
-                           stringsAsFactors = F,
-                           sep = "\t",
-                           header = T)
-dim(pilot_clin_data)
-# 4974  10
-
-# Merge popu table with family ID from clin_data
-popu_table = left_join(popu_table,
-                       clin_data %>% select(platekey, rare_diseases_family_id, participant_type, affection_status, normalised_specific_disease, disease_group, year_of_birth, participant_phenotypic_sex, programme, family_group_type),
-                       by = c("ID" = "platekey"))
-popu_table = unique(popu_table)
-dim(popu_table)
-# 60304  45
-
-# For PILOT we don't have that info, but let's merge with family ID
-pilot_popu_table = left_join(pilot_popu_table,
-                             pilot_clin_data %>% select(plateKey, gelID, gelFamilyId.x, sex, biological_relation_to_proband, disease_status, yearOfBirth, specificDisease),
-                             by = c("ID" = "plateKey"))
-pilot_popu_table = unique(pilot_popu_table)
-dim(pilot_popu_table)
-# 4961  51
-
-# Load unrelated list of genomes from popu - this is only main and also only the subcohort loukas' group worked on
-l_unrelated = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/60k_HWE_30k_random_unrelated_participants.txt",
+# Load unrelated list of genomes 
+l_unrelated = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
                          stringsAsFactors = F)
 l_unrelated = l_unrelated$V1
 length(l_unrelated)
-# 38344
+# 55603
+
 
 # Let's define as unrelated: 38,344 from the main cohort + all pilot
 # Take from pilot affected and 1 per family
