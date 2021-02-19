@@ -42,7 +42,7 @@ total_unrel_EUR_notNeuro = clin_data %>% filter(popu %in% "EUR", is_neuro %in% "
 total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
 # Load the whole table for 100kGP - case-controls 
-table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection_16feb21.tsv",
+table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection_19feb21.tsv",
                           stringsAsFactors = F,
                           header = T,
                           sep = "\t")
