@@ -118,13 +118,7 @@ length(intersect(l_all_samples_merged, l_unrelated))
 length(setdiff(l_unrelated, l_all_samples_merged))
 # 4
 # "LP3000170-DNA_D10" "LP3000170-DNA_D11" "LP3000170-DNA_D12" "LP3000115-DNA_G11"
-
-#write down  these extra 644 in order to include in the next run
-write.table(setdiff(l_unrelated_merged, l_all_samples_merged),
-            "~/Documents/STRs/data/research/input/list_644_genomes_not_included_in_batch_march2020_but_popu.tsv",
-            quote = F,
-            row.names = F,
-            col.names = F)
+# They are 4/5 corrupt BAM files...
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
@@ -156,69 +150,6 @@ merged_table = merged_table %>%
   mutate(total_num_samples = sum(num_samples)) %>%
   ungroup() %>%
   as.data.frame() 
-
-popu_table = popu_table %>%
-  mutate(merged_superpopu = case_when(best_guess_predicted_ancstry == "ACB" ~ "AFR",
-                                      best_guess_predicted_ancstry == "ASW" ~ "AFR",
-                                      best_guess_predicted_ancstry == "BEB" ~ "SAS",
-                                      best_guess_predicted_ancstry == "CEU" ~ "EUR",
-                                      best_guess_predicted_ancstry == "CHB" ~ "EAS",
-                                      best_guess_predicted_ancstry == "CHS" ~ "EAS",
-                                      best_guess_predicted_ancstry == "CLM" ~ "AMR",
-                                      best_guess_predicted_ancstry == "ESN" ~ "AFR",
-                                      best_guess_predicted_ancstry == "FIN" ~ "EUR",
-                                      best_guess_predicted_ancstry == "GBR" ~ "EUR",
-                                      best_guess_predicted_ancstry == "GIH" ~ "SAS",
-                                      best_guess_predicted_ancstry == "GWD" ~ "AFR",
-                                      best_guess_predicted_ancstry == "IBS" ~ "EUR",
-                                      best_guess_predicted_ancstry == "ITU" ~ "SAS",
-                                      best_guess_predicted_ancstry == "JPT" ~ "EAS",
-                                      best_guess_predicted_ancstry == "KHV" ~ "AFR",
-                                      best_guess_predicted_ancstry == "LWK" ~ "AFR",
-                                      best_guess_predicted_ancstry == "MSL" ~ "AFR",
-                                      best_guess_predicted_ancstry == "MXL" ~ "AMR",
-                                      best_guess_predicted_ancstry == "PEL" ~ "AMR",
-                                      best_guess_predicted_ancstry == "PJL" ~ "SAS",
-                                      best_guess_predicted_ancstry == "PUR" ~ "AMR",
-                                      best_guess_predicted_ancstry == "STU" ~ "SAS",                                      
-                                      best_guess_predicted_ancstry == "TSI" ~ "EUR",
-                                      best_guess_predicted_ancstry == "YRI" ~ "AFR"))
-
-
-pilot_popu_table = pilot_popu_table %>%
-  mutate(merged_superpopu_pilot = case_when(bestGUESS_sub_pop == "ACB" ~ "AFR",
-                                      bestGUESS_sub_pop == "ASW" ~ "AFR",
-                                      bestGUESS_sub_pop == "BEB" ~ "SAS",
-                                      bestGUESS_sub_pop == "CEU" ~ "EUR",
-                                      bestGUESS_sub_pop == "CHB" ~ "EAS",
-                                      bestGUESS_sub_pop == "CHS" ~ "EAS",
-                                      bestGUESS_sub_pop == "CLM" ~ "AMR",
-                                      bestGUESS_sub_pop == "ESN" ~ "AFR",
-                                      bestGUESS_sub_pop == "GBR" ~ "EUR",
-                                      bestGUESS_sub_pop == "GIH" ~ "SAS",
-                                      bestGUESS_sub_pop == "GWD" ~ "AFR",
-                                      bestGUESS_sub_pop == "IBS" ~ "EUR",
-                                      bestGUESS_sub_pop == "ITU" ~ "SAS",
-                                      bestGUESS_sub_pop == "KHV" ~ "AFR",
-                                      bestGUESS_sub_pop == "LWK" ~ "AFR",
-                                      bestGUESS_sub_pop == "MSL" ~ "AFR",
-                                      bestGUESS_sub_pop == "MXL" ~ "AMR",
-                                      bestGUESS_sub_pop == "PJL" ~ "SAS",
-                                      bestGUESS_sub_pop == "PUR" ~ "AMR",
-                                      bestGUESS_sub_pop == "STU" ~ "SAS",
-                                      bestGUESS_sub_pop == "TSI" ~ "EUR",
-                                      bestGUESS_sub_pop == "YRI" ~ "AFR"))
-
-
-# Take the ones that intersect and see how many genomes from each superpopu we have
-l_genomes_batch_and_popu = intersect(l_all_samples_merged, l_unrelated_merged)
-popu_table %>% filter(ID %in% l_genomes_batch_and_popu) %>% select(merged_superpopu) %>% pull() %>% table()
-#  AFR   AMR   EAS   EUR   SAS 
-# 1599  1074   177 32207  3361 
-
-pilot_popu_table %>% filter(ID %in% l_genomes_batch_and_popu) %>% select(merged_superpopu_pilot) %>% pull() %>% table()
-# AFR  AMR  EAS  EUR  SAS 
-# 43   25    4 1779  161 
 
 # For each locus
 l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
