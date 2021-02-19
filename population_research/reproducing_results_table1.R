@@ -90,27 +90,29 @@ clin_data %>% filter(platekey %in% l_unrel, is_neuro %in% "Neuro") %>% select(pl
 
 # Create an unrel (with 55603 genomes) clin_data table
 unrel_disease_group = clin_data %>%
-  filter(platekey %in% l_unrel)
+  filter(platekey %in% l_unrel) %>%
+  select(platekey, famID, diseasegroup_list, is_neuro)
 unrel_disease_group = unique(unrel_disease_group)
 dim(unrel_disease_group)
 # 55603  4
 
 # Enrich with popu
 unrel_disease_group = left_join(unrel_disease_group, batch2_genomes, by = c("platekey" = "V1"))
+colnames(unrel_disease_group)[5] = "popu"
 length(unique(unrel_disease_group$platekey))
 # 55603
 
 write.table(unrel_disease_group, "~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/table_55603_unrel_genomes_enriched_popu_diseasegroup.tsv", sep = "\t", quote = F, row.names = F, col.names = F)
 
-unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", V2 %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", popu %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 1295
-unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", V2 %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", popu %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 704
-unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", V2 %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
+unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", popu %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 32098
-unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", V2 %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
+unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", popu %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 314
-unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", V2 %in% "SAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
+unrel_disease_group %>% filter(is_neuro %in% "NotNeuro", popu %in% "SAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 2947
 
 # Check unrel 29 genomes expanded in HTT
