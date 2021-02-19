@@ -51,6 +51,20 @@ clin_data = unique(clin_data)
 dim(clin_data)
 # 109411  4
 
+# Load platekey-pid-famID table we created to fish platekeys not included in further RE releases
+clin_metadata = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_PID_FID_platekey.tsv",
+                         stringsAsFactors = F,
+                         sep = "\t",
+                         header = T)
+dim(clin_metadata)
+# 621704  4
+
+# Include or enrich `clin_data` with extra platekeys, to associate platekey <-> famID
+clin_data = full_join(clin_data,
+                      clin_metadata %>% select(platekey, participant_id, rare_diseases_family_id),
+                      by = "platekey")
+
+
 cc_100 = left_join(cc_100, 
                    clin_data %>% select(platekey, diseasegroup_list,is_neuro), 
                    by = "platekey")
