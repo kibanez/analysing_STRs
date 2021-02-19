@@ -110,16 +110,14 @@ for (i in 1:length(merged_table$chr)){
                            aux_vcf))
 }
 length(l_all_samples_merged)
-# 92663
+# 93446
 
 # How many intersect, difference?
-length(intersect(l_all_samples_merged, l_unrelated_merged))
-# 39,979
-length(setdiff(l_all_samples_merged, l_unrelated_merged))
-# 52684
-length(setdiff(l_unrelated_merged, l_all_samples_merged))
-# 644
-
+length(intersect(l_all_samples_merged, l_unrelated))
+# 55,599
+length(setdiff(l_unrelated, l_all_samples_merged))
+# 4
+# "LP3000170-DNA_D10" "LP3000170-DNA_D11" "LP3000170-DNA_D12" "LP3000115-DNA_G11"
 
 #write down  these extra 644 in order to include in the next run
 write.table(setdiff(l_unrelated_merged, l_all_samples_merged),
