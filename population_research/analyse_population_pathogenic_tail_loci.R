@@ -37,44 +37,62 @@ l_unrelated = l_unrelated$V1
 length(l_unrelated)
 # 55603
 
-
-# Let's define as unrelated: 38,344 from the main cohort + all pilot
-# Take from pilot affected and 1 per family
-df_unrelated_pilot = pilot_clin_data %>%
-  filter(disease_status %in% "Affected") %>%
-  select(gelID, plateKey, gelFamilyId.x)
-df_unrelated_pilot = unique(df_unrelated_pilot)
-dim(df_unrelated_pilot)
-# 2391  3
-
-length(unique(df_unrelated_pilot$plateKey))
-# 2391
-length(unique(df_unrelated_pilot$gelFamilyId.x))
-# 2279
-
-# Take probands
-l_famIDs_dup = df_unrelated_pilot$gelFamilyId.x[which(duplicated(df_unrelated_pilot$gelFamilyId.x))]
-l_probands = pilot_clin_data %>%
-  filter(gelFamilyId.x %in% l_famIDs_dup, biological_relation_to_proband %in% "Proband") %>%
-  select(plateKey) %>%
+# Disease_group info (and all other clinical characteristics) we've got for probands
+# Let's take the familyIDs that have been recruited as Neuro in `disease_group`
+l_fam_neuro = clin_data %>%
+  filter(grepl("[Nn][Ee][Uu][Rr][Oo]", diseasegroup_list)) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
   pull()
+length(l_fam_neuro)
+# 14402
 
-l_unrelated_platekeys_pilot = df_unrelated_pilot  %>%
-  filter(!gelFamilyId.x %in% l_famIDs_dup) %>%
-  select(plateKey) %>%
-  pull()
-length(l_unrelated_platekeys_pilot)
-# 2182
+clin_data = clin_data %>% select(platekey, rare_diseases_family_id, diseasegroup_list, superpopu)
+clin_data = unique(clin_data)
+dim(clin_data)
+# 109411  4
 
-l_unrelated_platekeys_pilot = c(l_unrelated_platekeys_pilot,
-                                l_probands)
-length(l_unrelated_platekeys_pilot)
-# 2283
+# Load platekey-pid-famID table we created to fish platekeys not included in further RE releases
+clin_metadata = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_PID_FID_platekey.tsv",
+                         stringsAsFactors = F,
+                         sep = "\t",
+                         header = T)
+dim(clin_metadata)
+# 621704  4
 
-l_unrelated_merged = c(l_unrelated,
-                       l_unrelated_platekeys_pilot)
-length(l_unrelated_merged)
-# 40627
+# Include or enrich `clin_data` with extra platekeys, to associate platekey <-> famID
+clin_data = full_join(clin_data,
+                      clin_metadata %>% select(platekey, participant_id, rare_diseases_family_id),
+                      by = "platekey")
+clin_data = unique(clin_data)
+dim(clin_data)
+# 149776  6
+
+# First let's unite `rare_diseases_family_id` columns into 1
+clin_data = clin_data %>%
+  group_by(rare_diseases_family_id.x) %>%
+  mutate(famID = ifelse(is.na(rare_diseases_family_id.x), rare_diseases_family_id.y, rare_diseases_family_id.x)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Now we've got complete famID, let's define whether each platkey is neuro or not
+clin_data = clin_data %>% 
+  group_by(famID) %>% 
+  mutate(is_neuro = ifelse(famID %in% l_fam_neuro, "Neuro", "NotNeuro")) %>% 
+  ungroup() %>% 
+  as.data.frame() %>%
+  select(platekey, participant_id, famID, diseasegroup_list, is_neuro)
+
+# Let's include a column which says whether a platekey is unrel or not
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(is_unrel = ifelse(platekey %in% l_unrelated, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Check if we have 55,603 unrel genomes
+clin_data %>% filter(is_unrel) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 55603
 
 # How many of these 40,627 are within 92K merged table?
 l_all_samples_merged = c()
