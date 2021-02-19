@@ -152,8 +152,13 @@ merged_table = merged_table %>%
   as.data.frame() 
 
 # For each locus
-l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "CACNA1A", "C9ORF72", "DMPK", "HTT", "FMR1", "FXN", "TBP")
-l_premut_cutoff = c(34,34,35,31,43,17,17,30,50,35,55,44,41)
+l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7","C9ORF72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
+l_premut_cutoff = c(34,34,35,31,43,34,30,17,50,55,44,35,41)
+l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,49)
+
+df_cutoff = data.frame(locus = l_genes,
+                       premut_cutoff = l_premut_cutoff,
+                       patho_cutoff = l_patho_cutoff)
 
 for (i in 1:length(l_genes)){
   print(l_genes[i])
