@@ -22,6 +22,11 @@ merged_table = read.csv("~/Documents/STRs/data/research/batch_august2020/output_
 dim(merged_table)
 # 27238  12
 
+# Focus on our 13 loci
+merged_table = merged_table %>%
+  filter(gene %in% c("AR", "ATN1","ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72",
+                     "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP"))
+
 # Load clinical data (Main and Pilot) - even though we will keep with unrel genomes
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
                       stringsAsFactors = F, 
@@ -94,7 +99,7 @@ clin_data = clin_data %>%
 clin_data %>% filter(is_unrel) %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 55603
 
-# How many of these 40,627 are within 92K merged table?
+# Check whether all 55,603 unrel genomes we want to analyse and will consider as TOTAL DATASET, are also included in the EHv322 table
 l_all_samples_merged = c()
 for (i in 1:length(merged_table$chr)){
   aux_vcf = strsplit(merged_table$list_samples[i], ';')[[1]]
