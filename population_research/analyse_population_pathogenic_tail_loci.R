@@ -243,10 +243,12 @@ for (i in 1:length(l_genes)){
   output_file_name1 = paste(output_file_name, "premutation_cutoff_", sep = "_")
   output_file_name1 = paste(output_file_name1, as.character(l_premut_cutoff[i]), sep = "")
   output_file_name1 = paste(output_file_name1, "EHv322_92K_population.tsv", sep = "_")
+  output_file_name1 = paste("./beyond_premut/", output_file_name1, sep = "")
   
   output_file_name2 = paste(output_file_name, "pathogenic_cutoff_", sep = "_")
   output_file_name2 = paste(output_file_name2, as.character(l_patho_cutoff[i]), sep = "")
   output_file_name2 = paste(output_file_name2, "EHv322_92K_population.tsv", sep = "_")
+  output_file_name2 = paste("./beyond_full-mutation/", output_file_name2, sep = "")
   
   write.table(premut_popu, 
               output_file_name1, 
