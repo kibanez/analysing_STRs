@@ -12,7 +12,7 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
-setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/")
 
 # load data
 merged_table = read.csv("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/merged_92663_genomes_EHv3.2.2.tsv",
