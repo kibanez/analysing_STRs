@@ -42,14 +42,9 @@ length(l_fam_neuro)
 # 14402
 
 clin_data = clin_data %>% select(platekey, rare_diseases_family_id, diseasegroup_list)
-clin_data = clin_data %>% 
-  group_by(rare_diseases_family_id) %>% 
-  mutate(is_neuro = ifelse(rare_diseases_family_id %in% l_fam_neuro, "Neuro", "NotNeuro")) %>% 
-  ungroup() %>% 
-  as.data.frame()
 clin_data = unique(clin_data)
 dim(clin_data)
-# 109411  4
+# 109411  3
 
 # Load platekey-pid-famID table we created to fish platekeys not included in further RE releases
 clin_metadata = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_PID_FID_platekey.tsv",
@@ -63,7 +58,23 @@ dim(clin_metadata)
 clin_data = full_join(clin_data,
                       clin_metadata %>% select(platekey, participant_id, rare_diseases_family_id),
                       by = "platekey")
+clin_data = unique(clin_data)
+dim(clin_data)
+# 149776  5
 
+# First let's unite `rare_diseases_family_id` columns into 1
+clin_data = clin_data %>%
+  group_by(rare_diseases_family_id.x) %>%
+  mutate(famID = ifelse(is.na(rare_diseases_family_id.x), rare_diseases_family_id.y, rare_diseases_family_id.x)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Now we've got complete famID, let's define whether each platkey is neuro or not
+clin_data = clin_data %>% 
+  group_by(famID) %>% 
+  mutate(is_neuro = ifelse(famID %in% l_fam_neuro, "Neuro", "NotNeuro")) %>% 
+  ungroup() %>% 
+  as.data.frame()
 
 cc_100 = left_join(cc_100, 
                    clin_data %>% select(platekey, diseasegroup_list,is_neuro), 
