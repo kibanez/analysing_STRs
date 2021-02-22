@@ -86,7 +86,7 @@ clin_data = clin_data %>%
   mutate(is_neuro = ifelse(famID %in% l_fam_neuro, "Neuro", "NotNeuro")) %>% 
   ungroup() %>% 
   as.data.frame() %>%
-  select(platekey, participant_id, famID, diseasegroup_list, is_neuro)
+  select(platekey, participant_id, famID, diseasegroup_list, is_neuro, superpopu)
 
 # Let's include a column which says whether a platekey is unrel or not
 clin_data = clin_data %>%
