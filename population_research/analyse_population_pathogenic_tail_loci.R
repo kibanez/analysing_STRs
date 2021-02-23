@@ -63,7 +63,7 @@ clin_metadata = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE
                          sep = "\t",
                          header = T)
 dim(clin_metadata)
-# 621704  4
+# 122024  4
 
 # Include or enrich `clin_data` with extra platekeys, to associate platekey <-> famID
 clin_data = full_join(clin_data,
