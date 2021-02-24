@@ -153,6 +153,7 @@ merged_table = merged_table %>%
 # For each locus
 l_genes = c("AR_CAG", "ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "C9ORF72_ILMN",
             "CACNA1A_CAG", "DMPK_CAG", "FMR1_CGG", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+l_genes_EHv322 = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7","C9ORF72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 l_premut_cutoff = c(34,34,39,31,43,34,30,17,50,55,44,35,41)
 l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,49)
 
@@ -242,9 +243,13 @@ for (i in 1:length(l_genes)){
   patho_popu$locus = rep(l_genes[i], length(patho_popu$platekey))
   
   # Enrich here with what we get with EHv322 premut/patho tables
-  locus_table_EHv322 = read.csv(list_patho_EHv322[i], stringsAsFactors = F,
-                                header = T, sep = "\t")
+  locus_table_EHv322 = patho_loci_EHv322 %>%
+    filter(locus %in% l_genes_EHv322[i])
   
+  patho_popu = left_join(patho_popu,
+                         locus_table_EHv322 %>% select(platekey, is_125, EHv322_a1, EHv322_a2, Final.decision),
+                         by = "platekey")
+  colnames(patho_popu)[12] = "Final.decision.EHv322"
   
   output_file_name = paste(l_genes[i], "beyond_", sep = "_")
   
