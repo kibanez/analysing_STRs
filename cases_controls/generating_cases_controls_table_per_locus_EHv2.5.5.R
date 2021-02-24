@@ -20,6 +20,14 @@ merged_data = read.csv("/Users/kibanez/Documents/STRs/data/research/batch_august
 dim(merged_data)
 # 32703  11
 
+# Load clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = "\t")
+dim(clin_data)
+# 2101385  24
+
 # Data from RE rather than from Catalog (this clinical data has been retrieved from RE on Sept 2019)
 # Pilot
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
