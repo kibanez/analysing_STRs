@@ -164,6 +164,13 @@ patho_loci_EHv322 = read.csv("~/Documents/STRs/ANALYSIS/population_research/PAPE
 dim(patho_loci_EHv322)
 # 1087  12
 
+# Load list of 125bp genomes
+list_125_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/PAPER/list_genomes_125bp_100kGP.tsv",
+                              stringsAsFactors = F)
+list_125_genomes = list_125_genomes$V1
+length(list_125_genomes)
+# 15830
+
 for (i in 1:length(l_genes)){
   print(l_genes[i])
   
@@ -247,9 +254,22 @@ for (i in 1:length(l_genes)){
     filter(locus %in% l_genes_EHv322[i])
   
   patho_popu = left_join(patho_popu,
-                         locus_table_EHv322 %>% select(platekey, is_125, EHv322_a1, EHv322_a2, Final.decision),
+                         locus_table_EHv322 %>% select(platekey, EHv322_a1, EHv322_a2, Final.decision),
                          by = "platekey")
   colnames(patho_popu)[12] = "Final.decision.EHv322"
+  
+  # There might be genomes that are expanded in EHv255 and not EHv322, and so, we need to also enrich them with is_125
+  patho_popu = patho_popu %>%
+    group_by(platekey) %>%
+    mutate(is_125 = ifelse(platekey %in% list_125_genomes, "Yes", "No")) %>%
+    ungroup() %>%
+    as.data.frame()
+  
+  # Print whether there are platekeys analysed on EHv322 and not EHv255 for this locus
+  print("Unrel genomes analysed in EHv322 and not EHv255?")
+  l_unrel_EHv322 = locus_table_EHv322 %>% filter(is_unrel) %>% select(platekey) %>% unique() %>% pull()
+  l_unrel_EHv255 = patho_popu %>% filter(is_unrel) %>% select(platekey) %>% unique() %>% pull()
+  print(setdiff(l_unrel_EHv322, l_unrel_EHv255))
   
   output_file_name = paste(l_genes[i], "beyond_", sep = "_")
   
