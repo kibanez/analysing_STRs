@@ -256,7 +256,7 @@ for (i in 1:length(l_genes)){
   patho_popu = left_join(patho_popu,
                          locus_table_EHv322 %>% select(platekey, EHv322_a1, EHv322_a2, Final.decision),
                          by = "platekey")
-  colnames(patho_popu)[12] = "Final.decision.EHv322"
+  colnames(patho_popu)[11] = "Final.decision.EHv322"
   
   # There might be genomes that are expanded in EHv255 and not EHv322, and so, we need to also enrich them with is_125
   patho_popu = patho_popu %>%
