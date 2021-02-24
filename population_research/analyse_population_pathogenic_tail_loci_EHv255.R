@@ -24,7 +24,7 @@ dim(merged_table)
 
 # Focus on our 13 loci
 merged_table = merged_table %>%
-  filter(gene %in% c("AR_CAG", "ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "C9orf72_GGGGCC",
+  filter(gene %in% c("AR_CAG", "ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "C9ORF72_ILMN",
                      "CACNA1A_CAG", "DMPK_CAG", "FMR1_CGG", "FXN_GAA", "HTT_CAG", "TBP_CAG"))
 
 # Load clinical data (Main and Pilot) - even though we will keep with unrel genomes
@@ -111,7 +111,7 @@ for (i in 1:length(merged_table$chr)){
                            aux_vcf))
 }
 length(l_all_samples_merged)
-# 93535
+# 92535
 
 # How many intersect, difference?
 length(intersect(l_all_samples_merged, l_unrelated))
@@ -151,14 +151,17 @@ merged_table = merged_table %>%
   as.data.frame() 
 
 # For each locus
-l_genes = c("AR_CAG", "ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "C9orf72_GGGGCC",
+l_genes = c("AR_CAG", "ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "C9ORF72_ILMN",
             "CACNA1A_CAG", "DMPK_CAG", "FMR1_CGG", "FXN_GAA", "HTT_CAG", "TBP_CAG")
 l_premut_cutoff = c(34,34,39,31,43,34,30,17,50,55,44,35,41)
 l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,49)
 
-df_cutoff = data.frame(locus = l_genes,
-                       premut_cutoff = l_premut_cutoff,
-                       patho_cutoff = l_patho_cutoff)
+patho_loci_EHv322 = read.csv("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/beyond_full-mutation/13_loci_beyond__pathogenic_cutoff_38_EHv322_92K_population_24F.tsv",
+                             stringsAsFactors = F,
+                             header = T,
+                             sep = "\t")
+dim(patho_loci_EHv322)
+# 1087  12
 
 for (i in 1:length(l_genes)){
   print(l_genes[i])
@@ -237,6 +240,11 @@ for (i in 1:length(l_genes)){
   # Add locus name as column
   premut_popu$locus = rep(l_genes[i], length(premut_popu$platekey))
   patho_popu$locus = rep(l_genes[i], length(patho_popu$platekey))
+  
+  # Enrich here with what we get with EHv322 premut/patho tables
+  locus_table_EHv322 = read.csv(list_patho_EHv322[i], stringsAsFactors = F,
+                                header = T, sep = "\t")
+  
   
   output_file_name = paste(l_genes[i], "beyond_", sep = "_")
   
