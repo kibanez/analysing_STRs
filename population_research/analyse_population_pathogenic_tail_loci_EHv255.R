@@ -12,20 +12,20 @@ library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
-setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/EHv255/")
 
 # load data
-merged_table = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
+merged_table = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv2.5.5_vcfs/merged/merged_93446_genomes_EHv255_batch_august2020.tsv",
                         sep = "\t",
                         stringsAsFactors = F, 
                         header = T)
 dim(merged_table)
-# 27238  12
+# 32703  11
 
 # Focus on our 13 loci
 merged_table = merged_table %>%
-  filter(gene %in% c("AR", "ATN1","ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72",
-                     "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP"))
+  filter(gene %in% c("AR_CAG", "ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "C9orf72_GGGGCC",
+                     "CACNA1A_CAG", "DMPK_CAG", "FMR1_CGG", "FXN_GAA", "HTT_CAG", "TBP_CAG"))
 
 # Load clinical data (Main and Pilot) - even though we will keep with unrel genomes
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
@@ -104,21 +104,20 @@ l_all_samples_merged = c()
 for (i in 1:length(merged_table$chr)){
   aux_vcf = strsplit(merged_table$list_samples[i], ';')[[1]]
   aux_vcf = gsub("EH_", "", aux_vcf)
-  aux_vcf = gsub(".vcf", "", aux_vcf)
   aux_vcf = gsub("_x2", "", aux_vcf)
+  aux_vcf = gsub(".vcf", "", aux_vcf)
+  
   l_all_samples_merged = unique(c(l_all_samples_merged,
                            aux_vcf))
 }
 length(l_all_samples_merged)
-# 93446
+# 93535
 
 # How many intersect, difference?
 length(intersect(l_all_samples_merged, l_unrelated))
-# 55,599
+# 55,171
 length(setdiff(l_unrelated, l_all_samples_merged))
-# 4
-# "LP3000170-DNA_D10" "LP3000170-DNA_D11" "LP3000170-DNA_D12" "LP3000115-DNA_G11"
-# They are 4/5 corrupt BAM files...
+# 432 - I've realised all these are empty!!! I need to re-run EHv255 on them.
 
 # Merged GRCh37 and GRCh38 tables, recoding chr names
 merged_table$chr = recode(merged_table$chr,
