@@ -38,11 +38,17 @@ total_unrel = setdiff(unique(clin_data$platekey), l_125)
 length(total_unrel)
 # 54437 
 
-total_unrel_AFR = clin_data %>% filter(popu %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_AMR = clin_data %>% filter(popu %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_EAS = clin_data %>% filter(popu %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_EUR = clin_data %>% filter(popu %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_SAS = clin_data %>% filter(popu %in% "SAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
+clin_data = clin_data %>%
+  group_by(platekey) %>%
+  mutate(is_125 = ifelse(platekey %in% l_125, "Yes", "No")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+total_unrel_AFR = clin_data %>% filter(popu %in% "AFR", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_AMR = clin_data %>% filter(popu %in% "AMR", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EAS = clin_data %>% filter(popu %in% "EAS", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EUR = clin_data %>% filter(popu %in% "EUR", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_SAS = clin_data %>% filter(popu %in% "SAS", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
 total_unrel_notNeuro = clin_data %>% filter(is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 37888
