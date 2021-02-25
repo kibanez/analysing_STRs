@@ -34,9 +34,7 @@ l_125 = l_125$V1
 length(l_125)
 # 15830
 
-total_unrel = setdiff(unique(clin_data$platekey), l_125)
-length(total_unrel)
-# 54437 
+total_unrel = length(setdiff(unique(clin_data$platekey), l_125))
 
 clin_data = clin_data %>%
   group_by(platekey) %>%
@@ -76,7 +74,7 @@ for(i in 1:length(l_locus)){
   # Unrel
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel) %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_125 %in% "No") %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
@@ -96,7 +94,7 @@ for(i in 1:length(l_locus)){
   # Unrel NOT NEURO
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus_notNeuro = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_neuro. %in% "NotNeuro") %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_neuro %in% "NotNeuro", is_125 %in% "No") %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
@@ -143,7 +141,7 @@ for(j in 1:length(l_popu)){
   # Unrel
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrelated. %in% "Yes", popu %in% l_popu[j]) %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, popu %in% l_popu[j]) %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
@@ -163,7 +161,7 @@ for(j in 1:length(l_popu)){
   # Unrel NOT NEURO
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus_notNeuro = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrelated. %in% "Yes", is_neuro. %in% "NotNeuro", popu %in% l_popu[j]) %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_neuro %in% "NotNeuro", popu %in% l_popu[j]) %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
