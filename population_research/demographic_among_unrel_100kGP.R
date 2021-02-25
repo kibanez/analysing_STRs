@@ -27,3 +27,9 @@ l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTR
 l_unrel = l_unrel$V1
 length(l_unrel)
 # 55603
+
+# Load list of 2x125bp sequenced genomes
+l_125 = read.table("./list_genomes_125bp_100kGP.tsv", stringsAsFactors = F)
+l_125 = l_125$V1
+length(l_125)
+# 15830
