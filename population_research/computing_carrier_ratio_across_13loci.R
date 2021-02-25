@@ -50,13 +50,14 @@ total_unrel_EAS = clin_data %>% filter(popu %in% "EAS", is_125 %in% "No") %>% se
 total_unrel_EUR = clin_data %>% filter(popu %in% "EUR", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 total_unrel_SAS = clin_data %>% filter(popu %in% "SAS", is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
-total_unrel_notNeuro = clin_data %>% filter(is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 37888
-total_unrel_AFR_notNeuro = clin_data %>% filter(popu %in% "AFR", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_AMR_notNeuro = clin_data %>% filter(popu %in% "AMR", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_EAS_notNeuro = clin_data %>% filter(popu %in% "EAS", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_EUR_notNeuro = clin_data %>% filter(popu %in% "EUR", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_notNeuro = clin_data %>% filter(is_neuro %in% "NotNeuro", is_125 %in% "No") %>%
+  select(platekey) %>% unique() %>% pull() %>% length()
+# 37115
+total_unrel_AFR_notNeuro = clin_data %>% filter(popu %in% "AFR", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_AMR_notNeuro = clin_data %>% filter(popu %in% "AMR", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EAS_notNeuro = clin_data %>% filter(popu %in% "EAS", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_EUR_notNeuro = clin_data %>% filter(popu %in% "EUR", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
+total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
 # Load the whole table for 100kGP - case-controls 
 table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection_19feb21.tsv",
