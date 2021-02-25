@@ -11,7 +11,7 @@ library(dplyr)
 library(tidyverse)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/carriers/cc_pileup_100Kg/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/beyond_full-mutation/")
 
 # Load unrel 55603 clin data
 clin_data = read.csv("../table_55603_unrel_genomes_enriched_popu_diseasegroup.tsv",
@@ -59,13 +59,14 @@ total_unrel_EAS_notNeuro = clin_data %>% filter(popu %in% "EAS", is_neuro %in% "
 total_unrel_EUR_notNeuro = clin_data %>% filter(popu %in% "EUR", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
-# Load the whole table for 100kGP - case-controls 
-table_100cc_QC = read.csv("./table_platekey_locus_QC_inspection_19feb21.tsv",
+# Load the whole table for 100kGP - unrelated genomes - after visual QC
+# Only unrel genomes
+table_100cc_QC = read.csv("./13_loci_beyond__pathogenic_cutoff_38_EHv322_92K_population_24F.tsv",
                           stringsAsFactors = F,
                           header = T,
                           sep = "\t")
 dim(table_100cc_QC)
-# 1783  16
+# 1087  12
 
 # For each locus, compute the carrier ratio and CI 
 l_locus = unique(table_100cc_QC$locus)
@@ -75,7 +76,7 @@ for(i in 1:length(l_locus)){
   # Unrel
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrelated. %in% "Yes") %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel) %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
@@ -95,7 +96,7 @@ for(i in 1:length(l_locus)){
   # Unrel NOT NEURO
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus_notNeuro = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrelated. %in% "Yes", is_neuro. %in% "NotNeuro") %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_neuro. %in% "NotNeuro") %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
