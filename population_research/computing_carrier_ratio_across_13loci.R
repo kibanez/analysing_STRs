@@ -27,6 +27,17 @@ colnames(clin_data) = c("platekey", "famID", "disease_group", "is_neuro", "popu"
 # summarise here total number of unrel genomes for each enthnicity
 total_unrel = length(unique(clin_data$platekey))
 # 55603
+
+# Load 2x125bp sequenced genomes
+l_125 = read.table("../../list_genomes_125bp_100kGP.tsv", stringsAsFactors = F)
+l_125 = l_125$V1
+length(l_125)
+# 15830
+
+total_unrel = setdiff(unique(clin_data$platekey), l_125)
+length(total_unrel)
+# 54437 
+
 total_unrel_AFR = clin_data %>% filter(popu %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
 total_unrel_AMR = clin_data %>% filter(popu %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
 total_unrel_EAS = clin_data %>% filter(popu %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
