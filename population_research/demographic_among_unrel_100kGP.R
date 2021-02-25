@@ -33,3 +33,22 @@ l_125 = read.table("./list_genomes_125bp_100kGP.tsv", stringsAsFactors = F)
 l_125 = l_125$V1
 length(l_125)
 # 15830
+
+# List of unrel genomes 2x150bp
+l_unrel_no125 = setdiff(l_unrel, l_125)
+length(l_unrel_no125)
+# 54437
+
+clin_data_paper = clin_data %>%
+  filter(platekey %in% l_unrel_no125) %>%
+  select(platekey, participant_phenotypic_sex, year_of_birth, participant_ethnic_category,
+         programme, family_group_type, affection_status, superpopu)
+clin_data_paper = unique(clin_data_paper)
+dim(clin_data_paper)
+# 54437  8
+
+clin_data_paper = clin_data_paper %>%
+  group_by(platekey) %>%
+  mutate(age = 2020 - as.integer(year_of_birth)) %>%
+  ungroup() %>%
+  as.data.frame()
