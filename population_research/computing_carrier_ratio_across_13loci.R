@@ -141,7 +141,7 @@ for(j in 1:length(l_popu)){
   # Unrel
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, popu %in% l_popu[j]) %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, popu %in% l_popu[j], is_125 %in% "No") %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
@@ -161,7 +161,7 @@ for(j in 1:length(l_popu)){
   # Unrel NOT NEURO
   # Compute number of expanded genomes per locus (after visual inspection)
   total_exp_after_VI_locus_notNeuro = table_100cc_QC %>%
-    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_neuro %in% "NotNeuro", popu %in% l_popu[j]) %>%
+    filter(locus %in% l_locus[i], Final.decision %in% "Yes", is_unrel, is_neuro %in% "NotNeuro", popu %in% l_popu[j],is_125 %in% "No") %>%
     select(platekey) %>%
     unique() %>%
     pull() %>%
