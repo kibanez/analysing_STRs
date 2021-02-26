@@ -32,23 +32,24 @@ l_exp_genomes = l_exp_genomes$V1
 length(l_exp_genomes)
 # 38 
 
-# Retrieve genme build, sex, popu for these genomes
+# Retrieve genome build, sex, popu for these genomes
 haplo_genomes = clin_data %>%
   filter(platekey %in% l_exp_genomes) %>%
-  select(platekey, genome_build, participant_ethnic_category, participant_phenotypic_sex, superpopu, programme, file_path)
+  select(platekey, genome_build, participant_ethnic_category, participant_phenotypic_sex, superpopu, programme)
 haplo_genomes = unique(haplo_genomes)
 dim(haplo_genomes)
-# 41  7
+# 41  6
 
 # There is 1 genome not included in the clinical data table, which belongs to data release V9
 setdiff(l_exp_genomes,unique(haplo_genomes$platekey))
 # "LP3000458-DNA_D11"
 
-to_add = c("LP3000458-DNA_D11", "GRCh38", "White: British", "Male", "EUR", "Rare diseases germline", "/genomes/by_date/2018-01-10/HX10655850/LP3000458-DNA_D11")
+#to_add = c("LP3000458-DNA_D11", "GRCh38", "White: British", "Male", "EUR", "Rare diseases germline", "/genomes/by_date/2018-01-10/HX10655850/LP3000458-DNA_D11")
+to_add = c("LP3000458-DNA_D11", "GRCh38", "White: British", "Male", "EUR", "Rare diseases germline")
 haplo_genomes = rbind(haplo_genomes,
                       to_add)
 dim(haplo_genomes)
-# 42  7
+# 42  6
 
 # Create 2 groups: Females and Males
 haplo_genomes_female = haplo_genomes %>%
