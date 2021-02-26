@@ -181,7 +181,7 @@ length(list_gvcf_male)
 # 10648
 
 write.table(list_gvcf_male,
-            "list_list_10648_gVCF_AR_male_CONTROLS_GRCh38.txt",
+            "list_10648_gVCF_AR_male_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 # Retrieve gVCF files for female AR controls that have been sequenced in GRCh38
@@ -194,7 +194,7 @@ length(list_gvcf_female)
 # 13840
 
 write.table(list_gvcf_female,
-            "list_list_13840_gVCF_AR_female_CONTROLS_GRCh38.txt",
+            "list_13840_gVCF_AR_female_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 
