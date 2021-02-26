@@ -123,19 +123,30 @@ male_controls = unique(male_controls)
 dim(male_controls)
 # 7308  20
 
+# Filter out related genomes
+female_controls = female_controls %>%
+  filter(platekey %in% l_unrel)
+dim(female_controls)
+# 14596  20
+
+male_controls = male_controls %>%
+  filter(platekey %in% l_unrel)
+dim(male_controls)
+# 6705  20 
+
 l_controls_AR_females = unique(female_controls$platekey)
 length(l_controls_AR_females)
-# 9442
+# 7709
 l_controls_AR_males = unique(male_controls$platekey)
 length(l_controls_AR_males)
-# 7219
+# 6627
 
 # Write into files whole list of male and female controls for AR
 write.table(female_controls,
-            "./table_female_9442_genomes_CONTROL_for_AR.tsv",
+            "./table_female_7709_genomes_CONTROL_for_AR.tsv",
             quote = F, row.names = F, col.names = T, sep = "\t")
 write.table(male_controls,
-            "./table_male_7219_genomes_CONTROL_for_AR.tsv",
+            "./table_male_6627_genomes_CONTROL_for_AR.tsv",
             quote = F, row.names = F, col.names = T, sep = "\t")
 
 # Take path to the genome VCF files and write them into a file
@@ -171,10 +182,10 @@ list_gvcf_male = upload_report %>%
   unique() %>%
   pull()
 length(list_gvcf_male)
-# 7219
+# 6627
 
 write.table(list_gvcf_male,
-            "list_7219_gVCF_AR_male_CONTROLS_GRCh38.txt",
+            "list_6627_gVCF_AR_male_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 # Retrieve gVCF files for female AR controls that have been sequenced in GRCh38
@@ -184,10 +195,10 @@ list_gvcf_female = upload_report %>%
   unique() %>%
   pull()
 length(list_gvcf_female)
-# 9442
+# 7709
 
 write.table(list_gvcf_female,
-            "list_9442_gVCF_AR_female_CONTROLS_GRCh38.txt",
+            "list_7709_gVCF_AR_female_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 
