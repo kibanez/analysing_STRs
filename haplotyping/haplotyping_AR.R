@@ -98,22 +98,53 @@ length(list_expanded)
 # 90
 
 table_ehv2 = left_join(table_ehv2,
-                       clin_data %>% select(platekey, family_medical_review_qc_state_code),
+                       clin_data %>% select(platekey, genetic_vs_reported_results),
                        by = "platekey")
+
+# Only proband is enriched with genetic_vs_reported checks. Let's take the famIDs that have been undergone successfully
+# ONly rare diseases. We don't do this with cancer
+l_famID_passesGvsRChecks = table_ehv2 %>%
+  filter(genetic_vs_reported_results %in% "familyPassesGvsRChecks") %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull()
 
 female_controls = table_ehv2 %>%
   filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded, 
-         participant_phenotypic_sex %in% "Female", family_medical_review_qc_state_code %in% "Passed medical review - for interpretation")
+         participant_phenotypic_sex %in% "Female", rare_diseases_family_id %in% l_famID_passesGvsRChecks)
 female_controls = unique(female_controls)
 dim(female_controls)
-# 18068  20
+# 17929  20
+
+# enrich with cancer germlines
+female_controls = rbind(female_controls,
+                        table_ehv2 %>% filter(population %in% "EUR", !platekey %in% list_expanded, 
+                                              participant_phenotypic_sex %in% "Female", programme %in% "Cancer"))
+dim(female_controls)
+# 31691  20
 
 male_controls = table_ehv2 %>%
   filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded,
-         participant_phenotypic_sex %in% "Male", family_medical_review_qc_state_code %in% "Passed medical review - for interpretation")
+         participant_phenotypic_sex %in% "Male", rare_diseases_family_id %in% l_famID_passesGvsRChecks)
 male_controls = unique(male_controls)
 dim(male_controls)
-# 7333  20
+# 7308  20
+
+# enrich with cancer germlines
+male_controls = rbind(male_controls,
+                      table_ehv2 %>% filter(population %in% "EUR", !platekey %in% list_expanded,
+                                            participant_phenotypic_sex %in% "Male", programme %in% "Cancer"))
+dim(male_controls)
+# 12496  20
+
+# Write into files whole list of male and female controls for AR
+write.table(female_controls,
+            "./table_female_13807_genomes_CONTROL_for_AR.tsv",
+            quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(male_controls,
+            "./table_male_10617_genomes_CONTROL_for_AR.tsv",
+            quote = F, row.names = F, col.names = T, sep = "\t")
+
 
 # defining a specific seed, so every time we run this script, we end up selecting the "same random" genomes
 set.seed(5)
