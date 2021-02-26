@@ -145,6 +145,30 @@ write.table(male_controls,
             "./table_male_10617_genomes_CONTROL_for_AR.tsv",
             quote = F, row.names = F, col.names = T, sep = "\t")
 
+# Take path to the genome VCF files and write them into a file
+upload_report = read.csv("~/Documents/STRs/clinical_data/clinical_data/upload_report.2020-08-18.txt",
+                         stringsAsFactors = F,
+                         sep = "\t",
+                         header = T)
+dim(upload_report)
+# 120711  10
+
+# we need to remove `_copied` - IT people changed again
+upload_report$Platekey = gsub("_copied", "", upload_report$Platekey)
+upload_report$Path = gsub("_copied", "", upload_report$Path)
+
+# create new path
+upload_report = upload_report %>%
+  group_by(Platekey) %>%
+  mutate(gvcf_path = paste(paste(paste(paste(Path, "Variations", sep = "/")),Platekey,sep = "/"),".genome.vcf.gz", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+list_gvcf_male = upload_report %>%
+  filter(unique(male_controls$platekey) %in% Platekey) %>%
+  select(Path) %>%
+  unique() %>%
+  pull()
 
 # defining a specific seed, so every time we run this script, we end up selecting the "same random" genomes
 set.seed(5)
