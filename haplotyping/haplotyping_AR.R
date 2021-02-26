@@ -171,30 +171,37 @@ upload_report = upload_report %>%
   ungroup() %>%
   as.data.frame()
 
+# Some platekeys have been sequenced more than once, let's select the latest one
+upload_report = upload_report %>%
+  group_by(Platekey) %>%
+  mutate(latest_gvcf_path = max(gvcf_path)) %>%
+  ungroup() %>%
+  as.data.frame()
+
 # Retrieve gVCF files for male AR controls that have been sequenced in GRCh38
 list_gvcf_male = upload_report %>%
   filter(Platekey %in% l_controls_AR_males, Delivery.Version %in% "V4") %>%
-  select(gvcf_path) %>%
+  select(latest_gvcf_path) %>%
   unique() %>%
   pull()
 length(list_gvcf_male)
-# 10648
+# 10617
 
 write.table(list_gvcf_male,
-            "list_10648_gVCF_AR_male_CONTROLS_GRCh38.txt",
+            "list_10617_gVCF_AR_male_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 # Retrieve gVCF files for female AR controls that have been sequenced in GRCh38
 list_gvcf_female = upload_report %>%
   filter(Platekey %in% l_controls_AR_females, Delivery.Version %in% "V4") %>%
-  select(gvcf_path) %>%
+  select(latest_gvcf_path) %>%
   unique() %>%
   pull()
 length(list_gvcf_female)
-# 13840
+# 13807
 
 write.table(list_gvcf_female,
-            "list_13840_gVCF_AR_female_CONTROLS_GRCh38.txt",
+            "list_13807_gVCF_AR_female_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 
