@@ -171,10 +171,10 @@ list_gvcf_male = upload_report %>%
   unique() %>%
   pull()
 length(list_gvcf_male)
-# 10617
+# 7219
 
 write.table(list_gvcf_male,
-            "list_10617_gVCF_AR_male_CONTROLS_GRCh38.txt",
+            "list_7219_gVCF_AR_male_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 # Retrieve gVCF files for female AR controls that have been sequenced in GRCh38
@@ -184,10 +184,10 @@ list_gvcf_female = upload_report %>%
   unique() %>%
   pull()
 length(list_gvcf_female)
-# 13807
+# 9442
 
 write.table(list_gvcf_female,
-            "list_13807_gVCF_AR_female_CONTROLS_GRCh38.txt",
+            "list_9442_gVCF_AR_female_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 
