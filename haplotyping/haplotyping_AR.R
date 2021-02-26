@@ -145,6 +145,13 @@ write.table(male_controls,
             "./table_male_10617_genomes_CONTROL_for_AR.tsv",
             quote = F, row.names = F, col.names = T, sep = "\t")
 
+l_controls_AR_females = unique(female_controls$platekey)
+length(l_controls_AR_females)
+# 13807
+l_controls_AR_males = unique(male_controls$platekey)
+length(l_controls_AR_males)
+# 10617
+
 # Take path to the genome VCF files and write them into a file
 upload_report = read.csv("~/Documents/STRs/clinical_data/clinical_data/upload_report.2020-08-18.txt",
                          stringsAsFactors = F,
@@ -164,11 +171,32 @@ upload_report = upload_report %>%
   ungroup() %>%
   as.data.frame()
 
+# Retrieve gVCF files for male AR controls that have been sequenced in GRCh38
 list_gvcf_male = upload_report %>%
-  filter(unique(male_controls$platekey) %in% Platekey) %>%
-  select(Path) %>%
+  filter(Platekey %in% l_controls_AR_males, Delivery.Version %in% "V4") %>%
+  select(gvcf_path) %>%
   unique() %>%
   pull()
+length(list_gvcf_male)
+# 10648
+
+write.table(list_gvcf_male,
+            "list_list_10648_gVCF_AR_male_CONTROLS_GRCh38.txt",
+            quote = F, row.names = F, col.names = F)
+
+# Retrieve gVCF files for female AR controls that have been sequenced in GRCh38
+list_gvcf_female = upload_report %>%
+  filter(Platekey %in% l_controls_AR_females, Delivery.Version %in% "V4") %>%
+  select(gvcf_path) %>%
+  unique() %>%
+  pull()
+length(list_gvcf_female)
+# 13840
+
+write.table(list_gvcf_female,
+            "list_list_13840_gVCF_AR_female_CONTROLS_GRCh38.txt",
+            quote = F, row.names = F, col.names = F)
+
 
 # defining a specific seed, so every time we run this script, we end up selecting the "same random" genomes
 set.seed(5)
