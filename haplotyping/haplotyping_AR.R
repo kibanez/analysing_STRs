@@ -116,13 +116,6 @@ female_controls = unique(female_controls)
 dim(female_controls)
 # 17929  20
 
-# enrich with cancer germlines
-female_controls = rbind(female_controls,
-                        table_ehv2 %>% filter(population %in% "EUR", !platekey %in% list_expanded, 
-                                              participant_phenotypic_sex %in% "Female", programme %in% "Cancer"))
-dim(female_controls)
-# 31691  20
-
 male_controls = table_ehv2 %>%
   filter(genome_build %in% "GRCh38", affection_status %in% "Unaffected", population %in% "EUR", !platekey %in% list_expanded,
          participant_phenotypic_sex %in% "Male", rare_diseases_family_id %in% l_famID_passesGvsRChecks)
@@ -130,27 +123,20 @@ male_controls = unique(male_controls)
 dim(male_controls)
 # 7308  20
 
-# enrich with cancer germlines
-male_controls = rbind(male_controls,
-                      table_ehv2 %>% filter(population %in% "EUR", !platekey %in% list_expanded,
-                                            participant_phenotypic_sex %in% "Male", programme %in% "Cancer"))
-dim(male_controls)
-# 12496  20
+l_controls_AR_females = unique(female_controls$platekey)
+length(l_controls_AR_females)
+# 9442
+l_controls_AR_males = unique(male_controls$platekey)
+length(l_controls_AR_males)
+# 7219
 
 # Write into files whole list of male and female controls for AR
 write.table(female_controls,
-            "./table_female_13807_genomes_CONTROL_for_AR.tsv",
+            "./table_female_9442_genomes_CONTROL_for_AR.tsv",
             quote = F, row.names = F, col.names = T, sep = "\t")
 write.table(male_controls,
-            "./table_male_10617_genomes_CONTROL_for_AR.tsv",
+            "./table_male_7219_genomes_CONTROL_for_AR.tsv",
             quote = F, row.names = F, col.names = T, sep = "\t")
-
-l_controls_AR_females = unique(female_controls$platekey)
-length(l_controls_AR_females)
-# 13807
-l_controls_AR_males = unique(male_controls$platekey)
-length(l_controls_AR_males)
-# 10617
 
 # Take path to the genome VCF files and write them into a file
 upload_report = read.csv("~/Documents/STRs/clinical_data/clinical_data/upload_report.2020-08-18.txt",
