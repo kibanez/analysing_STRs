@@ -122,6 +122,9 @@ l_controls_unrel = unique(df_controls$platekey)
 length(l_controls_unrel)
 # 18739
 
+# Write into file
+write.table(l_controls_unrel, "list_18739_controls_unrel_GRCh38_EUR_HTT.txt", quote = F, row.names = F, col.names = F)
+
 # Random selection of 30 genomes
 set.seed(983823)
 
