@@ -122,8 +122,43 @@ l_controls_unrel = unique(df_controls$platekey)
 length(l_controls_unrel)
 # 18739
 
+# Enrich them with the absolute path to gVCF file
+upload_report = read.csv("~/Documents/STRs/clinical_data/clinical_data/upload_report.2020-08-18.txt",
+                         stringsAsFactors = F,
+                         sep = "\t",
+                         header = T)
+dim(upload_report)
+# 120711  10
+
+# we need to remove `_copied` - IT people changed again
+upload_report$Platekey = gsub("_copied", "", upload_report$Platekey)
+upload_report$Path = gsub("_copied", "", upload_report$Path)
+
+# create new path
+upload_report = upload_report %>%
+  group_by(Platekey) %>%
+  mutate(gvcf_path = paste(paste(paste(paste(Path, "Variations", sep = "/")),Platekey,sep = "/"),".genome.vcf.gz", sep = "")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Some platekeys have been sequenced more than once, let's select the latest one
+upload_report = upload_report %>%
+  group_by(Platekey) %>%
+  mutate(latest_gvcf_path = max(gvcf_path)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Retrieve the gVCF files for all controls
+list_gvcf_controls = upload_report %>%
+  filter(Platekey %in% l_controls_unrel, Delivery.Version %in% "V4") %>%
+  select(latest_gvcf_path) %>%
+  unique() %>%
+  pull()
+length(list_gvcf_controls)
+# 17878
+
 # Write into file
-write.table(l_controls_unrel, "list_18739_controls_unrel_GRCh38_EUR_HTT.txt", quote = F, row.names = F, col.names = F)
+write.table(list_gvcf_controls, "list_17878_gVCF_controls_unrel_GRCh38_EUR_HTT.txt", quote = F, row.names = F, col.names = F)
 
 # Random selection of 30 genomes
 set.seed(983823)
