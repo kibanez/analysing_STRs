@@ -32,6 +32,11 @@ l_exp_genomes = l_exp_genomes$V1
 length(l_exp_genomes)
 # 29
 
+# There is one genome (LP3001266-DNA_E07) which is not pathogenic, but it's in the premutation
+which(l_exp_genomes %in% "LP3001266-DNA_E07")
+#1
+l_exp_genomes = l_exp_genomes[-1]
+
 # Retrieve genome build, sex, popu for these genomes
 haplo_genomes = clin_data %>%
   filter(platekey %in% l_exp_genomes) %>%
