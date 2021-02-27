@@ -9,7 +9,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/haplotyping/HTT/feb2021/")
+setwd("~/Documents/STRs/ANALYSIS/haplotyping/HTT/feb2021/gvcfgenotyper/")
 
 # Load clinical data
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_251120_V10.tsv",
