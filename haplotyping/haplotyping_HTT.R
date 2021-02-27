@@ -12,12 +12,19 @@ library(dplyr)
 setwd("~/Documents/STRs/ANALYSIS/haplotyping/HTT/feb2021/gvcfgenotyper/")
 
 # Load clinical data
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_251120_V10.tsv",
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
                      sep = "\t",
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 2096500  36
+# 2101385  24
+
+# Load unrel genomes
+l_unrel = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
+                     stringsAsFactors = F)
+l_unrel = l_unrel$V1
+length(l_unrel)
+# 55603
 
 # Load 29 expanded genomes after visual inspection and unrelated
 l_exp_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/100K/carrier_freq/list_29_expanded_after_QC_unrelated.tsv", stringsAsFactors = F)
