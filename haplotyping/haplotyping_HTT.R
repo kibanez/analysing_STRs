@@ -143,6 +143,18 @@ upload_report = upload_report %>%
   ungroup() %>%
   as.data.frame()
 
+# Retrive the gVCF files for the cases
+list_gvcf_cases = upload_report %>%
+  filter(Platekey %in% l_exp_genomes) %>%
+  select(latest_gvcf_path) %>%
+  unique() %>%
+  pull()
+length(list_gvcf_cases)
+# 26
+
+# Write into file
+write.table(list_gvcf_cases, "list_28_gVCF_controls_unrel_GRCh38_EUR_HTT.txt", quote = F, row.names = F, col.names = F)
+
 # Retrieve the gVCF files for all controls
 list_gvcf_controls = upload_report %>%
   filter(Platekey %in% l_controls_unrel, Delivery.Version %in% "V4") %>%
