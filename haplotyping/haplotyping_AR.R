@@ -200,3 +200,38 @@ length(list_gvcf_female)
 write.table(list_gvcf_female,
             "list_7709_gVCF_AR_female_CONTROLS_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
+
+# Create phenotype file for males --> for plink
+# FID IID PID MID sex affection
+df_phenotype = clin_data %>%
+  filter(platekey %in% list_total_samples) %>%
+  select(platekey, participant_phenotypic_sex) %>%
+  unique()
+length(unique(df_phenotype$platekey))
+# 17906
+
+# Enrich with affection status following plink format
+#-9 missing 
+#0 missing
+#1 unaffected
+#2 affected
+df_phenotype = df_phenotype %>%
+  group_by(platekey) %>%
+  mutate(affection = ifelse(platekey %in% l_exp_genomes, "2", "1")) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Reformat gender (male to 1, female to 2)
+df_phenotype$participant_phenotypic_sex = gsub("Male", "1", df_phenotype$participant_phenotypic_sex)
+df_phenotype$participant_phenotypic_sex = gsub("Female", "2", df_phenotype$participant_phenotypic_sex)
+
+# Include FID, PID, MID
+df_phenotype$FID = df_phenotype$platekey
+df_phenotype$PID = rep(0, length(df_phenotype$platekey))
+df_phenotype$MID = rep(0, length(df_phenotype$platekey))
+
+# Sort phenotype file
+df_phenotype = df_phenotype %>%
+  select(FID, platekey, PID, MID, participant_phenotypic_sex, affection)
+colnames(df_phenotype) = c("FID", "IID", "PID", "MID", "sex", "affection")
+write.table(df_phenotype, "cases_and_controls/phenotype_file.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
