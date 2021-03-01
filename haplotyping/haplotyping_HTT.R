@@ -196,4 +196,11 @@ df_phenotype = df_phenotype %>%
 df_phenotype$participant_phenotypic_sex = gsub("Male", "1", df_phenotype$participant_phenotypic_sex)
 df_phenotype$participant_phenotypic_sex = gsub("Female", "2", df_phenotype$participant_phenotypic_sex)
 
+# Include FID, PID, MID
+df_phenotype$FID = df_phenotype$platekey
+df_phenotype$PID = rep(0, length(df_phenotype$platekey))
+df_phenotype$MID = rep(0, length(df_phenotype$platekey))
+
+
+
 
