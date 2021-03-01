@@ -215,12 +215,6 @@ df_phenotype = clin_data %>%
 length(unique(df_phenotype$platekey))
 # 6642
 
-# "LP3000458-DNA_D11" is missing, male and expanded
-df_phenotype = rbind(df_phenotype,
-                     c("LP3000458-DNA_D11", "Male"))
-length(unique(df_phenotype$platekey))
-# 6643
-
 # Enrich with affection status following plink format
 #-9 missing 
 #0 missing
@@ -231,6 +225,13 @@ df_phenotype = df_phenotype %>%
   mutate(affection = ifelse(platekey %in% l_exp_genomes, "2", "1")) %>%
   ungroup() %>%
   as.data.frame()
+
+# "LP3000458-DNA_D11" is missing, male and expanded
+df_phenotype = rbind(df_phenotype,
+                     c("LP3000458-DNA_D11", "Male", "2"))
+length(unique(df_phenotype$platekey))
+# 6643
+
 
 # Reformat gender (male to 1, female to 2)
 df_phenotype$participant_phenotypic_sex = gsub("Male", "1", df_phenotype$participant_phenotypic_sex)
