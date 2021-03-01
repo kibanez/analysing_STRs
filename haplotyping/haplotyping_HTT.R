@@ -192,5 +192,8 @@ df_phenotype = df_phenotype %>%
   ungroup() %>%
   as.data.frame()
 
+# Reformat gender (male to 1, female to 2)
+df_phenotype$participant_phenotypic_sex = gsub("Male", "1", df_phenotype$participant_phenotypic_sex)
+df_phenotype$participant_phenotypic_sex = gsub("Female", "2", df_phenotype$participant_phenotypic_sex)
 
 
