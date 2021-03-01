@@ -173,7 +173,24 @@ list_total_samples = list_total_samples$V1
 length(list_total_samples)
 # 17906
 
+# FID IID PID MID sex affection
+df_phenotype = clin_data %>%
+  filter(platekey %in% list_total_samples) %>%
+  select(platekey, participant_phenotypic_sex) %>%
+  unique()
+length(unique(df_phenotype$platekey))
+# 17906
 
+# Enrich with affection status following plink format
+#-9 missing 
+#0 missing
+#1 unaffected
+#2 affected
+df_phenotype = df_phenotype %>%
+  group_by(platekey) %>%
+  mutate(affection = ifelse(platekey %in% l_exp_genomes, "2", "1")) %>%
+  ungroup() %>%
+  as.data.frame()
 
 
 
