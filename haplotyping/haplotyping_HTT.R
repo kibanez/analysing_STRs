@@ -167,4 +167,13 @@ length(list_gvcf_controls)
 # Write into file
 write.table(list_gvcf_controls, "list_17878_gVCF_controls_unrel_GRCh38_EUR_HTT.txt", quote = F, row.names = F, col.names = F)
 
-# Create phenotype file
+# Create phenotype file for Plink
+list_total_samples = read.table("./cases_and_controls/list_28_cases_17878_controls.txt", stringsAsFactors = F)
+list_total_samples = list_total_samples$V1
+length(list_total_samples)
+# 17906
+
+
+
+
+
