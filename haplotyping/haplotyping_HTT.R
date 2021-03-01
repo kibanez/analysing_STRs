@@ -205,7 +205,7 @@ df_phenotype$MID = rep(0, length(df_phenotype$platekey))
 df_phenotype = df_phenotype %>%
   select(FID, platekey, PID, MID, participant_phenotypic_sex, affection)
 
-write.table(df_phenotype, "phenotype_file.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
+write.table(df_phenotype, "cases_and_controls/phenotype_file.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
 
 
 
