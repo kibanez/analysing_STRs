@@ -203,12 +203,23 @@ write.table(list_gvcf_female,
 
 # Create phenotype file for males --> for plink
 # FID IID PID MID sex affection
+list_total_samples = read.table("cases_and_controls/list_16_cases_6627_controls_males_AR.txt", stringsAsFactors = F)
+list_total_samples = list_total_samples$V1
+length(list_total_samples)
+# 6643
+
 df_phenotype = clin_data %>%
   filter(platekey %in% list_total_samples) %>%
   select(platekey, participant_phenotypic_sex) %>%
   unique()
 length(unique(df_phenotype$platekey))
-# 17906
+# 6642
+
+# "LP3000458-DNA_D11" is missing, male and expanded
+df_phenotype = rbind(df_phenotype,
+                     c("LP3000458-DNA_D11", "Male"))
+length(unique(df_phenotype$platekey))
+# 6643
 
 # Enrich with affection status following plink format
 #-9 missing 
