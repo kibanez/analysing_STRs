@@ -188,6 +188,19 @@ write.table(list_gvcf_cases_male,
             "list_17_gVCF_AR_male_CASES_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
+# Retrieve gVCF files for female AR cases that have been sequenced in GRCh38
+list_gvcf_cases_female = upload_report %>%
+  filter(Platekey %in% unique(haplo_genomes_female$platekey), !Delivery.Version %in% "V2") %>%
+  select(latest_gvcf_path) %>%
+  unique() %>%
+  pull()
+length(list_gvcf_cases_female)
+# 18
+
+write.table(list_gvcf_cases_male,
+            "list_18_gVCF_AR_female_CASES_GRCh38.txt",
+            quote = F, row.names = F, col.names = F)
+
 # Retrieve gVCF files for male AR controls that have been sequenced in GRCh38
 list_gvcf_male = upload_report %>%
   filter(Platekey %in% l_controls_AR_males, Delivery.Version %in% "V4") %>%
