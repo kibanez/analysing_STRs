@@ -9,7 +9,7 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/haplotyping/AR/feb2021/gvcfgenotyper/")
+setwd("~/Documents/STRs/ANALYSIS/haplotyping/AR/feb2021/gvcfgenotyper/march/")
 
 # Load clinical data
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
@@ -177,7 +177,7 @@ upload_report = upload_report %>%
 
 # Retrieve gVCF files for male AR cases that have been sequenced in GRCh38
 list_gvcf_cases_male = upload_report %>%
-  filter(Platekey %in% unique(haplo_genomes_male$platekey), Delivery.Version %in% "V4") %>%
+  filter(Platekey %in% unique(haplo_genomes_male$platekey), !Delivery.Version %in% "V2") %>%
   select(latest_gvcf_path) %>%
   unique() %>%
   pull()
@@ -185,7 +185,7 @@ length(list_gvcf_cases_male)
 # 17
 
 write.table(list_gvcf_cases_male,
-            "list_17_gVCF_AR_male_CASES_GRCh38.txt",
+            "input/list_17_gVCF_AR_male_CASES_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 # Retrieve gVCF files for female AR cases that have been sequenced in GRCh38
@@ -197,8 +197,8 @@ list_gvcf_cases_female = upload_report %>%
 length(list_gvcf_cases_female)
 # 18
 
-write.table(list_gvcf_cases_male,
-            "list_18_gVCF_AR_female_CASES_GRCh38.txt",
+write.table(list_gvcf_cases_female,
+            "input/list_18_gVCF_AR_female_CASES_GRCh38.txt",
             quote = F, row.names = F, col.names = F)
 
 # Retrieve gVCF files for male AR controls that have been sequenced in GRCh38
