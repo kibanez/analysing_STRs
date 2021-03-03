@@ -203,7 +203,7 @@ write.table(list_gvcf_cases_male,
 
 # Retrieve gVCF files for male AR controls that have been sequenced in GRCh38
 list_gvcf_male = upload_report %>%
-  filter(Platekey %in% l_controls_AR_males, Delivery.Version %in% "V4") %>%
+  filter(Platekey %in% l_controls_AR_males, !Delivery.Version %in% "V2") %>%
   select(latest_gvcf_path) %>%
   unique() %>%
   pull()
