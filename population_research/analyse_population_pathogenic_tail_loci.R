@@ -99,6 +99,14 @@ clin_data = clin_data %>%
 clin_data %>% filter(is_unrel) %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 55603
 
+# Load list of 125bp genomes
+list_125_genomes = read.table("~/Documents/STRs/ANALYSIS/population_research/PAPER/list_genomes_125bp_100kGP.tsv",
+                              stringsAsFactors = F)
+list_125_genomes = list_125_genomes$V1
+length(list_125_genomes)
+# 15830
+
+
 # Check whether all 55,603 unrel genomes we want to analyse and will consider as TOTAL DATASET, are also included in the EHv322 table
 l_all_samples_merged = c()
 for (i in 1:length(merged_table$chr)){
