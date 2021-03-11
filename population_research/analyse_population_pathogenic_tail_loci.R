@@ -245,6 +245,19 @@ for (i in 1:length(l_genes)){
   patho_popu = unique(patho_popu)
   print(dim(patho_popu))
   
+  # Enrich patho and premut tables with `is_125` column
+  patho_popu = patho_popu %>%
+    group_by(platekey) %>%
+    mutate(is_125 = ifelse(platekey %in% list_125_genomes, "Yes", "No")) %>%
+    ungroup() %>%
+    as.data.frame()
+  
+  premut_popu = premut_popu %>%
+    group_by(platekey) %>%
+    mutate(is_125 = ifelse(platekey %in% list_125_genomes, "Yes", "No")) %>%
+    ungroup() %>%
+    as.data.frame()
+  
   # Add locus name as column
   premut_popu$locus = rep(l_genes[i], length(premut_popu$platekey))
   patho_popu$locus = rep(l_genes[i], length(patho_popu$platekey))
