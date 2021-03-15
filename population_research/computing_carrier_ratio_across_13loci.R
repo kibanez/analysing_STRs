@@ -64,7 +64,7 @@ table_100cc_QC = read.csv("./13_loci_beyond__pathogenic_cutoff_38_EHv322_92K_pop
                           header = T,
                           sep = "\t")
 dim(table_100cc_QC)
-# 1087  12
+# 1143  12
 
 # For each locus, compute the carrier ratio and CI 
 l_locus = unique(table_100cc_QC$locus)
