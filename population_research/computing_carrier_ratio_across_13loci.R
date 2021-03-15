@@ -59,7 +59,7 @@ total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "
 
 # Load the whole table for 100kGP - unrelated genomes - after visual QC
 # Only unrel genomes
-table_100cc_QC = read.csv("./13_loci_beyond__pathogenic_cutoff_38_EHv322_92K_population_24F.tsv",
+table_100cc_QC = read.csv("./13_loci_beyond__pathogenic_cutoff_38_EHv322_92K_population_15M.tsv",
                           stringsAsFactors = F,
                           header = T,
                           sep = "\t")
