@@ -14,7 +14,7 @@ library(tidyverse)
 setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/beyond_full-mutation/")
 
 # Load unrel 55603 clin data
-clin_data = read.csv("../table_55603_unrel_genomes_enriched_popu_diseasegroup.tsv",
+clin_data = read.csv("../../../carriers/table_55603_unrel_genomes_enriched_popu_diseasegroup.tsv",
                      stringsAsFactors = F,
                      header = F,
                      sep = "\t")
@@ -29,7 +29,7 @@ total_unrel = length(unique(clin_data$platekey))
 # 55603
 
 # Load 2x125bp sequenced genomes
-l_125 = read.table("../../list_genomes_125bp_100kGP.tsv", stringsAsFactors = F)
+l_125 = read.table("../../../list_genomes_125bp_100kGP.tsv", stringsAsFactors = F)
 l_125 = l_125$V1
 length(l_125)
 # 15830
