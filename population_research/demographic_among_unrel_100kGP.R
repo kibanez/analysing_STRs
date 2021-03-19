@@ -52,3 +52,6 @@ clin_data_paper = clin_data_paper %>%
   mutate(age = 2020 - as.integer(year_of_birth)) %>%
   ungroup() %>%
   as.data.frame()
+
+# Calculate now genomes belonging to each super-population
+# For that, as batch2 contains a lot of unassigned
