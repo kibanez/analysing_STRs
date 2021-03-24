@@ -19,3 +19,10 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 # Set working environment
 setwd("/Users/kibanez/Documents/STRs/PAPERS/POPULATION/figures/")
 
+# Loading the golden or truthset or performance dataset
+# Removing from here large expansions
+# Only those < read-length
+val_data = read.csv("~/Documents/STRs/data/PCR_EH/PCR_vs_EH_all_together_POPU_PAPER.tsv", sep = "\t", stringsAsFactors = F, header = T)
+dim(val_data)
+# 732  15
+
