@@ -41,9 +41,12 @@ for(i in 1:length(l_superpopus)){
   # Remove EXP,NORM,PREMUT,FULL EXP
   index_EXP = which(grepl("EXP",exp_alleles_v2))
   
-  exp_alleles_v2 = exp_alleles_v2[-index_NA]
-  eh_alleles_v2 = eh_alleles_v2[-index_NA]
-  locus_v2 = locus_v2[-index_NA]
+  if (length(index_NA) > 0){
+    exp_alleles_v2 = exp_alleles_v2[-index_NA]
+    eh_alleles_v2 = eh_alleles_v2[-index_NA]
+    locus_v2 = locus_v2[-index_NA]
+    
+  }
   
   # Create dataframe with exp, eh, freq for each locus
   df_data_with_freq_v2 = data.frame()
