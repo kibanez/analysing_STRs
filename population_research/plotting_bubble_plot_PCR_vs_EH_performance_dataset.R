@@ -1,4 +1,4 @@
-# Objective: represent with bubble plots the correspondance between PCR and EH (after visual inspection) sizes
+# Objective: represent with bubble plots the correspondance between PCR and EH sizes
 # split by super-population
 date ()
 Sys.info ()[c("nodename", "user")]
@@ -26,3 +26,72 @@ val_data = read.csv("~/Documents/STRs/data/PCR_EH/PCR_vs_EH_all_together_POPU_PA
 dim(val_data)
 # 732  15
 
+# Let's take the important meat
+exp_alleles_v2 = c(as.integer(val_data$min.PCR.a1), as.integer(val_data$maxPCR.a2))
+eh_alleles_v2 = c(as.integer(val_data$min.EHv312.a1), as.integer(val_data$max.EHv312.a2))
+locus_v2 = c(val_data$locus, val_data$locus)
+
+# Remove NAs
+index_NA = which(is.na(exp_alleles_v2))
+# Remove EXP,NORM,PREMUT,FULL EXP
+index_EXP = which(grepl("EXP",exp_alleles_v2))
+
+exp_alleles_v2 = exp_alleles_v2[-index_NA]
+eh_alleles_v2 = eh_alleles_v2[-index_NA]
+locus_v2 = locus_v2[-index_NA]
+
+# Create dataframe with exp, eh, freq for each locus
+df_data_with_freq_v2 = data.frame()
+l_locus = unique(locus_v2)
+for(i in 1:length(l_locus)){
+  aux_validation_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.PCR.a1) %>% pull() %>% as.integer() 
+  aux_validation_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(maxPCR.a2) %>% pull() %>% as.integer() 
+  aux_exp_alleles_v2 = c(aux_validation_a1, aux_validation_a2)
+  
+  aux_eh_a1 = val_data %>% filter(locus %in% l_locus[i]) %>% select(min.EHv312.a1) %>% pull() %>% as.integer() 
+  aux_eh_a2 = val_data %>% filter(locus %in% l_locus[i]) %>% select(max.EHv312.a2) %>% pull() %>% as.integer() 
+  aux_eh_alleles_v2 = c(aux_eh_a1, aux_eh_a2)
+  
+  # Since we are keeping alleles for which sometimes an allele has EXP/NORMAL/PREMUT and not the other, we need to remove the same index
+  index_na = which(is.na(aux_exp_alleles_v2))
+  
+  if (length(index_na) > 0){
+    data_aux = xyTable(aux_exp_alleles_v2[-index_na], 
+                       aux_eh_alleles_v2[-index_na])
+  }else{
+    data_aux = xyTable(aux_exp_alleles_v2[!is.na(aux_exp_alleles_v2)], 
+                       aux_eh_alleles_v2[!is.na(aux_eh_alleles_v2)])
+  }
+  
+  df_data_aux = data.frame(eh_alleles = data_aux$y,
+                           exp_alleles = data_aux$x,
+                           number_of_alleles = data_aux$number,
+                           locus = rep(l_locus[i], length(data_aux$x)))
+  
+  
+  # Concat info per locus
+  df_data_with_freq_v2 = rbind(df_data_with_freq_v2,
+                               df_data_aux)
+  
+}
+
+
+group.colors = rainbow(13)
+tontz = ggplot() +
+  geom_point(data = df_data_with_freq_v2, 
+             aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles, color = factor(locus))) +
+  xlim(5,max_value) +
+  ylim(5,max_value) +
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_color_manual(values=group.colors) +
+  labs(title = "", 
+       y = "EH repeat sizes", 
+       x = "PCR repeat sizes") + 
+  theme_light() +
+  theme(legend.title = element_blank(),
+        text = element_text(size=13),
+        axis.text.x.top = element_text()) +
+  guides(size = FALSE) 
+
+  
