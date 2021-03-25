@@ -121,6 +121,17 @@ for(i in 1:length(l_superpopus)){
     guides(size = FALSE) +
     facet_wrap(locus~ .)
   
+  output_superpopu = paste("Figure2/PCR_vs_EH_in", l_superpopus[i], sep = "_")
+  output_superpopu_breakdown = paste(output_superpopu, "brokendown_by_locus", sep = "_")
+  output_superpopu = paste(output_superpopu, ".png", sep = "")
+  output_superpopu_breakdown = paste(output_superpopu_breakdown, ".png", sep = "")
+
+  png(output_superpopu)
+  print(superpopu)
+  dev.off()
   
+  png(output_superpopu_breakdown)
+  print(superpopu_breakdown)
+  dev.off()
 }
 
