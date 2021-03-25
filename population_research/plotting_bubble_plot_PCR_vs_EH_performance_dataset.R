@@ -129,11 +129,11 @@ for(i in 1:length(l_superpopus)){
   output_superpopu = paste(output_superpopu, ".png", sep = "")
   output_superpopu_breakdown = paste(output_superpopu_breakdown, ".png", sep = "")
 
-  png(output_superpopu)
+  png(output_superpopu,units="in", width=5, height=5, res=600)
   print(superpopu)
   dev.off()
   
-  png(output_superpopu_breakdown)
+  png(output_superpopu_breakdown,units="in", width=5, height=5, res=600)
   print(superpopu_breakdown)
   dev.off()
 }
