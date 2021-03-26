@@ -24,7 +24,7 @@ setwd("/Users/kibanez/Documents/STRs/PAPERS/POPULATION/figures/")
 # Only those < read-length
 val_data = read.csv("~/Documents/STRs/ANALYSIS/population_research/PAPER/PerformanceDataset/PCR_vs_EH_all_together_POPU_PAPER.tsv", sep = "\t", stringsAsFactors = F, header = T)
 dim(val_data)
-# 714  17
+# 516  18
 
 l_superpopus = unique(val_data$superpopu)
 for(i in 1:length(l_superpopus)){
