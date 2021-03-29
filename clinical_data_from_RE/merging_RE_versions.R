@@ -84,10 +84,23 @@ dim(rd_v4)
 # 31972  12
 
 rd_v4 = rd_v4 %>% select(participant_id, platekey, rare_diseases_family_id)
+
+cancer_v4 = read.csv("./RE_clinical_data_V4/cancer_analysis_2020-07-07_10-55-01.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(cancer_v4)
+# 20144 31
+
+cancer_v4 = cancer_v4 %>% select(participant_id,platekey, type)
+colnames(cancer_v4) = colnames(rd_v4)
+
+rd_v4 = rbind(rd_v4,
+              cancer_v4)
 rd_v4$re_version = rep("RE_V4", length(rd_v4$participant_id))
 rd_v4 = unique(rd_v4)
 dim(rd_v4)
-# 31397  4
+# 50884  4
 
 # V5
 rd_v5 = read.csv("./RE_clinical_data_V5.1/rare_disease_analysis_2020-07-07_10-47-57.tsv",
