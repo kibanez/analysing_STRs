@@ -423,14 +423,14 @@ list_releases = clin_data %>%
   ungroup() %>% 
   as.data.frame()
 dim(list_releases)
-# 103641  2
+# 99534  2
 
 clin_data = left_join(clin_data,
                       list_releases,
                       by = "platekey")
 
 # Remove the individual `re_version`
-clin_data = clin_data[,-4]
+clin_data = clin_data[,-5]
 
 # Write into a file
 write.table(clin_data,
@@ -439,5 +439,3 @@ write.table(clin_data,
             quote = F,
             row.names = F,
             col.names = T)
-
-
