@@ -343,7 +343,7 @@ clin_data = clin_data[,-4]
 
 # Write into a file
 write.table(clin_data,
-            "~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_PID_FID_platekey.tsv",
+            "~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_RD_and_Cancer_PID_FID_platekey.tsv",
             sep = "\t",
             quote = F,
             row.names = F,
