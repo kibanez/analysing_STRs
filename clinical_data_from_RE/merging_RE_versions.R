@@ -323,16 +323,16 @@ clin_data = rbind(rd_v2,
                   rd_v11,
                   pilot_clin_data)
 dim(clin_data)
-# 621704  4
+# 752811  4
 
 # Put as `,` separated the versions as pids are the same in several RE releases
 list_releases = clin_data %>% 
   group_by(platekey) %>% 
-  summarise(list_re_versions = toString(re_version)) %>% 
+  summarise(list_re_versions = toString(unique(re_version))) %>% 
   ungroup() %>% 
   as.data.frame()
 dim(list_releases)
-# 83457  2
+# 103641  2
 
 clin_data = left_join(clin_data,
                       list_releases,
