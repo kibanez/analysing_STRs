@@ -220,10 +220,22 @@ dim(rd_v9)
 # 74349  16
 
 rd_v9 = rd_v9 %>% select(participant_id, plate_key, rare_diseases_family_id)
+
+cancer_v9 = read.csv("./RE_clinical_data_V9/cancer_analysis_2020-07-06_15-24-44.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F,
+                     header = T)
+dim(cancer_v9)
+# 16347  77
+
+cancer_v9 = cancer_v9 %>% select(participant_id, germline_sample_platekey, tumour_type)
+colnames(cancer_v9) = colnames(rd_v9)
+rd_v9 = rbind(rd_v9,
+              cancer_v9)
 rd_v9$re_version = rep("RE_V9", length(rd_v9$participant_id))
 rd_v9 = unique(rd_v9)
 dim(rd_v9)
-# 71949  4
+# 87237  4
 
 colnames(rd_v9) = colnames(rd_v7)
 
