@@ -47,7 +47,6 @@ rd_v3 = read.csv("./RE_clinical_data_V3/rare_disease_analysis_2020-07-07_11-16-4
 dim(rd_v3)
 # 51079  12
 rd_v3 = rd_v3 %>% select(participant_id, rare_diseases_family_id)
-rd_v3$programme = rep("rare_disease", length(rd_v3$participant_id))
 
 cancer_v3 = read.csv("./RE_clinical_data_V3/cancer_analysis_2020-07-07_11-16-19.tsv",
                      sep = "\t",
@@ -56,30 +55,25 @@ cancer_v3 = read.csv("./RE_clinical_data_V3/cancer_analysis_2020-07-07_11-16-19.
 dim(cancer_v3)
 # 15778  10
 
-seq_report = read.csv("./RE_clinical_data_V3/sequencing_report_2020-07-07_11-18-17.tsv",
-                sep = "\t",
-                stringsAsFactors = F,
-                header = T)
-
 cancer_v3 = cancer_v3 %>% select(participant_id,Type)
 colnames(cancer_v3) = colnames(rd_v3)
-
 rd_v3 = rbind(rd_v3,
               cancer_v3)
 
-platekey_v3 = read.csv("./RE_clinical_data_V3/genome_file_paths_and_types_2020-07-07_11-17-23.tsv",
-                       stringsAsFactors = F,
-                       header = T,
-                       sep = "\t")
+seq_report_v3 = read.csv("./RE_clinical_data_V3/sequencing_report_2020-07-07_11-18-17.tsv",
+                         sep = "\t",
+                         stringsAsFactors = F,
+                         header = T)
+dim(seq_report_v3)
+# 44067  11
 
 rd_v3 = left_join(rd_v3,
-                  platekey_v3 %>% select(participant_id, platekey),
+                  seq_report_v3 %>% select(participant_id, platekey, type),
                   by = "participant_id")
-rd_v3 = rd_v3 %>% select(participant_id, platekey, rare_diseases_family_id)
 rd_v3$re_version = rep("RE_V3", length(rd_v3$participant_id))
 rd_v3 = unique(rd_v3)
 dim(rd_v3)
-# 73767  4
+# 73761  5
 
 # V4
 rd_v4 = read.csv("./RE_clinical_data_V4/rare_disease_analysis_2020-07-07_10-55-22.tsv",
