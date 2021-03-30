@@ -251,10 +251,21 @@ cancer_v8 = cancer_v8 %>% select(participant_id, germline_sample_platekey, tumou
 colnames(cancer_v8) = colnames(rd_v8)
 rd_v8 = rbind(rd_v8,
               cancer_v8)
+
+seq_report_v8 = read.csv("./RE_clinical_data_V8/sequencing_report_2019-12-04_15-15-48.tsv",
+                         sep = "\t",
+                         stringsAsFactors = F,
+                         header = T)
+dim(seq_report_v8)
+# 107623  9
+
+rd_v8 = left_join(rd_v8,
+                  seq_report_v8 %>% select(participant_id, type),
+                  by = "participant_id")
 rd_v8$re_version = rep("RE_V8", length(rd_v8$participant_id))
 rd_v8 = unique(rd_v8)
 dim(rd_v8)
-# 86915  4
+# 101623  5
 
 colnames(rd_v8) = colnames(rd_v7)
 
