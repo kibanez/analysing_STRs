@@ -330,10 +330,20 @@ colnames(cancer_v10) = colnames(rd_v10)
 rd_v10 = rbind(rd_v10,
               cancer_v10)
 
+seq_report_v10 = read.csv("./RE_clinical_data_V10/sequencing_report_2020-09-08_09-31-49.tsv",
+                         sep = "\t",
+                         stringsAsFactors = F,
+                         header = T)
+dim(seq_report_v10)
+# 111313  9
+
+rd_v10 = left_join(rd_v10,
+                  seq_report_v10 %>% select(participant_id, type),
+                  by = "participant_id")
 rd_v10$re_version = rep("RE_V10", length(rd_v10$participant_id))
 rd_v10 = unique(rd_v10)
 dim(rd_v10)
-# 87130  4
+# 102296  5
 
 colnames(rd_v10) = colnames(rd_v7)
 
