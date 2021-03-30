@@ -397,6 +397,8 @@ dim(pilot_clin_data)
 pilot_clin_data = pilot_clin_data %>% 
   select(gelID, plateKey, gelFamilyId.x)
 pilot_clin_data$re_version = rep("Pilot", length(pilot_clin_data$gelID))
+pilot_clin_data$type = rep("rare disease germline", length(pilot_clin_data$gelID))
+pilot_clin_data = pilot_clin_data %>% select(gelID, plateKey, gelFamilyId.x, type, re_version)
 colnames(pilot_clin_data) = colnames(rd_v7)
 
 # Merge MAIN and PILOT programmes
@@ -412,7 +414,7 @@ clin_data = rbind(rd_v2,
                   rd_v11,
                   pilot_clin_data)
 dim(clin_data)
-# 752811  4
+# 851319  5
 
 # Put as `,` separated the versions as pids are the same in several RE releases
 list_releases = clin_data %>% 
