@@ -14,3 +14,10 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/")
+
+# load clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F)
+dim(clin_data)
+# 
