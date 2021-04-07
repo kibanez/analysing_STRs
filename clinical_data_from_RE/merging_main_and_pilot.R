@@ -77,7 +77,14 @@ clin_data2 = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes
                        stringsAsFactors = FALSE, 
                        header = TRUE)
 dim(clin_data2)  
-# 2119961  36 
+# 2119961  36
+
+# There are 164 PID in V10 and not in V11, and 111 in V11 and not in V10
+clin_data = rbind(clin_data,
+                  clin_data2)
+clin_data = unique(clin_data)
+dim(clin_data)
+# 2440099  36
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
