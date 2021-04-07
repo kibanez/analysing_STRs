@@ -72,6 +72,13 @@ clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_
 dim(clin_data)  
 # 2096500 36
 
+clin_data2 = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_301220_V11.tsv",
+                       sep = "\t",
+                       stringsAsFactors = FALSE, 
+                       header = TRUE)
+dim(clin_data2)  
+# 2119961  36 
+
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
