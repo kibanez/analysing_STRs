@@ -24,7 +24,7 @@ dim(clin_data)
 
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
 # case -> RD affected OR proband and recruited under Neurological 
-# control -> RD not affected and not neuro
+# control -> RD not neuro (even if they are affected in other diseases)
 # pseudocontrol -> RD not affected but recruited in a family under neuro
 
 l_families = clin_data %>%
@@ -44,12 +44,12 @@ length(l_cases)
 # 16224
 
 l_controls = clin_data %>%
-  filter(programme %in% "Cancer" | (!rare_diseases_family_id %in% l_families & affection_status %in% c("Unaffected", "NotAffected"))) %>%
+  filter(programme %in% "Cancer" | !rare_diseases_family_id %in% l_families) %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_controls)
-# 50696
+# 76364
 
 l_pseudocontrols = clin_data %>%
   filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected")) %>%
@@ -61,9 +61,9 @@ length(l_pseudocontrols)
 
 # All 3 lists should be different
 length(intersect(l_cases, l_controls))
-# 1 - "LP2000905-DNA_A01"
+# 2
 length(intersect(l_pseudocontrols, l_controls))
-# 1 - "LP2000905-DNA_A01"
+# 2
 length(intersect(l_cases, l_pseudocontrols))
 # 5 - "LP2000905-DNA_A01" "LP3001339-DNA_E06" "LP3000032-DNA_D11" "LP3001180-DNA_C06" "LP3000448-DNA_E10"
 
@@ -80,7 +80,7 @@ l_pseudocontrols = l_pseudocontrols[-index_to_remove_pseudocontrols]
 length(l_cases)
 # 16219
 length(l_controls)
-# 50695
+# 76362
 length(l_pseudocontrols)
 # 16854
 
@@ -93,10 +93,10 @@ df_all = rbind(df_cases,
                df_pseudocontrols)
 df_all = unique(df_all)
 dim(df_all)
-# 83768  2
+# 109435  2
 
 write.table(df_all, 
-            "./analysis/table_cases_controls_83768_genomes.csv",
+            "./analysis/table_cases_controls_109435_genomes.csv",
             quote = F,
             col.names = T,
             row.names = F,
