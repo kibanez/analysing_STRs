@@ -20,4 +20,30 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_a
                      sep = "\t",
                      stringsAsFactors = F)
 dim(clin_data)
-# 
+# 2444984 24
+
+# Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
+# case -> RD affected OR proband and recruited under Neurological 
+# control -> RD not affected and not neuro
+# pseudocontrol -> RD not affected but recruited in a family under neuro
+
+l_families = clin_data %>%
+  filter(grepl("Neuro", diseasegroup_list, ignore.case = T)) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull()
+length(l_families)
+# 14421
+
+l_cases = clin_data %>%
+  filter(rare_diseases_family_id %in% l_families, (biological_relationship_to_proband %in% "N/A" | affection_status %in% "Affected")) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_cases)
+# 16224
+
+
+
+
+
