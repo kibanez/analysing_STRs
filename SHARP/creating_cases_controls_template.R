@@ -83,3 +83,21 @@ length(l_controls)
 # 50695
 length(l_pseudocontrols)
 # 16854
+
+df_cases = data.frame(platekey = l_cases, type = rep("case", length(l_cases)))
+df_controls = data.frame(platekey = l_controls, type = rep("control", length(l_controls)))
+df_pseudocontrols = data.frame(platekey = l_pseudocontrols, type = rep("pseudocontrol", length(l_pseudocontrols)))
+
+df_all = rbind(df_cases,
+               df_controls,
+               df_pseudocontrols)
+df_all = unique(df_all)
+dim(df_all)
+# 83768  2
+
+write.table(df_all, 
+            "./analysis/table_cases_controls_83768_genomes.csv",
+            quote = F,
+            col.names = T,
+            row.names = F,
+            sep = ",")
