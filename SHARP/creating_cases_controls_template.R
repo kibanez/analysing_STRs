@@ -51,6 +51,13 @@ l_controls = clin_data %>%
 length(l_controls)
 # 50696
 
+l_pseudocontrols = clin_data %>%
+  filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected")) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_pseudocontrols)
+# 16859
 
 
 
