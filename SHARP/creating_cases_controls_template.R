@@ -59,13 +59,27 @@ l_pseudocontrols = clin_data %>%
 length(l_pseudocontrols)
 # 16859
 
+# All 3 lists should be different
+length(intersect(l_cases, l_controls))
+# 1 - "LP2000905-DNA_A01"
+length(intersect(l_pseudocontrols, l_controls))
+# 1 - "LP2000905-DNA_A01"
+length(intersect(l_cases, l_pseudocontrols))
+# 5 - "LP2000905-DNA_A01" "LP3001339-DNA_E06" "LP3000032-DNA_D11" "LP3001180-DNA_C06" "LP3000448-DNA_E10"
 
+# All these platekeys have 2 different and incongruent values for affection status: affected and unaffected - let's remove them from now
+to_remove = c("LP2000905-DNA_A01","LP3001339-DNA_E06","LP3000032-DNA_D11","LP3001180-DNA_C06","LP3000448-DNA_E10")
+index_to_remove_cases = pmatch(to_remove, l_cases)
+index_to_remove_controls = pmatch(to_remove, l_controls)
+index_to_remove_controls = index_to_remove_controls[!is.na(index_to_remove_controls)]
+index_to_remove_pseudocontrols = pmatch(to_remove, l_pseudocontrols)
 
-
-
-
-
-
-
-
-
+l_cases = l_cases[-index_to_remove_cases]
+l_controls = l_controls[-index_to_remove_controls]
+l_pseudocontrols = l_pseudocontrols[-index_to_remove_pseudocontrols]
+length(l_cases)
+# 16219
+length(l_controls)
+# 50695
+length(l_pseudocontrols)
+# 16854
