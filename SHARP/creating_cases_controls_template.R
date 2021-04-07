@@ -43,6 +43,21 @@ l_cases = clin_data %>%
 length(l_cases)
 # 16224
 
+l_controls = clin_data %>%
+  filter(programme %in% "Cancer" | (!rare_diseases_family_id %in% l_families & affection_status %in% c("Unaffected", "NotAffected"))) %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_controls)
+# 50696
+
+
+
+
+
+
+
+
 
 
 
