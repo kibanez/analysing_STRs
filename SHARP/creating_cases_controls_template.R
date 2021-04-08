@@ -24,9 +24,10 @@ dim(clin_data)
 # 2444984 24
 
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
-# case -> RD affected OR proband and recruited under Neurological 
-# control -> RD not neuro (even if they are affected in other diseases)
+# case -> proband RD and recruited under Neurological
+# control -> proband RD not neuro OR cancer, year of birth >30
 # pseudocontrol -> RD not affected but recruited in a family under neuro
+# pseudocase -> RD not affected but recruited in a family under neuro
 
 l_families = clin_data %>%
   filter(grepl("Neuro", diseasegroup_list, ignore.case = T)) %>%
@@ -37,20 +38,37 @@ length(l_families)
 # 14421
 
 l_cases = clin_data %>%
-  filter(rare_diseases_family_id %in% l_families, (biological_relationship_to_proband %in% "N/A" | affection_status %in% "Affected")) %>%
+  filter(rare_diseases_family_id %in% l_families, biological_relationship_to_proband %in% "N/A") %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_cases)
-# 16224
+# 13898
+
+# QC
+clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_to_proband)%>% table()
+#Maternal Cousin Sister                 Mother                    N/A 
+#30                     96                1342981
+
+l_maternal_cousin_sister = clin_data %>% filter(platekey %in% l_cases, biological_relationship_to_proband %in% "Maternal Cousin Sister") %>% select(platekey) %>% unique() %>% pull()
+l_Mother = clin_data %>% filter(platekey %in% l_cases, biological_relationship_to_proband %in% "Mother") %>% select(platekey) %>% unique() %>% pull()
+l_cases = l_cases[-which(l_cases %in% c(l_maternal_cousin_sister, l_Mother))]
+clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_to_proband)%>% table()
+#N/A 
+#1342965
 
 l_controls = clin_data %>%
-  filter(programme %in% "Cancer" | !rare_diseases_family_id %in% l_families) %>%
+  filter(programme %in% "Cancer" | ((!rare_diseases_family_id %in% l_families) & biological_relationship_to_proband %in% "N/A")) %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_controls)
-# 76364
+# 52153
+
+clin_data %>% filter(platekey %in% l_controls) %>% select(biological_relationship_to_proband)%>% table()
+
+# QC - `LP2000901-DNA_G10` is mother, incongruent/inconsistent value in `biological_releationship_to_proband`
+l_controls = l_controls[-which(l_controls == "LP2000901-DNA_G10")] 
 
 l_pseudocontrols = clin_data %>%
   filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected")) %>%
