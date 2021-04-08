@@ -219,4 +219,4 @@ cc_table = unique(cc_table)
 dim(cc_table)
 # 93422 34
 
-write.table(cc_table, "./analysis/table_cases_controls_93422_genomes_enriched_with_some_clinical_data.csv", sep = ",", quote = F, col.names = T, row.names = F)
+write.table(cc_table, "./analysis/table_cases_controls_93422_genomes_enriched_with_some_clinical_data.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
