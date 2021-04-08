@@ -117,6 +117,7 @@ merged_table = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_E
                         sep = "\t")
 dim(merged_table)
 # 829327  5
+colnames(merged_table) = c("platekey", "gene", "a1", "a2", "coverage")
 
 l_platekeys = unique(merged_table$platekey)
 length(l_platekeys)
@@ -124,9 +125,6 @@ length(l_platekeys)
 l_genes = unique(merged_table$gene)
 length(l_genes)
 # 9
-
-l_genes_a1 = paste(l_genes, "a1", sep ="_")
-l_genes_a2 = paste(l_genes, "a2", sep ="_")
 
 cc_table = data.frame()
 for(i in 1:length(l_platekeys)){
@@ -136,7 +134,30 @@ for(i in 1:length(l_platekeys)){
     platekey_type = "NA"
   }
   
+  itziar = pivot_wider(df_aux, names_from = gene, values_from = c(a1, a2, coverage)) %>% as.data.frame()
+
+  # Check whether all genes are genotyped
+  colnames_cc = colnames(cc_table)
+  colnames_itziar = colnames(itziar)
+  colnames_diff = setdiff(colnames_cc, colnames_itziar)
+  if (length(colnames_diff) > 0){
+    df_new_columns = data.frame()
+    for(j in 1:length(colnames_diff)){
+      df_new_columns = rbind(df_new_columns,
+                             cbind(assign(paste0(colnames_diff[j], ''), colnames_diff[j]), "NA"))
+    }
+    df_new_columns = as.data.frame(t(df_new_columns))
+    
+    names(df_new_columns) = df_new_columns %>% slice(1) %>% unlist()
+    df_new_columns <- df_new_columns %>% slice(-1)
+    
+    # Append to itziar
+    itziar = cbind(itziar,
+                   df_new_columns)
+  }
+  
+  itziar = itziar[ , order(names(itziar))]
   cc_table = rbind(cc_table,
-                   cbind(l_platekeys[i], platekey_type))
+                   itziar)
 }
 
