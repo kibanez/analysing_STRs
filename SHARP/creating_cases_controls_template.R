@@ -177,3 +177,46 @@ cc_table = unique(cc_table)
 dim(cc_table)
 # 93451 34
 
+# which duplicated?
+platekeys_duplicated = which(duplicated(cc_table$platekey))
+length(platekeys_duplicated)
+# 26
+l_platekeys_duplicated = cc_table$platekey[platekeys_duplicated]
+
+# They all have `year_of_birth` with different values...as we are going to use cut-off for age, let's keep the largest one (younger if they are not)
+year_messed_up = cc_table %>%
+  filter(platekey %in% l_platekeys_duplicated) %>%
+  unique()
+dim(year_messed_up)
+# 52 34
+
+year_messed_up = year_messed_up %>%
+  group_by(platekey) %>%
+  mutate(youngest_year = max(year_of_birth)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+year_messed_up = year_messed_up[,-30]
+year_messed_up = unique(year_messed_up)
+dim(year_messed_up)
+# 30 34
+
+colnames(year_messed_up)[34] = "year_of_birth"
+year_messed_up = year_messed_up[colnames(cc_table)]  
+
+# remove the duplicated ones
+to_remove = year_messed_up$platekey[which(duplicated(year_messed_up$platekey))]
+
+cc_table = cc_table %>%
+  filter(!platekey %in% l_platekeys_duplicated)
+
+cc_table = rbind(cc_table,
+                 year_messed_up)
+
+cc_table = cc_table %>%
+  filter(!platekey %in% to_remove)
+cc_table = unique(cc_table)
+dim(cc_table)
+# 93422 34
+
+write.table(cc_table, "./analysis/table_cases_controls_93422_genomes_enriched_with_some_clinical_data.csv", sep = ",", quote = F, col.names = T, row.names = F)
