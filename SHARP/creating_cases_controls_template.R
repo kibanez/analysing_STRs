@@ -101,3 +101,21 @@ write.table(df_all,
             col.names = T,
             row.names = F,
             sep = ",")
+
+# After running python generating_case_controls_from_VCF_EHv3.2.2.py, let's merge with this table
+# --s
+#/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs
+#--specs
+#/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/specs/EH_hg38_9LociForReplication_25March21_GRCh38.json
+#--o
+#merged_93425_genomes_EHv322_batch_Sharp_and_Parkinsonism.tsv
+#--O
+#/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged
+merged_table = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged/merged_93425_genomes_EHv322_batch_Sharp_and_Parkinsonism.tsv",
+                        stringsAsFactors = F, 
+                        sep = "\t")
+dim(merged_table)
+# 829327  5
+
+
+
