@@ -161,3 +161,7 @@ for(i in 1:length(l_platekeys)){
                    itziar)
 }
 
+dim(cc_table)
+# 93425  28
+
+write.table(cc_table, "./analysis/cc_table_93425_genomes_9_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
