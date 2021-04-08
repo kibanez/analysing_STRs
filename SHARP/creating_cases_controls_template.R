@@ -26,8 +26,8 @@ dim(clin_data)
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
 # case -> proband RD and recruited under Neurological
 # control -> proband RD not neuro OR cancer, year of birth >30
-# pseudocontrol -> RD not affected but recruited in a family under neuro
-# pseudocase -> RD not affected but recruited in a family under neuro
+# pseudocontrol -> not proband, RD not affected but recruited in a family under NOT neuro
+# pseudocase -> not proband, RD not affected but recruited in a family under neuro
 
 l_families = clin_data %>%
   filter(grepl("Neuro", diseasegroup_list, ignore.case = T)) %>%
@@ -70,13 +70,27 @@ clin_data %>% filter(platekey %in% l_controls) %>% select(biological_relationshi
 # QC - `LP2000901-DNA_G10` is mother, incongruent/inconsistent value in `biological_releationship_to_proband`
 l_controls = l_controls[-which(l_controls == "LP2000901-DNA_G10")] 
 
+l_pseudocases = clin_data %>%
+  filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), !biological_relationship_to_proband %in% "N/A") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_pseudocases)
+# 16857
+
+# QC
+clin_data %>% filter(platekey %in% l_pseudocases) %>% select(biological_relationship_to_proband)%>% table()
+# OK
+
 l_pseudocontrols = clin_data %>%
-  filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected")) %>%
+  filter(!rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), !biological_relationship_to_proband %in% "N/A") %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_pseudocontrols)
-# 16859
+# 18210
+
+clin_data %>% filter(platekey %in% l_pseudocontrols) %>% select(biological_relationship_to_proband)%>% table()
 
 # All 3 lists should be different
 length(intersect(l_cases, l_controls))
