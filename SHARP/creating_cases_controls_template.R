@@ -25,7 +25,7 @@ dim(clin_data)
 
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
 # case -> proband RD and recruited under Neurological
-# control -> proband RD not neuro OR cancer, year of birth >30
+# control -> proband RD not neuro OR cancer, year of birth >40
 # pseudocontrol -> not proband, RD not affected but recruited in a family under NOT neuro
 # pseudocase -> not proband, RD not affected but recruited in a family under neuro
 
@@ -58,17 +58,21 @@ clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_t
 #1342965
 
 l_controls = clin_data %>%
-  filter(programme %in% "Cancer" | ((!rare_diseases_family_id %in% l_families) & biological_relationship_to_proband %in% "N/A")) %>%
+  filter((programme %in% "Cancer" & year_of_birth <= "1981") | 
+           ((!rare_diseases_family_id %in% l_families) & biological_relationship_to_proband %in% "N/A" & year_of_birth <= "1981")) %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_controls)
-# 52153
+# 38698
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(biological_relationship_to_proband)%>% table()
+#N/A 
+#220017 
 
-# QC - `LP2000901-DNA_G10` is mother, incongruent/inconsistent value in `biological_releationship_to_proband`
-l_controls = l_controls[-which(l_controls == "LP2000901-DNA_G10")] 
+clin_data %>% filter(platekey %in% l_controls) %>% select(year_of_birth)%>% pull() %>% as.integer() %>% summary()
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#1917    1955    1968    1966    1978    2018
 
 l_pseudocases = clin_data %>%
   filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), !biological_relationship_to_proband %in% "N/A") %>%
@@ -83,39 +87,24 @@ clin_data %>% filter(platekey %in% l_pseudocases) %>% select(biological_relation
 # OK
 
 l_pseudocontrols = clin_data %>%
-  filter(!rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), !biological_relationship_to_proband %in% "N/A") %>%
+  filter(!rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), !biological_relationship_to_proband %in% "N/A", year_of_birth <= "1981") %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_pseudocontrols)
-# 18210
+# 13600
 
 clin_data %>% filter(platekey %in% l_pseudocontrols) %>% select(biological_relationship_to_proband)%>% table()
 
 # All 3 lists should be different
 length(intersect(l_cases, l_controls))
-# 2
+# 0
 length(intersect(l_pseudocontrols, l_controls))
-# 2
-length(intersect(l_cases, l_pseudocontrols))
-# 5 - "LP2000905-DNA_A01" "LP3001339-DNA_E06" "LP3000032-DNA_D11" "LP3001180-DNA_C06" "LP3000448-DNA_E10"
-
-# All these platekeys have 2 different and incongruent values for affection status: affected and unaffected - let's remove them from now
-to_remove = c("LP2000905-DNA_A01","LP3001339-DNA_E06","LP3000032-DNA_D11","LP3001180-DNA_C06","LP3000448-DNA_E10")
-index_to_remove_cases = pmatch(to_remove, l_cases)
-index_to_remove_controls = pmatch(to_remove, l_controls)
-index_to_remove_controls = index_to_remove_controls[!is.na(index_to_remove_controls)]
-index_to_remove_pseudocontrols = pmatch(to_remove, l_pseudocontrols)
-
-l_cases = l_cases[-index_to_remove_cases]
-l_controls = l_controls[-index_to_remove_controls]
-l_pseudocontrols = l_pseudocontrols[-index_to_remove_pseudocontrols]
-length(l_cases)
-# 16219
-length(l_controls)
-# 76362
-length(l_pseudocontrols)
-# 16854
+# 0
+length(intersect(l_pseudocases, l_cases))
+# 0
+length(intersect(l_pseudocases, l_controls))
+# 0 
 
 df_cases = data.frame(platekey = l_cases, type = rep("case", length(l_cases)))
 df_controls = data.frame(platekey = l_controls, type = rep("control", length(l_controls)))
