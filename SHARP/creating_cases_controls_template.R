@@ -165,3 +165,15 @@ dim(cc_table)
 # 93425  28
 
 write.table(cc_table, "./analysis/cc_table_93425_genomes_9_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+
+# Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
+to_enrich = clin_data %>%
+  select(platekey, participant_phenotypic_sex, year_of_birth, programme, diseasegroup_list, diseasesubgroup_list, hpo_list)
+
+cc_table = left_join(cc_table,
+                     to_enrich,
+                     by = "platekey")
+cc_table = unique(cc_table)
+dim(cc_table)
+# 93451 34
+
