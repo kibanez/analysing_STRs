@@ -135,7 +135,8 @@ for(i in 1:length(l_platekeys)){
   }
   
   itziar = pivot_wider(df_aux, names_from = gene, values_from = c(a1, a2, coverage)) %>% as.data.frame()
-
+  itziar$type = platekey_type
+  
   # Check whether all genes are genotyped
   colnames_cc = colnames(cc_table)
   colnames_itziar = colnames(itziar)
