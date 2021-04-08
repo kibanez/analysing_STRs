@@ -11,6 +11,7 @@ library(grid); packageDescription ("grid", fields = "Version") #"3.6.1"
 library(gridExtra); packageDescription ("gridExtra", fields = "Version") #"2.3"
 library(reshape2); packageDescription ("reshape2", fields = "Version") #"1.4.3"
 require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
+require(tidyr);packageDescription ("tidyr", fields = "Version") #"1.0.2"
 
 # Set working dir
 setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/")
@@ -117,5 +118,25 @@ merged_table = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_E
 dim(merged_table)
 # 829327  5
 
+l_platekeys = unique(merged_table$platekey)
+length(l_platekeys)
+# 93425
+l_genes = unique(merged_table$gene)
+length(l_genes)
+# 9
 
+l_genes_a1 = paste(l_genes, "a1", sep ="_")
+l_genes_a2 = paste(l_genes, "a2", sep ="_")
+
+cc_table = data.frame()
+for(i in 1:length(l_platekeys)){
+  df_aux = merged_table %>% filter(platekey %in% l_platekeys[i])
+  platekey_type = df_all %>% filter(platekey %in% l_platekeys[i]) %>% select(type) %>% pull() %>% as.character()
+  if (length(platekey_type != 1)){
+    platekey_type = "NA"
+  }
+  
+  cc_table = rbind(cc_table,
+                   cbind(l_platekeys[i], platekey_type))
+}
 
