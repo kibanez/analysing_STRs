@@ -108,17 +108,19 @@ length(intersect(l_pseudocases, l_controls))
 
 df_cases = data.frame(platekey = l_cases, type = rep("case", length(l_cases)))
 df_controls = data.frame(platekey = l_controls, type = rep("control", length(l_controls)))
+df_pseudocases = data.frame(platekey = l_pseudocases, type = rep("pseudocase", length(l_pseudocases)))
 df_pseudocontrols = data.frame(platekey = l_pseudocontrols, type = rep("pseudocontrol", length(l_pseudocontrols)))
 
 df_all = rbind(df_cases,
                df_controls,
+               df_pseudocases,
                df_pseudocontrols)
 df_all = unique(df_all)
 dim(df_all)
-# 109435  2
+# 83051  2
 
 write.table(df_all, 
-            "./analysis/table_cases_controls_109435_genomes.csv",
+            "./analysis/table_cases_controls_83051_genomes_cases_controls_pseudoca_pseudoco.csv",
             quote = F,
             col.names = T,
             row.names = F,
@@ -151,7 +153,7 @@ cc_table = data.frame()
 for(i in 1:length(l_platekeys)){
   df_aux = merged_table %>% filter(platekey %in% l_platekeys[i])
   platekey_type = df_all %>% filter(platekey %in% l_platekeys[i]) %>% select(type) %>% pull() %>% as.character()
-  if (length(platekey_type != 1)){
+  if (length(platekey_type) != 1){
     platekey_type = "NA"
   }
   
