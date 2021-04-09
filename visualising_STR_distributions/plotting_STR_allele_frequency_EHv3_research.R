@@ -32,13 +32,13 @@ gene_annotation_pathogenic = '~/git/analysing_STRs/threshold_smallest_pathogenic
 gene_data_pathogenic = read.table(gene_annotation_pathogenic, stringsAsFactors=F, header = T)
 
 # Research dedup ~92K genomes, EHv322, march 2020
-setwd("~/Documents/STRs/data/research/batch_march2020/output_EHv3.2.2/merged/")
-df = read.csv('./merged_92663_genomes_EHv3.2.2.tsv',
+setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged/")
+df = read.csv('./merged_93425_genomes_EHv322.tsv',
               sep = '\t',
               stringsAsFactors = F,
               header = T)
 dim(df)
-# 8560  12
+# 795 12
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh37 are chr1, chr2, chr3 while GRCh38 are 1,2,3
@@ -76,7 +76,7 @@ df_simpl = df %>%
   select(chr, gene, allele, total_num_samples)
 df_simpl = unique(df_simpl)
 dim(df_simpl)
-# 5018  4
+# 439  4
 
 # Folder where we want to save the plots - PDFs
 output_folder = 'plots'
