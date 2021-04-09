@@ -75,7 +75,7 @@ clin_data %>% filter(platekey %in% l_controls) %>% select(year_of_birth)%>% pull
 #1917    1955    1968    1966    1978    2018
 
 l_pseudocases = clin_data %>%
-  filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), !biological_relationship_to_proband %in% "N/A") %>%
+  filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), participant_type %in% "Relative") %>%
   select(platekey) %>%
   unique() %>%
   pull()
@@ -89,7 +89,7 @@ clin_data %>% filter(platekey %in% l_pseudocases) %>% select(biological_relation
 l_pseudocontrols = clin_data %>%
   filter(!rare_diseases_family_id %in% l_families, 
          affection_status %in% c("Unaffected", "NotAffected"), 
-         !biological_relationship_to_proband %in% "N/A", 
+         participant_type %in% "Relative", 
          year_of_birth <= "1981") %>%
   select(platekey) %>%
   unique() %>%
