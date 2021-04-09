@@ -59,16 +59,16 @@ clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_t
 
 l_controls = clin_data %>%
   filter((programme %in% "Cancer" & year_of_birth <= "1981") | 
-           ((!rare_diseases_family_id %in% l_families) & biological_relationship_to_proband %in% "N/A" & year_of_birth <= "1981")) %>%
+           ((!rare_diseases_family_id %in% l_families) & participant_type %in% "Proband" & year_of_birth <= "1981")) %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_controls)
-# 38698
+# 39583
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(biological_relationship_to_proband)%>% table()
-#N/A 
-#220017 
+#N/A Proband 
+#184862     885 
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(year_of_birth)%>% pull() %>% as.integer() %>% summary()
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
