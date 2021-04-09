@@ -120,10 +120,10 @@ df_all = rbind(df_cases,
                df_pseudocontrols)
 df_all = unique(df_all)
 dim(df_all)
-# 83051  2
+# 84518  2
 
 write.table(df_all, 
-            "./analysis/table_cases_controls_83051_genomes_cases_controls_pseudoca_pseudoco.csv",
+            "./analysis/table_cases_controls_84518_genomes_cases_controls_pseudoca_pseudoco.csv",
             quote = F,
             col.names = T,
             row.names = F,
