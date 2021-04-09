@@ -112,7 +112,7 @@ dim(list_disease_subgroup)
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
   select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth, 
-         participant_phenotypic_sex, programme, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
+         participant_phenotypic_sex, participant_type, programme, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
          registered_at_gmc_trust, rescty, postdist)
 dim(clin_data)
 # 2440099  19
