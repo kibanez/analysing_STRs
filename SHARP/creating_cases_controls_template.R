@@ -199,7 +199,7 @@ cc_table = left_join(cc_table,
                      by = "platekey")
 cc_table = unique(cc_table)
 dim(cc_table)
-# 93451 34
+# 93451 35
 
 # which duplicated?
 platekeys_duplicated = which(duplicated(cc_table$platekey))
@@ -212,7 +212,7 @@ year_messed_up = cc_table %>%
   filter(platekey %in% l_platekeys_duplicated) %>%
   unique()
 dim(year_messed_up)
-# 52 34
+# 52 35
 
 year_messed_up = year_messed_up %>%
   group_by(platekey) %>%
@@ -220,12 +220,12 @@ year_messed_up = year_messed_up %>%
   ungroup() %>%
   as.data.frame()
 
-year_messed_up = year_messed_up[,-30]
+year_messed_up = year_messed_up[,-31]
 year_messed_up = unique(year_messed_up)
 dim(year_messed_up)
-# 30 34
+# 30 35
 
-colnames(year_messed_up)[34] = "year_of_birth"
+colnames(year_messed_up)[35] = "year_of_birth"
 year_messed_up = year_messed_up[colnames(cc_table)]  
 
 # remove the duplicated ones
@@ -241,6 +241,8 @@ cc_table = cc_table %>%
   filter(!platekey %in% to_remove)
 cc_table = unique(cc_table)
 dim(cc_table)
-# 93422 34
+# 93421 35
 
-write.table(cc_table, "./analysis/table_cases_controls_93422_genomes_enriched_with_some_clinical_data.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
+length(unique(cc_table$platekey))
+# 93421
+write.table(cc_table, "./analysis/table_cases_controls_93421_genomes_enriched_with_some_clinical_data.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
