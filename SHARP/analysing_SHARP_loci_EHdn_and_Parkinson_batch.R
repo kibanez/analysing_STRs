@@ -1,4 +1,4 @@
-# Objective: analyse loci shared by Andrew Sharp (i.e. SHARP genes) within 100kGP - batch august 2020
+# Objective: analyse the repeat-size distribution across 9 genes shared by Sharp et al, after running EHdn on Parkinsonism
 # For EHv322
 date ()
 Sys.info ()[c("nodename", "user")]
@@ -18,27 +18,32 @@ library(ggpubr); packageDescription ("ggpubr", fields = "Version") #"1.0.0"
 library(purrr); packageDescription ("purrr", fields = "Version") #"0.3.3"
 
 # Set working dir
-setwd("~/Documents/STRs/ANALYSIS/SHARP/")
+setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/analysis/")
 
 # Functions
 source("~/git/analysing_STRs/functions/plot_together_histo_boxplot.R")
 source("~/git/analysing_STRs/functions/computing_percentiles.R")
 
 # load merged august data
-merged_data = read.csv("~/Documents/STRs/data/research/batch_august2020/output_EHv3.2.2_vcfs/merged/merged_93446_genomes_EHv322_batch_august2020.tsv",
+merged_data = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged/merged_93425_genomes_EHv322.tsv",
                        stringsAsFactors = F,
                        sep = "\t",
                        header = T)
 dim(merged_data)
-# 27238  12
+# 795  12
 
-# load clinical data - changing to RE V10 (since we are sharing with external groups)
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_071020_V10.tsv",
+# load clinical data - changing to RE V11 (since we are sharing with external groups)
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
                      sep = "\t",
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 3474081  33
+# 2444984  25
+
+# Load type (case/control/pseudocase/pseudocontrol) for genomes
+type_data = read.csv("./")
+dim(type_data)
+#
 
 # Let's keep only germline genomes
 clin_data = clin_data %>%
