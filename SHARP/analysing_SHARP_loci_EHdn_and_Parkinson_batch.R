@@ -21,7 +21,7 @@ library(purrr); packageDescription ("purrr", fields = "Version") #"0.3.3"
 setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/analysis/")
 
 # Functions
-source("~/git/analysing_STRs/functions/plot_together_histo_boxplot.R")
+source("~/git/analysing_STRs/functions/plot_together_histo_boxplot_cc_pseudocc.R")
 source("~/git/analysing_STRs/functions/computing_percentiles.R")
 
 # load merged august data
@@ -117,31 +117,21 @@ merged_data$chr = recode(merged_data$chr,
                          "22" = "chr22",
                          "X" = "chrX")
 
-# Let's focus on SHARP genes
 l_genes = unique(merged_data$gene)
 length(l_genes)
-# 329
+# 9
 
-# Let's focus only on SHARP genes
-l_sharp = l_genes[which(grepl("SHARP", l_genes, ignore.case = TRUE))]
-length(l_sharp)
-# 55
+# Setup output folder
+output_folder = "./plots/"
 
-sharp_merged_data = merged_data %>%
-  filter(gene %in% l_sharp)
-dim(sharp_merged_data)
-# 5974  12
-
-# Output folder
-output_folder = 'EHv322_batch_august2020'
-#dir.create(output_folder)
-
-for(i in 1:length(l_sharp)){
-  plot_together_histo_boxplot(df_input = sharp_merged_data,
-                              gene_name = l_sharp[i],
-                              output_folder = output_folder,
-                              l_platekeys_probands_neuro_unique,
-                              l_platekeys_probands_notNeuro_unique)
+for (i in 1:length(l_sharp)){
+  plot_together_histo_boxplot_cc_pseudocc(df_input = merged_data,
+                                          gene_name = l_genes[i],
+                                          output_folder = output_folder,
+                                          l_cases,
+                                          l_controls,
+                                          l_pseudocases,
+                                          l_pseudocontrols)
 }
 
 # Summarise report with quantiles for all genes in SHARP
