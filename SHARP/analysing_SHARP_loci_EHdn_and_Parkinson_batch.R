@@ -57,7 +57,13 @@ dim(clin_data)
 # 2417423  27
 
 # List of cases/controls/pseudocases/pseudocontrols
-
+l_cases = clin_data %>%
+  filter(type.y %in% "case") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_cases)
+# 14478
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
