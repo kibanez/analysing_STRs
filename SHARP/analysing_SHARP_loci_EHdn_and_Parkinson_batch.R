@@ -73,6 +73,13 @@ l_controls = clin_data %>%
 length(l_controls)
 # 24095
 
+l_pseudocases = clin_data %>%
+  filter(type.y %in% "pseudocase") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_pseudocases)
+# 16857
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
