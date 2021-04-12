@@ -121,31 +121,31 @@ clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
-# 2440099  21
+# 2440099  22
 
 clin_data = left_join(clin_data,
                       list_disease_group,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 22
+# 2440099 23
 
 clin_data = left_join(clin_data,
                       list_disease_subgroup,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 23
+# 2440099 24
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 24
+# 2440099 25
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 25
+# 2440099 26
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
 colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", 
@@ -162,9 +162,10 @@ pilot_clin_data$clinic_sample_collected_at_gmc = rep(".", length(pilot_clin_data
 pilot_clin_data$clinic_sample_collected_at_gmc_trust = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$case_solved_family = rep(".", length(pilot_clin_data$participant_id))
 pilot_clin_data$registered_at_gmc_trust = rep("Pilot", length(pilot_clin_data$participant_id))
+pilot_clin_data$type = rep("rare disease germline", length(pilot_clin_data$participant_id))
 pilot_clin_data$rescty = rep("Pilot", length(pilot_clin_data$participant_id))
 pilot_clin_data$postdist = rep("Pilot", length(pilot_clin_data$participant_id))
-# generate `participaty_type` 
+# generate `participant_type` 
 pilot_clin_data = pilot_clin_data %>%
   group_by(participant_id) %>%
   mutate(participant_type = ifelse(biological_relationship_to_proband %in% "Proband", "Proband", "Relative")) %>%
@@ -176,7 +177,7 @@ pilot_clin_data = pilot_clin_data %>%
 pilot_clin_data = pilot_clin_data %>%
   select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband,
          genetic_vs_reported_results, participant_ethnic_category ,genome_build, year_of_birth, 
-         participant_phenotypic_sex, participant_type, programme,family_group_type, affection_status, 
+         participant_phenotypic_sex, participant_type, programme, type, family_group_type, affection_status, 
          bestGUESS_super_pop, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
          registered_at_gmc_trust, rescty, postdist,
          diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list, hpo_list)
@@ -185,7 +186,7 @@ colnames(pilot_clin_data) = colnames(clin_data)
 clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
-# 2444933  25
+# 2444933  26
 
 # Check genQA cases
 df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch3_STRs.tsv",
@@ -197,6 +198,7 @@ dim(df_genQA)
 
 # Include genQA data in clin_data
 df_genQA$programme = rep("genQA", length(df_genQA$Platekey))
+df_genQA$type = rep("rare disease germline", length(df_genQA$Platekey))
 df_genQA$biological_relationship_to_proband = rep("genQA", length(df_genQA$Platekey))
 df_genQA$participant_type = rep("genQA", length(df_genQA$Platekey))
 df_genQA$genetic_vs_reported_results = rep("genQA", length(df_genQA$Platekey))
@@ -222,7 +224,7 @@ df_genQA$postdist = rep("genQA", length(df_genQA$Platekey))
 df_genQA = df_genQA %>%
   select(PID, Platekey, familyID, biological_relationship_to_proband,
          genetic_vs_reported_results, participant_ethnic_category, genome_build, year_of_birth,
-         participant_phenotypic_sex, participant_type, programme, family_group_type, affection_status,
+         participant_phenotypic_sex, participant_type, programme, type, family_group_type, affection_status,
          superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
          registered_at_gmc_trust, rescty, postdist,
          diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list,
@@ -232,7 +234,7 @@ colnames(df_genQA) = colnames(clin_data)
 clin_data = rbind(clin_data,
                   df_genQA)
 dim(clin_data)
-# 2444984  25
+# 2444984  26
 
 # Write into a file
 write.table(clin_data,
