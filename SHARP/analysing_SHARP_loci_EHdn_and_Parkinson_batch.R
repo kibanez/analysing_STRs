@@ -81,6 +81,14 @@ l_pseudocases = clin_data %>%
 length(l_pseudocases)
 # 16857
 
+l_pseudocontrols = clin_data %>%
+  filter(type.y %in% "pseudocontrol") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_pseudocontrols)
+# 13600
+
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
 # In SHARP everything should be GRCh38, because Andy sent us coordinates only in GRCh38
