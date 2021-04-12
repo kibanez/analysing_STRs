@@ -38,84 +38,26 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_a
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 2444984  25
+# 2444984  26
 
-# Load type (case/control/pseudocase/pseudocontrol) for genomes
-type_data = read.csv("./")
-dim(type_data)
-#
-
-# Let's keep only germline genomes
+# Only focusing on germline genomes
 clin_data = clin_data %>%
   filter(grepl("germline", type))
+
+# Load type (case/control/pseudocase/pseudocontrol) for genomes
+type_data = read.csv("./table_cases_controls_84518_genomes_cases_controls_pseudoca_pseudoco.csv",
+                     stringsAsFactors = F)
+dim(type_data)
+# 84518  2
+
+clin_data = left_join(clin_data,
+                      type_data,
+                      by = "platekey")
 dim(clin_data)
-# 3416282 33
+# 2417423  27
 
-# Checking which genomes we have
-table(clin_data$type)
-#cancer germline experimental germline rare disease germline 
-#50305                   211               3365766 
+# List of cases/controls/pseudocases/pseudocontrols
 
-# List of platekeys corresponding to ONLY PROBANDS in Neuro
-df_only_probands = clin_data %>%
-  filter(is.na(biological_relationship_to_proband) |
-           biological_relationship_to_proband %in% "N/A" | 
-           biological_relationship_to_proband %in% "Proband" |
-           programme %in% "Cancer")
-
-l_platekeys_probands_neuro = df_only_probands %>%
-  filter(grepl("neuro", disease_group, ignore.case = TRUE)) %>%
-  select(platekey) %>%
-  unique() %>%
-  pull()
-length(l_platekeys_probands_neuro)
-# 13840
-
-# There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_neuro_unique = c()
-for (i in 1:length(l_platekeys_probands_neuro)){
-  if (grepl(',',l_platekeys_probands_neuro[i])){
-    list_platekeys = strsplit(l_platekeys_probands_neuro[i], ",")[[1]]
-    list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_neuro_unique = c(l_platekeys_probands_neuro_unique,
-                                    max(list_platekeys))
-  }else{
-    l_platekeys_probands_neuro_unique = c(l_platekeys_probands_neuro_unique,
-                                    l_platekeys_probands_neuro[i])
-  }
-}
-length(l_platekeys_probands_neuro_unique)
-# 13840
-
-# List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
-# First probands
-df_only_probands_notNeuro = df_only_probands %>%
-  filter(!grepl("neuro", disease_group, ignore.case = TRUE))
-dim(df_only_probands_notNeuro)
-# 1012732 33
-
-l_platekeys_probands_notNeuro = df_only_probands_notNeuro %>%
-  select(platekey) %>%
-  unique() %>%
-  pull()
-length(l_platekeys_probands_notNeuro)
-# 35510
-
-# There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_notNeuro_unique = c()
-for (i in 1:length(l_platekeys_probands_notNeuro)){
-  if (grepl(',',l_platekeys_probands_notNeuro[i])){
-    list_platekeys = strsplit(l_platekeys_probands_notNeuro[i], ",")[[1]]
-    list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
-                                             max(list_platekeys))
-  }else{
-    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
-                                             l_platekeys_probands_notNeuro[i])
-  }
-}
-length(l_platekeys_probands_notNeuro_unique)
-# 35510
 
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
