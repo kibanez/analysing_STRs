@@ -65,6 +65,18 @@ dim(pilot_clin_data)
 # 4834  15
 
 # Load latests Main clinical data release (created from our R scripts)
+# On 14/04/2021 I realised there were many PIDs in RE V7 not included in V10 nor V11
+clin_data_V7 = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_100720_V7.tsv",
+                       sep = "\t",
+                       stringsAsFactors = FALSE, 
+                       header = TRUE)
+dim(clin_data_V7)  
+# 1021801  31 
+
+l_unique_PIDs_V7 = unique(clin_data_V7$participant_id)
+length(l_unique_PIDs_V7)
+# 86682
+
 clin_data = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_251120_V10.tsv",
                        sep = "\t",
                        stringsAsFactors = FALSE, 
@@ -85,6 +97,14 @@ clin_data = rbind(clin_data,
 clin_data = unique(clin_data)
 dim(clin_data)
 # 2440099  36
+
+# Which PIDs are in V7 and not up to V11?
+l_missing_fromV7 = setdiff(l_unique_PIDs_V7, unique(clin_data$participant_id))
+length(l_missing_fromV7)
+# 1373
+
+clin_data_V7 = clin_data_V7 %>% 
+  filter(participant_id %in% l_missing_fromV7)
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
