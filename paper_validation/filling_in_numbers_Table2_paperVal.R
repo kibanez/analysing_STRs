@@ -43,13 +43,13 @@ table_diseases_pilot = table_diseases_pilot %>%
 table_diseases$year_of_birth = as.integer(table_diseases$year_of_birth)
 table_diseases = table_diseases %>%
   group_by(participant_id) %>%
-  mutate(age = 2020 - year_of_birth) %>%
+  mutate(age = 2021- year_of_birth) %>%
   ungroup() %>%
   as.data.frame()
 
 table_diseases_pilot = table_diseases_pilot %>%
   group_by(gelID) %>%
-  mutate(age = 2020 - yearOfBirth) %>%
+  mutate(age = 2021 - yearOfBirth) %>%
   ungroup() %>%
   as.data.frame()
 
@@ -332,13 +332,13 @@ table_diseases_pilot = unique(table_diseases_pilot)
 table_diseases$year_of_birth = as.integer(table_diseases$year_of_birth)
 table_diseases = table_diseases %>%
   group_by(participant_id) %>%
-  mutate(age = 2020 - year_of_birth) %>%
+  mutate(age = 2021 - year_of_birth) %>%
   ungroup() %>%
   as.data.frame()
 
 table_diseases_pilot = table_diseases_pilot %>%
   group_by(gelID) %>%
-  mutate(age = 2020 - yearOfBirth) %>%
+  mutate(age = 2021 - yearOfBirth) %>%
   ungroup() %>%
   as.data.frame()
 
