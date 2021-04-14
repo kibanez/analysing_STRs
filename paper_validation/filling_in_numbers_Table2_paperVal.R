@@ -23,6 +23,21 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
 dim(table_diseases_pilot)
 # 660 13
 
+# Load clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
+                     stringsAsFactors = F,
+                     sep = "\t")
+dim(clin_data)
+#
+
+# Load 13,331 unique PIDs
+l_13331 = read.table("list_13331_PIDs_table2.txt", stringsAsFactors = F)
+l_13331 = unique(l_13331$V1)
+length(l_13331)
+# 13331
+
+# Check absolute numbers gender for these 13331
+
 # Removing platekey and genome assembly columns, since I'm interested in PID, and it's easier to deduplicate tables
 table_diseases = table_diseases[-1]
 table_diseases = table_diseases[-3]
