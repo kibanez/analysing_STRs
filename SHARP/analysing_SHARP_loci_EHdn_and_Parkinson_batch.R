@@ -124,7 +124,7 @@ length(l_genes)
 # Setup output folder
 output_folder = "./plots/"
 
-for (i in 1:length(l_sharp)){
+for (i in 1:length(l_genes)){
   plot_together_histo_boxplot_cc_pseudocc(df_input = merged_data,
                                           gene_name = l_genes[i],
                                           output_folder = output_folder,
