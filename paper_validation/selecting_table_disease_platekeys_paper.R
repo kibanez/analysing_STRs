@@ -32,31 +32,31 @@ list_diseases = c("Intellectual disability",
                   "Ultra-rare undescribed monogenic disorders")
 
 table_diseases = clin_data %>%
-  filter(grepl("Intellectual disability", diseases_list) | 
-           grepl("Amyotrophic lateral sclerosis or motor neuron disease", diseases_list) |
-           grepl("Charcot-Marie-Tooth disease", diseases_list) |
-           grepl("Congenital myopathy", diseases_list) |
-           grepl("Early onset dementia", diseases_list) |
-           grepl("Congenital muscular dystrophy", diseases_list) |
-           grepl("Early onset dystonia", diseases_list) |
-           grepl("Distal myopathies", diseases_list) |
-           grepl("Complex Parkinsonism", diseases_list) |
-           grepl("Hereditary ataxia", diseases_list) |
-           grepl("Hereditary spastic paraplegia", diseases_list) |
-           grepl("Skeletal Muscle Channelopathies", diseases_list) |
-           grepl("Early onset and familial Parkinson's Disease", diseases_list) |
-           grepl("Mitochondrial disorders", diseases_list) |
-           grepl("Kabuki syndrome", diseases_list) |
-           grepl("Ultra-rare undescribed monogenic disorders", diseases_list) | 
+  filter(grepl("Intellectual disability", diseases_list, ignore.case = T) | 
+           grepl("Amyotrophic lateral", diseases_list, ignore.case = T) |
+           grepl("Charcot-Marie-Tooth disease", diseases_list, ignore.case = T) |
+           grepl("Congenital myopathy", diseases_list, ignore.case = T) |
+           grepl("Early onset dementia", diseases_list, ignore.case = T) |
+           grepl("Congenital muscular dystrophy", diseases_list, ignore.case = T) |
+           grepl("Early onset dystonia", diseases_list, ignore.case = T) |
+           grepl("Distal myopathies", diseases_list, ignore.case = T) |
+           grepl("Complex Parkinsonism", diseases_list, ignore.case = T) |
+           grepl("Hereditary ataxia", diseases_list, ignore.case = T) |
+           grepl("Hereditary spastic paraplegia", diseases_list, ignore.case = T) |
+           grepl("Skeletal Muscle Channelopathies", diseases_list, ignore.case = T) |
+           grepl("Early onset and familial Parkinson's Disease", diseases_list, ignore.case = T) |
+           grepl("Mitochondrial disorders", diseases_list, ignore.case = T) |
+           grepl("Kabuki syndrome", diseases_list, ignore.case = T) |
+           grepl("Ultra-rare undescribed monogenic disorders", diseases_list, ignore.case = T) | 
            grepl("Complex Parkin", diseases_list, ignore.case = T))
 dim(table_diseases)           
-# 1339156  26 
+# 1339160  26 
 
 # Check unique number of platekeys and PIDs
 length(unique(table_diseases$platekey))
-# 14901
+# 14905
 length(unique(table_diseases$participant_id))
-# 14785
+# 14789
 
 table_diseases_dedup = table_diseases %>% 
   group_by(participant_id) %>%
@@ -67,7 +67,7 @@ table_diseases_dedup = table_diseases %>%
 table_diseases_dedup = table_diseases_dedup[,-2]
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 29120  26
+# 29124  26
 
 write.table(table_diseases_dedup,
             "./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics.tsv",
