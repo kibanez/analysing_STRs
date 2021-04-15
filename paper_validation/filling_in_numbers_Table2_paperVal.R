@@ -28,13 +28,17 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_a
                      stringsAsFactors = F,
                      sep = "\t")
 dim(clin_data)
-#
+#  2468506  26
 
 # Load 13,331 unique PIDs
 l_13331 = read.table("list_13331_PIDs_table2.txt", stringsAsFactors = F)
 l_13331 = unique(l_13331$V1)
 length(l_13331)
 # 13331
+
+# Abs number for females
+aver = clin_data %>% filter(participant_id %in% l_13331) %>% select(participant_phenotypic_sex, participant_id) %>% unique()
+
 
 # Check absolute numbers gender for these 13331
 
