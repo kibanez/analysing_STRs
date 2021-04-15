@@ -14,6 +14,66 @@ clinical_data_research_cohort_86457_genomes_withPanels_250919 = read.csv("~/Docu
 dim(clinical_data_research_cohort_86457_genomes_withPanels_250919)
 # 89305  16
 
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
+                     stringsAsFactors = F,
+                     sep = "\t")
+dim(clin_data)
+# 2468506  26
+
+list_diseases = c("Intellectual disability",
+                  "Amyotrophic lateral sclerosis or motor neuron disease", 
+                  "Charcot-Marie-Tooth disease", "Congenital muscular dystrophy",
+                  "Congenital myopathy", "Early onset dementia", "Early onset dystonia", 
+                  "Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
+                  "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
+                  "'Early onset and familial Parkinson''s Disease'",
+                  "Mitochondrial disorders",
+                  "Kabuki syndrome",
+                  "Ultra-rare undescribed monogenic disorders")
+
+table_diseases = clin_data %>%
+  filter(grepl("Intellectual disability", diseases_list) | 
+           grepl("Amyotrophic lateral sclerosis or motor neuron disease", diseases_list) |
+           grepl("Charcot-Marie-Tooth disease", diseases_list) |
+           grepl("Congenital myopathy", diseases_list) |
+           grepl("Early onset dementia", diseases_list) |
+           grepl("Congenital muscular dystrophy", diseases_list) |
+           grepl("Early onset dystonia", diseases_list) |
+           grepl("Distal myopathies", diseases_list) |
+           grepl("Complex Parkinsonism", diseases_list) |
+           grepl("Hereditary ataxia", diseases_list) |
+           grepl("Hereditary spastic paraplegia", diseases_list) |
+           grepl("Skeletal Muscle Channelopathies", diseases_list) |
+           grepl("Early onset and familial Parkinson's Disease", diseases_list) |
+           grepl("Mitochondrial disorders", diseases_list) |
+           grepl("Kabuki syndrome", diseases_list) |
+           grepl("Ultra-rare undescribed monogenic disorders", diseases_list) | 
+           grepl("Complex Parkin", diseases_list, ignore.case = T))
+dim(table_diseases)           
+# 1339156  26 
+
+# Check unique number of platekeys and PIDs
+length(unique(table_diseases$platekey))
+# 14901
+length(unique(table_diseases$participant_id))
+# 14785
+
+table_diseases_dedup = table_diseases %>% 
+  group_by(participant_id) %>%
+  mutate(latest_platekey = max(platekey)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+table_diseases_dedup = table_diseases_dedup[,-2]
+table_diseases_dedup = unique(table_diseases_dedup)
+dim(table_diseases_dedup)
+# 29120  26
+
+write.table(table_diseases_dedup,
+            "./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics.tsv",
+            quote = F,
+            row.names = F, col.names = T, sep = "\t")
+
 table_diseases <-  clinical_data_research_cohort_86457_genomes_withPanels_250919 %>%
   count(normalised_specific_disease)
 
