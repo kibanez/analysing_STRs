@@ -35,7 +35,7 @@ clin_data = read.csv("./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_
                      sep = "\t",
                      stringsAsFactors = F)
 dim(clin_data)
-# 292120 26
+# 291224 26
 
 # Define AGE, by using YOB
 clin_data = clin_data %>%
@@ -112,6 +112,69 @@ l_diseases_pilot = c("Intellectual disability",
                      "Hereditary spastic paraplegia",
                      "Skeletal Muscle Channelopathies",
                      "Early onset and familial Parkinson's Disease")
+
+# We need to keep the PIDs that have these diseases (already selected)
+# All participants (adults and paediatrics) except ONLY ADULTS for:
+# `Hereditary spastic paraplegia`
+# `Early onset and familial Parkinson''s Disease`
+# `Complex Parkin`
+# `Early onset dystonia`
+# `Early onset dementia`
+# `Amyotrophic lateral sclerosis`
+# `Charcot-Marie-Tooth disease`
+
+# First, retrieve ONLY adults for these diseases
+clin_data_adults_only = clin_data %>%
+  filter((grepl("Hereditary spastic paraplegia", diseases_list, ignore.case = T) & age >= 18) |
+         (grepl("Early onset and familial Parkinson''s Disease", diseases_list, ignore.case = T) & age >= 18) |
+         (grepl("Complex Parkin", diseases_list, ignore.case = T) & age >= 18) |
+         (grepl("Early onset dystonia", diseases_list, ignore.case = T) & age >= 18) |
+         (grepl("Early onset dementia", diseases_list, ignore.case = T) & age >= 18) |
+         (grepl("Amyotrophic lateral sclerosis", diseases_list, ignore.case = T) & age >= 18) |
+         (grepl("Charcot-Marie-Tooth disease", diseases_list, ignore.case = T) & age >= 18))
+
+# Check average age
+summary(clin_data_adults_only$age)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#18.00   35.00   50.00   50.02   65.00   99.00 
+
+# First, remove from `clin_data` the following PIDs having at least any disease for ADULTS ONLY
+clin_data = clin_data %>%
+  filter(!grepl("Hereditary spastic paraplegia", diseases_list, ignore.case = T))
+clin_data = clin_data %>%
+  filter(!grepl("Early onset and familial Parkinson''s Disease", diseases_list, ignore.case = T))
+clin_data = clin_data %>%
+  filter(!grepl("Complex Parkin", diseases_list, ignore.case = T))
+clin_data = clin_data %>%
+  filter(!grepl("Early onset dystonia", diseases_list, ignore.case = T))
+clin_data = clin_data %>%
+  filter(!grepl("Early onset dementia", diseases_list, ignore.case = T))
+clin_data = clin_data %>%
+  filter(!grepl("Amyotrophic lateral sclerosis", diseases_list, ignore.case = T))
+clin_data = clin_data %>%
+  filter(!grepl("Charcot-Marie-Tooth disease", diseases_list, ignore.case = T))
+
+
+  
+
+
+l_independent_diseases_adults = c("Hereditary spastic paraplegia",
+                                  "'Early onset and familial Parkinson''s Disease'",
+                                  "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                  "Early onset dystonia",
+                                  "Early onset dementia",
+                                  "Amyotrophic lateral sclerosis or motor neuron disease",
+                                  "Charcot-Marie-Tooth disease")
+
+l_independent_diseases_pilot_adults = c("Hereditary spastic paraplegia",
+                                        "Early onset and familial Parkinson's Disease",
+                                        "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                        "Early onset dystonia",
+                                        "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                                        "Amyotrophic lateral sclerosis/motor neuron disease",
+                                        "Charcot-Marie-Tooth disease")
+
+
 
 # How many unique PIDs are in MAIN and PILOT cohorts with these diseases?
 l_main_pid = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_id) %>% unique() %>% pull() 
