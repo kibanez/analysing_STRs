@@ -106,6 +106,28 @@ length(l_missing_fromV7)
 clin_data_V7 = clin_data_V7 %>% 
   filter(participant_id %in% l_missing_fromV7)
 
+setdiff(colnames(clin_data), colnames(clin_data_V7))
+#[1] "registered_at_gmc_trust"              "clinic_sample_collected_at_gmc"       "clinic_sample_collected_at_gmc_trust"
+#[4] "case_solved_family"                   "postdist"                             "rescty"                              
+#[7] "superpopu"
+clin_data_V7$registered_at_gmc_trust = rep("RE_V7",length(clin_data_V7$participant_id))
+clin_data_V7$clinic_sample_collected_at_gmc = rep("RE_V7",length(clin_data_V7$participant_id))
+clin_data_V7$clinic_sample_collected_at_gmc_trust = rep("RE_V7",length(clin_data_V7$participant_id))
+clin_data_V7$case_solved_family = rep("RE_V7",length(clin_data_V7$participant_id))
+clin_data_V7$postdist = rep("RE_V7",length(clin_data_V7$participant_id))
+clin_data_V7$rescty = rep("RE_V7",length(clin_data_V7$participant_id))
+clin_data_V7$superpopu = rep("RE_V7",length(clin_data_V7$participant_id))
+
+# Reorder column names as `clin_data`
+clin_data_V7 = clin_data_V7[names(clin_data)]
+
+# Merge RE_V7 with clin_data
+clin_data = rbind(clin_data,
+                  clin_data_V7)
+clin_data = unique(clin_data)
+dim(clin_data)
+#
+
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
