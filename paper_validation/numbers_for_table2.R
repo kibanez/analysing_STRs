@@ -30,7 +30,19 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
 dim(table_diseases_pilot)
 # 660  13
 
+# Load latest clinical data for these diseases for the paper - April 2021
+clin_data = read.csv("./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F)
+dim(clin_data)
+# 292120 26
 
+# Define AGE, by using YOB
+clin_data = clin_data %>%
+  group_by(participant_id) %>%
+  mutate(age = 2020 - year_of_birth) %>%
+  ungroup() %>%
+  as.data.frame()
 
 # Let's recode the ethnicity, simplifying it
 table_diseases$participant_ethnic_category = recode(table_diseases$participant_ethnic_category,
@@ -54,7 +66,6 @@ table_diseases$participant_ethnic_category = recode(table_diseases$participant_e
 # Defining NA's as `Not stated`
 which_na = which(is.na(table_diseases$participant_ethnic_category))
 table_diseases$participant_ethnic_category[which_na] = "Not Stated"
-
 
 # Define AGE, by using YOB
 table_diseases = table_diseases %>%
@@ -132,22 +143,20 @@ summary(l_age_all)
 #2.00    9.00   17.00   27.34   45.00  101.00 
 
 # Gender
-l_main_gender = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_phenotypic_sex)  %>% pull() 
-l_main_gender_extra = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_phenotypic_sex) %>% pull() 
-l_pilot_gender = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(sex) %>% pull() 
+aver = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_phenotypic_sex, participant_id)  %>% unique() 
+table(aver$participant_phenotypic_sex)
+#Female   Male 
+#5477   7071
 
-l_gender_all = c(l_main_gender,
-                 l_main_gender_extra,
-                 l_pilot_gender)
+aver2 = table_diseases %>% filter(grepl(l_diseases_main_extra, normalised_specific_disease)) %>% select(participant_phenotypic_sex, participant_id) %>% unique() 
+table(aver2$participant_phenotypic_sex)
+#Female   Male 
+#62     77 
 
-table(l_gender_all)
-# female Female   male   Male 
-# 302   5817    358   7481 
-
-# female =  6119
-# male = 7839
-
-# total = 13958
+aver_pilot = table_diseases_pilot %>% filter(specificDisease %in% l_diseases_pilot) %>% select(sex, gelID) %>% unique() 
+table(aver_pilot$sex)
+#female   male 
+#297    348 
 
 # Ethnicity
 l_main_eth = table_diseases %>% filter(normalised_specific_disease %in% l_diseases_main) %>% select(participant_ethnic_category)  %>% pull() 
@@ -273,8 +282,12 @@ for (i in 1:length(l_independent_diseases)){
   print(summary(l_age_all))
 
   # Gender
-  l_main_gender = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(participant_phenotypic_sex)  %>% pull() 
-  l_pilot_gender = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot[i]) %>% select(sex) %>% pull() 
+  df_main_gender = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(participant_phenotypic_sex, participant_id)  %>% unique()
+  df_pilot_gender = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot[i]) %>% select(sex, gelID) %>% unique()
+  
+  print(table(df_main_gender$participant_phenotypic_sex))
+  
+  print(table(df_pilot_gender$sex))
   
   l_gender_all = c(l_main_gender,
                    l_pilot_gender)
