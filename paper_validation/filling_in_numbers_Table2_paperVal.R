@@ -36,12 +36,39 @@ l_13331 = unique(l_13331$V1)
 length(l_13331)
 # 13331
 
-# Abs number for females
+# # Check absolute numbers gender for these 13331
 aver = clin_data %>% filter(participant_id %in% l_13331) %>% select(participant_phenotypic_sex, participant_id) %>% unique()
+table(aver$participant_phenotypic_sex)
+#female Female   male   Male 
+#297   5516    348   7130 
+length(unique(aver$participant_id))
+# 13291
 
+# There are 40 platekeys missing --> they are from RE V6
+l_missing = setdiff(l_13331, aver$participant_id)
+clin_data_V6 = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_100720_V6.tsv",
+                        stringsAsFactors = F,
+                        sep = "\t",
+                        header = T)
+dim(clin_data_V6)
+# 775234  31
 
-# Check absolute numbers gender for these 13331
+aver_missing = clin_data_V6 %>% filter(participant_id %in% l_missing) %>% select(participant_id, participant_phenotypic_sex) %>% unique()
+table(aver_missing$participant_phenotypic_sex)
+# Female   Male 
+#18     21
+length(unique(aver_missing$participant_id))
+# 39 
 
+# which missing?
+setdiff(l_missing, aver_missing$participant_id)
+# 119000713
+
+# total number of females in 13,331
+18 + 297 + 5516 = 5831
+# total number of males in 13,331
+21 + 
+  
 # Removing platekey and genome assembly columns, since I'm interested in PID, and it's easier to deduplicate tables
 table_diseases = table_diseases[-1]
 table_diseases = table_diseases[-3]
