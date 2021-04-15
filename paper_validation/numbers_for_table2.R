@@ -154,9 +154,17 @@ clin_data = clin_data %>%
 clin_data = clin_data %>%
   filter(!grepl("Charcot-Marie-Tooth disease", diseases_list, ignore.case = T))
 
+# Merge ADULTS only for the specified disease-list + the rest
+clin_data = rbind(clin_data,
+                  clin_data_adults_only)  
+clin_data = unique(clin_data)
+dim(clin_data)
+# 28504  27
 
-  
-
+length(unique(clin_data$participant_id))
+# 14476
+length(unique(clin_data$latest_platekey))
+# 14476
 
 l_independent_diseases_adults = c("Hereditary spastic paraplegia",
                                   "'Early onset and familial Parkinson''s Disease'",
