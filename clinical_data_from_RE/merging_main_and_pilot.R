@@ -126,30 +126,30 @@ clin_data = rbind(clin_data,
                   clin_data_V7)
 clin_data = unique(clin_data)
 dim(clin_data)
-#
+# 2463621  36
 
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
-# 87139  2
+# 88512  2
 
 # Let´s put all HPO terms into 1 single string splitted by ','
 list_hpos = clin_data %>% group_by(participant_id) %>% summarise(hpo_list = toString(unique(hpo_term))) %>% ungroup() %>% as.data.frame()
 dim(list_hpos)
-# 87139  2
+# 88512  2
 
 # Let's put all specific diseases into 1 single string splitted by ','
 list_diseases = clin_data %>% group_by(participant_id) %>% summarise(diseases_list = toString(unique(normalised_specific_disease))) %>% ungroup() %>% as.data.frame()
 dim(list_diseases)
-# 87139  2
+# 88512  2
 
 list_disease_group = clin_data %>% group_by(participant_id) %>% summarise(diseasegroup_list = toString(unique(disease_group))) %>% ungroup() %>% as.data.frame()
 dim(list_disease_group)
-# 87139  2
+# 88512  2
 
 list_disease_subgroup = clin_data %>% group_by(participant_id) %>% summarise(diseasesubgroup_list = toString(unique(disease_sub_group))) %>% ungroup() %>% as.data.frame()
 dim(list_disease_subgroup)
-# 87139  2
+# 88512  2
 
 # Remove the panels and hpo columns, and include the list of panels and hpo respectively
 clin_data = clin_data %>% 
@@ -157,37 +157,37 @@ clin_data = clin_data %>%
          participant_phenotypic_sex, participant_type, programme, type, family_group_type, affection_status, superpopu, clinic_sample_collected_at_gmc, clinic_sample_collected_at_gmc_trust, case_solved_family,
          registered_at_gmc_trust, rescty, postdist)
 dim(clin_data)
-# 2440099  21
+# 2463621  21
 
 clin_data = left_join(clin_data,
                       list_diseases,
                       by = "participant_id")
 dim(clin_data)
-# 2440099  22
+# 2463621  22
 
 clin_data = left_join(clin_data,
                       list_disease_group,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 23
+# 2463621 23
 
 clin_data = left_join(clin_data,
                       list_disease_subgroup,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 24
+# 2463621 24
 
 clin_data = left_join(clin_data,
                       list_panels,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 25
+# 2463621 25
 
 clin_data = left_join(clin_data,
                       list_hpos,
                       by = "participant_id")
 dim(clin_data)
-# 2440099 26
+# 2463621 26
 
 # Enrich clin_data with pilot_clin_data, keeping diff fields as `.`
 colnames(pilot_clin_data) = c("participant_id", "platekey", "rare_diseases_family_id", "participant_phenotypic_sex", "biological_relationship_to_proband", "affection_status", "year_of_birth", 
@@ -228,7 +228,7 @@ colnames(pilot_clin_data) = colnames(clin_data)
 clin_data = rbind(clin_data,
                   pilot_clin_data)
 dim(clin_data)
-# 2444933  26
+# 2468455  26
 
 # Check genQA cases
 df_genQA = read.csv("~/Documents/STRs/VALIDATION/genQA/genQA/merged_batch1_batch3_STRs.tsv",
@@ -276,7 +276,7 @@ colnames(df_genQA) = colnames(clin_data)
 clin_data = rbind(clin_data,
                   df_genQA)
 dim(clin_data)
-# 2444984  26
+# 2468506  26
 
 # Write into a file
 write.table(clin_data,
