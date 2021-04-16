@@ -67,10 +67,10 @@ table_diseases_dedup = table_diseases %>%
 table_diseases_dedup = table_diseases_dedup[,-2]
 table_diseases_dedup = unique(table_diseases_dedup)
 dim(table_diseases_dedup)
-# 29124  26
+# 28300  26
 
 write.table(table_diseases_dedup,
-            "./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics.tsv",
+            "./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics_withouth_Mitochondrial.tsv",
             quote = F,
             row.names = F, col.names = T, sep = "\t")
 
