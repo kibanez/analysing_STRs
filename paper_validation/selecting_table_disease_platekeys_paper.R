@@ -45,18 +45,18 @@ table_diseases = clin_data %>%
            grepl("Hereditary spastic paraplegia", diseases_list, ignore.case = T) |
            grepl("Skeletal Muscle Channelopathies", diseases_list, ignore.case = T) |
            grepl("Early onset and familial Parkinson's Disease", diseases_list, ignore.case = T) |
-           grepl("Mitochondrial disorders", diseases_list, ignore.case = T) |
+           #grepl("Mitochondrial disorders", diseases_list, ignore.case = T) |
            grepl("Kabuki syndrome", diseases_list, ignore.case = T) |
            grepl("Ultra-rare undescribed monogenic disorders", diseases_list, ignore.case = T) | 
            grepl("Complex Parkin", diseases_list, ignore.case = T))
 dim(table_diseases)           
-# 1339160  26 
+# 1283953  26 
 
 # Check unique number of platekeys and PIDs
 length(unique(table_diseases$platekey))
-# 14905
+# 14534
 length(unique(table_diseases$participant_id))
-# 14789
+# 14421
 
 table_diseases_dedup = table_diseases %>% 
   group_by(participant_id) %>%
