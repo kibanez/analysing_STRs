@@ -30,6 +30,20 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
 dim(table_diseases_pilot)
 # 660  13
 
+# Load latest clinical data for these diseases for the paper - April 2021
+clin_data = read.csv("./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics_withouth_Mitochondrial.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F)
+dim(clin_data)
+# 28300 26
+
+# Define AGE, by using YOB - keeping year of the analysis
+clin_data = clin_data %>%
+  group_by(participant_id) %>%
+  mutate(age = 2020 - year_of_birth) %>%
+  ungroup() %>%
+  as.data.frame()
+
 # Define AGE, by using YOB
 table_diseases = table_diseases %>%
   group_by(participant_id) %>%
