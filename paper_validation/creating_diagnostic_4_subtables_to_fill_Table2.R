@@ -173,7 +173,7 @@ table_a = rbind(table_a,
 
 total_pids = c(total_pids, table_a$participant_id)
 length(unique(total_pids))
-# 3555
+# 3279
 
 # select diseases we are interested for TABLE A - PILOT
 table_a_pilot = table_diseases_pilot %>%
@@ -182,16 +182,23 @@ table_a_pilot = table_diseases_pilot %>%
                                 "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
                                 "Early onset dystonia",
                                 "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
-                                "Hereditary ataxia",
+                                #"Hereditary ataxia",
                                 "Hereditary spastic paraplegia",
-                                "Early onset and familial Parkinson's Disease"))
+                                "Early onset and familial Parkinson's Disease"),
+         adult.paediatric %in% "Adult")
 dim(table_a_pilot)
-# 418  15
+# 267  15
+
+table_a_pilot = rbind(table_a_pilot,
+                      table_diseases_pilot %>%
+                        filter(specificDisease %in% "Hereditary ataxia",adult.paediatric %in% "Adult"))
+dim(table_a_pilot)
+# 402 15
 
 total_pids = c(total_pids,
                table_a_pilot$gelID)
 length(unique(total_pids))
-# 3963
+# 3671
 
 # Let's see number of participants fROM ROW DATA
 # Let's simplify the table
@@ -199,7 +206,6 @@ table_a = table_a %>%
   select(participant_id, normalised_specific_disease, adult.paediatric, participant_phenotypic_sex, participant_ethnic_category, age)
 table_a_pilot = table_a_pilot %>%
   select(gelID, specificDisease, adult.paediatric, sex, age)
-
 
 # Let's recode the ethnicity, simplifying it
 table_a$participant_ethnic_category = recode(table_a$participant_ethnic_category,
@@ -235,7 +241,7 @@ length(l_pid_ha_main)
 table_a_pilot %>% filter(specificDisease %in% "Hereditary ataxia")  %>% select(specificDisease) %>% unique()
 l_pid_ha_pilot = table_a_pilot %>% filter(specificDisease %in% "Hereditary ataxia")  %>% select(gelID) %>% unique() %>% pull()
 length(l_pid_ha_pilot)
-# 144
+# 135
 
 # Age
 # MAIN
@@ -423,16 +429,16 @@ print(prop.table(table(l_eth_merged)))
 
 ####
 # Let's define the list of genes for Table A
-l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG")
+l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG", "FMR1_CGG")
 
 
 # How many PIDs in the Main?
 length(unique(table_a$participant_id))
-# 3507
+# 3279
 
 # How many PIDs are in the Pilot?
-length(unique(table_a_pilot$plateKey))
-# 408
+length(unique(table_a_pilot$gelID))
+# 392
 
 # List of platekeys
 # After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
@@ -464,7 +470,7 @@ for (i in 1:length(l_genes_tableA)){
   
 }
 dim(expanded_table_main)
-# 310  5
+# 423  5
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
 expanded_table_pilot = data.frame()
