@@ -31,13 +31,13 @@ dim(table_diseases_pilot)
 # 660  13
 
 # Load latest clinical data for these diseases for the paper - April 2021
-clin_data = read.csv("./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics.tsv",
+clin_data = read.csv("./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics_withouth_Mitochondrial.tsv",
                      sep = "\t",
                      stringsAsFactors = F)
 dim(clin_data)
-# 291224 26
+# 28300 26
 
-# Define AGE, by using YOB
+# Define AGE, by using YOB - keeping year of the analysis
 clin_data = clin_data %>%
   group_by(participant_id) %>%
   mutate(age = 2020 - year_of_birth) %>%
@@ -159,12 +159,32 @@ clin_data = rbind(clin_data,
                   clin_data_adults_only)  
 clin_data = unique(clin_data)
 dim(clin_data)
-# 28504  27
+# 27680  27
 
 length(unique(clin_data$participant_id))
-# 14476
+# 14108
 length(unique(clin_data$latest_platekey))
-# 14476
+# 14108
+
+# Select randomly 13331 from above list
+set.seed(512)
+l_PID = sample(unique(clin_data$participant_id), 13331)
+
+clin_data = clin_data %>%
+  filter(participant_id %in% l_PID)
+
+# Mean age
+summary(clin_data$age)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#3.0    11.0    18.0    27.8    43.0   102.0 
+
+# Gender
+aver = clin_data %>% select(participant_id, participant_phenotypic_sex) %>% unique()
+table(aver$participant_phenotypic_sex)
+#female        Female Indeterminate          male          Male 
+#269          5534             1           320          7207 
+# 5803 females
+# 7527 males
 
 l_independent_diseases_adults = c("Hereditary spastic paraplegia",
                                   "'Early onset and familial Parkinson''s Disease'",
@@ -333,43 +353,34 @@ for (i in 1:length(l_independent_diseases_adults)){
   
 }
 
+# From `clin_data` which is already filtered out by 13331 and only adults for some specific disease
+l_independent_diseases = c("Hereditary ataxia",
+                           "Hereditary spastic paraplegia",
+                           "Early onset and familial Parkinson's Disease",
+                           "Complex Parkin",
+                           "Early onset dystonia",
+                           "Early onset dementia",
+                           "Amyotrophic lateral sclerosis",
+                           "Charcot-Marie-Tooth disease",
+                           "Ultra-rare undescribed monogenic disorders",
+                           "Intellectual disability",
+                           "Kabuki syndrome",
+                           "Congenital myopathy",
+                           "Distal myopathies",
+                           "Congenital muscular dystrophy",
+                           "Skeletal Muscle Channelopathies")
             
 for (i in 1:length(l_independent_diseases)){
   print(l_independent_diseases[i])
-  # Unique PIDs
-  l_main_pid = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(participant_id) %>% unique() %>% pull() 
-  l_pilot_pid = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot[i]) %>% select(gelID) %>% unique() %>% pull() 
   
-  l_pid_all = unique(c(l_main_pid,
-                       l_pilot_pid))
-  print(length(l_pid_all))
+  l_disease_PID = clin_data %>% filter(grepl(l_independent_diseases[i], diseases_list)) %>% select(participant_id) %>% unique() %>% pull()
+  print(length(l_disease_PID))
   
   # Age of all
-  l_main_age = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(age) %>% pull() 
-  l_pilot_age = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot[i]) %>% select(age) %>% pull() 
+  clin_data %>% filter(participant_id %in% l_disease_PID) %>% select(age) %>% summary() %>% print()
   
-  l_age_all = c(l_main_age,
-                l_pilot_age)
-  print(summary(l_age_all))
-
   # Gender
-  df_main_gender = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(participant_phenotypic_sex, participant_id)  %>% unique()
-  df_pilot_gender = table_diseases_pilot %>% filter(specificDisease %in% l_independent_diseases_pilot[i]) %>% select(sex, gelID) %>% unique()
-  
-  print(table(df_main_gender$participant_phenotypic_sex))
-  
-  print(table(df_pilot_gender$sex))
-  
-  l_gender_all = c(l_main_gender,
-                   l_pilot_gender)
-  
-  print(table(l_gender_all))
-  
-  # Ethnicity
-  l_main_eth = table_diseases %>% filter(normalised_specific_disease %in% l_independent_diseases[i]) %>% select(participant_ethnic_category)  %>% pull() 
-  print(table(l_main_eth))
-  
-  
-  
+  aver = clin_data %>% filter(participant_id %in% l_disease_PID) %>% select(participant_id, participant_phenotypic_sex) %>% unique()
+  print(table(aver$participant_phenotypic_sex))
 }
 
