@@ -74,31 +74,38 @@ gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pa
 # New variable to count total number of unique participants across A, B, C, and D subtables
 total_pids = c()
 
-
 # Let's define now the 4 subtables for the purpose of the paper
 
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
 # (OR YOU CAN PRODUCE A TABLE USING THE PREMUTATION CUTOFF, BUT I SUSPOECT IT WILL BE VERY NOISY AND WOULD NOT REFELCT THE THRESHOLDS THAT PANELAPP IS CURRENTLY USING)
 
 # select diseases we are interested for TABLE A
+# ONLY ADULTS for all except for HA
 table_a = table_diseases %>%
   filter(normalised_specific_disease %in% c("Amyotrophic lateral sclerosis or motor neuron disease", 
                                             "Charcot-Marie-Tooth disease",
                                             "Early onset dementia", 
                                             "Early onset dystonia", 
                                             "Complex Parkinsonism", 
-                                            "Hereditary ataxia", 
+#                                            "Hereditary ataxia", 
                                             "Hereditary spastic paraplegia",
-                                            "'Early onset and familial Parkinson''s Disease'"))
+                                            "'Early onset and familial Parkinson''s Disease'"),
+          adult.paediatric %in% "Adult")
 dim(table_a)
-# 3518  21
+# 2140  21
+
+table_a = rbind(table_a,
+                table_diseases %>%
+                  filter(normalised_specific_disease %in% "Hereditary ataxia"))
+dim(table_a)
+# 3211 21
 
 # Complex parkinsonism is missing here
 table_a = rbind(table_a,
                 table_diseases %>%
                   filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
 dim(table_a)
-# 3659  21
+# 3352  21
 
 # Let's define list of diseases for Table A, as we have done for the genes
 l_diseases_tableA = unique(table_a$normalised_specific_disease)
