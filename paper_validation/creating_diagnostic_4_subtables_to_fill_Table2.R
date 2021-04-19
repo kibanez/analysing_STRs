@@ -103,9 +103,10 @@ dim(table_a)
 # Complex parkinsonism is missing here
 table_a = rbind(table_a,
                 table_diseases %>%
-                  filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease)))
+                  filter(grepl("[Cc]omplex [Pp]arkin", table_diseases$normalised_specific_disease),
+                adult.paediatric %in% "Adult"))
 dim(table_a)
-# 3352  21
+# 3349  21
 
 # Let's define list of diseases for Table A, as we have done for the genes
 l_diseases_tableA = unique(table_a$normalised_specific_disease)
