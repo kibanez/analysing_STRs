@@ -331,7 +331,21 @@ panel_d = unique(panel_d)
 dim(panel_d)
 # 6731  6
 
+panel_d$panel = rep("D", length(panel_d$participant_id))
+
 # PIDs?
 length(unique(panel_d$participant_id))
 # 6731
 
+# Let's merge all panels in the same table
+panel_merged = rbind(panel_a,
+                     panel_b,
+                     panel_c,
+                     panel_d)
+panel_merged = unique(panel_merged)
+dim(panel_merged)
+# 20871  7
+
+# PIDs?
+length(unique(panel_merged$participant_id))
+# 11619
