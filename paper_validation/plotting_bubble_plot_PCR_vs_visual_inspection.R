@@ -35,6 +35,19 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_rea
 dim(val_data)
 # 509  10
 
+# Change repeat-sizes to sizes -> multiplying them by repeat-motif length
+val_data$exp_PCR_a1 = val_data$exp_PCR_a1 * 3
+val_data$exp_PCR_a2 = val_data$exp_PCR_a2 * 3
+val_data$EHv312_a1_avg_after_visualQC = val_data$EHv312_a1_avg_after_visualQC * 3
+val_data$EHv312_a2_avg_after_visualQC = val_data$EHv312_a2_avg_after_visualQC * 3
+
+# C9orf72 is 6 rather than 3
+index_c9orf72 = which(val_data$locus %in% "C9orf72")
+val_data$exp_PCR_a1[index_c9orf72] = val_data$exp_PCR_a1[index_c9orf72] * 2
+val_data$exp_PCR_a2[index_c9orf72] = val_data$exp_PCR_a2[index_c9orf72] * 2
+val_data$EHv312_a1_avg_after_visualQC[index_c9orf72] = val_data$EHv312_a1_avg_after_visualQC[index_c9orf72] * 2
+val_data$EHv312_a2_avg_after_visualQC[index_c9orf72] = val_data$EHv312_a2_avg_after_visualQC[index_c9orf72] * 2
+
 output_folder = "./figures/"
 
 # Mike's suggestion - 1
