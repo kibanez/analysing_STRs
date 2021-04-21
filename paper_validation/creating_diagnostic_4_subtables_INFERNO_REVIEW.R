@@ -227,117 +227,37 @@ dim(panel_a)
 
 length(unique(panel_a$participant_id))
 # 3680
-
+panel_a$panel = rep("A", length(panel_a$participant_id))
 
 ################################################################################################################################################################
 # TABLE B
 # We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
 
 # load list of 2449 PIDs 
-l_complex_ID_group2 = read.table("list_2576_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
+l_complex_ID_group2 = read.table("./list_2743_PIDs_ID_and_others_as_panels.txt", stringsAsFactors = F)
 l_complex_ID_group2 = l_complex_ID_group2$V1
 length(l_complex_ID_group2)
-# 2576
+# 2743
 
 table_b = table_diseases %>%
   filter(participant_id %in% l_complex_ID_group2)
 dim(table_b)
-# 2962  21
+# 3132  19
 
 length(unique(table_b$plate_key.x))
-# 2576
+# 2743
 
-# Let's define the list of genes for Table B
-l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
+length(unique(table_b$participant_id))
+# 2743
 
-l_platekeys_tableB = unique(table_b$plate_key.x)
+panel_b = table_b %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease)
+panel_b$panel = rep("B", length(panel_b$participant_id))
+panel_b = unique(panel_b)
+dim(panel_b)
+# 2851  7
 
-# Define specific thresholds for TABLE B
-gene_pathogenic_threshold_tableB = data.frame(locus = l_genes_tableB,
-                                              threshold = c(63,44,60,75,90,60,60))
-
-# Now, we want to see how many of them have an expansion on any of the genes in B
-expanded_table_main = data.frame()
-for (i in 1:length(l_genes_tableB)){
-  locus_name = l_genes_tableB[i]
-  patho_cutoff = gene_pathogenic_threshold_tableB %>% 
-    filter(locus %in% locus_name) %>%
-    select(threshold) %>%
-    pull()
-  
-  print(locus_name)
-  print(patho_cutoff)
-  
-  expanded_table_main = rbind(expanded_table_main,
-                              repeats_table_main %>% 
-                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
-                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
-  
-}
-dim(expanded_table_main)
-# 28  5
-
-# separate platekeys
-expanded_table_main_per_locus = data.frame()
-index_kutre = 1
-for (i in 1:length(expanded_table_main$gene)){
-  list_affected_vcf = strsplit(expanded_table_main$list_samples[i], ';')[[1]]
-  for (j in 1:length(list_affected_vcf)){
-    expanded_table_main_per_locus = rbind(expanded_table_main_per_locus,
-                                          expanded_table_main[i,])
-    expanded_table_main_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
-    index_kutre = index_kutre + 1
-  }
-}
-expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
-dim(expanded_table_main_per_locus)
-# 187  5
-
-# From the expanded table, let's see how many are in l_platekeys_tableB
-expanded_table_main_in_tableB = expanded_table_main_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableB)
-dim(expanded_table_main_in_tableB)
-# 11  5
-
-# Let' enrich expanded TABLE B repeats with clinical data from `table_b`
-table_b_expanded = left_join(expanded_table_main_in_tableB,
-                             table_b,
-                             by = c("list_samples" = "plate_key.x"))
-dim(table_b_expanded)
-# 12  25
-
-# Simplify output TableB
-table_b_expanded = table_b_expanded %>%
-  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
-         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
-         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
-colnames(table_b_expanded)[1] = "platekey" 
-colnames(table_b_expanded)[3] = "repeat_size" 
-write.table(table_b_expanded, "subtables/TableB_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
-
-# This is the raw data for Table B - Main
-# We want to compute all diseases in the coctail of `l_diseases_tableB` as 1
-l_diseases_tableB = unique(table_b$normalised_specific_disease)
-matrix_to_print = matrix(nrow  = length(l_diseases_tableB), ncol = length(l_genes_tableB))
-for(i in 1:length(l_diseases_tableB)){
-  for (j in 1:length(l_genes_tableB)){
-    number_to_print = table_b_expanded %>% 
-      filter(normalised_specific_disease %in% l_diseases_tableB[i], gene %in% l_genes_tableB[j]) %>% 
-      select(participant_id) %>% unique() %>% pull() %>% length()
-    
-    print(l_diseases_tableB[i])
-    print(l_genes_tableB[j])
-    print(number_to_print)
-    matrix_to_print[i,j] = number_to_print
-  }
-}
-
-rownames(matrix_to_print) = l_diseases_tableB
-colnames(matrix_to_print) = l_genes_tableB
-
-write.table(matrix_to_print, "./subtables/tableB_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
-
-
+length(unique(panel_b$participant_id))
+# 2743
 ################################################################################################################################################################
 # TABLE C
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
