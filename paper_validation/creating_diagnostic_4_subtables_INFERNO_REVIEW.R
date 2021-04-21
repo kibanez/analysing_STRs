@@ -271,7 +271,7 @@ table_c = table_diseases %>%
                                             "Skeletal Muscle Channelopathies",
                                             "Distal myopathies"))
 dim(table_c)
-# 7695  21
+# 7695  19
 
 # PILOT
 table_c_pilot = table_diseases_pilot %>%
@@ -282,148 +282,25 @@ table_c_pilot = table_diseases_pilot %>%
                                 "Skeletal Muscle Channelopathies",
                                 "Distal myopathies"))
 dim(table_c_pilot)
-# 242  15
+# 242  13
 
-# Let's define the list of genes for Table C
-l_genes_tableC = c("DMPK_CTG")
+table_c = table_c %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease)
+table_c_pilot = table_c_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease)
+colnames(table_c_pilot) = colnames(table_c)
 
-# How many PIDs in the Main?
-length(unique(table_c$participant_id))
-# 7345
+panel_c = rbind(table_c,
+                table_c_pilot)
+panel_c = unique(panel_c)
+dim(panel_c)
+# 7592  6
 
-# How many PIDs are in the Pilot?
-length(unique(table_c_pilot$plateKey))
-# 241
+panel_c$panel = rep("C", length(panel_c$participant_id))
 
-l_platekeys_tableC = unique(table_c$plate_key.x)
-l_platekeys_tableC_pilot = unique(table_c_pilot$plateKey)
-
-# Now, we want to see how many of them have an expansion on any of the genes in `DMPK` (cutoff >= 50)
-expanded_table_main = data.frame()
-for (i in 1:length(l_genes_tableC)){
-  locus_name = l_genes_tableC[i]
-  patho_cutoff = gene_pathogenic_threshold %>% 
-    filter(locus %in% locus_name) %>%
-    select(threshold) %>%
-    pull()
-  
-  print(locus_name)
-  print(patho_cutoff)
-  
-  expanded_table_main = rbind(expanded_table_main,
-                              repeats_table_main %>% 
-                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
-                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
-  
-}
-dim(expanded_table_main)
-# 55  5
-
-# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
-expanded_table_pilot = data.frame()
-for (i in 1:length(l_genes_tableC)){
-  locus_name = l_genes_tableC[i]
-  patho_cutoff = gene_pathogenic_threshold %>% 
-    filter(locus %in% locus_name) %>%
-    select(threshold) %>%
-    pull()
-  
-  print(locus_name)
-  print(patho_cutoff)
-  
-  expanded_table_pilot = rbind(expanded_table_pilot,
-                               repeats_table_pilot %>% 
-                                 filter(gene %in% locus_name, allele >= patho_cutoff) %>%
-                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
-  
-}
-dim(expanded_table_pilot)
-# 2  5
-
-# separate platekeys
-expanded_table_main_per_locus = data.frame()
-index_kutre = 1
-for (i in 1:length(expanded_table_main$gene)){
-  list_affected_vcf = strsplit(expanded_table_main$list_samples[i], ';')[[1]]
-  for (j in 1:length(list_affected_vcf)){
-    expanded_table_main_per_locus = rbind(expanded_table_main_per_locus,
-                                          expanded_table_main[i,])
-    expanded_table_main_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
-    index_kutre = index_kutre + 1
-  }
-}
-expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
-dim(expanded_table_main_per_locus)
-# 88  5
-
-# The same for PILOT
-expanded_table_pilot_per_locus = data.frame()
-index_kutre = 1
-for (i in 1:length(expanded_table_pilot$gene)){
-  list_affected_vcf = strsplit(expanded_table_pilot$list_samples[i], ';')[[1]]
-  for (j in 1:length(list_affected_vcf)){
-    expanded_table_pilot_per_locus = rbind(expanded_table_pilot_per_locus,
-                                           expanded_table_pilot[i,])
-    expanded_table_pilot_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
-    index_kutre = index_kutre + 1
-  }
-}
-expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
-dim(expanded_table_pilot_per_locus)
-# 2  5
-
-# From the expanded table, let's see how many are in l_platekeys_tableC
-expanded_table_main_in_tableC = expanded_table_main_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableC)
-dim(expanded_table_main_in_tableC)
-# 16  5
-
-# The same por PILOT
-expanded_table_pilot_in_tableC = expanded_table_pilot_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableC_pilot)
-dim(expanded_table_pilot_in_tableC)
-# 0  5
-
-# Let' enrich expanded TABLE C repeats with clinical data from `table_a`
-table_c_expanded = left_join(expanded_table_main_in_tableC,
-                             table_c,
-                             by = c("list_samples" = "plate_key.x"))
-dim(table_c_expanded)
-# 16  25
-
-# PILOT - nothing to merge
-
-# Simplify output TableC
-table_c_expanded = table_c_expanded %>%
-  select(list_samples, gene, allele, Repeat_Motif, participant_id, programme, genome_build, programme_consent_status, rare_diseases_family_id, biological_relationship_to_proband, 
-         affection_status, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, disease_sub_group, disease_group, family_group_type, family_medical_review_qc_state_code, 
-         panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
-colnames(table_c_expanded)[1] = "platekey" 
-colnames(table_c_expanded)[3] = "repeat_size" 
-write.table(table_c_expanded, "subtables/TableC_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
-
-# This is the raw data for Table C - Main
-# Let's do numbers for DMPK and disease
-
-l_diseases_tableC = unique(table_c$normalised_specific_disease)
-matrix_to_print = matrix(nrow  = length(l_diseases_tableC), ncol = 1)
-for(i in 1:length(l_diseases_tableC)){
-  for (j in 1:length(l_genes_tableC)){
-    number_to_print = table_c_expanded %>% 
-      filter(normalised_specific_disease %in% l_diseases_tableC[i], gene %in% l_genes_tableC[j]) %>% 
-      select(participant_id) %>% unique() %>% pull() %>% length()
-    
-    print(l_diseases_tableC[i])
-    print(l_genes_tableC[j])
-    print(number_to_print)
-    matrix_to_print[i,j] = number_to_print
-  }
-}
-
-rownames(matrix_to_print) = l_diseases_tableC
-colnames(matrix_to_print) = l_genes_tableC
-
-write.table(matrix_to_print, "./subtables/tableC_main_for_excel.tsv", sep = "\t", row.names = T, col.names = T, quote = F)
+# How many PIDs
+length(unique(panel_c$participant_id))
+# 7586
+length(unique(panel_c$plate_key.x))
+# 7586
 
 ################################################################################################################################################################
 # TABLE D. only including children recruited under ID (using >55. as cutoff)	
