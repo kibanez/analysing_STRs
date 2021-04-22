@@ -16,20 +16,20 @@ setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
 # Load table with the diagnostics 
 # Main table
-table_diseases = read.csv("april2021_tableDiseases_12686_individuals_main.tsv",
+table_diseases = read.csv("./table_diseases_enriched_popu_includingSkeletalMuscleChan_and_ultra-rare.tsv",
                           stringsAsFactors = F, 
                           header = T,
                           sep = "\t")
 dim(table_diseases)
-# 13298  16
+# 13868  19
 
 # Pilot table
-table_diseases_pilot = read.csv("april2021_tableDiseases_645_individuals_pilot.tsv",
+table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
                                 stringsAsFactors = F,
                                 header = T,
                                 sep = "\t")
 dim(table_diseases_pilot)
-# 660  11
+# 660  13
 
 # Define AGE, by using YOB
 table_diseases = table_diseases %>%
@@ -349,3 +349,114 @@ dim(panel_merged)
 # PIDs?
 length(unique(panel_merged$participant_id))
 # 11619
+
+
+##############
+
+to_check_ultra_platekeys = table_diseases %>% filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders") %>% select(plate_key.x) %>% unique() %>% pull() 
+
+# Check 1517 ultra-rare have expansions ?
+# We need to load here the repeat-size estimations for all them - EHv255
+repeats_table_main = read.csv("~/Documents/STRs/data/research/EH_2.5.5_research_August2019/EH_output_v2.5.5_research_August_2019/merged_genotypeUpdated/merged_loci_86457_research_genomes_new_loci_EHv2.5.5_summer2019_removingListVcfFiles.tsv",
+                              stringsAsFactors = F,
+                              header = T,
+                              sep = "\t")
+dim(repeats_table_main)
+# 3983  11
+
+# recode repeats_table_main: FMR1 for b37 is `FMR1` and `FMR1_CGG` for b38, let's recode
+repeats_table_main$gene = recode(repeats_table_main$gene,
+                                 "FMR1" = "FMR1_CGG")
+# Load the pathogenic threshold for the loci
+gene_pathogenic_threshold = read.csv("~/git/analysing_STRs/threshold_smallest_pathogenic_reported.txt",
+                                     sep = "\t",
+                                     stringsAsFactors = F)
+
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
+l_genes_tableA = c("AR_CAG", "ATN1_CAG", "ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "CACNA1A_CAG", "C9orf72_GGGGCC", "FXN_GAA", "HTT_CAG", "TBP_CAG", "FMR1_CGG")
+
+expanded_table_main = data.frame()
+for (i in 1:length(l_genes_tableA)){
+  locus_name = l_genes_tableA[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_main = rbind(expanded_table_main,
+                              repeats_table_main %>% 
+                                filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_main)
+# 423  5
+
+# Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA` - but for Pilot data
+expanded_table_pilot = data.frame()
+for (i in 1:length(l_genes_tableA)){
+  locus_name = l_genes_tableA[i]
+  patho_cutoff = gene_pathogenic_threshold %>% 
+    filter(locus %in% locus_name) %>%
+    select(threshold) %>%
+    pull()
+  
+  print(locus_name)
+  print(patho_cutoff)
+  
+  expanded_table_pilot = rbind(expanded_table_pilot,
+                               repeats_table_pilot %>% 
+                                 filter(gene %in% locus_name, allele >= patho_cutoff) %>%
+                                 select(gene, allele, Repeat_Motif, num_samples, list_samples))
+  
+}
+dim(expanded_table_pilot)
+# 69  5
+
+expanded_table_main_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_main$gene)){
+  list_affected_vcf = strsplit(expanded_table_main$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_main_per_locus = rbind(expanded_table_main_per_locus,
+                                          expanded_table_main[i,])
+    expanded_table_main_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
+dim(expanded_table_main_per_locus)
+# 3718  5
+
+# The same for PILOT
+expanded_table_pilot_per_locus = data.frame()
+index_kutre = 1
+for (i in 1:length(expanded_table_pilot$gene)){
+  list_affected_vcf = strsplit(expanded_table_pilot$list_samples[i], ';')[[1]]
+  for (j in 1:length(list_affected_vcf)){
+    expanded_table_pilot_per_locus = rbind(expanded_table_pilot_per_locus,
+                                           expanded_table_pilot[i,])
+    expanded_table_pilot_per_locus$list_samples[index_kutre] = sub(".vcf", "", sub("EH_", "", list_affected_vcf[j]))
+    index_kutre = index_kutre + 1
+  }
+}
+expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
+dim(expanded_table_pilot_per_locus)
+# 176  5
+
+# From the expanded table, let's see how many are in l_platekeys_tableA
+expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
+  filter(list_samples %in% to_check_ultra_platekeys)
+dim(expanded_table_main_in_tableA)
+# 65  5
+
+# The same por PILOT
+expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
+  filter(list_samples %in% to_check_ultra_platekeys)
+dim(expanded_table_pilot_in_tableA)
+# 0  5
+
+write.table(expanded_table_main_in_tableA, "./ultra-rare_expanded_MAIN.tsv", quote = F, col.names = T, row.names = F, sep = "\t")
