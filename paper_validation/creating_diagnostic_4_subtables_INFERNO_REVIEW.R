@@ -260,7 +260,7 @@ table_c = table_diseases %>%
                                             "Skeletal Muscle Channelopathies",
                                             "Distal myopathies"))
 dim(table_c)
-# 7695  19
+# 7695  21
 
 # PILOT
 table_c_pilot = table_diseases_pilot %>%
@@ -271,17 +271,17 @@ table_c_pilot = table_diseases_pilot %>%
                                 "Skeletal Muscle Channelopathies",
                                 "Distal myopathies"))
 dim(table_c_pilot)
-# 242  13
+# 242  15
 
-table_c = table_c %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease)
-table_c_pilot = table_c_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease)
+table_c = table_c %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
+table_c_pilot = table_c_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease, panel_list)
 colnames(table_c_pilot) = colnames(table_c)
 
 panel_c = rbind(table_c,
                 table_c_pilot)
 panel_c = unique(panel_c)
 dim(panel_c)
-# 7592  6
+# 7592  7
 
 panel_c$panel = rep("C", length(panel_c$participant_id))
 
