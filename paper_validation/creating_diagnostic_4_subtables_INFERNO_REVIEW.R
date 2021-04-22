@@ -194,7 +194,7 @@ table_a_pilot = rbind(table_a_pilot,
                       table_a_pilot_HA)
 table_a_pilot = unique(table_a_pilot)
 dim(table_a_pilot)
-# 411 13
+# 411 15
 
 # How many PIDs are in the Pilot?
 length(unique(table_a_pilot$plateKey))
@@ -203,8 +203,8 @@ length(unique(table_a_pilot$gelID))
 # 401
 
 # Let's select the interesting columns for Table 2
-table_a = table_a %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease)
-table_a_pilot = table_a_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease)
+table_a = table_a %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
+table_a_pilot = table_a_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease, panel_list)
 colnames(table_a_pilot) = colnames(table_a)
 
 # Let's merge MAIN and PILOT
@@ -212,7 +212,7 @@ panel_a = rbind(table_a,
                 table_a_pilot)
 panel_a = unique(panel_a)
 dim(panel_a)
-# 3697  6
+# 3697  7
 
 length(unique(panel_a$participant_id))
 # 3680
