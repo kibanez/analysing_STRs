@@ -231,7 +231,7 @@ length(l_complex_ID_group2)
 table_b = table_diseases %>%
   filter(participant_id %in% l_complex_ID_group2)
 dim(table_b)
-# 3132  19
+# 3132  21
 
 length(unique(table_b$plate_key.x))
 # 2743
@@ -239,11 +239,11 @@ length(unique(table_b$plate_key.x))
 length(unique(table_b$participant_id))
 # 2743
 
-panel_b = table_b %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease)
+panel_b = table_b %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
 panel_b$panel = rep("B", length(panel_b$participant_id))
 panel_b = unique(panel_b)
 dim(panel_b)
-# 2851  7
+# 2851  8
 
 length(unique(panel_b$participant_id))
 # 2743
