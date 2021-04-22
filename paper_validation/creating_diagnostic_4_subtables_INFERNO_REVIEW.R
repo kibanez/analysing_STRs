@@ -310,15 +310,15 @@ table_d_pilot = table_diseases_pilot %>%
 dim(table_d_pilot)
 # 161  13
 
-table_d = table_d %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease)
-table_d_pilot = table_d_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease)
+table_d = table_d %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
+table_d_pilot = table_d_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease, panel_list)
 colnames(table_d_pilot) = colnames(table_d)
 
 panel_d = rbind(table_d,
                 table_d_pilot)
 panel_d = unique(panel_d)
 dim(panel_d)
-# 6731  6
+# 6731  7
 
 panel_d$panel = rep("D", length(panel_d$participant_id))
 
@@ -333,7 +333,7 @@ panel_merged = rbind(panel_a,
                      panel_d)
 panel_merged = unique(panel_merged)
 dim(panel_merged)
-# 20871  7
+# 20871  8
 
 # PIDs?
 length(unique(panel_merged$participant_id))
