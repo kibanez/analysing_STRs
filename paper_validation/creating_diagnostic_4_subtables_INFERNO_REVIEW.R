@@ -49,12 +49,6 @@ table_diseases = mutate(table_diseases, adult.paediatric = ifelse(age < 18, "Pae
 table_diseases_pilot = mutate(table_diseases_pilot, adult.paediatric = ifelse(age < 18, "Paediatric", "Adult"))
 
 # Let's compute the denominator of number of individuals included in Panel A
-
-
-
-
-
-
 # Let's define now the 4 subtables for the purpose of the paper
 
 # TABLE A. ONLY INCLUDING ADULTS (I.E. >= 18 IN 2020, EXCEPT FXN WHERE WE INCLUDE CHILDREN), USING FULL-MUTATION CUTOFF THRESHOLD  
@@ -97,11 +91,6 @@ table_HA =  table_a %>%
 table_a = table_a %>%
   filter(!normalised_specific_disease%in% "Hereditary ataxia",
          adult.paediatric %in% "Adult")
-
-# Let's define list of diseases for Table A, as we have done for the genes
-l_diseases_tableA = unique(table_a$normalised_specific_disease)
-length(l_diseases_tableA)
-# 8
 
 # Let's select panels from `Ultra-rare disorder``
 # List panels
@@ -165,14 +154,14 @@ table_a_part2 = table_a_part2 %>%
 dim(table_a_part2)
 # 49  22
 
-table_a_part2 = table_a_part2[,-19]
+table_a_part2 = table_a_part2[,-22]
 
 table_a = rbind(table_a,
                 table_HA,
                 table_a_part2)
 table_a = unique(table_a)
 dim(table_a)
-# 3398  18
+# 3398  21
 
 # How many PIDs?
 length(unique(table_a$participant_id))
