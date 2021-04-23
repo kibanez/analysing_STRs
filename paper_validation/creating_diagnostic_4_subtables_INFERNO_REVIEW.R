@@ -255,7 +255,7 @@ length(unique(panel_a$participant_id))
 panel_a$panel = rep("A", length(panel_a$participant_id))
 
 ################################################################################################################################################################
-# TABLE B
+# TABLE B - Complex ID
 # We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
 
 # load list of 2449 PIDs 
@@ -283,6 +283,40 @@ dim(panel_b)
 
 length(unique(panel_b$participant_id))
 # 2743
+
+# Analysing numbers for Panel B
+# Define here the list of panels we want to have within
+list_panels = c("Genetic epilepsy syndromes", " Genetic epilepsy syndromes",
+                "Congenital muscular dystrophy", " Congenital muscular dystrophy",
+                "Hereditary ataxia"," Hereditary ataxia",
+                " Hereditary spastic paraplegia","Hereditary spastic paraplegia",
+                " Mitochondrial disorders","Mitochondrial disorders",
+                " Inherited white matter disorders","Inherited white matter disorders",
+                "Optic neuropathy", " Optic neuropathy",
+                " Brain channelopathy","Brain channelopathy")
+
+# HPO <-> Panels
+seizures = c("Genetic epilepsy syndromes")
+dystonia = c()
+ataxia = c()
+spastic_paraplegia = c()
+optic_neuropathy = c()
+retinopathy = c()
+white_matter_abnormalities = c()
+muscular_weakness_hypotonia = c()
+
+# Split panels split by commas
+panel_b_panels = panel_b %>% 
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+panel_b_panels = unique(panel_b_panels)
+dim(panel_b_panels)
+# 1395  6
+panel_b_panels$participant_id = as.character(panel_b_panels$participant_id)
+
+
+
 ################################################################################################################################################################
 # TABLE C
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
