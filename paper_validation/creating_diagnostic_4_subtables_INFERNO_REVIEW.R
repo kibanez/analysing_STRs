@@ -297,13 +297,12 @@ list_panels = c("Genetic epilepsy syndromes", " Genetic epilepsy syndromes",
 
 # HPO <-> Panels
 seizures = c("Genetic epilepsy syndromes")
-dystonia = c()
-ataxia = c()
-spastic_paraplegia = c()
-optic_neuropathy = c()
-retinopathy = c()
-white_matter_abnormalities = c()
-muscular_weakness_hypotonia = c()
+#dystonia = c()
+ataxia = c("Hereditary ataxia", "Brain channelopathy")
+spastic_paraplegia = c("Hereditary spastic paraplegia")
+optic_neuropathy_or_retinopathy = c("Optic neuropathy")
+white_matter_abnormalities = c("Inherited white matter disorders")
+muscular_weakness_hypotonia = c("Congenital muscular dystrophy")
 
 # Split panels split by commas
 panel_b_panels = panel_b %>% 
@@ -312,9 +311,12 @@ panel_b_panels = panel_b %>%
   as.data.frame()
 panel_b_panels = unique(panel_b_panels)
 dim(panel_b_panels)
-# 1395  6
+# 19764  9
 panel_b_panels$participant_id = as.character(panel_b_panels$participant_id)
-
+panel_b_panels = panel_b_panels[,-7]
+panel_b_panels = unique(panel_b_panels)
+dim(panel_b_panels)
+# 19764  8
 
 
 ################################################################################################################################################################
