@@ -24,12 +24,12 @@ dim(table_diseases)
 # 13868  19
 
 # Pilot table
-table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enriched_popu.tsv",
+table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_22April2021.tsv",
                                 stringsAsFactors = F,
                                 header = T,
                                 sep = "\t")
 dim(table_diseases_pilot)
-# 660  13
+# 831  11
 
 # Define AGE, by using YOB
 table_diseases = table_diseases %>%
@@ -190,17 +190,53 @@ table_a_pilot = table_a_pilot %>%
   filter(!specificDisease %in% "Hereditary ataxia",
          adult.paediatric %in% "Adult")
 
+table_a_pilot_ultra = table_diseases_pilot %>%
+  filter(specificDisease %in% c("Unknown disorder",
+                                "All recognised syndromes and those with suggestive features"),
+         adult.paediatric %in% "Adult")
+dim(table_a_pilot_ultra)
+# 133 13
+
+# let's make life simple: split into rows panel info
+table_panels_row_pilot = table_diseases_pilot %>% 
+  select(plateKey, gelID, specificDisease, panel_list, adult.paediatric) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+table_panels_row_pilot = unique(table_panels_row_pilot)
+dim(table_panels_row_pilot)
+# 1395  6
+table_panels_row_pilot$gelID = as.character(table_panels_row_pilot$gelID)
+
+# Let's take only those that have any of the panels specified in part2 within list_panels
+table_a_pilot_ultra = table_a_pilot_ultra %>%
+  group_by(gelID) %>%
+  mutate(any_panel_in_listpanels_part2 = any_exist(list_panels_part2, panel_list)) %>%
+  ungroup() %>%
+  as.data.frame()
+dim(table_a_pilot_ultra)
+# 133 14
+
+# just take the ones including any of the panels suggested
+table_a_pilot_ultra = table_a_pilot_ultra %>%
+  filter(any_panel_in_listpanels_part2)
+dim(table_a_pilot_ultra)
+# 14  14
+
+table_a_pilot_ultra = table_a_pilot_ultra[,-14]
+
 table_a_pilot = rbind(table_a_pilot,
-                      table_a_pilot_HA)
+                      table_a_pilot_HA,
+                      table_a_pilot_ultra)
 table_a_pilot = unique(table_a_pilot)
 dim(table_a_pilot)
-# 411 15
+# 425 13
 
 # How many PIDs are in the Pilot?
 length(unique(table_a_pilot$plateKey))
-# 401
+# 413
 length(unique(table_a_pilot$gelID))
-# 401
+# 413
 
 # Let's select the interesting columns for Table 2
 table_a = table_a %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
@@ -212,10 +248,10 @@ panel_a = rbind(table_a,
                 table_a_pilot)
 panel_a = unique(panel_a)
 dim(panel_a)
-# 3697  7
+# 3711  7
 
 length(unique(panel_a$participant_id))
-# 3680
+# 3692
 panel_a$panel = rep("A", length(panel_a$participant_id))
 
 ################################################################################################################################################################
@@ -333,11 +369,107 @@ panel_merged = rbind(panel_a,
                      panel_d)
 panel_merged = unique(panel_merged)
 dim(panel_merged)
-# 20871  8
+# 20885  8
+
+
+panel_merged = rbind(panel_a,
+                     panel_c,
+                     panel_d)
+panel_merged = unique(panel_merged)
+dim(panel_merged)
+# 18034  8
+
 
 # PIDs?
 length(unique(panel_merged$participant_id))
-# 11619
+# 11631
+
+# Calculate for each disease in Table2 summary of age and gender distribution
+l_diseases_table2 = c("Amyotrophic lateral sclerosis or motor neuron disease", 
+                      "Charcot-Marie-Tooth disease",
+                      "Early onset dementia", 
+                      "Early onset dystonia", 
+                      "Complex Parkinsonism", 
+                      "Hereditary ataxia", 
+                      "Hereditary spastic paraplegia",
+                      "'Early onset and familial Parkinson''s Disease'",
+                      "Intellectual disability",
+                      "Kabuki syndrome",
+                      "Congenital muscular dystrophy",
+                      "Congenital myopathy",
+                      "Skeletal Muscle Channelopathies",
+                      "Distal myopathies",
+                      "Ultra-rare undescribed monogenic disorders")
+
+panel_merged = panel_merged %>%
+  group_by(participant_id) %>%
+  mutate(age = 2020 - year_of_birth) %>%
+  ungroup() %>%
+  as.data.frame()
+
+for(i in 1:length(l_diseases_table2)){
+  print(l_diseases_table2[i])
+  
+  l_pid_disease = panel_merged %>% filter(normalised_specific_disease %in% l_diseases_table2[i]) %>% select(participant_id) %>% unique() %>% pull()
+  print(length(l_pid_disease))
+  
+  panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(age) %>% summary() %>% print()
+  
+  # Panel A
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "A") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "B") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "D") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+  
+  panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+  
+}
+
+#complex parkin
+l_complex = panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T)) %>% select(participant_id) %>% unique() %>% pull()
+print(length(l_complex))
+
+panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T)) %>% select(age) %>% summary() %>% print()
+
+panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T)) %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+
+panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T), panel %in% "A") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T), panel %in% "B") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T), panel %in% "C") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T), panel %in% "D") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+
+
+# Ultra-rare in MAIN
+l_pid_disease = panel_merged %>% filter(normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders") %>% select(participant_id) %>% unique() %>% pull()
+print(length(l_pid_disease))
+
+panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(age) %>% summary() %>% print()
+
+panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+
+# Ultra-rare in PILOT
+#"Unknown disorder",
+#"All recognised syndromes and those with suggestive features"
+l_pid_disease = panel_merged %>% 
+  filter(normalised_specific_disease %in% c("Unknown disorder", "All recognised syndromes and those with suggestive features")) %>% 
+  select(participant_id) %>% unique() %>% pull()
+print(length(l_pid_disease))
+
+panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(age) %>% summary() %>% print()
+
+panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+
+panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "A") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "B") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "D") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
+
+
+panel_merged_without_B = panel_merged %>%
+  filter(!panel %in% "B")
+
+length(unique(panel_merged_without_B$participant_id))
+# 11266
 
 
 ##############
