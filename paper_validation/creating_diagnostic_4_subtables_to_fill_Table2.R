@@ -173,7 +173,7 @@ table_a = rbind(table_a,
 
 total_pids = c(total_pids, table_a$participant_id)
 length(unique(total_pids))
-# 3279
+# 3671
 
 # select diseases we are interested for TABLE A - PILOT
 table_a_pilot = table_diseases_pilot %>%
@@ -444,12 +444,12 @@ length(unique(table_a_pilot$gelID))
 # After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
 l_platekeys_tableA = unique(table_a$plate_key.x)
 length(l_platekeys_tableA)
-# 3507
+# 3279
 
 # PILOT
 l_platekeys_tableA_pilot = unique(table_a_pilot$plateKey)
 length(l_platekeys_tableA_pilot)
-# 408
+# 392
 
 # Now, we want to see how many of them have an expansion on any of the genes in `l_genes_tableA`
 expanded_table_main = data.frame()
@@ -491,7 +491,7 @@ for (i in 1:length(l_genes_tableA)){
   
 }
 dim(expanded_table_pilot)
-# 48  5
+# 69  5
 
 # After having selected the diseases, we need to keep only with ADULTS, except for FXN we also get children -- but I'll do this a posteriori
 # And also, focus only in the list of platekeys of Table A
@@ -508,7 +508,7 @@ for (i in 1:length(expanded_table_main$gene)){
 }
 expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
-# 1571  5
+# 3718  5
 
 # The same for PILOT
 expanded_table_pilot_per_locus = data.frame()
@@ -524,58 +524,58 @@ for (i in 1:length(expanded_table_pilot$gene)){
 }
 expanded_table_pilot_per_locus = unique(expanded_table_pilot_per_locus)
 dim(expanded_table_pilot_per_locus)
-# 88  5
+# 176  5
 
 # From the expanded table, let's see how many are in l_platekeys_tableA
 expanded_table_main_in_tableA = expanded_table_main_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA)
 dim(expanded_table_main_in_tableA)
-# 114  5
+# 187  5
 
 # The same por PILOT
 expanded_table_pilot_in_tableA = expanded_table_pilot_per_locus %>%
   filter(list_samples %in% l_platekeys_tableA_pilot)
 dim(expanded_table_pilot_in_tableA)
-# 12  5
+# 17  5
 
 # Let' enrich expanded TABLE A repeats with clinical data from `table_a`
 table_a_expanded = left_join(expanded_table_main_in_tableA,
                     table_a,
                     by = c("list_samples" = "plate_key.x"))
 dim(table_a_expanded)
-# 120  25
+# 193  25
 
 # PILOT
 table_a_pilot_expanded = left_join(expanded_table_pilot_in_tableA,
                                    table_a_pilot,
                                    by = c("list_samples" = "plateKey"))
 dim(table_a_pilot_expanded)
-# 12  19
+# 17  19
 
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
 # We also focus on our list of genes
 table_a_expanded = table_a_expanded %>%
   filter(gene %in% l_genes_tableA)
 dim(table_a_expanded)
-# 120  25
+# 193  25
 
 # Focus ONLY in adults
 # FXN exception
 table_a_FXN = table_a_expanded %>%
   filter(gene %in% "FXN_GAA")
 dim(table_a_FXN)  
-# 53  25
+# 52  25
 
 table_a_expanded = table_a_expanded %>%
   filter(adult.paediatric %in% "Adult")
 dim(table_a_expanded)
-# 107  25
+# 190  25
 
 table_a_expanded = rbind(table_a_expanded,
                          table_a_FXN)
 table_a_expanded = unique(table_a_expanded)
 dim(table_a_expanded)
-# 112 25
+# 190 25
 
 # Simplify output TableA
 table_a_expanded = table_a_expanded %>%
@@ -586,7 +586,7 @@ colnames(table_a_expanded)[1] = "platekey"
 colnames(table_a_expanded)[3] = "repeat_size" 
 
 
-write.table(table_a_expanded, "subtables/TableA_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_a_expanded, "subtables/TableA_main_190421.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # PILOT
 # Let's filter out paediatric, and keep only ADULTS from this table, with exception for FXN (we keep all)
@@ -594,7 +594,7 @@ write.table(table_a_expanded, "subtables/TableA_main.tsv", quote = F, row.names 
 table_a_pilot_expanded = table_a_pilot_expanded %>%
   filter(gene %in% l_genes_tableA)
 dim(table_a_pilot_expanded)
-# 12  19
+# 17  19
 
 # Focus ONLY in adults
 # FXN exception
@@ -606,13 +606,13 @@ dim(table_a_pilot_FXN)
 table_a_pilot_expanded = table_a_pilot_expanded %>%
   filter(adult.paediatric %in% "Adult")
 dim(table_a_pilot_expanded)
-# 12  19
+# 17  19
 
 table_a_pilot_expanded = rbind(table_a_pilot_expanded,
                                table_a_pilot_FXN)
 table_a_pilot_expanded = unique(table_a_pilot_expanded)
 dim(table_a_pilot_expanded)
-# 12  19
+# 17  19
 
 # Simplify output PILOT TableA
 table_a_pilot_expanded = table_a_pilot_expanded %>%
@@ -622,7 +622,7 @@ colnames(table_a_pilot_expanded)[1] = "platekey"
 colnames(table_a_pilot_expanded)[3] = "repeat_size" 
 
 
-write.table(table_a_pilot_expanded, "subtables/TableA_pilot.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_a_pilot_expanded, "subtables/TableA_pilot_190421.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 
 # This is the raw data for Table A - Main
