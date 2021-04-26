@@ -296,8 +296,8 @@ list_panels = c("Genetic epilepsy syndromes", " Genetic epilepsy syndromes",
                 " Brain channelopathy","Brain channelopathy")
 
 # HPO <-> Panels
-seizures = c("Genetic epilepsy syndromes")
-#dystonia = c()
+seizures = c("Genetic epilepsy syndromes", "Epileptic encephalopathy")
+dystonia = c("Early onset dystonia")
 ataxia = c("Hereditary ataxia", "Brain channelopathy")
 spastic_paraplegia = c("Hereditary spastic paraplegia")
 optic_neuropathy_or_retinopathy = c("Optic neuropathy")
@@ -318,6 +318,66 @@ panel_b_panels = unique(panel_b_panels)
 dim(panel_b_panels)
 # 19764  8
 
+# Let's pull out PIDs having a panel 
+l_pids_ID = panel_b_panels %>% filter(grepl("Intellectual disability", panels)) %>% select(participant_id) %>% unique() %>% pull() 
+
+l_pid_dystonia = panel_b_panels %>% filter(grepl(dystonia, panels)) %>% select(participant_id) %>% unique() %>% pull() 
+
+l_pid_seizures_part1 = panel_b_panels %>% filter(grepl("Genetic epilepsy syndromes", panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_seizures_part2 = panel_b_panels %>% filter(grepl("Epileptic encephalopathy", panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_seizures = unique(c(l_pid_seizures_part1,
+                          l_pid_seizures_part2))
+
+l_pid_ataxia_part1 = panel_b_panels %>% filter(grepl("Hereditary ataxia", panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_ataxia_part2 = panel_b_panels %>% filter(grepl("Brain channelopathy", panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_ataxia = unique(c(l_pid_ataxia_part1,
+                        l_pid_ataxia_part2))
+
+l_pid_spastic_paraplegia = panel_b_panels %>% filter(grepl(spastic_paraplegia, panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_optic_neuro_or_retino = panel_b_panels %>% filter(grepl(optic_neuropathy_or_retinopathy, panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_white = panel_b_panels %>% filter(grepl(white_matter_abnormalities, panels)) %>% select(participant_id) %>% unique() %>% pull() 
+l_pid_muscular_hypo = panel_b_panels %>% filter(grepl(muscular_weakness_hypotonia, panels)) %>% select(participant_id) %>% unique() %>% pull() 
+
+# NUmber of PIDs having ID and ONLY seizures
+l_pid_seizures_ONLY = setdiff(l_pid_seizures, 
+                              c(l_pid_ataxia, l_pid_dystonia, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_white, l_pid_muscular_hypo))
+length(unique(l_pid_seizures_ONLY))
+# 1048
+
+l_pid_dystonia_ONLY = setdiff(l_pid_dystonia, 
+                              c(l_pid_ataxia, l_pid_seizures, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_white, l_pid_muscular_hypo))
+length(unique(l_pid_dystonia_ONLY))
+# 22
+
+l_pid_ataxia_ONLY = setdiff(l_pid_ataxia, 
+                            c(l_pid_dystonia, l_pid_seizures, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_white, l_pid_muscular_hypo))
+length(unique(l_pid_ataxia_ONLY))
+# 116
+
+l_pid_spastic_paraplegia_ONLY = setdiff(l_pid_spastic_paraplegia, 
+                                        c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_optic_neuro_or_retino, l_pid_white, l_pid_muscular_hypo))
+length(unique(l_pid_spastic_paraplegia_ONLY))
+# 76
+
+l_pid_optic_neuro_or_retino_ONLY = setdiff(l_pid_optic_neuro_or_retino, 
+                                           c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_spastic_paraplegia, l_pid_white, l_pid_muscular_hypo))
+length(unique(l_pid_optic_neuro_or_retino_ONLY))
+# 10
+
+l_pid_white_ONLY = setdiff(l_pid_white, 
+                           c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_muscular_hypo))
+length(unique(l_pid_white_ONLY))
+# 91
+
+l_pid_muscular_hypo_ONLY = setdiff(l_pid_muscular_hypo, 
+                                   c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_white))
+length(unique(l_pid_muscular_hypo_ONLY))
+# 117
+
+
+# ID and 2 of the above
+# ID and 3 of the above
+# ID >4 of the above
 
 ################################################################################################################################################################
 # TABLE C
@@ -506,6 +566,32 @@ panel_merged_without_B = panel_merged %>%
 
 length(unique(panel_merged_without_B$participant_id))
 # 11266
+
+# Age of onset
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/rare_diseases_participant_dise_2020-12-30_12-10-36.tsv",
+                     sep = "\t",
+                     stringsAsFactors = F)
+dim(clin_data)
+# 39676  11
+
+l_pid_all_panels = unique(c(panel_a$participant_id,
+                            panel_b$participant_id,
+                            panel_c$participant_id,
+                            panel_d$participant_id))
+clin_data = clin_data %>% filter(participant_id %in% l_pid_all_panels) %>% select(participant_id, normalised_age_of_onset, normalised_specific_disease) %>% unique()
+
+# Age of onset Panel A,B,C,D
+clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+clin_data %>% filter(participant_id %in% panel_b$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% panel_b$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 
 ##############
