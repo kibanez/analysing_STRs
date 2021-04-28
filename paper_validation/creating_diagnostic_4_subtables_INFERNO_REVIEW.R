@@ -478,7 +478,8 @@ dim(panel_merged)
 
 # PIDs?
 length(unique(panel_merged$participant_id))
-# 11631
+# 11631 with A,B,C,D
+# 11266 with A,C,D
 
 # Calculate for each disease in Table2 summary of age and gender distribution
 l_diseases_table2 = c("Amyotrophic lateral sclerosis or motor neuron disease", 
@@ -576,9 +577,15 @@ dim(clin_data)
 
 l_pid_all_panels = unique(c(panel_a$participant_id,
                             panel_b$participant_id,
-                            #panel_c$participant_id,
+                            panel_c$participant_id,
                             panel_d$participant_id))
 clin_data = clin_data %>% filter(participant_id %in% l_pid_all_panels) %>% select(participant_id, normalised_age_of_onset, normalised_specific_disease) %>% unique()
+
+# Overall
+mean(clin_data$normalised_age_of_onset, na.rm = T)
+# 11.48 
+sd(clin_data$normalised_age_of_onset, na.rm = T)
+# 19.77
 
 # Age of onset Panel A,B,C,D
 clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
@@ -593,6 +600,13 @@ clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalis
 clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
 clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
+# Age of onset on confirmed platekeys across panels
+confirmed_panelD = c("118002794","117000919","112002287","122005899","112001315","112001329","112001252","115005821","116001580","116000367")
+clin_data %>% filter(participant_id %in% confirmed_panelD, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% confirmed_panelD, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+
+
 # Age of onset across different diseases in diff panels
 for (i in 1:length(l_diseases_table2)){
   print(l_diseases_table2[i])
@@ -600,11 +614,11 @@ for (i in 1:length(l_diseases_table2)){
   clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print()
   clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
   print("Panel C")
-  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
-  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
+  clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
   print("Panel D")
-  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
-  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
+  clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
   
 }
 
