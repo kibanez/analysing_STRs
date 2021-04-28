@@ -601,6 +601,12 @@ clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalis
 clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 # Age of onset on confirmed platekeys across panels
+confirmed_panelB = c("111001410","116000121","115001700","118002342","115005431","210013360","115014499")
+clin_data %>% filter(participant_id %in% confirmed_panelB, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% confirmed_panelB, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+
+
 confirmed_panelC = c("122007152","122007274","210017355","210013126","210013125")
 clin_data %>% filter(participant_id %in% confirmed_panelC, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
 clin_data %>% filter(participant_id %in% confirmed_panelC, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
