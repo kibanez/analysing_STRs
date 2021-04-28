@@ -11,3 +11,7 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 
 # set the working directory
 setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
+
+concordance = read.csv("./concordance_repeats.tsv", stringsAsFactors = F, sep = "\t", header = T)
+dim(concordance)
+# 902  11
