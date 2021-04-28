@@ -601,11 +601,13 @@ clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalis
 clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 # Age of onset on confirmed platekeys across panels
+confirmed_panelA = c("112008033","112005899","112005900","115008391","115014127","210012854","115008056","115000968","115006565","116002069","115004635","113004320","115000536","115017486","115017493","115011422","115016317","115006729","113002006","119001845","115002538","115011586","115011457","115007340","115004045","122001169","115004196","210013915","50003892","115012847","115011956","115001026","113001410","50001165","50002396","112003594","113003032","113002194","120000698","111001710","111001708","124000946","122000175","115005431","118002342","118001261")
+clin_data %>% filter(participant_id %in% confirmed_panelA, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% confirmed_panelA, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
 confirmed_panelB = c("111001410","116000121","115001700","118002342","115005431","210013360","115014499")
 clin_data %>% filter(participant_id %in% confirmed_panelB, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
 clin_data %>% filter(participant_id %in% confirmed_panelB, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
-
-
 
 confirmed_panelC = c("122007152","122007274","210017355","210013126","210013125")
 clin_data %>% filter(participant_id %in% confirmed_panelC, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
@@ -631,6 +633,15 @@ confirmed_panelD = c("118002794","117000919","112002287","122005899","112001315"
 clin_data %>% filter(participant_id %in% confirmed_panelD, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
 clin_data %>% filter(participant_id %in% confirmed_panelD, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
+all_confirmed_panels = unique(c(confirmed_panelA,
+                         confirmed_panelB,
+                         confirmed_panelC,
+                         confirmed_panelD))
+length(all_confirmed_panels)
+# 66
+
+clin_data %>% filter(participant_id %in% all_confirmed_panels, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% all_confirmed_panels, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 
 # Age of onset across different diseases in diff panels
