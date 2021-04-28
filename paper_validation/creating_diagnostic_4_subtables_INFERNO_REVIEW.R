@@ -605,10 +605,20 @@ confirmed_panelC = c("122007152","122007274","210017355","210013126","210013125"
 clin_data %>% filter(participant_id %in% confirmed_panelC, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
 clin_data %>% filter(participant_id %in% confirmed_panelC, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
-
 # Panel C and Congenital myopathy
+clin_data %>% filter(participant_id %in% "210017355", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% "210017355", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
 # Panel C and Distal myopathies
+clin_data %>% filter(participant_id %in% c("122007152", "122007274"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("122007152", "122007274"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd() 
+
+
 # Panel C and Congenital muscular dystrophy
+clin_data %>% filter(participant_id %in% "210013126", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% "210013126", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+
 # Panel C and Skeletal muscle channelopathy
 
 confirmed_panelD = c("118002794","117000919","112002287","122005899","112001315","112001329","112001252","115005821","116001580","116000367")
