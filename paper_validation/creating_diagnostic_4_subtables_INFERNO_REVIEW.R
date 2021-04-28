@@ -23,7 +23,7 @@ table_diseases = read.csv("./table_diseases_enriched_popu_includingSkeletalMuscl
 dim(table_diseases)
 # 13868  19
 
-# Pilot table
+# Pilot table -  22nd April 2021: we include now ultra-rare corresponding diseases from Pilot
 table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_22April2021.tsv",
                                 stringsAsFactors = F,
                                 header = T,
@@ -181,7 +181,7 @@ table_a_pilot = table_diseases_pilot %>%
                                 "Hereditary spastic paraplegia",
                                 "Early onset and familial Parkinson's Disease"))
 dim(table_a_pilot)
-# 418  15
+# 418  13
 
 table_a_pilot_HA = table_a_pilot %>%
   filter(specificDisease %in% "Hereditary ataxia")
@@ -403,7 +403,7 @@ table_c_pilot = table_diseases_pilot %>%
                                 "Skeletal Muscle Channelopathies",
                                 "Distal myopathies"))
 dim(table_c_pilot)
-# 242  15
+# 242  13
 
 table_c = table_c %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
 table_c_pilot = table_c_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease, panel_list)
@@ -576,7 +576,7 @@ dim(clin_data)
 
 l_pid_all_panels = unique(c(panel_a$participant_id,
                             panel_b$participant_id,
-                            panel_c$participant_id,
+                            #panel_c$participant_id,
                             panel_d$participant_id))
 clin_data = clin_data %>% filter(participant_id %in% l_pid_all_panels) %>% select(participant_id, normalised_age_of_onset, normalised_specific_disease) %>% unique()
 
@@ -593,6 +593,24 @@ clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalis
 clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
 clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
+# Age of onset across different diseases in diff panels
+for (i in 1:length(l_diseases_table2)){
+  print(l_diseases_table2[i])
+  print("Panel A")
+  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print()
+  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  print("Panel C")
+  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
+  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  print("Panel D")
+  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
+  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  
+}
+
+print("Panel A")
+clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), grepl("Complex parkin", normalised_specific_disease, ignore.case = T)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print()
+clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), grepl("Complex parkin", normalised_specific_disease, ignore.case = T)) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
 
 ##############
 
