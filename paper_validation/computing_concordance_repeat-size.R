@@ -15,3 +15,9 @@ setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 concordance = read.csv("./concordance_repeats.tsv", stringsAsFactors = F, sep = "\t", header = T)
 dim(concordance)
 # 902  11
+
+platekey_duplicated = unique(concordance$platekey[which(duplicated(concordance$platekey))])
+length(platekey_duplicated)
+# 195
+
+# There are a total of 195 repeat platekeys - for which we've got PCR lengths for more than one gene
