@@ -344,9 +344,14 @@ l_pid_seizures_ONLY = setdiff(l_pid_seizures,
 length(unique(l_pid_seizures_ONLY))
 # 1048
 
+length(unique(intersect(l_pid_seizures_ONLY, l_pids_ID)))
+# 1048
+
 l_pid_dystonia_ONLY = setdiff(l_pid_dystonia, 
                               c(l_pid_ataxia, l_pid_seizures, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_white, l_pid_muscular_hypo))
 length(unique(l_pid_dystonia_ONLY))
+# 22
+length(unique(intersect(l_pid_dystonia_ONLY, l_pids_ID)))
 # 22
 
 l_pid_ataxia_ONLY = setdiff(l_pid_ataxia, 
@@ -354,30 +359,71 @@ l_pid_ataxia_ONLY = setdiff(l_pid_ataxia,
 length(unique(l_pid_ataxia_ONLY))
 # 116
 
+length(unique(intersect(l_pid_ataxia_ONLY, l_pids_ID)))
+# 116
+
 l_pid_spastic_paraplegia_ONLY = setdiff(l_pid_spastic_paraplegia, 
                                         c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_optic_neuro_or_retino, l_pid_white, l_pid_muscular_hypo))
 length(unique(l_pid_spastic_paraplegia_ONLY))
+# 76
+length(unique(intersect(l_pid_spastic_paraplegia_ONLY, l_pids_ID)))
 # 76
 
 l_pid_optic_neuro_or_retino_ONLY = setdiff(l_pid_optic_neuro_or_retino, 
                                            c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_spastic_paraplegia, l_pid_white, l_pid_muscular_hypo))
 length(unique(l_pid_optic_neuro_or_retino_ONLY))
 # 10
+length(unique(intersect(l_pid_optic_neuro_or_retino_ONLY, l_pids_ID)))
+# 10
 
 l_pid_white_ONLY = setdiff(l_pid_white, 
                            c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_muscular_hypo))
 length(unique(l_pid_white_ONLY))
+# 91
+length(unique(intersect(l_pid_white_ONLY, l_pids_ID)))
 # 91
 
 l_pid_muscular_hypo_ONLY = setdiff(l_pid_muscular_hypo, 
                                    c(l_pid_dystonia, l_pid_seizures, l_pid_ataxia, l_pid_spastic_paraplegia, l_pid_optic_neuro_or_retino, l_pid_white))
 length(unique(l_pid_muscular_hypo_ONLY))
 # 117
-
+length(unique(intersect(l_pid_muscular_hypo_ONLY, l_pids_ID)))
+# 117
 
 # ID and 2 of the above
-# ID and 3 of the above
-# ID >4 of the above
+#l_pid_seizures_ONLY
+#l_pid_dystonia_ONLY
+#l_pid_ataxia_ONLY
+#l_pid_spastic_paraplegia_ONLY
+#l_pid_optic_neuro_or_retino_ONLY
+#l_pid_white_ONLY
+#l_pid_muscular_hypo_ONLY
+coctail_panels = c(" Genetic epilepsy syndromes", " Epileptic encephalopathy",
+                   " Early onset dystonia",
+                   " Hereditary ataxia", " Brain channelopathy",
+                   " Hereditary spastic paraplegia",
+                   " Optic neuropathy",
+                   " Inherited white matter disorders",
+                   " Congenital muscular dystrophy")
+
+# example: FID = 111003831 which has ID + HSP + Inherited white mmater disorders + 
+panel_b = panel_b %>%
+  group_by(participant_id) %>%
+  mutate(ID_and_one = ifelse(length(intersect(coctail_panels, unlist(strsplit(panel_list, ",")))) >= 1, TRUE, FALSE)) %>%
+  mutate(ID_and_two = ifelse(length(intersect(coctail_panels, unlist(strsplit(panel_list, ",")))) >= 2, TRUE, FALSE)) %>%
+  mutate(ID_and_three = ifelse(length(intersect(coctail_panels, unlist(strsplit(panel_list, ",")))) >= 3, TRUE, FALSE)) %>%
+  mutate(ID_and_four = ifelse(length(intersect(coctail_panels, unlist(strsplit(panel_list, ",")))) >= 4, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame()
+
+length(which(panel_b$ID_and_one))
+#
+length(which(panel_b$ID_and_two))
+# 373
+length(which(panel_b$ID_and_three))
+# 263
+length(which(panel_b$ID_and_four))
+# 221
 
 ################################################################################################################################################################
 # TABLE C
@@ -505,7 +551,9 @@ l_diseases_table2 = c("Amyotrophic lateral sclerosis or motor neuron disease",
                       "Congenital myopathy",
                       "Skeletal Muscle Channelopathies",
                       "Distal myopathies",
-                      "Ultra-rare undescribed monogenic disorders")
+                      "Ultra-rare undescribed monogenic disorders",
+                      "Unknown disorder", 
+                      "All recognised syndromes and those with suggestive features")
 
 panel_merged = panel_merged %>%
   group_by(participant_id) %>%
@@ -527,10 +575,11 @@ for(i in 1:length(l_diseases_table2)){
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "D") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
   
-  panel_merged %>% filter(participant_id %in% l_pid_disease) %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
-  
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "A") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "B") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "D") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
 }
-
 #complex parkin
 l_complex = panel_merged %>% filter(grepl("[Cc]omplex [Pp]arkin",normalised_specific_disease, ignore.case = T)) %>% select(participant_id) %>% unique() %>% pull()
 print(length(l_complex))
