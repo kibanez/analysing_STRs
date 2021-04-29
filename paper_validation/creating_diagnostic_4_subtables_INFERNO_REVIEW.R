@@ -417,39 +417,36 @@ panel_b = panel_b %>%
   as.data.frame()
 
 length(which(panel_b$ID_and_one))
-#
+# 2654
 length(which(panel_b$ID_and_two))
-# 373
+# 1022
 length(which(panel_b$ID_and_three))
-# 263
+# 615
 length(which(panel_b$ID_and_four))
-# 221
+# 317
 
 ################################################################################################################################################################
 # TABLE C
 # patients presenting with intellectual disability and or a neuromuscular phenotype were analysed for DMPK
 
 # MAIN
+# Arpil 2021: removing `intellectual disability`
 table_c = table_diseases %>%
-  filter(normalised_specific_disease %in% c("Intellectual disability",
-                                            "Kabuki syndrome",
-                                            "Congenital muscular dystrophy",
+  filter(normalised_specific_disease %in% c("Congenital muscular dystrophy",
                                             "Congenital myopathy",
                                             "Skeletal Muscle Channelopathies",
                                             "Distal myopathies"))
 dim(table_c)
-# 7695  21
+# 805  21
 
 # PILOT
 table_c_pilot = table_diseases_pilot %>%
-  filter(specificDisease %in% c("Intellectual disability",
-                                "Kabuki syndrome",
-                                "Congenital muscular dystrophy",
+  filter(specificDisease %in% c("Congenital muscular dystrophy",
                                 "Congenital myopathy",
                                 "Skeletal Muscle Channelopathies",
                                 "Distal myopathies"))
 dim(table_c_pilot)
-# 242  13
+# 81  13
 
 table_c = table_c %>% select(participant_id, plate_key.x, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, normalised_specific_disease, panel_list)
 table_c_pilot = table_c_pilot %>% select(gelID, plateKey, gelFamilyId.x, sex, yearOfBirth, specificDisease, panel_list)
@@ -459,15 +456,15 @@ panel_c = rbind(table_c,
                 table_c_pilot)
 panel_c = unique(panel_c)
 dim(panel_c)
-# 7592  7
+# 861  7
 
 panel_c$panel = rep("C", length(panel_c$participant_id))
 
 # How many PIDs
 length(unique(panel_c$participant_id))
-# 7586
+# 860
 length(unique(panel_c$plate_key.x))
-# 7586
+# 860
 
 ################################################################################################################################################################
 # TABLE D. only including children recruited under ID (using >55. as cutoff)	
