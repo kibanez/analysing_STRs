@@ -508,14 +508,14 @@ panel_merged = rbind(panel_a,
                      panel_d)
 panel_merged = unique(panel_merged)
 dim(panel_merged)
-# 20885  8
+# 14154  8
 
 panel_merged = panel_merged %>% group_by(participant_id) %>% mutate(age = 2020 - year_of_birth) %>% ungroup() %>% as.data.frame()
 
 # Age and sex
 summary(panel_merged$age)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#2.00    8.00   13.00   21.75   26.00  101.00 
+#2.00    9.00   16.00   25.69   39.00  101.00 
 panel_merged %>% select(participant_id, participant_phenotypic_sex) %>% unique() %>% select(participant_phenotypic_sex) %>% table()
 #female Female   male   Male 
 #302   4652    348   6329
