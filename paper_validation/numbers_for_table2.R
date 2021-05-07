@@ -30,6 +30,50 @@ table_diseases_pilot = read.csv("table_diseases_enriched_PILOT_13diseases_enrich
 dim(table_diseases_pilot)
 # 660  13
 
+# List of normalised specific diseases
+l_diseases_main = c("Intellectual disability",
+                    "Amyotrophic lateral sclerosis or motor neuron disease", 
+                    "Charcot-Marie-Tooth disease", "Congenital muscular dystrophy",
+                    "Congenital myopathy", "Early onset dementia", "Early onset dystonia", 
+                    "Distal myopathies", "Complex Parkinsonism", "Hereditary ataxia", 
+                    "Hereditary spastic paraplegia", "Skeletal Muscle Channelopathies",
+                    "'Early onset and familial Parkinson''s Disease'",
+                    "Mitochondrial disorders",
+                    "Kabuki syndrome",
+                    "Ultra-rare undescribed monogenic disorders")
+
+l_diseases_main_extra = "Complex Parkin"
+
+l_diseases_pilot = c("Intellectual disability",
+                     "Kabuki syndrome",
+                     "Amyotrophic lateral sclerosis/motor neuron disease",
+                     "Charcot-Marie-Tooth disease",
+                     "Congenital muscular dystrophy",
+                     "Congenital myopathy",
+                     "Early onset dementia (encompassing fronto-temporal dementia and prion disease)",
+                     "Early onset dystonia",
+                     "Distal myopathies",
+                     "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                     "Hereditary ataxia",
+                     "Hereditary spastic paraplegia",
+                     "Skeletal Muscle Channelopathies",
+                     "Early onset and familial Parkinson's Disease")
+
+# The age cut-off if only for : ALS, charcot, early onset dementia, early onset dystonia, complex parkinson, hereditary spastic para-legaa and easy; onset familial parkin
+table_diseases_select = table_diseases %>%
+  filter(normalised_specific_disease %in% l_diseases_main)
+table_diseases_select = rbind(table_diseases_select,
+                              table_diseases %>% filter(grepl("Complex Parkin", normalised_specific_disease)))
+
+table_diseases_pilot_select = table_diseases_pilot %>%
+  filter(specificDisease %in% l_diseases_pilot)
+
+# We need to take ONLY ADULTS for all diseases for except for 
+# Keep everyone for `hereditary ataxia`, and `Intelectual.. and kabuki`
+
+
+
+
 # Load latest clinical data for these diseases for the paper - April 2021
 clin_data = read.csv("./table_diseases_for_table2_Main_and_Pilot_14785_PIDs_all_adults_and_paediatrics_withouth_Mitochondrial.tsv",
                      sep = "\t",
