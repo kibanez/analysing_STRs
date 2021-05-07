@@ -62,9 +62,14 @@ type_data = read.csv("~/Documents/STRs/ANALYSIS/table_cases_controls_84518_genom
 dim(type_data)
 # 84518  2
 
+clin_data = left_join(clin_data,
+                      type_data,
+                      by = "platekey")
+dim(clin_data)
+# 2440747  27
+
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
-# In SHARP everything should be GRCh38, because Andy sent us coordinates only in GRCh38
 merged_data$chr = recode(merged_data$chr,
                          "1" = "chr1",
                          "2" = "chr2",
@@ -90,14 +95,12 @@ merged_data$chr = recode(merged_data$chr,
                          "22" = "chr22",
                          "X" = "chrX")
 
-# Let's focus on SHARP genes
 l_genes = unique(merged_data$gene)
 length(l_genes)
 # 198
 
 # Output folder
 output_folder = 'EHv322_batch_december2020'
-#dir.create(output_folder)
 
 for(i in 1:length(l_genes)){
   plot_together_histo_boxplot(df_input = merged_data,
