@@ -49,10 +49,10 @@ plot_together_histo_boxplot_cc_pseudocc <- function(df_input, gene_name, output_
     list_pseudocases_x2 = intersect(list_samples[index_x2], l_pseudocases)
     list_pseudocontrols_x2 = intersect(list_samples[index_x2], l_pseudocontrols)
     
-    new_line_cases = cbind(df_locus$gene[z], df_locus$allele[z], length(c(l_cases, list_cases_x2)))
-    new_line_controls = cbind(df_locus$gene[z], df_locus$allele[z], length(c(l_controls, list_controls_x2)))
-    new_line_pseudocases = cbind(df_locus$gene[z], df_locus$allele[z], length(c(l_pseudocases, list_pseudocases_x2)))
-    new_line_pseudocontrols = cbind(df_locus$gene[z], df_locus$allele[z], length(c(l_pseudocontrols, list_pseudocontrols_x2)))
+    new_line_cases = cbind(df_locus$gene[z], df_locus$allele[z], length(c(list_cases, list_cases_x2)))
+    new_line_controls = cbind(df_locus$gene[z], df_locus$allele[z], length(c(list_controls, list_controls_x2)))
+    new_line_pseudocases = cbind(df_locus$gene[z], df_locus$allele[z], length(c(list_pseudocases, list_pseudocases_x2)))
+    new_line_pseudocontrols = cbind(df_locus$gene[z], df_locus$allele[z], length(c(list_pseudocontrols, list_pseudocontrols_x2)))
 
     df_cases = rbind(df_cases,
                      new_line_cases)
