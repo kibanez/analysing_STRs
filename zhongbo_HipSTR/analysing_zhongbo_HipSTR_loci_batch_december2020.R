@@ -62,69 +62,6 @@ type_data = read.csv("~/Documents/STRs/ANALYSIS/table_cases_controls_84518_genom
 dim(type_data)
 # 84518  2
 
-
-
-# List of platekeys corresponding to ONLY PROBANDS in Neuro
-df_only_probands = clin_data %>%
-  filter(is.na(biological_relationship_to_proband) |
-           biological_relationship_to_proband %in% "N/A" | 
-           biological_relationship_to_proband %in% "Proband" |
-           programme %in% "Cancer")
-
-l_platekeys_probands_neuro = df_only_probands %>%
-  filter(grepl("neuro", disease_group, ignore.case = TRUE)) %>%
-  select(platekey) %>%
-  unique() %>%
-  pull()
-length(l_platekeys_probands_neuro)
-# 13796
-
-# There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_neuro_unique = c()
-for (i in 1:length(l_platekeys_probands_neuro)){
-  if (grepl(',',l_platekeys_probands_neuro[i])){
-    list_platekeys = strsplit(l_platekeys_probands_neuro[i], ",")[[1]]
-    list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_neuro_unique = c(l_platekeys_probands_neuro_unique,
-                                    max(list_platekeys))
-  }else{
-    l_platekeys_probands_neuro_unique = c(l_platekeys_probands_neuro_unique,
-                                    l_platekeys_probands_neuro[i])
-  }
-}
-length(l_platekeys_probands_neuro_unique)
-# 13796
-
-# List of platekeys corresponding to ONLY PROBANDS but NOT in Neuro
-# First probands
-df_only_probands_notNeuro = df_only_probands %>%
-  filter(!grepl("neuro", disease_group, ignore.case = TRUE))
-dim(df_only_probands_notNeuro)
-# 687859 36
-
-l_platekeys_probands_notNeuro = df_only_probands_notNeuro %>%
-  select(platekey) %>%
-  unique() %>%
-  pull()
-length(l_platekeys_probands_notNeuro)
-# 35476
-
-# There are some platekeys (16k) that have ',', which means that PID is associated with more than one platekey
-l_platekeys_probands_notNeuro_unique = c()
-for (i in 1:length(l_platekeys_probands_notNeuro)){
-  if (grepl(',',l_platekeys_probands_notNeuro[i])){
-    list_platekeys = strsplit(l_platekeys_probands_notNeuro[i], ",")[[1]]
-    list_platekeys = gsub(" ", "", list_platekeys, fixed = TRUE)
-    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
-                                             max(list_platekeys))
-  }else{
-    l_platekeys_probands_notNeuro_unique = c(l_platekeys_probands_notNeuro_unique,
-                                             l_platekeys_probands_notNeuro[i])
-  }
-}
-length(l_platekeys_probands_notNeuro_unique)
-# 35476
-
 # 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
 # GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
 # In SHARP everything should be GRCh38, because Andy sent us coordinates only in GRCh38
