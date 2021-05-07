@@ -49,12 +49,12 @@ dim(clin_data)
 clin_data = clin_data %>%
   filter(grepl("germline", type))
 dim(clin_data)
-# 2092419 36
+# 2440747 26
 
 # Checking which genomes we have
 table(clin_data$type)
 #cancer germline experimental germline rare disease germline 
-#24649                   84               2067686
+#24767                    97               2415883 
 
 # List of platekeys corresponding to ONLY PROBANDS in Neuro
 df_only_probands = clin_data %>%
