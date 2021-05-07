@@ -56,6 +56,14 @@ table(clin_data$type)
 #cancer germline experimental germline rare disease germline 
 #24767                    97               2415883 
 
+# Load type (case/control/pseudocase/pseudocontrol) for genomes
+type_data = read.csv("~/Documents/STRs/ANALYSIS/table_cases_controls_84518_genomes_cases_controls_pseudoca_pseudoco.csv",
+                     stringsAsFactors = F)
+dim(type_data)
+# 84518  2
+
+
+
 # List of platekeys corresponding to ONLY PROBANDS in Neuro
 df_only_probands = clin_data %>%
   filter(is.na(biological_relationship_to_proband) |
