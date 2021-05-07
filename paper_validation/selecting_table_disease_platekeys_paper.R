@@ -194,7 +194,9 @@ table_diseases_pilot = pilot_clin_data %>%
                                 "Hereditary ataxia",
                                 "Hereditary spastic paraplegia",
                                 "Skeletal Muscle Channelopathies",
-                                "Early onset and familial Parkinson's Disease"))
+                                "Early onset and familial Parkinson's Disease",
+                                "Unknown disorder",
+                                "All recognised syndromes and those with suggestive features"))
 
 View(table(table_diseases_pilot$specificDisease))
 # It's ok, we have them all
@@ -203,11 +205,12 @@ dim(table_diseases_pilot)
 
 length(unique(table_diseases_pilot$plateKey))
 # 645
+# 810 (arpil'21)
 
 # There are 645 unique genomes that have been recruited under any of these 13 diseases, some of them (15) have 1 or more above specificDisease
 # I won't merge main with pilot since we do have different platekeys and column names.
 
-write.table(table_diseases_pilot, file = "table_diseases_enriched_PILOT_13diseases.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+write.table(table_diseases_pilot, file = "table_diseases_enriched_PILOT_13diseases_22April2021.tsv", sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 
 # Enrich this table with popu  - to take best_guess-predicted_ancestry
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/GEL_60k_germline_dataset_fine_grained_population_assignment20200224.csv",
@@ -336,5 +339,26 @@ l_ID_group2 = table_panels_row %>%
   as.character()
 length(l_ID_group2)
 # 2743
+
+# What about PILOT?
+table_panels_pilot = table_diseases_pilot %>% 
+  select(plateKey, gelID, specificDisease, panel_list) %>%
+  mutate(panels = strsplit(as.character(panel_list), ",")) %>%
+  unnest(panels) %>%
+  as.data.frame()
+table_panels_pilot = unique(table_panels_pilot)
+dim(table_panels_pilot)
+# 1129  5
+
+l_ID_group2_pilot = table_panels_pilot %>%
+  group_by(gelID) %>%
+  filter(grepl("Intellectual disability", panels) & any_exist(list_panels,panels)) %>%
+  select(gelID) %>%
+  unique() %>%
+  pull() %>%
+  as.character()
+length(l_ID_group2_pilot)
+# 12
+
 
 write.table(l_ID_group2, "./list_2743_PIDs_ID_and_others_as_panels.txt", quote = F, col.names = F, row.names = F)
