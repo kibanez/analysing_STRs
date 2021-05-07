@@ -19,13 +19,15 @@ library(cowplot); packageDescription ("cowplot", fields = "Version") #"1.0.0"
 setwd("/Users/kibanez/Documents/STRs/VALIDATION/bubble_plots/")
 
 # Load golden validation table - 509 PCR tests with AT LEAST one allele with exact PCR sizes
-val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_readLength_270121.tsv",
+#val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_shorter_readLength_270121.tsv",
+val_data =read.csv("./GEL_accuracy_final_April2021.tsv",
                     sep = "\t",
                     header = T,
                     stringsAsFactors = F)
 
 dim(val_data)
 # 485  10
+# 509 12
 
 val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_readLength_270121.tsv",
                     sep = "\t",
@@ -155,6 +157,42 @@ df_strategy2 = df_data_with_freq_v2
 group.colors = rainbow(13)
 
 # Combining joint_plot_mike1 and joint_plot_mike2 into a single one
+# smaller than the read-length with bp rather than repeat-size
+df_strategy1$eh_alleles = 3 * df_strategy1$eh_alleles
+df_strategy1$exp_alleles = 3 * df_strategy1$exp_alleles
+df_strategy1$eh_alleles[which(df_strategy1$locus == "C9orf72")] = df_strategy1$eh_alleles[which(df_strategy1$locus == "C9orf72")] * 3
+df_strategy1$exp_alleles[which(df_strategy1$locus == "C9orf72")] = df_strategy1$exp_alleles[which(df_strategy1$locus == "C9orf72")] * 3
+
+df_strategy2$eh_alleles = 3 * df_strategy2$eh_alleles
+df_strategy2$exp_alleles = 3 * df_strategy2$exp_alleles
+df_strategy2$eh_alleles[which(df_strategy2$locus == "C9orf72")] = df_strategy2$eh_alleles[which(df_strategy2$locus == "C9orf72")] * 3
+df_strategy2$exp_alleles[which(df_strategy2$locus == "C9orf72")] = df_strategy2$exp_alleles[which(df_strategy2$locus == "C9orf72")] * 3
+
+max_value = max(df_strategy2 %>% filter(exp_alleles <= 150) %>% select(exp_alleles) %>% pull(), 
+                df_strategy1 %>% filter(exp_alleles <= 150) %>% select(exp_alleles) %>% pull(), 
+                na.rm = TRUE) + 5
+
+tontz_smaller = ggplot() +
+  geom_point(data = df_strategy2 %>% filter(exp_alleles <= 150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
+  geom_point(data = df_strategy1 %>% filter(exp_alleles <= 150), aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
+  xlim(5,max_value) +
+  ylim(5,max_value) +
+  geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
+  coord_equal() +
+  scale_color_manual(values=group.colors) +
+  labs(title = "", 
+       y = "EH sizes (bp)", 
+       x = "PCR sizes (bp)") + 
+  theme_light() +
+  theme(legend.title = element_blank(),
+        text = element_text(size=13),
+        axis.text.x.top = element_text()) +
+  guides(size = FALSE) 
+
+max_value = max(df_strategy2$exp_alleles, 
+                df_strategy1$exp_alleles, 
+                na.rm = TRUE) + 5
+
 tontz = ggplot() +
 geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
   geom_point(data = df_strategy1, aes(color = factor(locus), x = exp_alleles, y = eh_alleles, size = number_of_alleles), alpha = 0.7) +  
@@ -172,8 +210,11 @@ geom_point(data = df_strategy2, aes(x = exp_alleles, y = eh_alleles, size = numb
         axis.text.x.top = element_text()) +
   guides(size = FALSE) 
 
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_shorterThanReadLengthLANCET_600dpi_210421.png",units="in", width=5, height=5, res=600)
-png("./figures/FigureS3_418PCRtests_filtering_out_NCL_largerThanReadLengthLANCET_600dpi_210421.png",units="in", width=5, height=5, res=600)
+png("./figures/FigureS3_509PCRtests_filtering_out_NCL_smaller_than_read-length_280421.png",units="in", width=5, height=5, res=600)
+print(tontz_smaller)
+dev.off()
+
+png("./figures/FigureS3_509PCRtests_filtering_out_NCL_ALL_280421.png",units="in", width=5, height=5, res=600)
 print(tontz)
 dev.off()
 
