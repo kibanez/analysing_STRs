@@ -37,6 +37,37 @@ dim(merged_data)
 # Some genes have `/` and R can interpret as part of a path within the system
 merged_data$gene = gsub("/", "_", merged_data$gene)
 
+# 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
+# GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
+merged_data$chr = recode(merged_data$chr,
+                         "1" = "chr1",
+                         "2" = "chr2",
+                         "3" = "chr3",
+                         "4" = "chr4",
+                         "5" = "chr5",
+                         "6" = "chr6",
+                         "7" = "chr7",
+                         "8" = "chr8",
+                         "9" = "chr9",
+                         "10" = "chr10",
+                         "11" = "chr11",
+                         "12" = "chr12",
+                         "13" = "chr13",
+                         "14" = "chr14",
+                         "15" = "chr15",
+                         "16" = "chr16",
+                         "17" = "chr17",
+                         "18" = "chr18",
+                         "19" = "chr19",
+                         "20" = "chr20",
+                         "21" = "chr21",
+                         "22" = "chr22",
+                         "X" = "chrX")
+
+l_genes = unique(merged_data$gene)
+length(l_genes)
+# 198
+
 # load clinical data - changing to RE V11 (since we are sharing with external groups)
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
                      sep = "\t",
@@ -68,36 +99,39 @@ clin_data = left_join(clin_data,
 dim(clin_data)
 # 2440747  27
 
-# 1. Merge GRCh37 and GRCh38 info, since chromosome names are different
-# GRCh38 are chr1, chr2, chr3 while GRCh37 are 1,2,3
-merged_data$chr = recode(merged_data$chr,
-                         "1" = "chr1",
-                         "2" = "chr2",
-                         "3" = "chr3",
-                         "4" = "chr4",
-                         "5" = "chr5",
-                         "6" = "chr6",
-                         "7" = "chr7",
-                         "8" = "chr8",
-                         "9" = "chr9",
-                         "10" = "chr10",
-                         "11" = "chr11",
-                         "12" = "chr12",
-                         "13" = "chr13",
-                         "14" = "chr14",
-                         "15" = "chr15",
-                         "16" = "chr16",
-                         "17" = "chr17",
-                         "18" = "chr18",
-                         "19" = "chr19",
-                         "20" = "chr20",
-                         "21" = "chr21",
-                         "22" = "chr22",
-                         "X" = "chrX")
+# List of cases/controls/pseudocases/pseudocontrols
+l_cases = clin_data %>%
+  filter(type.y %in% "case") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_cases)
+# 14478
 
-l_genes = unique(merged_data$gene)
-length(l_genes)
-# 198
+l_controls = clin_data %>%
+  filter(type.y %in% "control") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_controls)
+# 24095
+
+l_pseudocases = clin_data %>%
+  filter(type.y %in% "pseudocase") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_pseudocases)
+# 16857
+
+l_pseudocontrols = clin_data %>%
+  filter(type.y %in% "pseudocontrol") %>%
+  select(platekey) %>%
+  unique() %>%
+  pull()
+length(l_pseudocontrols)
+# 13600
+
 
 # Output folder
 output_folder = 'EHv322_batch_december2020'
