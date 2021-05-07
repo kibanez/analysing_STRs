@@ -739,13 +739,18 @@ table_b %>% filter(participant_id %in% l_pid_tableB) %>% select(participant_ethn
 # 0.131667792 0.022282242 0.034098582 0.169480081 0.009453072 0.633018231 
 
 # Let's define the list of genes for Table B
-l_genes_tableB = c("ATN1_CAG","ATXN1_CAG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
+l_genes_tableB = c("ATN1_CAG","ATXN1_C6AG", "ATXN2_CAG", "ATXN3_CAG", "ATXN7_CAG", "HTT_CAG", "TBP_CAG")
 
 l_platekeys_tableB = unique(table_b$plate_key.x)
 
 # Define specific thresholds for TABLE B
 gene_pathogenic_threshold_tableB = data.frame(locus = l_genes_tableB,
                                               threshold = c(63,44,60,75,90,60,60))
+
+# Using full-mutation cut-off
+gene_pathogenic_threshold_tableB = data.frame(locus = l_genes_tableB,
+                                              threshold = c(48,44,33,60,36,40,49))
+
 
 # Now, we want to see how many of them have an expansion on any of the genes in B
 expanded_table_main = data.frame()
@@ -767,6 +772,7 @@ for (i in 1:length(l_genes_tableB)){
 }
 dim(expanded_table_main)
 # 28  5
+# 65  5 (with full-mutation cut-off)
 
 # separate platekeys
 expanded_table_main_per_locus = data.frame()
@@ -783,12 +789,14 @@ for (i in 1:length(expanded_table_main$gene)){
 expanded_table_main_per_locus = unique(expanded_table_main_per_locus)
 dim(expanded_table_main_per_locus)
 # 187  5
+# 237  5 (with full-mutation cut-off)
 
 # From the expanded table, let's see how many are in l_platekeys_tableB
 expanded_table_main_in_tableB = expanded_table_main_per_locus %>%
-  filter(list_samples %in% l_platekeys_tableB)
+  filter(list_samples %in% l_plateleys_tableB)
 dim(expanded_table_main_in_tableB)
 # 11  5
+# 17  5 (with full-mutation cutoff)
 
 # Let' enrich expanded TABLE B repeats with clinical data from `table_b`
 table_b_expanded = left_join(expanded_table_main_in_tableB,
@@ -804,7 +812,7 @@ table_b_expanded = table_b_expanded %>%
          panel_list, best_guess_predicted_ancstry, self_reported, participant_ethnic_category, age, adult.paediatric)
 colnames(table_b_expanded)[1] = "platekey" 
 colnames(table_b_expanded)[3] = "repeat_size" 
-write.table(table_b_expanded, "subtables/TableB_main.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
+write.table(table_b_expanded, "subtables/TableB_main_030521.tsv", quote = F, row.names = F, col.names = T, sep = "\t")
 
 # This is the raw data for Table B - Main
 # We want to compute all diseases in the coctail of `l_diseases_tableB` as 1
