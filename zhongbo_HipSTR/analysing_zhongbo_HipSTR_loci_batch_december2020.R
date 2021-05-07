@@ -22,7 +22,9 @@ setwd("~/Documents/STRs/data/research/batch_december2020/output_EHv3.2.2_vcfs/me
 
 # Functions
 source("~/git/analysing_STRs/functions/plot_together_histo_boxplot.R")
+source("~/git/analysing_STRs/functions/plot_together_histo_boxplot_cc_pseudocc.R")
 source("~/git/analysing_STRs/functions/computing_percentiles.R")
+
 
 # load merged august data
 merged_data = read.csv("./merged_93430_genomes_EHv322_batch_december2020.tsv",
@@ -36,12 +38,12 @@ dim(merged_data)
 merged_data$gene = gsub("/", "_", merged_data$gene)
 
 # load clinical data - changing to RE V11 (since we are sharing with external groups)
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_301220_V11.tsv",
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
                      sep = "\t",
                      stringsAsFactors = F,
                      header = T)
 dim(clin_data)
-# 2119961  36
+# 2468506  26
 
 # Let's keep only germline genomes
 clin_data = clin_data %>%
