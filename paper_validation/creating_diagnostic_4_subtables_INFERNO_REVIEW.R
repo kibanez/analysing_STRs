@@ -572,6 +572,13 @@ for(i in 1:length(l_diseases_table2)){
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "D") %>% select(participant_id) %>% unique() %>% pull() %>% length() %>% print()
   
+  # families
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "A") %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "B") %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length() %>% print()
+  panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "D") %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length() %>% print()
+  
+  
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "A") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "B") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
   panel_merged %>% filter(participant_id %in% l_pid_disease, panel %in% "C") %>% select(participant_phenotypic_sex, participant_id) %>% unique() %>% select(participant_phenotypic_sex) %>% table() %>% print()
