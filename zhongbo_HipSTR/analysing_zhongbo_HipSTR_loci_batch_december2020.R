@@ -21,7 +21,6 @@ library(purrr); packageDescription ("purrr", fields = "Version") #"0.3.3"
 setwd("~/Documents/STRs/data/research/batch_december2020/output_EHv3.2.2_vcfs/merged/")
 
 # Functions
-source("~/git/analysing_STRs/functions/plot_together_histo_boxplot.R")
 source("~/git/analysing_STRs/functions/plot_together_histo_boxplot_cc_pseudocc.R")
 source("~/git/analysing_STRs/functions/computing_percentiles.R")
 
@@ -132,16 +131,17 @@ l_pseudocontrols = clin_data %>%
 length(l_pseudocontrols)
 # 13600
 
-
 # Output folder
 output_folder = 'EHv322_batch_december2020'
 
-for(i in 1:length(l_genes)){
-  plot_together_histo_boxplot(df_input = merged_data,
-                              gene_name = l_genes[i],
-                              output_folder = output_folder,
-                              l_platekeys_probands_neuro_unique,
-                              l_platekeys_probands_notNeuro_unique)
+for (i in 1:length(l_genes)){
+  plot_together_histo_boxplot_cc_pseudocc(df_input = merged_data,
+                                          gene_name = l_genes[i],
+                                          output_folder = output_folder,
+                                          l_cases,
+                                          l_controls,
+                                          l_pseudocases,
+                                          l_pseudocontrols)
 }
 
 # Summarise report with quantiles for all genes
