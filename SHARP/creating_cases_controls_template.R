@@ -21,7 +21,7 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_a
                      sep = "\t",
                      stringsAsFactors = F)
 dim(clin_data)
-# 2444984 25
+# 2468506  26
 
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
 # case -> proband RD and recruited under Neurological
@@ -35,7 +35,7 @@ l_families = clin_data %>%
   unique() %>%
   pull()
 length(l_families)
-# 14421
+# 14703
 
 l_cases = clin_data %>%
   filter(rare_diseases_family_id %in% l_families, participant_type %in% "Proband") %>%
@@ -43,19 +43,19 @@ l_cases = clin_data %>%
   unique() %>%
   pull()
 length(l_cases)
-# 14480
+# 14800
 
 # QC
 clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_to_proband)%>% table()
 #Maternal Cousin Sister                 Mother                    N/A                Proband 
-#30                     96                1342981                    582 
+#30                     96                1355414                    582 
 
 l_maternal_cousin_sister = clin_data %>% filter(platekey %in% l_cases, biological_relationship_to_proband %in% "Maternal Cousin Sister") %>% select(platekey) %>% unique() %>% pull()
 l_Mother = clin_data %>% filter(platekey %in% l_cases, biological_relationship_to_proband %in% "Mother") %>% select(platekey) %>% unique() %>% pull()
 l_cases = l_cases[-which(l_cases %in% c(l_maternal_cousin_sister, l_Mother))]
 clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_to_proband)%>% table()
 #N/A Proband 
-#1342965     582
+#1355398     582
 
 l_controls = clin_data %>%
   filter((programme %in% "Cancer" & year_of_birth <= "1981") | 
@@ -64,23 +64,24 @@ l_controls = clin_data %>%
   unique() %>%
   pull()
 length(l_controls)
-# 39583
+# 39818
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(biological_relationship_to_proband)%>% table()
 #N/A Proband 
-#184862     885 
+#185117     885 
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(year_of_birth)%>% pull() %>% as.integer() %>% summary()
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#1917    1955    1968    1966    1978    2018
+#1917    1954    1964    1963    1973    2018
 
 l_pseudocases = clin_data %>%
-  filter(rare_diseases_family_id %in% l_families, affection_status %in% c("Unaffected", "NotAffected"), participant_type %in% "Relative") %>%
+  filter(rare_diseases_family_id %in% l_families, 
+         participant_type %in% "Relative") %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_pseudocases)
-# 16857
+# 19344
 
 # QC
 clin_data %>% filter(platekey %in% l_pseudocases) %>% select(biological_relationship_to_proband)%>% table()
@@ -88,14 +89,13 @@ clin_data %>% filter(platekey %in% l_pseudocases) %>% select(biological_relation
 
 l_pseudocontrols = clin_data %>%
   filter(!rare_diseases_family_id %in% l_families, 
-         affection_status %in% c("Unaffected", "NotAffected"), 
          participant_type %in% "Relative", 
          year_of_birth <= "1981") %>%
   select(platekey) %>%
   unique() %>%
   pull()
 length(l_pseudocontrols)
-# 13600
+# 16195
 
 clin_data %>% filter(platekey %in% l_pseudocontrols) %>% select(biological_relationship_to_proband)%>% table()
 
@@ -120,10 +120,10 @@ df_all = rbind(df_cases,
                df_pseudocontrols)
 df_all = unique(df_all)
 dim(df_all)
-# 84518  2
+# 90155  2
 
 write.table(df_all, 
-            "./analysis/table_cases_controls_84518_genomes_cases_controls_pseudoca_pseudoco.csv",
+            "./analysis/table_cases_controls_90155_genomes_cases_controls_pseudoca_pseudoco.csv",
             quote = F,
             col.names = T,
             row.names = F,
