@@ -191,6 +191,6 @@ all_data = left_join(all_data,
                       popu_table,
                       by = "platekey")
 dim(all_data)
-# 2119961 36
+# 2105636 36
 
-write.table(all_data, "../../rd_genomes_all_data_301220_V11.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(all_data, "../../rd_genomes_all_data_240521_V12.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
