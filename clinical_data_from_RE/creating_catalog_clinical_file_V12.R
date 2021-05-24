@@ -176,7 +176,7 @@ rm(hpc)
 
 all_data = unique(all_data)
 dim(all_data)
-#   35
+# 2105636 35
 
 # population data - let's enrich with merged (batch1 and batch2) population info
 popu_table = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/popu_merged_batch1_batch2_79849_genomes.tsv",
