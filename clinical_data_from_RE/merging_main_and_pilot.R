@@ -128,6 +128,9 @@ clin_data = unique(clin_data)
 dim(clin_data)
 # 2463621  36
 
+rm(clin_data_V7)
+rm(clin_data2)
+
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
