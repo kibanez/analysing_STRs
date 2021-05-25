@@ -131,6 +131,32 @@ dim(clin_data)
 rm(clin_data_V7)
 rm(clin_data2)
 
+clin_data_V12 = read.table("~/Documents/STRs/clinical_data/clinical_data/rd_genomes_all_data_240521_V12.tsv",
+                           sep = "\t",
+                           stringsAsFactors = FALSE, 
+                           header = TRUE)
+dim(clin_data_V12)  
+# 2105636 36
+
+l_unique_PIDs_V12 = unique(clin_data_V12$participant_id)
+length(l_unique_PIDs_V12)
+# 86842
+
+# Check how many new genomes RE V12 contains compared to the rest 
+l_missing_fromV12 = setdiff(l_unique_PIDs_V12, unique(clin_data$participant_id))
+length(l_missing_fromV12)
+# 83
+
+clin_data_V12 = clin_data_V12 %>% 
+  filter(participant_id %in% l_missing_fromV12)
+
+# Merge RE_V12 with clin_data
+clin_data = rbind(clin_data,
+                  clin_data_V12)
+clin_data = unique(clin_data)
+dim(clin_data)
+# 2463621  36
+
 # Let´s put all panel names into 1 single string splitted by ','
 list_panels = clin_data %>% group_by(participant_id) %>% summarise(panel_list = toString(unique(panel_name))) %>% ungroup() %>% as.data.frame()
 dim(list_panels)
