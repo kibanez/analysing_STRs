@@ -25,10 +25,10 @@ dim(merged_table)
 # Focus on our 13 loci
 merged_table = merged_table %>%
   filter(gene %in% c("AR", "ATN1","ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72",
-                     "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP"))
+                     "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "JPH3", "TBP"))
 
 # Load clinical data (Main and Pilot) - even though we will keep with unrel genomes
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V10_and_Pilot_programmes.tsv",
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes.tsv",
                       stringsAsFactors = F, 
                       sep = "\t",
                       header = T)
