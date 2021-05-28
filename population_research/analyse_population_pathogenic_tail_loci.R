@@ -165,7 +165,7 @@ l_premut_cutoff = c(34,34,39,31,43,34,30,17,50,55,44,35,28,41)
 l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,40,49)
 
 # Changing C9orf72 from 60 to 30 (after talking to Egor, and seeing that we were having a lot of FNs running EHv3 compared to EHv2)
-l_patho_cutoff = c(38,48,44,33,60,36,30,20,50,200,66,40,49)
+l_patho_cutoff = c(38,48,44,33,60,36,30,20,50,200,66,40,40,49)
 
 df_cutoff = data.frame(locus = l_genes,
                        premut_cutoff = l_premut_cutoff,
@@ -208,31 +208,35 @@ for (i in 1:length(l_genes)){
   merged_table_locus = merged_table %>%
     filter(gene %in% l_genes[i], allele >= l_patho_cutoff[i])
   
-  list_allele_size = c()
-  list_vcf_patho_locus = c()
-  df_platekey_size = data.frame()
-  for (j in 1:length(merged_table_locus$list_samples)){
-    list_vcf_allele = strsplit(merged_table_locus$list_samples[j], ';')[[1]]
-    number_vcf = length(list_vcf_allele)
-    list_vcf_patho_locus = c(list_vcf_patho_locus,
-                              list_vcf_allele)
-    list_allele_size = rep(merged_table_locus$allele[j], number_vcf)
+  if (dim(merged_table_locus)[1] != 0){
+    list_allele_size = c()
+    list_vcf_patho_locus = c()
+    df_platekey_size = data.frame()
+    for (j in 1:length(merged_table_locus$list_samples)){
+      list_vcf_allele = strsplit(merged_table_locus$list_samples[j], ';')[[1]]
+      number_vcf = length(list_vcf_allele)
+      list_vcf_patho_locus = c(list_vcf_patho_locus,
+                               list_vcf_allele)
+      list_allele_size = rep(merged_table_locus$allele[j], number_vcf)
+      
+      list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
+      list_vcf_allele = gsub('^EH_', '', list_vcf_allele)
+      list_vcf_allele = gsub('_x2', '', list_vcf_allele)
+      
+      # Create dataframe with platekey-repeat-size, for the expanded genomes
+      df_platekey_size = rbind(df_platekey_size,
+                               data.frame(platekey = list_vcf_allele,
+                                          repeat_size = list_allele_size))
+      df_platekey_size$platekey = as.character(df_platekey_size$platekey)
+      df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
+    }
     
-    list_vcf_allele = gsub('.vcf', '', list_vcf_allele)
-    list_vcf_allele = gsub('^EH_', '', list_vcf_allele)
-    list_vcf_allele = gsub('_x2', '', list_vcf_allele)
-    
-    # Create dataframe with platekey-repeat-size, for the expanded genomes
-    df_platekey_size = rbind(df_platekey_size,
-                             data.frame(platekey = list_vcf_allele,
-                                        repeat_size = list_allele_size))
-    df_platekey_size$platekey = as.character(df_platekey_size$platekey)
-    df_platekey_size$repeat_size = as.integer(df_platekey_size$repeat_size)
+    list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
+    list_vcf_patho_locus = gsub('^EH_', '', list_vcf_patho_locus)
+    list_vcf_patho_locus = gsub('_x2', '', list_vcf_patho_locus)
+  }else{
+    list_vcf_patho_locus = "empty"
   }
-  
-  list_vcf_patho_locus = gsub('.vcf', '', list_vcf_patho_locus)
-  list_vcf_patho_locus = gsub('^EH_', '', list_vcf_patho_locus)
-  list_vcf_patho_locus = gsub('_x2', '', list_vcf_patho_locus)
   
   # Enrich platekeys with simplified clinical data: popu, is_unrel, neuro_notNeuro
   premut_popu = clin_data %>%
@@ -240,18 +244,36 @@ for (i in 1:length(l_genes)){
   premut_popu = unique(premut_popu)
   print(dim(premut_popu))
 
-  patho_popu = clin_data %>%
-    filter(platekey %in% list_vcf_patho_locus)
-  patho_popu = unique(patho_popu)
-  print(dim(patho_popu))
+  if (list_vcf_patho_locus != "empty"){
+    patho_popu = clin_data %>%
+      filter(platekey %in% list_vcf_patho_locus)
+    patho_popu = unique(patho_popu)
+    print(dim(patho_popu))
+    
+    patho_popu = patho_popu %>%
+      group_by(platekey) %>%
+      mutate(is_125 = ifelse(platekey %in% list_125_genomes, "Yes", "No")) %>%
+      ungroup() %>%
+      as.data.frame()
+    
+    patho_popu$locus = rep(l_genes[i], length(patho_popu$platekey))
+    
+    output_file_name = paste(l_genes[i], "beyond_", sep = "_")
+    
+    output_file_name2 = paste(output_file_name, "pathogenic_cutoff_", sep = "_")
+    output_file_name2 = paste(output_file_name2, as.character(l_patho_cutoff[i]), sep = "")
+    output_file_name2 = paste(output_file_name2, "EHv322_92K_population_with_JPH3.tsv", sep = "_")
+    output_file_name2 = paste("./beyond_full-mutation/", output_file_name2, sep = "")
+    
+    write.table(patho_popu, 
+                output_file_name2, 
+                sep = "\t",
+                quote = F,
+                row.names = F,
+                col.names = T)
+  }
   
   # Enrich patho and premut tables with `is_125` column
-  patho_popu = patho_popu %>%
-    group_by(platekey) %>%
-    mutate(is_125 = ifelse(platekey %in% list_125_genomes, "Yes", "No")) %>%
-    ungroup() %>%
-    as.data.frame()
-  
   premut_popu = premut_popu %>%
     group_by(platekey) %>%
     mutate(is_125 = ifelse(platekey %in% list_125_genomes, "Yes", "No")) %>%
@@ -260,7 +282,7 @@ for (i in 1:length(l_genes)){
   
   # Add locus name as column
   premut_popu$locus = rep(l_genes[i], length(premut_popu$platekey))
-  patho_popu$locus = rep(l_genes[i], length(patho_popu$platekey))
+  
   
   output_file_name = paste(l_genes[i], "beyond_", sep = "_")
   
@@ -269,20 +291,8 @@ for (i in 1:length(l_genes)){
   output_file_name1 = paste(output_file_name1, "EHv322_92K_population_with_JPH3.tsv", sep = "_")
   output_file_name1 = paste("./beyond_premut/", output_file_name1, sep = "")
   
-  output_file_name2 = paste(output_file_name, "pathogenic_cutoff_", sep = "_")
-  output_file_name2 = paste(output_file_name2, as.character(l_patho_cutoff[i]), sep = "")
-  output_file_name2 = paste(output_file_name2, "EHv322_92K_population_with_JPH3.tsv", sep = "_")
-  output_file_name2 = paste("./beyond_full-mutation/", output_file_name2, sep = "")
-  
   write.table(premut_popu, 
               output_file_name1, 
-              sep = "\t",
-              quote = F,
-              row.names = F,
-              col.names = T)
-  
-  write.table(patho_popu, 
-              output_file_name2, 
               sep = "\t",
               quote = F,
               row.names = F,
