@@ -33,7 +33,7 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_a
                       sep = "\t",
                       header = T)
 dim(clin_data)
-# 2101385  24
+# 2472865  26
 
 # Load unrelated list of genomes 
 l_unrelated = read.table("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/l_unrelated_55603_genomes_batch2.txt",
@@ -50,20 +50,20 @@ l_fam_neuro = clin_data %>%
   unique() %>%
   pull()
 length(l_fam_neuro)
-# 14402
+# 14717
 
 clin_data = clin_data %>% select(platekey, rare_diseases_family_id, diseasegroup_list, superpopu)
 clin_data = unique(clin_data)
 dim(clin_data)
-# 109411  4
+# 111195  4
 
 # Load platekey-pid-famID table we created to fish platekeys not included in further RE releases
-clin_metadata = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_PID_FID_platekey.tsv",
+clin_metadata = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_RD_and_Cancer_PID_FID_platekey_up_to_RE_V12.tsv",
                          stringsAsFactors = F,
                          sep = "\t",
                          header = T)
 dim(clin_metadata)
-# 122024  4
+# 175781  6
 
 # Include or enrich `clin_data` with extra platekeys, to associate platekey <-> famID
 clin_data = full_join(clin_data,
@@ -71,7 +71,7 @@ clin_data = full_join(clin_data,
                       by = "platekey")
 clin_data = unique(clin_data)
 dim(clin_data)
-# 149776  6
+# 183967  6
 
 # First let's unite `rare_diseases_family_id` columns into 1
 clin_data = clin_data %>%
@@ -160,9 +160,9 @@ merged_table = merged_table %>%
   as.data.frame() 
 
 # For each locus
-l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7","C9ORF72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
-l_premut_cutoff = c(34,34,39,31,43,34,30,17,50,55,44,35,41)
-l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,49)
+l_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7","C9ORF72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "JPH3","TBP")
+l_premut_cutoff = c(34,34,39,31,43,34,30,17,50,55,44,35,28,41)
+l_patho_cutoff = c(38,48,44,33,60,36,60,20,50,200,66,40,40,49)
 
 # Changing C9orf72 from 60 to 30 (after talking to Egor, and seeing that we were having a lot of FNs running EHv3 compared to EHv2)
 l_patho_cutoff = c(38,48,44,33,60,36,30,20,50,200,66,40,49)
@@ -266,12 +266,12 @@ for (i in 1:length(l_genes)){
   
   output_file_name1 = paste(output_file_name, "premutation_cutoff_", sep = "_")
   output_file_name1 = paste(output_file_name1, as.character(l_premut_cutoff[i]), sep = "")
-  output_file_name1 = paste(output_file_name1, "EHv322_92K_population.tsv", sep = "_")
+  output_file_name1 = paste(output_file_name1, "EHv322_92K_population_with_JPH3.tsv", sep = "_")
   output_file_name1 = paste("./beyond_premut/", output_file_name1, sep = "")
   
   output_file_name2 = paste(output_file_name, "pathogenic_cutoff_", sep = "_")
   output_file_name2 = paste(output_file_name2, as.character(l_patho_cutoff[i]), sep = "")
-  output_file_name2 = paste(output_file_name2, "EHv322_92K_population.tsv", sep = "_")
+  output_file_name2 = paste(output_file_name2, "EHv322_92K_population_with_JPH3.tsv", sep = "_")
   output_file_name2 = paste("./beyond_full-mutation/", output_file_name2, sep = "")
   
   write.table(premut_popu, 
