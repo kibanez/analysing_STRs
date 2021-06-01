@@ -21,7 +21,7 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_a
                      sep = "\t",
                      stringsAsFactors = F)
 dim(clin_data)
-# 2468506  26
+# 2472865  26
 
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
 # case -> proband RD and recruited under Neurological
@@ -35,7 +35,7 @@ l_families = clin_data %>%
   unique() %>%
   pull()
 length(l_families)
-# 14703
+# 14717
 
 l_cases = clin_data %>%
   filter(rare_diseases_family_id %in% l_families, participant_type %in% "Proband") %>%
@@ -43,19 +43,19 @@ l_cases = clin_data %>%
   unique() %>%
   pull()
 length(l_cases)
-# 14800
+# 14814
 
 # QC
 clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_to_proband)%>% table()
 #Maternal Cousin Sister                 Mother                    N/A                Proband 
-#30                     96                1355414                    582 
+#30                     96                1358777                    582 
 
 l_maternal_cousin_sister = clin_data %>% filter(platekey %in% l_cases, biological_relationship_to_proband %in% "Maternal Cousin Sister") %>% select(platekey) %>% unique() %>% pull()
 l_Mother = clin_data %>% filter(platekey %in% l_cases, biological_relationship_to_proband %in% "Mother") %>% select(platekey) %>% unique() %>% pull()
 l_cases = l_cases[-which(l_cases %in% c(l_maternal_cousin_sister, l_Mother))]
 clin_data %>% filter(platekey %in% l_cases) %>% select(biological_relationship_to_proband)%>% table()
 #N/A Proband 
-#1355398     582
+#1358761     582
 
 l_controls = clin_data %>%
   filter((programme %in% "Cancer" & year_of_birth <= "1981") | 
@@ -64,11 +64,11 @@ l_controls = clin_data %>%
   unique() %>%
   pull()
 length(l_controls)
-# 39818
+# 39822
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(biological_relationship_to_proband)%>% table()
 #N/A Proband 
-#185117     885 
+#185326     885 
 
 clin_data %>% filter(platekey %in% l_controls) %>% select(year_of_birth)%>% pull() %>% as.integer() %>% summary()
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -81,7 +81,7 @@ l_pseudocases = clin_data %>%
   unique() %>%
   pull()
 length(l_pseudocases)
-# 19344
+# 19360
 
 # QC
 clin_data %>% filter(platekey %in% l_pseudocases) %>% select(biological_relationship_to_proband)%>% table()
@@ -95,7 +95,7 @@ l_pseudocontrols = clin_data %>%
   unique() %>%
   pull()
 length(l_pseudocontrols)
-# 16195
+# 16216
 
 clin_data %>% filter(platekey %in% l_pseudocontrols) %>% select(biological_relationship_to_proband)%>% table()
 
@@ -120,37 +120,45 @@ df_all = rbind(df_cases,
                df_pseudocontrols)
 df_all = unique(df_all)
 dim(df_all)
-# 90155  2
+# 90210  2
 
 write.table(df_all, 
-            "./analysis/table_cases_controls_90155_genomes_cases_controls_pseudoca_pseudoco.csv",
+            "./analysis/table_cases_controls_90210_genomes_cases_controls_pseudoca_pseudoco.csv",
             quote = F,
             col.names = T,
             row.names = F,
             sep = ",")
 
 # After running python generating_case_controls_from_VCF_EHv3.2.2.py, let's merge with this table
-# --s
-#/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs
-#--specs
-#/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/specs/EH_hg38_9LociForReplication_25March21_GRCh38.json
+#--s
+#/Volumes/KIKU_STRs/data/research/batch_december2020/output_EHv3.2.2_vcfs/
+#  --specs
+#/Users/kibanez/Documents/STRs/data/research/batch_december2020/output_EHv3.2.2_vcfs/variant_catalog_GRCh38_Zhongbo_december2020.json
 #--o
-#merged_93425_genomes_EHv322_batch_Sharp_and_Parkinsonism.tsv
+#merged_93430_genomes_EHv322_batch_HipSTR_Zhongbo.tsv
 #--O
-#/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged
-merged_table = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged/merged_93425_genomes_EHv322_batch_Sharp_and_Parkinsonism.tsv",
+#/Users/kibanez/Documents/STRs/data/research/batch_december2020/output_EHv3.2.2_vcfs/merged/
+merged_table = read.csv("~/Documents/STRs/data/research/batch_december2020/output_EHv3.2.2_vcfs/merged/merged_93430_genomes_EHv322_batch_HipSTR_Zhongbo.tsv",
                         stringsAsFactors = F, 
                         sep = "\t")
 dim(merged_table)
-# 829327  5
+# 18176388  5
 colnames(merged_table) = c("platekey", "gene", "a1", "a2", "coverage")
 
 l_platekeys = unique(merged_table$platekey)
 length(l_platekeys)
-# 93425
+# 93430
 l_genes = unique(merged_table$gene)
 length(l_genes)
-# 9
+# 197
+
+#Create `min_allele` and `max_allele`
+merged_table = merged_table %>%
+  group_by(platekey, gene) %>%
+  mutate(min_allele = min(a1,a2),
+         max_allele = max(a1,a2)) %>%
+  ungroup() %>%
+  as.data.frame()
 
 cc_table = data.frame()
 for(i in 1:length(l_platekeys)){
