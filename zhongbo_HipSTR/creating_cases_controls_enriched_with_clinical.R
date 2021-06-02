@@ -168,7 +168,7 @@ for(i in 1:length(l_platekeys)){
     platekey_type = "NA"
   }
   
-  itziar = pivot_wider(df_aux, names_from = gene, values_from = c(a1, a2, coverage)) %>% as.data.frame()
+  itziar = pivot_wider(df_aux, names_from = gene, values_from = c(min_allele, max_allele, coverage)) %>% as.data.frame()
   itziar$type = platekey_type
   
   # Check whether all genes are genotyped
@@ -197,9 +197,9 @@ for(i in 1:length(l_platekeys)){
 }
 
 dim(cc_table)
-# 93425  29
+# 
 
-write.table(cc_table, "./analysis/cc_table_93425_genomes_9_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(cc_table, "./analysis/cc_table_93430_genomes_197_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
