@@ -160,15 +160,19 @@ merged_table = merged_table %>%
   ungroup() %>%
   as.data.frame()
 
+merged_table = merged_table %>%
+  select(platekey, gene, min_allele, max_allele)
+
 cc_table = data.frame()
 for(i in 1:length(l_platekeys)){
-  df_aux = merged_table %>% filter(platekey %in% l_platekeys[i])
+  df_aux = merged_table %>% 
+    filter(platekey %in% l_platekeys[i]) 
   platekey_type = df_all %>% filter(platekey %in% l_platekeys[i]) %>% select(type) %>% pull() %>% as.character()
   if (length(platekey_type) != 1){
     platekey_type = "NA"
   }
   
-  itziar = pivot_wider(df_aux, names_from = gene, values_from = c(min_allele, max_allele, coverage)) %>% as.data.frame()
+  itziar = pivot_wider(df_aux, names_from = gene, values_from = c(min_allele, max_allele)) %>% as.data.frame()
   itziar$type = platekey_type
   
   # Check whether all genes are genotyped
