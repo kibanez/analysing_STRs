@@ -205,6 +205,14 @@ dim(cc_table)
 
 write.table(cc_table, "./cc_table_93430_genomes_197_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
+# The big data is too big to enrich clinically
+# Let's do it by splitting it in smaller chunks
+cc_table = read.csv("./cc_table_93430_genomes_197_genes.tsv",
+                    sep = "\t",
+                    stringsAsFactors = F)
+dim(cc_table)
+# 93430  396
+
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
   select(platekey, participant_phenotypic_sex, year_of_birth, programme, diseasegroup_list, diseasesubgroup_list, hpo_list)
