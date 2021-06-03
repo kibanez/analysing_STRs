@@ -201,9 +201,9 @@ for(i in 1:length(l_platekeys)){
 }
 
 dim(cc_table)
-# 
+# 93430  396
 
-write.table(cc_table, "./analysis/cc_table_93430_genomes_197_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(cc_table, "./cc_table_93430_genomes_197_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
