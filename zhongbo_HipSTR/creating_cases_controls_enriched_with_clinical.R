@@ -213,6 +213,11 @@ cc_table = read.csv("./cc_table_93430_genomes_197_genes.tsv",
 dim(cc_table)
 # 93430  396
 
+cc_table1 = cc_table[c(1:30000),]
+cc_table2 = cc_table[c(30001:60000),]
+cc_table3 = cc_table[c(60001:93430),]
+rm(cc_table)
+
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
   select(platekey, participant_phenotypic_sex, year_of_birth, programme, diseasegroup_list, diseasesubgroup_list, hpo_list)
