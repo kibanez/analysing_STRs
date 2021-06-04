@@ -207,70 +207,72 @@ write.table(cc_table, "./cc_table_93430_genomes_197_genes.tsv", sep = "\t", quot
 
 # The big data is too big to enrich clinically
 # Let's do it by splitting it in smaller chunks
-cc_table = read.csv("./cc_table_93430_genomes_197_genes.tsv",
+cc_table_main = read.csv("./cc_table_93430_genomes_197_genes.tsv",
                     sep = "\t",
                     stringsAsFactors = F)
-dim(cc_table)
+dim(cc_table_main)
 # 93430  396
 
-cc_table1 = cc_table[c(1:30000),]
-cc_table2 = cc_table[c(30001:60000),]
-cc_table3 = cc_table[c(60001:93430),]
-rm(cc_table)
-
-# Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
   select(platekey, participant_phenotypic_sex, year_of_birth, programme, diseasegroup_list, diseasesubgroup_list, hpo_list)
 
-cc_table = left_join(cc_table,
-                     to_enrich,
-                     by = "platekey")
-cc_table = unique(cc_table)
-dim(cc_table)
-# 93451 35
+# Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms - by gene (otherwise R will abort)
+l_genes = unique(merged_table$gene)
+for (i in 1:length(l_genes)){
+  min_allele_column = paste("min_allele", l_genes[i], sep = "_")
+  max_allele_column = paste("max_allele", l_genes[i], sep = "_")
+  
+  cc_table = cc_table_main %>%
+    select(platekey, type, all_of(min_allele_column), all_of(max_allele_column))
+  
+  cc_table = left_join(cc_table,
+                       to_enrich,
+                       by = "platekey")
+  cc_table = unique(cc_table)
+  dim(cc_table)
+  
+  # which duplicated?
+  platekeys_duplicated = which(duplicated(cc_table$platekey))
+  l_platekeys_duplicated = cc_table$platekey[platekeys_duplicated]
+  
+  # They all have `year_of_birth` with different values...as we are going to use cut-off for age, let's keep the largest one (younger if they are not)
+  year_messed_up = cc_table %>%
+    filter(platekey %in% l_platekeys_duplicated) %>%
+    unique()
+  dim(year_messed_up)
+  # 52 35
+  
+  year_messed_up = year_messed_up %>%
+    group_by(platekey) %>%
+    mutate(youngest_year = max(year_of_birth)) %>%
+    ungroup() %>%
+    as.data.frame()
+  
+  year_messed_up = year_messed_up[,-6]
+  year_messed_up = unique(year_messed_up)
+  
+  colnames(year_messed_up)[10] = "year_of_birth"
+  year_messed_up = year_messed_up[colnames(cc_table)]  
+  
+  # remove the duplicated ones
+  to_remove = year_messed_up$platekey[which(duplicated(year_messed_up$platekey))]
+  
+  cc_table = cc_table %>%
+    filter(!platekey %in% l_platekeys_duplicated)
+  
+  cc_table = rbind(cc_table,
+                   year_messed_up)
+  
+  cc_table = cc_table %>%
+    filter(!platekey %in% to_remove)
+  cc_table = unique(cc_table)
 
-# which duplicated?
-platekeys_duplicated = which(duplicated(cc_table$platekey))
-length(platekeys_duplicated)
-# 26
-l_platekeys_duplicated = cc_table$platekey[platekeys_duplicated]
+  output_file_gene = paste("table_cases_controls_93425_genomes_enriched_with_some_clinical_data", merged_table$gene[i], sep = "_")
+  output_file_gene = paste(output_file_gene, ".tsv", sep = "")
+  if (grepl("/", output_file_gene)){
+    output_file_gene = gsub("/", "_", output_file_gene)
+  }
+  write.table(cc_table, output_file_gene, sep = "\t", quote = F, col.names = T, row.names = F)
+}
 
-# They all have `year_of_birth` with different values...as we are going to use cut-off for age, let's keep the largest one (younger if they are not)
-year_messed_up = cc_table %>%
-  filter(platekey %in% l_platekeys_duplicated) %>%
-  unique()
-dim(year_messed_up)
-# 52 35
 
-year_messed_up = year_messed_up %>%
-  group_by(platekey) %>%
-  mutate(youngest_year = max(year_of_birth)) %>%
-  ungroup() %>%
-  as.data.frame()
-
-year_messed_up = year_messed_up[,-31]
-year_messed_up = unique(year_messed_up)
-dim(year_messed_up)
-# 30 35
-
-colnames(year_messed_up)[35] = "year_of_birth"
-year_messed_up = year_messed_up[colnames(cc_table)]  
-
-# remove the duplicated ones
-to_remove = year_messed_up$platekey[which(duplicated(year_messed_up$platekey))]
-
-cc_table = cc_table %>%
-  filter(!platekey %in% l_platekeys_duplicated)
-
-cc_table = rbind(cc_table,
-                 year_messed_up)
-
-cc_table = cc_table %>%
-  filter(!platekey %in% to_remove)
-cc_table = unique(cc_table)
-dim(cc_table)
-# 93421 35
-
-length(unique(cc_table$platekey))
-# 93421
-write.table(cc_table, "./analysis/table_cases_controls_93421_genomes_enriched_with_some_clinical_data.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
