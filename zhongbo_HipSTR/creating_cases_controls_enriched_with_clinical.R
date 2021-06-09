@@ -214,7 +214,8 @@ dim(cc_table_main)
 # 93430  396
 
 to_enrich = clin_data %>%
-  select(platekey, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, programme, diseasegroup_list, diseasesubgroup_list, hpo_list)
+  select(platekey, rare_diseases_family_id, participant_phenotypic_sex, year_of_birth, programme, diseases_list, diseasegroup_list, diseasesubgroup_list, hpo_list)
+to_enrich = unique(to_enrich)
 
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms - by gene (otherwise R will abort)
 l_genes = unique(merged_table$gene)
@@ -251,7 +252,7 @@ for (i in 1:length(l_genes)){
   year_messed_up = year_messed_up[,-7]
   year_messed_up = unique(year_messed_up)
   
-  colnames(year_messed_up)[11] = "year_of_birth"
+  colnames(year_messed_up)[12] = "year_of_birth"
   year_messed_up = year_messed_up[colnames(cc_table)]  
   
   # remove the duplicated ones
