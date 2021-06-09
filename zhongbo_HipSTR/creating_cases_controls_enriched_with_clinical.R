@@ -223,6 +223,13 @@ for (i in 1:length(l_genes)){
   min_allele_column = paste("min_allele", l_genes[i], sep = "_")
   max_allele_column = paste("max_allele", l_genes[i], sep = "_")
   
+  if (grepl("/", min_allele_column)){
+    min_allele_column = gsub("/", ".", min_allele_column)
+  }
+  if (grepl("/", max_allele_column)){
+    max_allele_column = gsub("/", ".", max_allele_column)
+  }
+  
   cc_table = cc_table_main %>%
     select(platekey, type, all_of(min_allele_column), all_of(max_allele_column))
   
