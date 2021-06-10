@@ -12,7 +12,7 @@ library(dplyr)
 library(tidyverse)
 
 # Set working directory
-setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/beyond_full-mutation/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/beyond_premut/")
 
 # Load unrel 55603 clin data
 clin_data = read.csv("../../../carriers/table_55603_unrel_genomes_enriched_popu_diseasegroup.tsv",
@@ -58,14 +58,14 @@ total_unrel_EAS_notNeuro = clin_data %>% filter(popu %in% "EAS", is_neuro %in% "
 total_unrel_EUR_notNeuro = clin_data %>% filter(popu %in% "EUR", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 total_unrel_SAS_notNeuro = clin_data %>% filter(popu %in% "SAS", is_neuro %in% "NotNeuro",is_125 %in% "No") %>% select(platekey) %>% unique() %>% pull() %>% length()
 
-# Load the whole table for 100kGP - unrelated genomes - after visual QC
+# Load the whole table for 100kGP - unrelated genomes - after visual QC - beyond premut
 # Only unrel genomes
-table_100cc_QC = read.csv("./13_loci_beyond__pathogenic_cutoff_38_EHv322_92K_population_15M.tsv",
+table_100cc_QC = read.csv("./13loci_beyond_premut_cutoff_to_review_VGD_enriched_pathoFinalDecision_100621.tsv",
                           stringsAsFactors = F,
                           header = T,
                           sep = "\t")
 dim(table_100cc_QC)
-# 1143  12
+# 2689  11
 
 # For each locus, compute the carrier ratio and CI 
 l_locus = unique(table_100cc_QC$locus)
