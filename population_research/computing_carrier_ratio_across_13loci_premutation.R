@@ -186,3 +186,4 @@ for(j in 1:length(l_popu)){
   output_file = paste(paste("table_carrier_ratio_with_ci_unrel__NotNeuro_genomes", l_popu[j], sep = "_"), ".tsv", sep = "")
   write.table(df_unrel_notNeuro, output_file, quote = F, row.names = F, col.names = T, sep = "\t")
 }
+
