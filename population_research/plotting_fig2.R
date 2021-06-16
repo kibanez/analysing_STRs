@@ -16,3 +16,16 @@ library(ggpubr); packageDescription("ggpubr", fields = "Version") # 0.2.3
 setwd("/Users/kibanez/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/beyond_premut/")
 
 # Load data
+pc_data = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/aggV2_bedmerge_30KSNPs_labkeyV9_08062020_update_PCsancestryrelated.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = " ")
+dim(pc_data)
+# 78388  17
+
+popu_data = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTRY/batch2/aggV2_M30K_60K_1KGP3_ancestry_assignment_probs_R9_08062020.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = " ")
+dim(popu_data)
+# 78388 33
