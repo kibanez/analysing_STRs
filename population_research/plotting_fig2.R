@@ -46,20 +46,40 @@ dim(table1)
 
 # Merge with PC values
 table1 = left_join(table1,
-                   popu_merged %>% select(plate_key, Pc1, Pc2, Pc3, Pc4, Pc5, Pc6, Pc7, Pc8, Pc9, Pc10),
+                   popu_merged %>% select(plate_key, Pc1, Pc2, Pc3, Pc4, Pc5, Pc6, Pc7, Pc8, Pc9, Pc10, ancestry0_8),
                    by = c("platekey" = "plate_key"))
 
 l_genes = unique(table1$locus)
-
-table1_locus = table1 %>%
-  filter(locus %in% l_genes[i], is_unrel, is_125 %in% "No", Final.decision %in% "Yes")
+for (i in 1:length(l_genes)){
+  table1_locus = table1 %>%
+    filter(locus %in% l_genes[i], is_unrel, is_125 %in% "No", Final.decision %in% "Yes")
+  
+  table1_locus = table1_locus %>%
+    group_by(platekey) %>%
+    mutate(ancestry0_8_value =  case_when(ancestry0_8 == "AFR" ~ 0,
+                                          ancestry0_8 == "AMR" ~ 1,
+                                          ancestry0_8 == "EAS" ~ 2,
+                                          ancestry0_8 == "EUR" ~ 3,
+                                          ancestry0_8 == "SAS" ~ 4)) %>%
+    ungroup() %>%
+    as.data.frame()
+  
+  output_file_name = paste("table_PC_values_and_popu_beyond_premut_", l_genes[i], sep = "")
+  output_file_name = paste(output_file_name, ".csv", sep = "")
+  write.table(table1_locus,
+              output_file_name,
+              row.names = F,
+              col.names = T,
+              sep = ",")
+  
+}
 
 # Let's plot
-ggplot(data=popu_batch2, 
-       aes(x=PC2, y=PC1, colour = ancestry0_8)) +
-  geom_hex(bins=300) +
-  xlab("PC2 across 78,388 genomes") +
-  ylab("PC1 across 78,388 genomes") +
+ggplot(data=table1_locus %>% filter(!ancestry0_8 %in% "unassigned"), 
+       aes(x=Pc2, y=Pc1, colour = popu)) +
+  geom_hex(bins=30000) +
+  xlab("PC8 across 153 genomes - AR") +
+  ylab("PC7 across 153 genomes - AR") +
   guides(fill = FALSE)
 
 
