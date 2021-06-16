@@ -29,3 +29,12 @@ popu_data = read.csv("~/Documents/STRs/ANALYSIS/population_research/MAIN_ANCESTR
                      sep = " ")
 dim(popu_data)
 # 78388 33
+
+popu_merged = left_join(pc_data,
+                        popu_data %>% select(plate_key, ancestry0_8),
+                        by = "plate_key")
+dim(popu_merged)
+# 78388  18
+
+
+
