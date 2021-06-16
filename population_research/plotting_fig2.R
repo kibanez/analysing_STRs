@@ -36,5 +36,31 @@ popu_merged = left_join(pc_data,
 dim(popu_merged)
 # 78388  18
 
+# Load the final table with the number of expanded genomes beyond the premutation threshold
+table1 = read.csv("./13loci_beyond_premut_cutoff_to_review_VGD_enriched_pathoFinalDecision_100621.tsv",
+                  stringsAsFactors = F,
+                  sep = "\t",
+                  header = T)
+dim(table1)
+# 2696  9
+
+# Merge with PC values
+table1 = left_join(table1,
+                   popu_merged %>% select(plate_key, Pc1, Pc2, Pc3, Pc4, Pc5, Pc6, Pc7, Pc8, Pc9, Pc10),
+                   by = c("platekey" = "plate_key"))
+
+l_genes = unique(table1$locus)
+
+table1_locus = table1 %>%
+  filter(locus %in% l_genes[i], is_unrel, is_125 %in% "No", Final.decision %in% "Yes")
+
+# Let's plot
+ggplot(data=popu_batch2, 
+       aes(x=PC2, y=PC1, colour = ancestry0_8)) +
+  geom_hex(bins=300) +
+  xlab("PC2 across 78,388 genomes") +
+  ylab("PC1 across 78,388 genomes") +
+  guides(fill = FALSE)
+
 
 
