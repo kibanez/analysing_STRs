@@ -65,7 +65,7 @@ table_100cc_QC = read.csv("./13loci_beyond_premut_cutoff_to_review_VGD_enriched_
                           header = T,
                           sep = "\t")
 dim(table_100cc_QC)
-# 2689  11
+# 2697  15
 
 # For each locus, compute the carrier ratio and CI 
 l_locus = unique(table_100cc_QC$locus)
