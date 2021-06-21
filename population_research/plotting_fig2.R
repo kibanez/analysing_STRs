@@ -70,6 +70,7 @@ for (i in 1:length(l_genes)){
               output_file_name,
               row.names = F,
               col.names = T,
+              quote = F,
               sep = ",")
   
 }
