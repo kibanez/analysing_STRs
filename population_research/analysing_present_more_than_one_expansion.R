@@ -28,3 +28,19 @@ patho_table = patho_table %>%
 # See which ones are `number_exp` == 2 and `Final.decision` = Yes
 patho_table %>% filter(number_exp == 2, Final.decision %in% "Yes")
 
+# Load premutation table (FMR1 not yet)
+premut_table = read.csv("./beyond_premut/13loci_beyond_premut_cutoff_to_review_VGD_enriched_pathoFinalDecision_100621.tsv",
+                        stringsAsFactors = F,
+                        header = T,
+                        sep = "\t")
+
+# Compute how many expansions has each platekey
+premut_table  = premut_table %>%
+  group_by(platekey, Final.decision) %>%
+  mutate(number_exp = n()) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# See which ones are `number_exp` == 2 and `Final.decision` = Yes
+premut_table %>% filter(number_exp == 2, Final.decision %in% "Yes")
+
