@@ -20,3 +20,18 @@ l_neuro = read.table("./list_11631_PIDs.txt", stringsAsFactors = F)
 l_neuro = l_neuro$V1
 length(l_neuro)
 # 11631
+
+# For MAIN programme we need to use `rare_disease_pedigree_member` table - `affection_status` column/parameter
+# For PILOT programme we need to use `pedigree` table - `status` column/parameter
+main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/rare_diseases_pedigree_member_2021-05-24_13-30-57.tsv",
+                          stringsAsFactors = F,
+                          header = T,
+                          sep = "\t")
+dim(main_clin_data)
+# 217704 35
+
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/data_freeze_Pilot_LK_RESEARCH/pedigree.csv",
+                           stringsAsFactors = F,
+                           header = T)
+dim(pilot_clin_data)
+# 17258  34
