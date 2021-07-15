@@ -21,17 +21,41 @@ l_neuro = l_neuro$V1
 length(l_neuro)
 # 11631
 
-# Load main clinical data
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes.tsv",
+# Load merged PID-FID clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_RD_and_Cancer_PID_FID_platekey_up_to_RE_V12.tsv",
                      stringsAsFactors = F,
                      header = T,
                      sep = "\t")
 dim(clin_data)
-# 2472865  26
+# 175781  6
 
 l_families_subcohort = clin_data %>% filter(participant_id %in% l_neuro) %>% select(rare_diseases_family_id) %>% unique() %>% pull()
 length(l_families_subcohort)
-# 10360
+# 10417
+
+# Load pedigree table (MAIN)
+pedigree_table = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/rare_diseases_pedigree_2021-07-15_12-35-12.tsv",
+                          stringsAsFactors = F,
+                          header = T,
+                          sep = "\t")
+dim(pedigree_table)
+# 34459  4
+
+# Load pedigree-member table (MAIN)
+pedigree_member_table = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/rare_diseases_pedigree_member_2021-05-24_13-30-57.tsv",
+                                 stringsAsFactors = F,
+                                 header = T,
+                                 sep = "\t")
+dim(pedigree_member_table)
+# 217704  35 
+
+pedigree_merged = left_join(pedigree_table,
+                            pedigree_member_table %>% select(participant_id, rare_diseases_pedigree_sk, rare_diseases_family_sk, proband, life_status, affection_status),
+                            by = "rare_diseases_family_sk")
+dim(pedigree_merged)
+# 217779  9
+
+
 
 # Retrieve the family IDs for all these ~11k PIDs
 df_families = clin_data %>%
@@ -55,7 +79,7 @@ df_families = df_families %>%
 
 # Compute how many families we've got with more than 1 affected members
 df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
-# 6145
+# 6145cl
 
 
 
