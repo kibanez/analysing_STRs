@@ -35,3 +35,24 @@ pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/d
                            header = T)
 dim(pilot_clin_data)
 # 17258  34
+
+# Create df with PID and the affection status in main or pilot
+df_affected_main = main_clin_data %>% 
+  filter(participant_id %in% l_neuro) %>%
+  select(participant_id, affection_status) %>%
+  unique()
+dim(df_affected_main)
+# 10615  2
+
+df_affected_pilot = pilot_clin_data %>%
+  filter(gelId %in% l_neuro) %>%
+  select(gelId, affectionStatus) %>%
+  unique()
+dim(df_affected_pilot)
+# 650  2
+colnames(df_affected_pilot) = colnames(df_affected_main)
+
+df_affected_merged = unique(rbind(df_affected_main,
+                                  df_affected_pilot))
+dim(df_affected_merged)
+# 11265   2
