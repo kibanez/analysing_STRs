@@ -21,38 +21,31 @@ l_neuro = l_neuro$V1
 length(l_neuro)
 # 11631
 
-# For MAIN programme we need to use `rare_disease_pedigree_member` table - `affection_status` column/parameter
-# For PILOT programme we need to use `pedigree` table - `status` column/parameter
-main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/rare_diseases_pedigree_member_2021-05-24_13-30-57.tsv",
-                          stringsAsFactors = F,
-                          header = T,
-                          sep = "\t")
-dim(main_clin_data)
-# 217704 35
+# Load main clinical data
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = "\t")
+dim(clin_data)
+# 2472865  26
 
-pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/data_freeze_Pilot_LK_RESEARCH/pedigree.csv",
-                           stringsAsFactors = F,
-                           header = T)
-dim(pilot_clin_data)
-# 17258  34
-
-# Create df with PID and the affection status in main or pilot
-df_affected_main = main_clin_data %>% 
+# Retrieve the family IDs for all these ~11k PIDs
+df_families = clin_data %>%
   filter(participant_id %in% l_neuro) %>%
-  select(participant_id, affection_status) %>%
+  select(rare_diseases_family_id, participant_id, affection_status, biological_relationship_to_proband) %>%
   unique()
-dim(df_affected_main)
-# 10615  2
+dim(df_families)
+# 11594  4
 
-df_affected_pilot = pilot_clin_data %>%
-  filter(gelId %in% l_neuro) %>%
-  select(gelId, affectionStatus) %>%
-  unique()
-dim(df_affected_pilot)
-# 650  2
-colnames(df_affected_pilot) = colnames(df_affected_main)
+df_families = df_families %>%
+  group_by(participant_id) %>%
+  mutate(is_affected = ifelse(affection_status == "Unaffected", FALSE, TRUE)) %>%
+  ungroup() %>%
+  as.data.frame()
 
-df_affected_merged = unique(rbind(df_affected_main,
-                                  df_affected_pilot))
-dim(df_affected_merged)
-# 11265   2
+df_families = df_families %>%
+  group_by(rare_diseases_family_id, is_affected) %>%
+  mutate(num_affected_members = n()) %>%
+  ungroup() %>%
+  as.data.frame()
+
