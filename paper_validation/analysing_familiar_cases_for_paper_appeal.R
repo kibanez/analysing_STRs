@@ -83,6 +83,10 @@ dim(df_families)
 df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
 # 5174 (Main programme: 49.67%)
 
+l_pids_familials = df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull()
+write.table(l_pids_familials, "~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/list_5174_families_at_least_2_affected.tsv",
+            quote = F, col.names = F, row.names = F)
+
 # Load pilot clinical data
 pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
                            stringsAsFactors = F,
@@ -110,6 +114,11 @@ dim(pilot_clin_data_subcohort)
 # How many pilot families have at least 1 other member in the family affected?
 pilot_clin_data_subcohort %>% filter(num_affected_members > 1) %>% select(gelFamilyId.x) %>% unique() %>% pull() %>% length()
 # 125
+
+l_pids_familials_pilot = pilot_clin_data_subcohort %>% filter(num_affected_members > 1) %>% select(gelFamilyId.x) %>% unique() %>% pull() 
+write.table(l_pids_familials_pilot,
+            "~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/list_125_families_PILOT_at_least_2_affected.tsv",
+            quote = F, col.names = F, row.names = F)
 
 # Total number: MAIN + PILOT
 #5174 + 125 = 5299 (50.87%)
