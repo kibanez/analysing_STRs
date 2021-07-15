@@ -50,12 +50,18 @@ dim(pedigree_member_table)
 # 217704  35 
 
 pedigree_merged = left_join(pedigree_table,
-                            pedigree_member_table %>% select(participant_id, rare_diseases_pedigree_sk, rare_diseases_family_sk, proband, life_status, affection_status),
+                            pedigree_member_table %>% select(participant_id, rare_diseases_family_sk, proband, life_status, affection_status),
                             by = "rare_diseases_family_sk")
 dim(pedigree_merged)
-# 217779  9
+# 217779  8
 
-
+# Enrich it with FID
+pedigree_merged = left_join(pedigree_merged,
+                            clin_data,
+                            by = "participant_id")
+pedigree_merged = unique(pedigree_merged)
+dim(pedigree_merged)
+# 166390  13
 
 # Retrieve the family IDs for all these ~11k PIDs
 df_families = clin_data %>%
