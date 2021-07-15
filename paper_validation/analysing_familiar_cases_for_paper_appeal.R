@@ -50,10 +50,10 @@ dim(pedigree_member_table)
 # 217704  35 
 
 pedigree_merged = left_join(pedigree_table,
-                            pedigree_member_table %>% select(participant_id, rare_diseases_family_sk, proband, life_status, affection_status),
+                            pedigree_member_table %>% select(participant_id, rare_diseases_family_sk, rare_diseases_pedigree_member_sk, proband, life_status, affection_status),
                             by = "rare_diseases_family_sk")
 dim(pedigree_merged)
-# 217779  8
+# 217779  9
 
 # Enrich it with FID
 pedigree_merged = left_join(pedigree_merged,
@@ -61,31 +61,27 @@ pedigree_merged = left_join(pedigree_merged,
                             by = "participant_id")
 pedigree_merged = unique(pedigree_merged)
 dim(pedigree_merged)
-# 166390  13
+# 256682  14
 
 # Retrieve the family IDs for all these ~11k PIDs
-df_families = clin_data %>%
-  filter(rare_diseases_family_id %in% l_families_subcohort) %>%
-  select(rare_diseases_family_id, participant_id, affection_status, biological_relationship_to_proband) %>%
+df_families = pedigree_merged %>%
+  filter(rare_diseases_family_id.x %in% l_families_subcohort) %>%
   unique()
 dim(df_families)
-# 24749  4
+# 78505  14
 
 df_families = df_families %>%
-  group_by(participant_id) %>%
-  mutate(is_affected = ifelse(affection_status == "Unaffected", FALSE, TRUE)) %>%
+  group_by(rare_diseases_family_id.x) %>%
+  mutate(num_affected_members = sum(affection_status == "Affected")) %>%
   ungroup() %>%
-  as.data.frame()
-
-df_families = df_families %>%
-  group_by(rare_diseases_family_id, is_affected) %>%
-  mutate(num_affected_members = n()) %>%
-  ungroup() %>%
-  as.data.frame()
+  as.data.frame() %>%
+  unique()
+dim(df_families)
+# 78505  15
 
 # Compute how many families we've got with more than 1 affected members
-df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
-# 6145cl
+df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
+# 5174
 
 
 
