@@ -29,13 +29,17 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_a
 dim(clin_data)
 # 2472865  26
 
+l_families_subcohort = clin_data %>% filter(participant_id %in% l_neuro) %>% select(rare_diseases_family_id) %>% unique() %>% pull()
+length(l_families_subcohort)
+# 10360
+
 # Retrieve the family IDs for all these ~11k PIDs
 df_families = clin_data %>%
-  filter(participant_id %in% l_neuro) %>%
+  filter(rare_diseases_family_id %in% l_families_subcohort) %>%
   select(rare_diseases_family_id, participant_id, affection_status, biological_relationship_to_proband) %>%
   unique()
 dim(df_families)
-# 11594  4
+# 24749  4
 
 df_families = df_families %>%
   group_by(participant_id) %>%
@@ -51,7 +55,7 @@ df_families = df_families %>%
 
 # Compute how many families we've got with more than 1 affected members
 df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
-# 998
+# 6145
 
 
 
