@@ -96,9 +96,23 @@ l_pilot_fam = intersect(l_families_subcohort,
 length(l_pilot_fam)
 # 557
 
+# Enrich pilot clin data with number of affected members
+pilot_clin_data_subcohort = pilot_clin_data %>%
+  filter(gelFamilyId.x %in% l_pilot_fam) %>%
+  group_by(gelFamilyId.x) %>%
+  mutate(num_affected_members = sum(disease_status %in% c("Affected", "AffectedSame"))) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  unique()
+dim(pilot_clin_data_subcohort)
+# 1308
 
+# How many pilot families have at least 1 other member in the family affected?
+pilot_clin_data_subcohort %>% filter(num_affected_members > 1) %>% select(gelFamilyId.x) %>% unique() %>% pull() %>% length()
+# 125
 
-
+# Total number: MAIN + PILOT
+#5174 + 125 = 5299 (50.87%)
 
 # What about all the cohort?
 pedigree_merged = pedigree_merged %>%
