@@ -35,5 +35,41 @@ list_genes = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9ORF72", "CAC
 merged_table = merged_table %>%
   filter(gene %in% list_genes)
 
-
-
+l_platekeys = df_mito$platekey
+df_genomes = data.frame()
+for(i in 1:length(l_platekeys)){
+  merged_platekey = merged_table %>%
+    filter(grepl(l_platekeys[i], list_samples))
+  
+   for (j in 1:length(list_genes)){
+     merged_platekey_locus = merged_platekey %>%
+       filter(gene %in% list_genes[j]) 
+     if (dim(merged_platekey_locus)[1] > 1){
+       to_extract = merged_platekey_locus %>% select(gene, allele)
+       min_EHv3 = min(to_extract$allele)
+       max_EHv3 = max(to_extract$allele)
+       
+       df_genomes = rbind(df_genomes,
+                          cbind(l_platekeys[i], list_genes[j], min_EHv3, max_EHv3))
+     }else{
+       # check whether only has 1 allele (XY sample and AR or FMR1 gene) or it's duplicated (_x2)
+       if (grepl(paste(l_platekeys[i], ".vcf_x2", sep = ""), merged_platekey_locus$list_samples)){
+         to_extract = merged_platekey_locus %>% select(gene, allele)
+         min_EHv3 = to_extract$allele
+         max_EHv3 = to_extract$allele
+         
+         df_genomes = rbind(df_genomes,
+                            cbind(l_platekeys[i], list_genes[j], min_EHv3, max_EHv3))
+       }else{
+         to_extract = merged_platekey_locus %>% select(gene, allele)
+         min_EHv3 = to_extract$allele
+         max_EHv3 = "NA"
+         
+         df_genomes = rbind(df_genomes,
+                            cbind(l_platekeys[i], list_genes[j], min_EHv3, max_EHv3))
+       }
+     }
+   }
+}
+dim(df_genomes)
+#
