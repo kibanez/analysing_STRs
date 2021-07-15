@@ -49,3 +49,9 @@ df_families = df_families %>%
   ungroup() %>%
   as.data.frame()
 
+# Compute how many families we've got with more than 1 affected members
+df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
+# 998
+
+
+
