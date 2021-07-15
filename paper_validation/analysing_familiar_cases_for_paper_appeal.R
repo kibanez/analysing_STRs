@@ -83,6 +83,21 @@ dim(df_families)
 df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
 # 5174 (Main programme: 49.67%)
 
+# Load pilot clinical data
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/pilot_cohort_clinical_data_4833_genomes_removingPanels_280919.tsv",
+                           stringsAsFactors = F,
+                           header = T,
+                           sep = "\t")
+dim(pilot_clin_data)
+# 4974  10
+
+l_pilot_fam = intersect(l_families_subcohort,
+                        pilot_clin_data$gelFamilyId.x)
+length(l_pilot_fam)
+# 557
+
+
+
 
 
 # What about all the cohort?
