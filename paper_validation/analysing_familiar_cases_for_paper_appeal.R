@@ -81,7 +81,20 @@ dim(df_families)
 
 # Compute how many families we've got with more than 1 affected members
 df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
-# 5174
+# 5174 (Main programme: 49.67%)
 
 
 
+# What about all the cohort?
+pedigree_merged = pedigree_merged %>%
+  group_by(rare_diseases_family_id.x) %>%
+  mutate(num_affected_members = sum(affection_status == "Affected")) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  unique()
+
+pedigree_merged %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
+# 20127
+
+length(unique(pedigree_merged$rare_diseases_family_id.x))
+# 34453 (58.42%)
