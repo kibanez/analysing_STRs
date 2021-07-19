@@ -55,33 +55,36 @@ pedigree_merged = left_join(pedigree_table,
 dim(pedigree_merged)
 # 217779  9
 
-# Enrich it with FID
-pedigree_merged = left_join(pedigree_merged,
-                            clin_data,
-                            by = "participant_id")
-pedigree_merged = unique(pedigree_merged)
-dim(pedigree_merged)
-# 256682  14
+
+pedigree_merged = pedigree_merged %>%
+  group_by(rare_diseases_pedigree_sk) %>%
+  mutate(n_affected_members = sum(affection_status == "Affected")) %>%
+  ungroup() %>%
+  as.data.frame()
 
 # Retrieve the family IDs for all these ~11k PIDs
 df_families = pedigree_merged %>%
-  filter(rare_diseases_family_id.x %in% l_families_subcohort) %>%
+  filter(rare_diseases_family_id %in% l_families_subcohort) %>%
   unique()
 dim(df_families)
-# 78505  14
+# 67006  10
 
+# Define whether a family has family-history (num_affected_members > 1)
 df_families = df_families %>%
-  group_by(rare_diseases_family_id.x) %>%
-  mutate(num_affected_members = sum(affection_status == "Affected")) %>%
+  group_by(rare_diseases_family_id) %>%
+  mutate(is_fam = ifelse(n_affected_members > 1, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame() %>%
   unique()
-dim(df_families)
-# 78505  15
+
+write.table(df_families, "table_family_history_for_11k_PIDs.tsv", 
+            quote = F, row.names = F, col.names = F, sep= "\t")
 
 # Compute how many families we've got with more than 1 affected members
-df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
-# 5174 (Main programme: 49.67%)
+df_families %>% filter(n_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
+# 1847 (Main programme: 17.73%)
+df_families %>% filter(is_fam) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
+# 1847
 
 l_pids_familials = df_families %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull()
 write.table(l_pids_familials, "~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/list_5174_families_at_least_2_affected.tsv",
@@ -121,18 +124,18 @@ write.table(l_pids_familials_pilot,
             quote = F, col.names = F, row.names = F)
 
 # Total number: MAIN + PILOT
-#5174 + 125 = 5299 (50.87%)
+#1847 + 125 =  1972 (19%)
 
 # What about all the cohort?
 pedigree_merged = pedigree_merged %>%
-  group_by(rare_diseases_family_id.x) %>%
+  group_by(rare_diseases_pedigree_sk) %>%
   mutate(num_affected_members = sum(affection_status == "Affected")) %>%
   ungroup() %>%
   as.data.frame() %>%
   unique()
 
-pedigree_merged %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id.x) %>% unique() %>% pull() %>% length()
-# 20127
+pedigree_merged %>% filter(num_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
+# 8397
 
-length(unique(pedigree_merged$rare_diseases_family_id.x))
-# 34453 (58.42%)
+length(unique(pedigree_merged$rare_diseases_family_id))
+# 34453 (24.4%)
