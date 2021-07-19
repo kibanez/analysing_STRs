@@ -262,7 +262,7 @@ for (i in 1:length(l_genes)){
     
     output_file_name2 = paste(output_file_name, "pathogenic_cutoff_", sep = "_")
     output_file_name2 = paste(output_file_name2, as.character(l_patho_cutoff[i]), sep = "")
-    output_file_name2 = paste(output_file_name2, "EHv322_92K_population_with_JPH3.tsv", sep = "_")
+    output_file_name2 = paste(output_file_name2, "EHv322_92K_population.tsv", sep = "_")
     output_file_name2 = paste("./beyond_full-mutation/", output_file_name2, sep = "")
     
     write.table(patho_popu, 
