@@ -14,7 +14,25 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 setwd("~/Downloads/")
 
 # Load the data
-df_mito = read.csv("~/Downloads/table_mito_genomes.tsv",
+l_mito = read.table("list_of_mito_genomes_for_13_loci", stringsAsFactors = F, header = F)
+l_mito = l_mito$V1
+length(l_mito)
+# 345
+
+merged_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/merged_RE_releases_and_Pilot_RD_and_Cancer_PID_FID_platekey_up_to_RE_V12.tsv",
+                            stringsAsFactors = F,
+                            header = T,
+                            sep = "\t")
+dim(merged_clin_data)
+# 175781  6
+
+df_mito = merged_clin_data %>% filter(participant_id %in% l_mito, !platekey %in% "N/A") %>% select(participant_id, platekey) %>% unique()
+dim(df_mito)
+# 409  2
+
+write.table(df_mito,quote = F, col.names = F, row.names = F, sep = "\t", "~/Downloads/df_mito_table_input.tsv")
+
+df_mito = read.csv("~/Downloads/df_mito_table_input.tsv",
                    stringsAsFactors = F,
                    header = T,
                    sep = "\t")
@@ -89,4 +107,11 @@ dim(df_genomes)
 # 4485  5
 
 colnames(df_genomes) = c("platekey", "gene", "min_EHv3", "max_EHv3", "is_unrel")
-write.table(df_genomes, "~/Downloads/table_mito_genomes.tsv", quote = F, col.names = F, row.names = F, sep = "\t")
+
+# Enrich with PID
+to_write = left_join(df_mito,
+                     df_genomes,
+                     by = "platekey")
+
+
+write.table(to_write, "~/Downloads/table_mito_genomes.tsv", quote = F, col.names = F, row.names = F, sep = "\t")
