@@ -55,7 +55,6 @@ pedigree_merged = left_join(pedigree_table,
 dim(pedigree_merged)
 # 217779  9
 
-
 pedigree_merged = pedigree_merged %>%
   group_by(rare_diseases_pedigree_sk) %>%
   mutate(n_affected_members = sum(affection_status == "Affected")) %>%
@@ -76,9 +75,6 @@ df_families = df_families %>%
   ungroup() %>%
   as.data.frame() %>%
   unique()
-
-write.table(df_families, "table_family_history_for_11k_PIDs.tsv", 
-            quote = F, row.names = F, col.names = F, sep= "\t")
 
 # Compute how many families we've got with more than 1 affected members
 df_families %>% filter(n_affected_members > 1) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
@@ -117,6 +113,11 @@ dim(pilot_clin_data_subcohort)
 # How many pilot families have at least 1 other member in the family affected?
 pilot_clin_data_subcohort %>% filter(num_affected_members > 1) %>% select(gelFamilyId.x) %>% unique() %>% pull() %>% length()
 # 125
+
+write.table(df_families, "table_family_history_for_11k_PIDs_MAIN_PROGRAMME.tsv", 
+            quote = F, row.names = F, col.names = T, sep= "\t")
+write.table(pilot_clin_data_subcohort, "table_family_history_for_11k_PIDs_PILOT_PROGRAMME.tsv", 
+            quote = F, row.names = F, col.names = T, sep= "\t")
 
 l_pids_familials_pilot = pilot_clin_data_subcohort %>% filter(num_affected_members > 1) %>% select(gelFamilyId.x) %>% unique() %>% pull() 
 write.table(l_pids_familials_pilot,
