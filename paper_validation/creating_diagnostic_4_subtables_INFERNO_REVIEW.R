@@ -14,6 +14,11 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 # set the working directory
 setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
+# Load  family_history table
+is_fami = read.csv("./table_family_history_for_11k_PIDs.tsv", stringsAsFactors = F, header = F, sep = "\t")
+dim(is_fami)
+# 67005   11
+
 # Load table with the diagnostics 
 # Main table
 table_diseases = read.csv("./table_diseases_enriched_popu_includingSkeletalMuscleChan_and_ultra-rare.tsv",
@@ -254,6 +259,15 @@ length(unique(panel_a$participant_id))
 # 3692
 panel_a$panel = rep("A", length(panel_a$participant_id))
 
+# Enrich it with family-history table
+panel_a = left_join(panel_a,
+                    is_fami %>% select(V4, V11),
+                    by = c("rare_diseases_family_id" = "V4"))
+
+panel_a %>% filter(V11) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
+# 877 
+panel_a %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1196
 ################################################################################################################################################################
 # TABLE B - Complex ID
 # We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
@@ -283,6 +297,16 @@ dim(panel_b)
 
 length(unique(panel_b$participant_id))
 # 2743
+
+
+panel_b = left_join(panel_b,
+                    is_fami %>% select(V4,V11),
+                    by = c("rare_diseases_family_id" = "V4"))
+
+panel_b %>% filter(V11) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
+# 290
+panel_b %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 528
 
 # Analysing numbers for Panel B
 # Define here the list of panels we want to have within
@@ -466,6 +490,12 @@ length(unique(panel_c$participant_id))
 length(unique(panel_c$plate_key.x))
 # 860
 
+panel_c = left_join(panel_c,
+                    is_fami %>% select(V4,V11),
+                    by = c("rare_diseases_family_id" = "V4"))
+
+panel_c %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 193
 ################################################################################################################################################################
 # TABLE D. only including children recruited under ID (using >55. as cutoff)	
 # FMR1
@@ -501,6 +531,13 @@ panel_d$panel = rep("D", length(panel_d$participant_id))
 length(unique(panel_d$participant_id))
 # 6731
 
+
+panel_d = left_join(panel_d,
+                    is_fami %>% select(V4,V11),
+                    by = c("rare_diseases_family_id" = "V4"))
+panel_d %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 1481
+
 # Let's merge all panels in the same table
 panel_merged = rbind(panel_a,
                      panel_b,
@@ -509,6 +546,13 @@ panel_merged = rbind(panel_a,
 panel_merged = unique(panel_merged)
 dim(panel_merged)
 # 14154  8
+
+
+panel_merged = left_join(panel_merged,
+                         is_fami %>% select(V4,V11),
+                         by = c("rare_diseases_family_id" = "V4"))
+panel_merged %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 2921 
 
 panel_merged = panel_merged %>% group_by(participant_id) %>% mutate(age = 2020 - year_of_birth) %>% ungroup() %>% as.data.frame()
 
