@@ -15,9 +15,20 @@ library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/")
 
 # Load  family_history table
-is_fami = read.csv("./table_family_history_for_11k_PIDs.tsv", stringsAsFactors = F, header = F, sep = "\t")
+is_fami = read.csv("./table_family_history_for_11k_PIDs_MAIN_PROGRAMME.tsv", stringsAsFactors = F, header = T, sep = "\t")
 dim(is_fami)
-# 67005   11
+# 67006  11
+
+is_fami_pilot = read.csv("./table_family_history_for_11k_PIDs_PILOT_PROGRAMME.tsv", stringsAsFactors = F, header = T, sep = "\t")
+dim(is_fami_pilot)
+# 1308  11
+
+is_fami_pilot = is_fami_pilot %>%
+  group_by(gelFamilyId.x) %>%
+  mutate(is_fam = ifelse(num_affected_members > 1, TRUE, FALSE)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  unique()
 
 # Load table with the diagnostics 
 # Main table
@@ -268,6 +279,27 @@ panel_a %>% filter(V11) %>% select(rare_diseases_family_id) %>% unique() %>% pul
 # 877 
 panel_a %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 1196
+
+# per normalised spec disease
+panel_a %>% filter(V11, normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 352
+panel_a %>% filter(V11, normalised_specific_disease %in% "Hereditary spastic paraplegia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 182
+panel_a %>% filter(V11, normalised_specific_disease %in% "Early onset and familial Parkinson's Disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 
+panel_a %>% filter(V11, grepl("Complex Parkinsonism", normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 28
+panel_a %>% filter(V11, normalised_specific_disease %in% "Early onset dystonia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 89
+panel_a %>% filter(V11, normalised_specific_disease %in% "Early onset dementia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 88
+panel_a %>% filter(V11, normalised_specific_disease %in% "Amyotrophic lateral sclerosis or motor neuron disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 19
+panel_a %>% filter(V11, normalised_specific_disease %in% "Charcot-Marie-Tooth disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 242
+panel_a %>% filter(V11, normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 19
+
 ################################################################################################################################################################
 # TABLE B - Complex ID
 # We need to take the list of PIDs from `list_2459_PIDs_ID_and_others_as_panels.txt`
