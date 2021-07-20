@@ -25,7 +25,7 @@ dim(is_fami_pilot)
 
 is_fami_pilot = is_fami_pilot %>%
   group_by(gelFamilyId.x) %>%
-  mutate(is_fam = ifelse(num_affected_members > 1, TRUE, FALSE)) %>%
+  mutate(is_fam_pilot = ifelse(num_affected_members > 1, TRUE, FALSE)) %>%
   ungroup() %>%
   as.data.frame() %>%
   unique()
@@ -272,33 +272,62 @@ panel_a$panel = rep("A", length(panel_a$participant_id))
 
 # Enrich it with family-history table
 panel_a = left_join(panel_a,
-                    is_fami %>% select(V4, V11),
-                    by = c("rare_diseases_family_id" = "V4"))
+                    is_fami %>% select(rare_diseases_family_id, is_fam),
+                    by = "rare_diseases_family_id")
+panel_a = left_join(panel_a,
+                    is_fami_pilot %>% select(gelFamilyId.x, is_fam_pilot),
+                    by = c("rare_diseases_family_id" = "gelFamilyId.x"))
 
-panel_a %>% filter(V11) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
-# 877 
-panel_a %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 1196
+panel_a %>% filter(is_fam_pilot) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 140
 
 # per normalised spec disease
-panel_a %>% filter(V11, normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 352
-panel_a %>% filter(V11, normalised_specific_disease %in% "Hereditary spastic paraplegia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Hereditary ataxia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 51
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Hereditary spastic paraplegia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 182
-panel_a %>% filter(V11, normalised_specific_disease %in% "Early onset and familial Parkinson's Disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
-# 
-panel_a %>% filter(V11, grepl("Complex Parkinsonism", normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Hereditary spastic paraplegia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 39
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Early onset and familial Parkinson's Disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+#
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Early onset and familial Parkinson's Disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 5
+
+panel_a %>% filter(is_fam, grepl("Complex Parkinsonism", normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 28
-panel_a %>% filter(V11, normalised_specific_disease %in% "Early onset dystonia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, grepl("Complex Parkinsonism", normalised_specific_disease)) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 3
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Early onset dystonia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 89
-panel_a %>% filter(V11, normalised_specific_disease %in% "Early onset dementia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Early onset dystonia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 15
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Early onset dementia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 88
-panel_a %>% filter(V11, normalised_specific_disease %in% "Amyotrophic lateral sclerosis or motor neuron disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Early onset dementia") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 0
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Amyotrophic lateral sclerosis or motor neuron disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 19
-panel_a %>% filter(V11, normalised_specific_disease %in% "Charcot-Marie-Tooth disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Amyotrophic lateral sclerosis or motor neuron disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 0
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Charcot-Marie-Tooth disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 242
-panel_a %>% filter(V11, normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Charcot-Marie-Tooth disease") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 36
+
+panel_a %>% filter(is_fam, normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders") %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 19
+panel_a %>% filter(is_fam_pilot, normalised_specific_disease %in% "Ultra-rare undescribed monogenic disorders") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 0
 
 ################################################################################################################################################################
 # TABLE B - Complex ID
@@ -332,13 +361,17 @@ length(unique(panel_b$participant_id))
 
 
 panel_b = left_join(panel_b,
-                    is_fami %>% select(V4,V11),
-                    by = c("rare_diseases_family_id" = "V4"))
+                    is_fami %>% select(rare_diseases_family_id,is_fam),
+                    by = "rare_diseases_family_id")
+panel_b = left_join(panel_b,
+                    is_fami_pilot %>% select(gelFamilyId.x,is_fam_pilot),
+                    by = c("rare_diseases_family_id" = "gelFamilyId.x"))
 
-panel_b %>% filter(V11) %>% select(rare_diseases_family_id) %>% unique() %>% pull() %>% length()
-# 290
-panel_b %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_b %>% filter(is_fam) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 528
+panel_b %>% filter(is_fam_pilot) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 0
+
 
 # Analysing numbers for Panel B
 # Define here the list of panels we want to have within
@@ -523,11 +556,43 @@ length(unique(panel_c$plate_key.x))
 # 860
 
 panel_c = left_join(panel_c,
-                    is_fami %>% select(V4,V11),
-                    by = c("rare_diseases_family_id" = "V4"))
+                    is_fami %>% select(rare_diseases_family_id, is_fam),
+                    by = "rare_diseases_family_id")
+panel_c = left_join(panel_c,
+                    is_fami_pilot %>% select(gelFamilyId.x, is_fam_pilot),
+                    by = c("rare_diseases_family_id" = "gelFamilyId.x"))
 
-panel_c %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_c %>% filter(is_fam) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 193
+panel_c %>% filter(is_fam_pilot) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 27
+
+# Per norm spec disease
+# Congenital myopathy
+panel_c %>% filter(is_fam, normalised_specific_disease %in% "Congenital myopathy") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 101
+panel_c %>% filter(is_fam_pilot, normalised_specific_disease %in% "Congenital myopathy") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 15
+
+#Distal myopathies
+panel_c %>% filter(is_fam, normalised_specific_disease %in% "Distal myopathies") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 46
+panel_c %>% filter(is_fam_pilot, normalised_specific_disease %in% "Distal myopathies") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 6
+
+#Congenital muscular dystrophy
+panel_c %>% filter(is_fam, normalised_specific_disease %in% "Congenital muscular dystrophy") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 20
+panel_c %>% filter(is_fam_pilot, normalised_specific_disease %in% "Congenital muscular dystrophy") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 4
+
+#Skeletal muscle channelopathy
+panel_c %>% filter(is_fam, normalised_specific_disease %in% "Skeletal Muscle Channelopathies") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 26
+panel_c %>% filter(is_fam_pilot, normalised_specific_disease %in% "Skeletal Muscle Channelopathies") %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 3
+
+
 ################################################################################################################################################################
 # TABLE D. only including children recruited under ID (using >55. as cutoff)	
 # FMR1
@@ -565,10 +630,16 @@ length(unique(panel_d$participant_id))
 
 
 panel_d = left_join(panel_d,
-                    is_fami %>% select(V4,V11),
-                    by = c("rare_diseases_family_id" = "V4"))
-panel_d %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+                    is_fami %>% select(rare_diseases_family_id,is_fam),
+                    by = "rare_diseases_family_id")
+panel_d = left_join(panel_d,
+                    is_fami_pilot %>% select(gelFamilyId.x,is_fam_pilot),
+                    by = c("rare_diseases_family_id" = "gelFamilyId.x"))
+
+panel_d %>% filter(is_fam) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 1481
+panel_d %>% filter(is_fam_pilot) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 55
 
 # Let's merge all panels in the same table
 panel_merged = rbind(panel_a,
@@ -579,12 +650,10 @@ panel_merged = unique(panel_merged)
 dim(panel_merged)
 # 14154  8
 
-
-panel_merged = left_join(panel_merged,
-                         is_fami %>% select(V4,V11),
-                         by = c("rare_diseases_family_id" = "V4"))
-panel_merged %>% filter(V11) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+panel_merged %>% filter(is_fam) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 2921 
+panel_merged %>% filter(is_fam_pilot) %>% select(participant_id) %>% unique() %>% pull() %>% length()
+# 218
 
 panel_merged = panel_merged %>% group_by(participant_id) %>% mutate(age = 2020 - year_of_birth) %>% ungroup() %>% as.data.frame()
 
