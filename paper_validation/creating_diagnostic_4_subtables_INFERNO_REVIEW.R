@@ -818,11 +818,12 @@ l_pid_all_panels = unique(c(panel_a$participant_id,
                             panel_d$participant_id))
 clin_data = clin_data %>% filter(participant_id %in% l_pid_all_panels) %>% select(participant_id, normalised_age_of_onset, normalised_specific_disease) %>% unique()
 
+
 # Overall
-mean(clin_data$normalised_age_of_onset, na.rm = T)
-# 11.48 
-sd(clin_data$normalised_age_of_onset, na.rm = T)
-# 19.77
+mean(c(clin_data$normalised_age_of_onset,georgia$age_of_onset), na.rm = T)
+# 12.42
+sd(c(clin_data$normalised_age_of_onset, georgia$age_of_onset), na.rm = T)
+# 20.22
 
 # Age of onset Panel A,B,C,D
 clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
