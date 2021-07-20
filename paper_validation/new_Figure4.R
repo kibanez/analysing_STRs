@@ -26,9 +26,15 @@ dim(df_tested)
 df_tested = df_tested %>% select(panel_id, disease, individuals_tested)
 df_tested$disease = factor(df_tested$disease, levels = unique(df_tested$disease))
 
-ggplot(df_tested, aes(x = panel_id, y = individuals_tested, fill = disease)) +
+ggplot(df_tested, aes(x = disease, y = individuals_tested, fill = disease)) +
   geom_bar(stat = "identity", position=position_dodge()) +
-  geom_text(aes(label = individuals_tested), vjust = 1.5, colour = "black")
+  #geom_text(aes(label = individuals_tested), vjust = 1.5, colour = "black") +
+  scale_fill_manual(values=rep("darkgrey", length(df_tested$disease))) +
+  guides(fill = FALSE) +
+  xlab("") + ylab("Participants tested") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
+  scale_x_discrete(position = "top") 
+
 
 
 png("barplot_number_genomes_per_cohort_1kGP3_100kGP_TOPMed.png")
