@@ -14,3 +14,23 @@ library(tidyr)
 
 # set the working directory
 setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/")
+
+# load number participant tested
+df_tested = read.csv("./table_for_figure4_tested.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = "\t")
+dim(df_tested)
+# 15  4
+
+df_tested = df_tested %>% select(panel_id, disease, individuals_tested)
+df_tested$disease = factor(df_tested$disease, levels = unique(df_tested$disease))
+
+ggplot(df_tested, aes(x = panel_id, y = individuals_tested, fill = disease)) +
+  geom_bar(stat = "identity", position=position_dodge()) +
+  geom_text(aes(label = individuals_tested), vjust = 1.5, colour = "black")
+
+
+png("barplot_number_genomes_per_cohort_1kGP3_100kGP_TOPMed.png")
+print(barplot_all)
+dev.off()
