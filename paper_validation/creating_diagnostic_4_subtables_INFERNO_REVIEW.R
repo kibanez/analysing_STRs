@@ -648,7 +648,7 @@ panel_merged = rbind(panel_a,
                      panel_d)
 panel_merged = unique(panel_merged)
 dim(panel_merged)
-# 14154  8
+# 14154  10
 
 panel_merged %>% filter(is_fam) %>% select(participant_id) %>% unique() %>% pull() %>% length()
 # 2921 
@@ -781,6 +781,14 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/raw/rare_dise
                      stringsAsFactors = F)
 dim(clin_data)
 # 39676  11
+
+# Georgia Chan worked across HES tables to fish missing data re age on onset
+georgia = read.csv("~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/Neuro_DON_georgiaChan.csv",
+                   stringsAsFactors = F,
+                   header = T)
+dim(georgia)
+# 1228 2
+
 
 l_pid_all_panels = unique(c(panel_a$participant_id,
                             panel_b$participant_id,
