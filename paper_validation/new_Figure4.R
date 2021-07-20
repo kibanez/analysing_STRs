@@ -36,3 +36,11 @@ ggplot(df_tested, aes(x = disease, y = individuals_tested, fill = disease)) +
   xlab("") + ylab("Participants tested") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
   scale_x_discrete(position = "top", labels = wrap_format(5)) 
+
+# load number participant confirmed
+df_confirmed = read.csv("./table_for_figure4_confirmed.tsv",
+                     stringsAsFactors = F,
+                     header = T,
+                     sep = "\t")
+dim(df_confirmed)
+# 15  3
