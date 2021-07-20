@@ -789,6 +789,28 @@ georgia = read.csv("~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/Neuro
 dim(georgia)
 # 1228 2
 
+# We need to know the age of the PIDs from Georgia, to define the age of onset (from the date of onset)
+main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes.tsv", stringsAsFactors = F, header = T, sep = "\t")
+dim(main_clin_data)
+# 2472865  26
+
+georgia = left_join(georgia,
+                    main_clin_data %>% select(participant_id, year_of_birth),
+                    by = "participant_id")
+
+georgia = georgia %>%
+  group_by(participant_id) %>%
+  mutate(year_onset  = strsplit(date_of_onset, '-')[[1]][1]) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  unique()
+
+georgia = georgia %>%
+  group_by(participant_id) %>%
+  mutate(age_of_onset  = as.integer(year_onset) - as.integer(year_of_birth)) %>%
+  ungroup() %>%
+  as.data.frame() %>%
+  unique()
 
 l_pid_all_panels = unique(c(panel_a$participant_id,
                             panel_b$participant_id,
