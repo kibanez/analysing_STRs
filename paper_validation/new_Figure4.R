@@ -11,6 +11,7 @@ library(tidyverse); packageDescription ("tidyverse", fields = "Version") # "1.2.
 library(ggplot2); packageDescription ("ggplot2", fields = "Version") #"3.3.0"
 library(reshape2)
 library(tidyr)
+library(scales)
 
 # set the working directory
 setwd("~/Documents/STRs/PAPERS/VALIDATION_PAPER/LANCET/APPEAL/")
@@ -29,14 +30,9 @@ df_tested$disease = factor(df_tested$disease, levels = unique(df_tested$disease)
 ggplot(df_tested, aes(x = disease, y = individuals_tested, fill = disease)) +
   geom_bar(stat = "identity", position=position_dodge()) +
   #geom_text(aes(label = individuals_tested), vjust = 1.5, colour = "black") +
-  scale_fill_manual(values=rep("darkgrey", length(df_tested$disease))) +
+  #scale_fill_manual(values=rep("darkgrey", length(df_tested$disease))) +
+  scale_fill_manual(values=c("grey54","grey54","grey54","grey54","grey54","grey54","grey54","grey54","grey54","grey64","grey54","grey54","grey54","grey54","grey44")) +
   guides(fill = FALSE) +
   xlab("") + ylab("Participants tested") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
-  scale_x_discrete(position = "top") 
-
-
-
-png("barplot_number_genomes_per_cohort_1kGP3_100kGP_TOPMed.png")
-print(barplot_all)
-dev.off()
+  scale_x_discrete(position = "top", labels = wrap_format(5)) 
