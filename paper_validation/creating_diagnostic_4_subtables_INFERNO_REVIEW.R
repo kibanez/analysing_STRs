@@ -812,6 +812,12 @@ georgia = georgia %>%
   as.data.frame() %>%
   unique()
 
+# also include in georgia the normalised disease
+georgia = left_join(georgia,
+                    clin_data %>% select(participant_id, normalised_specific_disease),
+                    by = "participant_id")
+  
+
 l_pid_all_panels = unique(c(panel_a$participant_id,
                             panel_b$participant_id,
                             panel_c$participant_id,
@@ -934,14 +940,24 @@ for (i in 1:length(l_diseases_table2)){
   print(l_diseases_table2[i])
   print("Panel A")
   aux_a = clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull()
-  print(mean(c(aux_a, georgia %>% filter(participant_id %in% panel_a$participant_id) %>% select(age_of_onset) %>% pull()), na.rm = T))
-  clin_data %>% filter(participant_id %in% panel_a$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  print(mean(c(aux_a, 
+               georgia %>% filter(participant_id %in% panel_a$participant_id, normalised_specific_disease %in% l_diseases_table2[i]) %>% select(age_of_onset) %>% pull()), na.rm = T))
+  print(sd(c(aux_a, 
+               georgia %>% filter(participant_id %in% panel_a$participant_id, normalised_specific_disease %in% l_diseases_table2[i]) %>% select(age_of_onset) %>% pull()), na.rm = T))
+  
   print("Panel C")
-  clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
-  clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  aux_b = clin_data %>% filter(participant_id %in% panel_c$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull()
+  print(mean(c(aux_b, 
+               georgia %>% filter(participant_id %in% panel_c$participant_id, normalised_specific_disease %in% l_diseases_table2[i]) %>% select(age_of_onset) %>% pull()), na.rm = T))
+  print(sd(c(aux_b, 
+               georgia %>% filter(participant_id %in% panel_c$participant_id, normalised_specific_disease %in% l_diseases_table2[i]) %>% select(age_of_onset) %>% pull()), na.rm = T))
+  
   print("Panel D")
-  clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% mean() %>% print() 
-  clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull() %>% sd() %>% print()
+  aux_d = clin_data %>% filter(participant_id %in% panel_d$participant_id, !is.na(normalised_age_of_onset), normalised_specific_disease %in% l_diseases_table2[i]) %>% select(normalised_age_of_onset) %>% pull()
+  print(mean(c(aux_d,
+             georgia %>% filter(participant_id %in% panel_d$participant_id, normalised_specific_disease %in% l_diseases_table2[i]) %>% select(age_of_onset) %>% pull()), na.rm = T))
+  print(sd(c(aux_d,
+               georgia %>% filter(participant_id %in% panel_d$participant_id, normalised_specific_disease %in% l_diseases_table2[i]) %>% select(age_of_onset) %>% pull()), na.rm = T))
   
 }
 
