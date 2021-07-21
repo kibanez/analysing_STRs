@@ -28,15 +28,53 @@ dim(df_tested)
 df_tested = df_tested %>% select(panel_id, disease, individuals_tested)
 df_tested$disease = factor(df_tested$disease, levels = unique(df_tested$disease))
 
+# Let's separate by panels
+panel_a = df_tested %>% filter(panel_id %in% "A")
+panel_b = df_tested %>% filter(panel_id %in% "B")
+panel_c = df_tested %>% filter(panel_id %in% "C")
+panel_d = df_tested %>% filter(panel_id %in% "D")
+
+
 top = ggplot(df_tested, aes(x = disease, y = individuals_tested, fill = disease)) +
   geom_bar(stat = "identity", position=position_dodge()) +
-  #geom_text(aes(label = individuals_tested), vjust = 1.5, colour = "black") +
-  #scale_fill_manual(values=rep("darkgrey", length(df_tested$disease))) +
   scale_fill_manual(values=c("grey54","grey54","grey54","grey54","grey54","grey54","grey54","grey54","grey54","grey64","grey54","grey54","grey54","grey54","grey44")) +
   guides(fill = FALSE) +
   xlab("") + ylab("Individuals tested") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
   scale_x_discrete(position = "top", labels = wrap_format(5)) 
+
+top_panel_a = ggplot(panel_a, aes(x = disease, y = individuals_tested, fill = disease)) +
+  geom_bar(stat = "identity", position=position_dodge()) +
+  scale_fill_manual(values=rep("grey54",length(panel_a$disease))) +
+  guides(fill = FALSE) +
+  xlab("") + ylab("Individuals tested") +
+  theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
+  scale_x_discrete(labels = wrap_format(5)) 
+  
+top_panel_b = ggplot(panel_b, aes(x = disease, y = individuals_tested, fill = disease)) +
+  geom_bar(stat = "identity", position=position_dodge()) +
+  scale_fill_manual(values=rep("grey54",length(panel_b$disease))) +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
+  scale_x_discrete(labels = wrap_format(5)) 
+
+top_panel_c = ggplot(panel_c, aes(x = disease, y = individuals_tested, fill = disease)) +
+  geom_bar(stat = "identity", position=position_dodge()) +
+  scale_fill_manual(values=rep("grey54",length(panel_c$disease))) +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
+  scale_x_discrete(labels = wrap_format(5)) 
+
+top_panel_d = ggplot(panel_d, aes(x = disease, y = individuals_tested, fill = disease)) +
+  geom_bar(stat = "identity", position=position_dodge()) +
+  scale_fill_manual(values=rep("grey54",length(panel_d$disease))) +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
+  scale_x_discrete(labels = wrap_format(5)) +
+  scale_y_break(c(3001, 6731)) +
 
 # load number participant confirmed
 df_confirmed = read.csv("./table_for_figure4_confirmed.tsv",
