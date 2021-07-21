@@ -794,6 +794,12 @@ main_clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_
 dim(main_clin_data)
 # 2472865  26
 
+pilot_clin_data = read.csv("~/Documents/STRs/clinical_data/pilot_clinical_data/data_freeze_Pilot_LK_RESEARCH/pedigree.csv",
+                           stringsAsFactors = F,
+                           header = T)
+dim(pilot_clin_data)
+# 17258  34
+
 georgia = left_join(georgia,
                     main_clin_data %>% select(participant_id, year_of_birth),
                     by = "participant_id")
@@ -865,36 +871,40 @@ clin_data %>% filter(participant_id %in% c("115000968","116002069","115004635","
 clin_data %>% filter(participant_id %in% c("115000968","116002069","115004635","113004320","115017486","115016317","113002006","119001845","115002538","50003892","115012847","115011956","115001026","50001165","113003032","113002194","120000698","124000946","122000175"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd() 
 
 # Panel A and Hereditary spastic paraplegia
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("113004320", "50003892", "50002396"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("113004320", "50003892", "50002396"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+georgia %>% filter(participant_id %in% c("113004320", "50003892", "50002396")) %>% select(age_of_onset) %>% pull() %>% mean() 
+georgia %>% filter(participant_id %in% c("113004320", "50003892", "50002396")) %>% select(age_of_onset) %>% pull() %>% sd()
+
 
 # Panel A and Early onset and familial Parkinson's Disease
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("115000536","115004196"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("115000536","115004196"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+
+georgia %>% filter(participant_id %in% c("115000536","115004196")) %>% select(age_of_onset) %>% pull() %>% mean() 
+georgia %>% filter(participant_id %in% c("115000536","115004196")) %>% select(age_of_onset) %>% pull() %>% sd()
+
 
 # Panel A and Complex Parkinsonism (includes pallido-pyramidal syndromes)
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
-
-# Panel A and Early onset dystonia
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("115006729","112003594"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("115006729","112003594"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 # Panel A and Early onset dementia
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("115005431","115011457","122001169","210013915"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("115005431","115011457","122001169","210013915"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
-# Panel A and Amyotrophic lateral sclerosis or motor neuron disease
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+  # Panel A and Amyotrophic lateral sclerosis or motor neuron disease
+clin_data %>% filter(participant_id %in% c("112005899","112005900","115008391","115006565","115011422","115011586","115007340","115004045"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("112005899","112005900","115008391","115006565","115011422","115011586","115007340","115004045"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 # Panel A and Charcot-Marie-Tooth disease
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("112008033","115014127","210012854","115008056"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("112008033","115014127","210012854","115008056"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 # Panel A and Ultra-rare undescribed monogenic disorders
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("113001410","111001710","111001708"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("113001410","111001710","111001708"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
 confirmed_panelB = c("111001410","116000121","115001700","118002342","115005431","210013360","115014499")
 clin_data %>% filter(participant_id %in% confirmed_panelB, !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
@@ -914,9 +924,11 @@ clin_data %>% filter(participant_id %in% c("122007152", "122007274"), !is.na(nor
 
 
 # Panel C and Congenital muscular dystrophy
-clin_data %>% filter(participant_id %in% "210013126", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
-clin_data %>% filter(participant_id %in% "210013126", !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
+clin_data %>% filter(participant_id %in% c("210013126","210013125"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% mean() 
+clin_data %>% filter(participant_id %in% c("210013126","210013125"), !is.na(normalised_age_of_onset)) %>% select(normalised_age_of_onset) %>% pull() %>% sd()
 
+georgia %>% filter(participant_id %in% "210013126") %>% select(age_of_onset) %>% pull() %>% mean() 
+georgia %>% filter(participant_id %in% "210013126") %>% select(age_of_onset) %>% pull() %>% sd()
 
 # Panel C and Skeletal muscle channelopathy
 
