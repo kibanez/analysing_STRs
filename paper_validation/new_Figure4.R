@@ -73,8 +73,7 @@ top_panel_d = ggplot(panel_d, aes(x = disease, y = individuals_tested, fill = di
   guides(fill = FALSE) +
   xlab("") + ylab("") +
   theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
-  scale_x_discrete(labels = wrap_format(5)) +
-  scale_y_break(c(3001, 6731)) +
+  scale_x_discrete(labels = wrap_format(5)) 
 
 # load number participant confirmed
 df_confirmed = read.csv("./table_for_figure4_confirmed.tsv",
@@ -84,9 +83,27 @@ df_confirmed = read.csv("./table_for_figure4_confirmed.tsv",
 dim(df_confirmed)
 # 15  14
 
+panel_a_confirmed = df_confirmed %>% filter(disease %in% c("Hereditary ataxia", "Hereditary spastic paraplegia","Early onset and familial Parkinson's Disease",
+                                                           "Complex Parkinsonism (includes pallido-pyramidal syndromes)",
+                                                           "Early onset dystonia", "Early onset dementia",
+                                                           "Amyotrophic lateral sclerosis or motor neuron disease", "Charcot-Marie-Tooth disease", "Ultra-rare undescribed monogenic disorders"))
+panel_b_confirmed = df_confirmed %>% filter(grepl("Intellectual disability Plus", disease))
+panel_c_confirmed = df_confirmed %>% filter(disease %in% c("Congenital myopathy", "Distal myopathies", "Congenital muscular dystrophy", "Skeletal muscle channelopathy"))
+panel_d_confirmed = df_confirmed %>% filter(disease %in% "Intellectual disability")
+
 melt_confirmed = melt(df_confirmed)
 melt_confirmed$disease = factor(melt_confirmed$disease, levels = unique(melt_confirmed$disease))
 
+melt_confirmed_a = melt(panel_a_confirmed)
+melt_confirmed_b = melt(panel_b_confirmed)
+melt_confirmed_c = melt(panel_c_confirmed)
+melt_confirmed_d = melt(panel_d_confirmed)
+
+melt_confirmed_a$disease = factor(melt_confirmed_a$disease, levels = unique(melt_confirmed_a$disease))
+melt_confirmed_b$disease = factor(melt_confirmed_b$disease, levels = unique(melt_confirmed_b$disease))
+melt_confirmed_c$disease = factor(melt_confirmed_c$disease, levels = unique(melt_confirmed_c$disease))
+melt_confirmed_d$disease = factor(melt_confirmed_d$disease, levels = unique(melt_confirmed_d$disease))
+  
 bottom = ggplot(melt_confirmed, aes(x = disease, label = value, y = value, fill = variable)) +
   geom_bar(stat = "identity") +
   guides(fill = FALSE) +
@@ -102,4 +119,5 @@ png("new_Figure4.png",units="in", width=20, height=20, res=300)
 print(plot_grid(top, bottom, ncol = 1))
 dev.off()
 
+# Split by panel ID
 
