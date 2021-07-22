@@ -47,9 +47,13 @@ top_panel_a = ggplot(panel_a, aes(x = disease, y = individuals_tested, fill = di
   geom_bar(stat = "identity", position=position_dodge()) +
   scale_fill_manual(values=rep("grey54",length(panel_a$disease))) +
   guides(fill = FALSE) +
-  xlab("") + ylab("Individuals tested") +
-  theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
-  scale_x_discrete(labels = wrap_format(5)) 
+  xlab("") + ylab("") +
+  #theme(axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.3)) +
+  scale_x_discrete(labels = wrap_format(5))  +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) 
+
   
 top_panel_b = ggplot(panel_b, aes(x = disease, y = individuals_tested, fill = disease)) +
   geom_bar(stat = "identity", position=position_dodge()) +
@@ -119,5 +123,89 @@ png("new_Figure4.png",units="in", width=20, height=20, res=300)
 print(plot_grid(top, bottom, ncol = 1))
 dev.off()
 
-# Split by panel ID
+plot_grid(top, bottom, ncol = 1)
+ggsave("new_Figure4.svg")
 
+# Split by panel ID
+bottom_panel_a = ggplot(melt_confirmed_a, aes(x = disease, label = value, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
+  scale_y_reverse() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) 
+  #ylab("Individuals confirmed")
+
+
+bottom_panel_a
+ggsave("new_Figure4_PanelA_bottom.svg")
+
+top_panel_a
+ggsave("new_Figure4_PanelA_top.svg")
+
+png("new_Figure4_panelA_bottom.png",units="in", width=6, height=3, res=300)
+print(bottom_panel_a)
+dev.off()
+png("new_Figure4_panelA_top.png",units="in", width=6, height=5, res=300)
+print(top_panel_a)
+dev.off()
+
+
+bottom_panel_b = ggplot(melt_confirmed_b, aes(x = disease, label = value, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
+  scale_y_reverse() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  ylab("Individuals confirmed")
+
+bottom_panel_c = ggplot(melt_confirmed_c, aes(x = disease, label = value, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
+  scale_y_reverse() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  ylab("Individuals confirmed")
+
+bottom_panel_d = ggplot(melt_confirmed_d, aes(x = disease, label = value, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
+  scale_y_reverse() +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  ylab("Individuals confirmed")
+
+# Merging top and bottom for each panel ID
+print(plot_grid(top_panel_a, bottom_panel_a, ncol = 1))
+print(plot_grid(top_panel_b, bottom_panel_b, ncol = 1))
+print(plot_grid(top_panel_c, bottom_panel_c, ncol = 1))
+print(plot_grid(top_panel_d, bottom_panel_d, ncol = 1))
+
+
+png("new_Figure4_panelA.png",units="in", width=4, height=5, res=300)
+print(plot_grid(top_panel_a, bottom_panel_a, ncol = 1))
+dev.off()
+
+
+plot_grid(top_panel_a, bottom_panel_a, ncol = 1)
+ggsave("Figure4_panelA.svg")
+
+plot_grid(top_panel_b, bottom_panel_b, ncol = 1)
+ggsave("Figure4_panelB.svg")
+
+plot_grid(top_panel_c, bottom_panel_c, ncol = 1)
+ggsave("Figure4_panelC.svg")
+
+plot_grid(top_panel_d, bottom_panel_d, ncol = 1)
+ggsave("Figure4_panelD.svg")
