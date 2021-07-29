@@ -138,6 +138,19 @@ bottom_panel_a = ggplot(melt_confirmed_a, aes(x = disease, label = value, y = va
         axis.ticks.x=element_blank()) 
   #ylab("Individuals confirmed")
 
+# 25/07/2021: Egor idea -let\s keep it simple and show the bottom part of the figure: confirmed individuals and 
+# say in the legend the total number of individuals tested rather than putting altogether.
+# Egor's email: Or I would just keep the bottom part of the plot (individuals confirmed) in the figure and just mention the total 
+#numbers of individuals tested in text. This way, you could increase the height of the bars and add gene names directly into each bar.
+
+bottom_panel_a_july = ggplot(melt_confirmed_a, aes(x = disease, label = value, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  guides(fill = FALSE) +
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0)) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) 
 
 bottom_panel_a
 ggsave("new_Figure4_PanelA_bottom.svg")
@@ -145,8 +158,8 @@ ggsave("new_Figure4_PanelA_bottom.svg")
 top_panel_a
 ggsave("new_Figure4_PanelA_top.svg")
 
-png("new_Figure4_panelA_bottom.png",units="in", width=6, height=3, res=300)
-print(bottom_panel_a)
+png("new_Figure4_panelA_bottom_july.png",units="in", width=6, height=3, res=300)
+print(bottom_panel_a_july)
 dev.off()
 png("new_Figure4_panelA_top.png",units="in", width=6, height=5, res=300)
 print(top_panel_a)
