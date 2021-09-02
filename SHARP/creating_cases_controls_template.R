@@ -14,7 +14,7 @@ require(dplyr); packageDescription ("dplyr", fields = "Version") #"0.8.3"
 require(tidyr);packageDescription ("tidyr", fields = "Version") #"1.0.2"
 
 # Set working dir
-setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/")
+setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson_round2/")
 
 # load clinical data
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
