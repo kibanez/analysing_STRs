@@ -10,10 +10,10 @@ library(dplyr)
 
 # Set working directory
 #setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/After_QC/")
-setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/TOPMed13Cohort_14Loci_AlleleFreqFilesForKristina/After_QC/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/TOPMed_september2021/After_QC_Pathogenic/")
 
-total_unrel = 47849
-total_unrel_notNeuro = 47019
+total_unrel = 48464
+total_unrel_notNeuro = 47620
 
 # Load table
 topmed_unrel = read.csv("./table_unrel_and_unrel_notNeuro.tsv", stringsAsFactors = F, header = T, sep = "\t")
@@ -22,8 +22,8 @@ dim(topmed_unrel)
 
 # per popu
 topmed_unrel = read.csv("./table_unrel_and_unrel_notNeuro_SAS.tsv", stringsAsFactors = F, header = T, sep = "\t")
-total_unrel = 338
-total_unrel_notNeuro = 329
+total_unrel = 339
+total_unrel_notNeuro = 330
 
 
 l_locus = unique(topmed_unrel$locus)
@@ -72,23 +72,15 @@ for(i in 1:length(l_locus)){
 
 # write them into files
 write.table(df_unrel,
-            "table_carrier_ratio_with_ci_unrel_genomes_TOPMed.tsv",
+            "table_carrier_ratio_with_ci_unrel_genomes_TOPMed_SAS.tsv",
             quote = F,
             col.names = T,
             row.names = F,
             sep = "\t")
 
 write.table(df_unrel_notNeuro,
-            "table_carrier_ratio_with_ci_unrel_NotNeuro_genomes_TOPMed.tsv",
+            "table_carrier_ratio_with_ci_unrel_NotNeuro_genomes_TOPMed_SAS.tsv",
             quote = F,
             col.names = T,
             row.names = F,
             sep = "\t")
-
-
-
-
-
-
-
-
