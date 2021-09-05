@@ -17,11 +17,11 @@ require(tidyr);packageDescription ("tidyr", fields = "Version") #"1.0.2"
 setwd("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson_round2/")
 
 # load clinical data
-clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V11_and_Pilot_programmes.tsv",
+clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes.tsv",
                      sep = "\t",
                      stringsAsFactors = F)
 dim(clin_data)
-# 2468506  26
+# 2472865  26
 
 # Create a dataframe, with `platekey` and `type` being: case, control or pseudocontrol
 # case -> proband RD and recruited under Neurological
@@ -138,11 +138,11 @@ write.table(df_all,
 #merged_93425_genomes_EHv322_batch_Sharp_and_Parkinsonism.tsv
 #--O
 #/Users/kibanez/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged
-merged_table = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson/output_EHv3.2.2_vcfs/merged/merged_93425_genomes_EHv322_batch_Sharp_and_Parkinsonism.tsv",
+merged_table = read.csv("~/Documents/STRs/ANALYSIS/SHARP/EHdn_Parkinson_round2/output_EHv3.2.2/output_EHv3.2.2_vcfs/merged/merged_93427_genomes_EHv322_batch_Sharp_and_Parkinsonism_round2.tsv",
                         stringsAsFactors = F, 
                         sep = "\t")
 dim(merged_table)
-# 829327  5
+# 1849861  5
 colnames(merged_table) = c("platekey", "gene", "a1", "a2", "coverage")
 
 l_platekeys = unique(merged_table$platekey)
@@ -150,7 +150,7 @@ length(l_platekeys)
 # 93425
 l_genes = unique(merged_table$gene)
 length(l_genes)
-# 9
+# 20
 
 cc_table = data.frame()
 for(i in 1:length(l_platekeys)){
@@ -189,9 +189,9 @@ for(i in 1:length(l_platekeys)){
 }
 
 dim(cc_table)
-# 93425  29
+# 93425  62
 
-write.table(cc_table, "./analysis/cc_table_93425_genomes_9_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
+write.table(cc_table, "./analysis/cc_table_93425_genomes_20_genes.tsv", sep = "\t", quote = F, row.names = F, col.names = T)
 
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
@@ -202,12 +202,12 @@ cc_table = left_join(cc_table,
                      by = "platekey")
 cc_table = unique(cc_table)
 dim(cc_table)
-# 93451 35
+# 93452 68
 
 # which duplicated?
 platekeys_duplicated = which(duplicated(cc_table$platekey))
 length(platekeys_duplicated)
-# 26
+# 27
 l_platekeys_duplicated = cc_table$platekey[platekeys_duplicated]
 
 # They all have `year_of_birth` with different values...as we are going to use cut-off for age, let's keep the largest one (younger if they are not)
@@ -215,7 +215,7 @@ year_messed_up = cc_table %>%
   filter(platekey %in% l_platekeys_duplicated) %>%
   unique()
 dim(year_messed_up)
-# 52 35
+# 54 68
 
 year_messed_up = year_messed_up %>%
   group_by(platekey) %>%
@@ -223,12 +223,12 @@ year_messed_up = year_messed_up %>%
   ungroup() %>%
   as.data.frame()
 
-year_messed_up = year_messed_up[,-31]
+year_messed_up = year_messed_up[,-64]
 year_messed_up = unique(year_messed_up)
 dim(year_messed_up)
-# 30 35
+# 32 68
 
-colnames(year_messed_up)[35] = "year_of_birth"
+colnames(year_messed_up)[68] = "year_of_birth"
 year_messed_up = year_messed_up[colnames(cc_table)]  
 
 # remove the duplicated ones
@@ -244,8 +244,8 @@ cc_table = cc_table %>%
   filter(!platekey %in% to_remove)
 cc_table = unique(cc_table)
 dim(cc_table)
-# 93421 35
+# 93420 68
 
 length(unique(cc_table$platekey))
-# 93421
-write.table(cc_table, "./analysis/table_cases_controls_93421_genomes_enriched_with_some_clinical_data.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
+# 93420
+write.table(cc_table, "./analysis/table_cases_controls_93420_genomes_enriched_with_some_clinical_data.tsv", sep = "\t", quote = F, col.names = T, row.names = F)
