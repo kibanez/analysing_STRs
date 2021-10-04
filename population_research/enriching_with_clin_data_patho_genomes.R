@@ -15,4 +15,22 @@ setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main
 # Load clinical data
 clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes.tsv", stringsAsFactors = F, header = T, sep= "\t")
 dim(clin_data)
-# 
+# 2472865  26
+
+# Load genomes to enrich
+genomes_to_enrich = read.csv("./genomes_beyond_patho_with_clinical_data.tsv",
+                             stringsAsFactors = F,
+                             header = T,
+                             sep = "\t")
+dim(genomes_to_enrich)
+# 108  12 
+
+l_genes = unique(genomes_to_enrich$locus)
+for(i in 1:length(l_genes)){
+  to_write = left_join(genomes_to_enrich %>% filter(locus %in% l_genes[i]),
+                       clin_data,
+                       by = "participant_id")
+  to_write = unique(to_write)
+  output_file = paste(l_genes[i], "enriched_with_clinical_data.tsv", sep = "_")
+  write.table(to_write, output_file, row.names = F, col.names = T, sep = "\t", quote = F)
+}
