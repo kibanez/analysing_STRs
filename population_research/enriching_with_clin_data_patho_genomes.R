@@ -28,7 +28,7 @@ dim(genomes_to_enrich)
 l_genes = unique(genomes_to_enrich$locus)
 for(i in 1:length(l_genes)){
   to_write = left_join(genomes_to_enrich %>% filter(locus %in% l_genes[i]),
-                       clin_data,
+                       clin_data %>% select(participant_id, platekey, rare_diseases_family_id, biological_relationship_to_proband, year_of_birth, participant_phenotypic_sex, participant_type, affection_status, diseases_list, diseasegroup_list, diseasesubgroup_list, panel_list, hpo_list),
                        by = "participant_id")
   to_write = unique(to_write)
   output_file = paste(l_genes[i], "enriched_with_clinical_data.tsv", sep = "_")
