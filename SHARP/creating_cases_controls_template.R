@@ -195,14 +195,14 @@ write.table(cc_table, "./analysis/cc_table_93425_genomes_20_genes.tsv", sep = "\
 
 # Enrich it with gender, age, onset, disease_group, diseaes_subgroup, programme, hpo_terms
 to_enrich = clin_data %>%
-  select(platekey, participant_phenotypic_sex, year_of_birth, programme, diseasegroup_list, diseasesubgroup_list, hpo_list)
+  select(platekey, participant_phenotypic_sex, year_of_birth, programme, biological_relationship_to_proband, diseases_list, diseasegroup_list, diseasesubgroup_list, hpo_list)
 
 cc_table = left_join(cc_table,
                      to_enrich,
                      by = "platekey")
 cc_table = unique(cc_table)
 dim(cc_table)
-# 93452 68
+# 93455 70
 
 # which duplicated?
 platekeys_duplicated = which(duplicated(cc_table$platekey))
