@@ -43,8 +43,29 @@ clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Cancer") %>% 
 clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Rare Diseases") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 39809 (73.13%)
 
+l_fam_neuro = clin_data %>%
+  filter(grepl("neuro", diseasegroup_list, ignore.case = T)) %>%
+  select(rare_diseases_family_id) %>%
+  unique() %>%
+  pull()
+length(l_fam_neuro)
+# 14717
+
+clin_data = clin_data %>% 
+  filter(platekey %in% l_unrel_not125) %>%
+  group_by(rare_diseases_family_id) %>% 
+  mutate(is_neuro = ifelse(rare_diseases_family_id %in% l_fam_neuro, "Neuro", "NotNeuro")) %>% 
+  ungroup() %>% 
+  as.data.frame() %>%
+  select(platekey, participant_id, famID, diseasegroup_list, is_neuro, superpopu)
+
+
+
 clin_data_notNeuro = clin_data %>%
   filter(!grepl("neuro", diseasegroup_list, ignore.case = TRUE))
+
+clin_data_notNeuro %>% filter(platekey %in% l_unrel_not125) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 48656
 
 
 clin_data_notNeuro = clin_data %>%
