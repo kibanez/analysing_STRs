@@ -33,6 +33,23 @@ clin_data = read.csv("~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_a
                      header = T,
                      sep = "\t")
 dim(clin_data)
-#
+# 2472865  26
+
+# First, compute of 54437 how many they are RD and Cancer
+clin_data %>% filter(platekey %in% l_unrel_not125) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 54437
+clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Cancer") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 14628 (26.87%)
+clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Rare Diseases") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 39809 (73.13%)
+
+clin_data_notNeuro = clin_data %>%
+  filter(!grepl("neuro", diseasegroup_list, ignore.case = TRUE))
 
 
+clin_data_notNeuro = clin_data %>%
+  filter(!grepl("neuro", diseasegroup_list, ignore.case = TRUE) | !grepl("Mito", diseases_list,ignore.case = TRUE) | !grepl("Ultra-rare", diseases_list,ignore.case = TRUE))
+
+  select(platekey) %>%
+  unique() %>%
+  pull()
