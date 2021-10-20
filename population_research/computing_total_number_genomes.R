@@ -97,3 +97,27 @@ clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", sup
 write.table(clin_data,
             "~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes_enriched_with_neuro_notNeuro.tsv",
             quote = F, col.names = T, row.names = F, sep = "\t")
+
+# Enrich premutation and full-mutation tables with the new neuro - notNeuro info
+premut_table = read.csv("./expanded_genomes_main_pilot/feb2021/premutation_table_enriched_with_new_definition_neuro_notNeuro.tsv",
+                        header = T, stringsAsFactors = F, sep = "\t")
+dim(premut_table)
+# 2750  14
+
+patho_table = read.csv("./expanded_genomes_main_pilot/feb2021/full-mutation_table_enriched_with_new_definition_neuro_notNeuro.tsv",
+                       stringsAsFactors = F, header = T, sep = "\t")
+dim(patho_table)
+# 1086  13
+
+premut_table = left_join(premut_table,
+                         clin_data %>% select(platekey, is_neuro),
+                         by = "platekey")
+
+patho_table = left_join(patho_table,
+                        clin_data %>% select(platekey, is_neuro),
+                        by = "platekey")
+
+write.table(premut_table, "./expanded_genomes_main_pilot/feb2021/premutation_table_enriched_with_new_definition_neuro_notNeuro2.tsv",
+            quote = F, col.names = T, row.names = F, sep = "\t")
+write.table(patho_table, "./expanded_genomes_main_pilot/feb2021/full-mutation_table_enriched_with_new_definition_neuro_notNeuro2.tsv",
+            quote = F, col.names = T, row.names = F, sep = "\t")
