@@ -65,33 +65,35 @@ clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% se
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 36830
 
-# Let's define as `NotNeuro` also those having as diseases: Mito or Ultra-rare
+# Let's define as `Neuro` also those having as diseases: Mito or Ultra-rare
+# mito and ulutra-rrare should not be included as NOT NEURO cohort
 clin_data = clin_data %>% 
   group_by(participant_id) %>%
-  filter(grepl("Mito", diseases_list, ignore.case = T) | grepl("Ultra-rare", diseases_list, ignore.case = T)) %>%
-  mutate(is_neuro = "Neuro") %>%
+  mutate(is_neuro = ifelse(rare_diseases_family_id %in% l_fam_neuro | grepl("Mito", diseases_list, ignore.case = T) | grepl("Ultra-rare", diseases_list, ignore.case = T), "Neuro", "NotNeuro")) %>% 
   ungroup() %>%
   as.data.frame()
 
 # Let's check again
 # Neuro
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 610 
+# 18205 
 # Not Neuro
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 0 
+# 36233 
 
+# Breakdown by ancestry for not neuro
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("AFR", "African")) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 1239
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("AMR", "American")) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 674
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("EUR", "European")) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 30754
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("EAS", "East Asian")) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 307
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("SAS", "South Asian")) %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 2765
 
-clin_data_notNeuro = clin_data %>%
-  filter(!grepl("neuro", diseasegroup_list, ignore.case = TRUE))
-
-clin_data_notNeuro %>% filter(platekey %in% l_unrel_not125) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 48656
-
-
-clin_data_notNeuro = clin_data %>%
-  filter(!grepl("neuro", diseasegroup_list, ignore.case = TRUE) | !grepl("Mito", diseases_list,ignore.case = TRUE) | !grepl("Ultra-rare", diseases_list,ignore.case = TRUE))
-
-  select(platekey) %>%
-  unique() %>%
-  pull()
+# Write down into a table to enrich full-mutation and premutation tables (pileup visualisation tables)
+write.table(clin_data,
+            "~/Documents/STRs/clinical_data/clinical_data/Main_RE_V12_and_Pilot_programmes_enriched_with_neuro_notNeuro.tsv",
+            quote = F, col.names = T, row.names = F, sep = "\t")
