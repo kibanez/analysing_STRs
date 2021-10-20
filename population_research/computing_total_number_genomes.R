@@ -56,9 +56,30 @@ clin_data = clin_data %>%
   group_by(rare_diseases_family_id) %>% 
   mutate(is_neuro = ifelse(rare_diseases_family_id %in% l_fam_neuro, "Neuro", "NotNeuro")) %>% 
   ungroup() %>% 
-  as.data.frame() %>%
-  select(platekey, participant_id, famID, diseasegroup_list, is_neuro, superpopu)
+  as.data.frame() 
 
+# Neuro
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 17608
+# Not Neuro
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 36830
+
+# Let's define as `NotNeuro` also those having as diseases: Mito or Ultra-rare
+clin_data = clin_data %>% 
+  group_by(participant_id) %>%
+  filter(grepl("Mito", diseases_list, ignore.case = T) | grepl("Ultra-rare", diseases_list, ignore.case = T)) %>%
+  mutate(is_neuro = "Neuro") %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Let's check again
+# Neuro
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 610 
+# Not Neuro
+clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
+# 0 
 
 
 clin_data_notNeuro = clin_data %>%
