@@ -112,12 +112,28 @@ dim(patho_table)
 premut_table = left_join(premut_table,
                          clin_data %>% select(platekey, is_neuro),
                          by = "platekey")
-
+premut_table = unique(premut_table)
 patho_table = left_join(patho_table,
                         clin_data %>% select(platekey, is_neuro),
                         by = "platekey")
+patho_table = unique(patho_table)
 
 write.table(premut_table, "./expanded_genomes_main_pilot/feb2021/premutation_table_enriched_with_new_definition_neuro_notNeuro2.tsv",
             quote = F, col.names = T, row.names = F, sep = "\t")
 write.table(patho_table, "./expanded_genomes_main_pilot/feb2021/full-mutation_table_enriched_with_new_definition_neuro_notNeuro2.tsv",
+            quote = F, col.names = T, row.names = F, sep = "\t")
+
+# For DMPK we changed or updated the premutation cut-off to >43
+premut_table_DMPK = read.csv("./expanded_genomes_main_pilot/feb2021/premutation_table_DMPK_enriched_with_new_definition_neuro_notNeuro.tsv",
+                             stringsAsFactors = F, header = T, sep = "\t")
+dim(premut_table_DMPK)
+# 272 10
+premut_table_DMPK = left_join(premut_table_DMPK,
+                              clin_data %>% select(platekey, is_neuro),
+                              by = "platekey")
+premut_table_DMPK = unique(premut_table_DMPK)
+dim(premut_table_DMPK)
+# 272  11
+
+write.table(premut_table_DMPK, "./expanded_genomes_main_pilot/feb2021/premutation_table_DMPK_enriched_with_new_definition_neuro_notNeuro2.tsv",
             quote = F, col.names = T, row.names = F, sep = "\t")
