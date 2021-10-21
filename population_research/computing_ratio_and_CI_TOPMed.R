@@ -9,11 +9,15 @@ R.version.string ## "R version 3.6.1 (2019-07-05)"
 library(dplyr)
 
 # Set working directory
-#setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/After_QC/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/After_QC/")
+setwd("~/Documents/STRs/ANALYSIS/population_research/PAPER/expanded_genomes_main_pilot/feb2021/After_QC/full-mut/")
+
+
+setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/TOPMed_september2021/After_QC/")
 setwd("~/Documents/STRs/ANALYSIS/population_research/TOPMed/TOPMed_september2021/After_QC_Pathogenic/")
 
-total_unrel = 48464
-total_unrel_notNeuro = 47620
+total_unrel = 54437
+total_unrel_notNeuro = 36233
 
 # Load table
 topmed_unrel = read.csv("./table_unrel_and_unrel_notNeuro.tsv", stringsAsFactors = F, header = T, sep = "\t")
@@ -22,8 +26,8 @@ dim(topmed_unrel)
 
 # per popu
 topmed_unrel = read.csv("./table_unrel_and_unrel_notNeuro_SAS.tsv", stringsAsFactors = F, header = T, sep = "\t")
-total_unrel = 339
-total_unrel_notNeuro = 330
+total_unrel = 4589
+total_unrel_notNeuro = 2765
 
 
 l_locus = unique(topmed_unrel$locus)
