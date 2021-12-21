@@ -52,21 +52,21 @@ l_fam_neuro = clin_data %>%
 length(l_fam_neuro)
 # 14717
 
-l_fam_neuro = unique(l_fam_neuro,
+l_fam_neuro = c(l_fam_neuro,
                      clin_data %>%
                        filter(grepl("Mito", diseases_list, ignore.case = T)) %>%
                        select(rare_diseases_family_id) %>%
                        unique() %>%
                        pull())
 
-l_fam_neuro = unique(l_fam_neuro,
+l_fam_neuro = c(l_fam_neuro,
                      clin_data %>%
                        filter(grepl("Ultra-rare", diseases_list, ignore.case = T)) %>%
                        select(rare_diseases_family_id) %>%
                        unique() %>%
                        pull())
 length(l_fam_neuro)
-# 14717
+# 16492
 
 clin_data = clin_data %>% 
   filter(platekey %in% l_unrel_not125) %>%
