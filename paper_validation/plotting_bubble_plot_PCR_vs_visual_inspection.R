@@ -37,7 +37,7 @@ val_data = read.csv("./GEL_accuracy_final_not_UCL_considering_PCR_exp_larger_rea
 dim(val_data)
 # 509  10
 
-output_folder = "./figures/"
+output_folder = "./figures_ferry"
 
 # Mike's suggestion - 1
 # PCR alleles in X axis
@@ -272,6 +272,12 @@ dev.off()
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK", "FMR1", "FXN", "HTT", "TBP")
 
 all_loci = c("AR", "ATN1", "ATXN1", "ATXN2", "ATXN3", "ATXN7", "C9orf72", "CACNA1A", "DMPK - repeats ≤ read-length", "FMR1", "FXN - repeats ≤ read-length", "HTT", "TBP")
+df_strategy1$locus = gsub("DMPK", "DMPK - repeats ≤ read-length", df_strategy1$locus)
+df_strategy2$locus = gsub("DMPK", "DMPK - repeats ≤ read-length", df_strategy2$locus)
+df_strategy1$locus = gsub("FXN", "FXN - repeats ≤ read-length", df_strategy1$locus)
+df_strategy2$locus = gsub("FXN", "FXN - repeats ≤ read-length", df_strategy2$locus)
+
+
 df_strategy1$locus = gsub("DMPK - repeats > read-length", "DMPK - repeats ≤ read-length", df_strategy1$locus)
 df_strategy2$locus = gsub("DMPK - repeats > read-length", "DMPK - repeats ≤ read-length", df_strategy2$locus)
 df_strategy1$locus = gsub("FXN - repeats > read-length", "FXN - repeats ≤ read-length", df_strategy1$locus)
@@ -295,8 +301,8 @@ for (locus_name in 1:length(all_loci)){
   breakdown_by_locus_shorter = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <= 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
-    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
-    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.9, lty=4) +
+    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles <=150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.9, lty=4) +
     xlim(5,max_value) +
     ylim(5,max_value) +
     geom_abline(method = "lm", formula = x ~ y, linetype = 2, colour = "gray") +  
@@ -330,8 +336,8 @@ for (locus_name in 1:length(all_loci)){
   breakdown_by_locus_shorter_merged = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name])) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
-    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
-    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.9, lty=4) +
+    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name]), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.9, lty=4) +
     
     xlim(5,max_value) +
     ylim(5,max_value) +
@@ -351,8 +357,8 @@ for (locus_name in 1:length(all_loci)){
   breakdown_by_locus_larger = ggplot(df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles > 150)) +
     geom_point(data = df_strategy2 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = "#B8B8B8") +
     geom_point(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(x = exp_alleles, y = eh_alleles, size = number_of_alleles), color = colour_locus, alpha = 0.7) +  
-    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
-    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.3, lty=4) +
+    geom_vline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, xintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.9, lty=4) +
+    geom_hline(data = df_strategy1 %>% filter(locus %in% all_loci[locus_name], exp_alleles >150), aes(group = locus, yintercept=as.numeric(premut_cutoff)), color ="red", lwd=0.9, lty=4) +
     
     xlim(5,max_value) +
     ylim(5,max_value) +
@@ -370,10 +376,14 @@ for (locus_name in 1:length(all_loci)){
     guides(size = FALSE, color = FALSE) 
   
   file_name = all_loci[locus_name]
-  file_name = paste("./figures/", file_name, sep = "")
-  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_040221.png", sep = "_") 
-  file_name_large = paste(file_name, "largerThanReadLength_600dpi_040221.png", sep = "_") 
-  file_name_merged = paste(file_name, "merged_600dpi_04020121.png", sep = "_") 
+  file_name = paste("./figures_ferry/", file_name, sep = "")
+  file_name_short = paste(file_name, "shorterThanReadLength_600dpi_021221.png", sep = "_") 
+  file_name_large = paste(file_name, "largerThanReadLength_600dpi_021221.png", sep = "_") 
+  file_name_merged = paste(file_name, "merged_600dpi_021221.png", sep = "_") 
+
+  file_name_short_svg = paste(file_name, "shorterThanReadLength_600dpi_021221.svg", sep = "_") 
+  file_name_large_svg = paste(file_name, "largerThanReadLength_600dpi_021221.svg", sep = "_") 
+  file_name_merged_svg = paste(file_name, "merged_600dpi_021221.svg", sep = "_") 
   
   png(file_name_short,units="in", width=5, height=5, res=600)
   print(breakdown_by_locus_shorter)
@@ -386,5 +396,11 @@ for (locus_name in 1:length(all_loci)){
   png(file_name_large,units="in", width=9, height=6, res=600)
   print(breakdown_by_locus_larger)
   dev.off()
+  
+  # saving in svg
+  ggsave(file=file_name_short_svg,plot=breakdown_by_locus_shorter, dpi=600)
+  ggsave(file=file_name_merged_svg,plot=breakdown_by_locus_shorter_merged, dpi=600)
+  ggsave(file=file_name_large_svg,plot=breakdown_by_locus_larger,dpi=600)
+
 }
 
