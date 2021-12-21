@@ -44,6 +44,8 @@ clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Rare Diseases
 # 39809 (73.13%)
 
 # Dec'21: we spotted out that we also need to consider as Neuro families with the proband recruited under ultra-rare or mito
+# Let's define as `Neuro` also those having as diseases: Mito or Ultra-rare
+# mito and ulutra-rrare should not be included as NOT NEURO cohort
 l_fam_neuro = clin_data %>%
   filter(grepl("neuro", diseasegroup_list, ignore.case = T)) %>%
   select(rare_diseases_family_id) %>%
@@ -77,18 +79,10 @@ clin_data = clin_data %>%
 
 # Neuro
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 17608
+# 19771 (before 17608)
 # Not Neuro
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 36830
-
-# Let's define as `Neuro` also those having as diseases: Mito or Ultra-rare
-# mito and ulutra-rrare should not be included as NOT NEURO cohort
-clin_data = clin_data %>% 
-  group_by(participant_id) %>%
-  mutate(is_neuro = ifelse(rare_diseases_family_id %in% l_fam_neuro | grepl("Mito", diseases_list, ignore.case = T) | grepl("Ultra-rare", diseases_list, ignore.case = T), "Neuro", "NotNeuro")) %>% 
-  ungroup() %>%
-  as.data.frame()
+# 34667 (before 36830)
 
 # Let's check again
 # Neuro
