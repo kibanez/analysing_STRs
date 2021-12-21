@@ -194,15 +194,15 @@ clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", par
 
 # Breakdown by ancestry for not neuro
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("AFR", "African")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 1239
+# 1211 (before: 1239)
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("AMR", "American")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 674
+# 636 (before: 674)
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("EUR", "European")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 30754
+# 29497 (before: 30754)
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("EAS", "East Asian")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 307
+# 294 (before: 307)
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", superpopu %in% c("SAS", "South Asian")) %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 2765
+# 2552 (before: 2765)
 
 # Write down into a table to enrich full-mutation and premutation tables (pileup visualisation tables)
 write.table(clin_data,
