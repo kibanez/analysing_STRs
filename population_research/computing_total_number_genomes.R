@@ -43,11 +43,28 @@ clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Cancer") %>% 
 clin_data %>% filter(platekey %in% l_unrel_not125, programme %in% "Rare Diseases") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 39809 (73.13%)
 
+# Dec'21: we spotted out that we also need to consider as Neuro families with the proband recruited under ultra-rare or mito
 l_fam_neuro = clin_data %>%
   filter(grepl("neuro", diseasegroup_list, ignore.case = T)) %>%
   select(rare_diseases_family_id) %>%
   unique() %>%
   pull()
+length(l_fam_neuro)
+# 14717
+
+l_fam_neuro = unique(l_fam_neuro,
+                     clin_data %>%
+                       filter(grepl("Mito", diseases_list, ignore.case = T)) %>%
+                       select(rare_diseases_family_id) %>%
+                       unique() %>%
+                       pull())
+
+l_fam_neuro = unique(l_fam_neuro,
+                     clin_data %>%
+                       filter(grepl("Ultra-rare", diseases_list, ignore.case = T)) %>%
+                       select(rare_diseases_family_id) %>%
+                       unique() %>%
+                       pull())
 length(l_fam_neuro)
 # 14717
 
@@ -218,17 +235,17 @@ dim(patho_table)
 # 1086  13
 
 premut_table = left_join(premut_table,
-                         clin_data %>% select(platekey, is_neuro, participant_phenotypic_sex),
+                         clin_data %>% select(platekey, is_neuro, participant_phenotypic_sex, year_of_birth, programme),
                          by = "platekey")
 premut_table = unique(premut_table)
 patho_table = left_join(patho_table,
-                        clin_data %>% select(platekey, is_neuro, participant_phenotypic_sex),
+                        clin_data %>% select(platekey, is_neuro, participant_phenotypic_sex, year_of_birth, programme),
                         by = "platekey")
 patho_table = unique(patho_table)
 
-write.table(premut_table, "./expanded_genomes_main_pilot/feb2021/premutation_table_enriched_with_new_definition_neuro_notNeuro2_with_gender.tsv",
+write.table(premut_table, "./expanded_genomes_main_pilot/feb2021/premutation_table_enriched_with_new_definition_neuro_notNeuro2_with_gender_yob.tsv",
             quote = F, col.names = T, row.names = F, sep = "\t")
-write.table(patho_table, "./expanded_genomes_main_pilot/feb2021/full-mutation_table_enriched_with_new_definition_neuro_notNeuro2_with_gender.tsv",
+write.table(patho_table, "./expanded_genomes_main_pilot/feb2021/full-mutation_table_enriched_with_new_definition_neuro_notNeuro2_with_gender_yob.tsv",
             quote = F, col.names = T, row.names = F, sep = "\t")
 
 # For DMPK we changed or updated the premutation cut-off to >43
@@ -237,7 +254,7 @@ premut_table_DMPK = read.csv("./expanded_genomes_main_pilot/feb2021/premutation_
 dim(premut_table_DMPK)
 # 272 10
 premut_table_DMPK = left_join(premut_table_DMPK,
-                              clin_data %>% select(platekey, is_neuro, participant_phenotypic_sex),
+                              clin_data %>% select(platekey, is_neuro, participant_phenotypic_sex, year_of_birth, programme),
                               by = "platekey")
 premut_table_DMPK = unique(premut_table_DMPK)
 dim(premut_table_DMPK)
