@@ -84,22 +84,14 @@ clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% se
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
 # 34667 (before 36830)
 
-# Let's check again
-# Neuro
-clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "Neuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 18205 
-# Not Neuro
-clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 36233 
-
 # Check also by gender (for AR)
 # Not Neuro
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 19800 
+# 18970 (before: 19800)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 16431 
+# 15696 (before: 16431)
 
 # Breakdown by popu
 # ALL
@@ -154,50 +146,50 @@ clin_data %>% filter(platekey %in% l_unrel_not125, participant_phenotypic_sex %i
 # ALL
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 19800
+# 18970 (before: 19800)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 16432
+# 15696 (before: 16432)
 
 # EUR
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female", superpopu %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 16926
+# 16259 (before: 16926)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male", superpopu %in% "EUR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 13827
+# 13237 (before: 13827)
 
 # AFR
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female", superpopu %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 655
+# 642 (before: 655)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male", superpopu %in% "AFR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 584
+# 569 (before: 584)
 
 # AMR
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female", superpopu %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 335
+# 316 (before:335)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male", superpopu %in% "AMR") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 339
+# 320 (before: 339)
 
 # EAS
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female", superpopu %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 194
+# 186 (before: 194)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male", superpopu %in% "EAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 113
+# 108 (before: 113)
 
 # SAS
 # XX
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Female", superpopu %in% "SAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 1432
+# 1318 (before: 1432)
 # XY
 clin_data %>% filter(platekey %in% l_unrel_not125, is_neuro %in% "NotNeuro", participant_phenotypic_sex %in% "Male", superpopu %in% "SAS") %>% select(platekey) %>% unique() %>% pull() %>% length()
-# 1333
+# 1234 (before: 1333)
 
 
 # Breakdown by ancestry for not neuro
